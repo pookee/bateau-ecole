@@ -546,11 +546,11 @@ const Autonome = (() => {
      Même voyage : la version la plus récente gagne. Voyages différents : le plus avancé gagne,
      sauf « Tout recommencer » ou une copie restaurée exprès (champ remplace). */
   const Sync = (() => {
-    const DOCS = ["jeu/etat"];
-    let room = null, minuteur = null, attente = new Set(), premier = 0;
-    const resume = d => d ? {voyage:d.voyage||null, remplace:d.remplace||null, maj:d.maj||0,
+    /* jeu/etat : le voyage du Bateau-école (écrit par l'écran de la classe, gardé en copie par le téléphone)
+       classe/actuelle : la classe (élèves, cartes, absences), modifiable des deux côtés : la plus récente gagne */
+    const voyage = d => d ? {voyage:d.voyage||null, remplace:d.remplace||null, maj:d.maj||0,
       prog:(d.milles||0)*1000 + ((d.journal&&d.journal.length)||0) + Object.keys((d.stats&&d.stats.q)||{}).length} : null;
-    function prefere(a, b){ // b doit-il remplacer a ?
+    function prefereVoyage(a, b){ // b doit-il remplacer a ?
       if (!b) return false; if (!a) return true;
       if (b.remplace && b.remplace===a.voyage) return true;
       if (a.remplace && a.remplace===b.voyage) return false;
@@ -558,26 +558,34 @@ const Autonome = (() => {
       if (a.prog!==b.prog) return b.prog > a.prog;
       return b.maj > a.maj;
     }
+    const REGLES = {
+      "jeu/etat": {resume:voyage, prefere:prefereVoyage, delai:6000},
+      "classe/actuelle": {resume:d=>d ? {id:d.id||null, maj:d.maj||0} : null, prefere:(a,b)=>!!b && b.maj>0 && (!a || b.maj>a.maj), delai:700}
+    };
+    const DOCS = Object.keys(REGLES);
+    let room = null, minuteurs = {}, premiers = {};
     const pairsLa = () => room && room._pairs().length>0;
     async function envoieDoc(p){ const v = await DB._lit(p); if (!v || !v.data || !room) return; room._publie({k:"db", path:p, data:v.data}, "db:"+p).catch(e=>console.warn("copie", e)); }
+    const attente = new Set();
     function change(p){
-      if (!DOCS.includes(p)) return; attente.add(p);
+      if (!REGLES[p]) return; attente.add(p);
       if (!pairsLa()) return;
-      clearTimeout(minuteur); if (!premier) premier = Date.now();
-      const delai = Date.now()-premier > 20000 ? 0 : 6000; // au plus tard 20 s après le premier changement
-      minuteur = setTimeout(()=>{ premier = 0; const l=[...attente]; attente.clear(); l.forEach(envoieDoc); }, delai);
+      clearTimeout(minuteurs[p]); if (!premiers[p]) premiers[p] = Date.now();
+      const delai = Date.now()-premiers[p] > 20000 ? 0 : REGLES[p].delai; // au plus tard 20 s après le premier changement
+      minuteurs[p] = setTimeout(()=>{ premiers[p] = 0; attente.delete(p); envoieDoc(p); }, delai);
     }
-    async function annonce(){ if (!room) return; const revs = {}; for (const p of DOCS){ const v = await DB._lit(p); revs[p] = resume(v && v.data); } room._publie({k:"dbrev", revs}, "dbrev").catch(()=>{}); }
+    async function annonce(){ if (!room) return; const revs = {}; for (const p of DOCS){ const v = await DB._lit(p); revs[p] = REGLES[p].resume(v && v.data); } room._publie({k:"dbrev", revs}, "dbrev").catch(()=>{}); }
     async function recoit(m){
-      if (m.k==="dbrev" && m.revs){ for (const p of DOCS){ const v = await DB._lit(p), a = resume(v && v.data), b = m.revs[p]||null; if (a && prefere(b, a)) envoieDoc(p); } }
-      if (m.k==="db" && DOCS.includes(m.path) && m.data && typeof m.data==="object"){
+      if (m.k==="dbrev" && m.revs){ for (const p of DOCS){ const R = REGLES[p], v = await DB._lit(p), a = R.resume(v && v.data), b = m.revs[p]||null; if (a && R.prefere(b, a)) envoieDoc(p); } }
+      const R = m.k==="db" && REGLES[m.path];
+      if (R && m.data && typeof m.data==="object"){
         const v = await DB._lit(m.path);
-        if (!prefere(resume(v && v.data), resume(m.data))) return;
+        if (!R.prefere(R.resume(v && v.data), R.resume(m.data))) return;
         if (m.path==="jeu/etat" && mode()==="tbi"){ if (typeof window.recupereEtat==="function") window.recupereEtat(m.data); return; } // le jeu décide, puis enregistre
-        await DB._ecritDistant(m.path, m.data); // téléphone : il garde la copie
+        await DB._ecritDistant(m.path, m.data); // copie gardée, et la classe mise à jour de ce côté
       }
     }
-    return { branche(r){ room = r; }, change, annonce, recoit, nouveauPair(){ annonce(); if (attente.size) change([...attente][0]); } };
+    return { branche(r){ room = r; }, change, annonce, recoit, nouveauPair(){ annonce(); [...attente].forEach(change); } };
   })();
 
   /* ---------- liaison (même interface que la capacité room) ---------- */
@@ -589,7 +597,7 @@ const Autonome = (() => {
     const signale = (j,l) => { const ch = {peers:tous(), joined:j.map(vue), left:l.map(vue)}; ecPairs.forEach(f=>{ try { f(ch); } catch(e){ console.error(e); } }); };
     let rep = null;
     const coucou = () => rel.publie({k:"hb", f:moi.peer, p:moi.presence}, "hb").catch(()=>{});
-    const ETATS = {q:1, scan:1}; // sujets du jeu qui décrivent un état complet : le dernier suffit
+    const ETATS = {q:1, scan:1, ecran:1}; // sujets du jeu qui décrivent un état complet : le dernier suffit
     rel.ecoute(m=>{
       if (m.f===moi.peer) return;
       if (m.k==="hb"){ const neuf = !pairs.has(m.f), p = pairs.get(m.f) || {peer:m.f}, avant = JSON.stringify(p.presence||null);
@@ -765,6 +773,16 @@ const Autonome = (() => {
     }
   };
 
+  /* ---------- partager un fichier (PDF des cartes, sauvegarde) : feuille de partage dans l'appli, téléchargement ailleurs ---------- */
+  const blobEnB64 = blob => new Promise((ok, ko)=>{ const r = new FileReader(); r.onload = ()=>ok(String(r.result).split(",")[1]||""); r.onerror = ko; r.readAsDataURL(blob); });
+  async function partageFichier(nom, blob){
+    nom = String(nom||"fichier").replace(/[\\/:*?"<>|]/g, "-");
+    if (NATIF){ const FS = plug("Filesystem"), P = plug("Share");
+      if (FS && P){ const r = await FS.writeFile({path:nom, data:await blobEnB64(blob), directory:"CACHE"}); try { await P.share({title:nom, files:[r.uri]}); } catch(e){} return; } }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nom; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  }
+
   /* ---------- lien de liaison ouvert depuis le QR code (appareil photo de l'iPhone) ---------- */
   async function traiteLien(url){
     const m = /lier\/([0-9A-Za-z-]+)/.exec(url||""); if (!m) return;
@@ -790,7 +808,7 @@ const Autonome = (() => {
     if (name==="downloads") return Telechargements;
     return null;
   } };
-  return { NATIF, LOCAL, Liaison, Serveur, LienTel, Stock, eveille, rid, normalise, modeParDefaut, partage:plug("Share") };
+  return { NATIF, LOCAL, Liaison, Serveur, LienTel, Stock, eveille, rid, normalise, modeParDefaut, partageFichier, partage:plug("Share") };
 })();
 window.Autonome = Autonome;
 
@@ -2415,9 +2433,10 @@ async function brancheDB(){
    Même voyage : on prend la version la plus récente. Autre voyage (ordinateur remis à zéro, autre classe) : la maîtresse choisit. */
 function recupereEtat(distant){
   if (DEMO || !distant || typeof distant!=="object") return;
-  const applique = ()=>{ S = charge(JSON.parse(JSON.stringify(distant))); sauve(); if (window.onEtatRecharge) onEtatRecharge(); };
+  const applique = ()=>{ S = charge(JSON.parse(JSON.stringify(distant))); if (window.Classe) Classe.versJeu(); sauve(); if (window.onEtatRecharge) onEtatRecharge(); };
   if ((S.voyage && distant.voyage===S.voyage) || (distant.remplace && distant.remplace===S.voyage)){ applique(); return; }
-  if (!S.maj){ applique(); if ($("#stage")) toast("Voyage repris depuis le téléphone."); return; } // cet appareil n'a encore rien enregistré
+  const neuf = !S.maj || (!S.milles && !(S.journal||[]).length && !Object.keys((S.stats&&S.stats.q)||{}).length);
+  if (neuf){ applique(); if ($("#stage")) toast("Voyage repris depuis le téléphone."); return; } // cet appareil n'a pas encore navigué
   if (typeof panneau!=="function" || !$("#stage")) return;
   const p = position(distant.milles||0), e = ESCALES[p.i] || ESCALES[0];
   const quand = distant.maj ? ` le ${new Date(distant.maj).toLocaleDateString("fr-FR",{day:"numeric",month:"long"})}` : "";
@@ -2583,9 +2602,9 @@ const layer = $("#layer");
 let ROOM = null, QCUR = null, telVu = 0, chronoT = null, enJeu = false;
 const matiere = id => { const n = S.notions.find(x=>x.id===id); return n ? {n, m:MATIERES[n.m]||MATIERES.fr} : {n:{t:"Question"},m:MATIERES.fr}; };
 const nomEleve = n => { const e=S.eleves[n-1]; return e && e.prenom.trim() ? e.prenom.trim() : "Carte n°"+n; };
-const actifs = () => S.eleves.filter(e=>e.actif);
+const actifs = () => S.eleves.filter(e=>e.actif && !(window.absentAujourdhui && absentAujourdhui(e.n))); // présents aujourd'hui (version autonome : l'appel du jour)
 
-function toast(t){ const d=document.createElement("div"); d.className="toast"; d.textContent=t; $("#stage").appendChild(d); setTimeout(()=>d.remove(),3200); }
+function toast(t){ const d=document.createElement("div"); d.className="toast"; d.textContent=t; ((window.Accueil && Accueil.conteneur()) || $("#stage")).appendChild(d); setTimeout(()=>d.remove(),3200); }
 
 function majBarre(){
   const p = position(S.milles);
@@ -3106,7 +3125,7 @@ function panneau(html,cls){
   document.querySelector(".panneau")?.remove();
   const d=document.createElement("div"); d.className="panneau"; d.innerHTML=`<div class="carte ${cls||""}" style="max-width:1150px">${html}<button class="btn fermer" data-x="1">Fermer</button></div>`;
   d.addEventListener("click",e=>{ if(e.target===d||e.target.closest("[data-x]")) d.remove(); });
-  $("#stage").appendChild(d); return d;
+  ((window.Accueil && Accueil.conteneur()) || $("#stage")).appendChild(d); return d; // version autonome : aussi par-dessus l'accueil des activités
 }
 const X = lo => { let x=lo+170; while(x<0)x+=360; while(x>=360)x-=360; return x; };
 const Y = la => 85-la;
@@ -3168,7 +3187,8 @@ function ouvreReglages(){
 function rendR(){
   const c = $("#r-corps"); if(!c) return;
   if (ongletR!=="sons"){ try{ stopTest(); }catch(e){} sonsOuvert=null; }
-  if (ongletR==="eleves"){
+  if (ongletR==="eleves" && window.Accueil){ c.oninput=c.onchange=c.onclick=null; Accueil.editeur(c); }
+  else if (ongletR==="eleves"){
     c.innerHTML = `<p class="note">Chaque élève garde toujours la même carte. Coche les cartes utilisées et écris les prénoms (ils ne s'affichent que pour le pilote).</p>
     <div class="grille-el">${S.eleves.map(e=>`<label><span class="n num">${e.n}</span><input type="checkbox" data-actif="${e.n}" ${e.actif?"checked":""} aria-label="Carte ${e.n} utilisée"><input type="text" id="el-${e.n}" data-prenom="${e.n}" value="${esc(e.prenom)}" placeholder="Prénom" maxlength="20"></label>`).join("")}</div>`;
     c.oninput = e=>{ const t=e.target; if(t.dataset.prenom){ S.eleves[t.dataset.prenom-1].prenom=t.value; sauve(); } };
@@ -3213,7 +3233,7 @@ function rendR(){
       S.milles=0; S.escalesVues=[0]; S.journal=[]; sauve(); majBarre(); majMer(); Mer.snap(); document.querySelector(".panneau")?.remove(); if(!enJeu) accueil(); toast("Nouveau voyage : départ de Marseille !"); };
   }
   else if (ongletR==="bilan"){
-    const nots = S.notions.filter(n=>n.vue); const act=actifs();
+    const nots = S.notions.filter(n=>n.vue); const act=S.eleves.filter(e=>e.actif);
     const cell = a => { if(!a||!a[1]) return `<td>–</td>`; const p=a[0]/a[1]; return `<td class="${p>=.7?"p2":p>=.4?"p1":"p0"} num" title="${a[0]} sur ${a[1]}">${Math.round(p*100)} %</td>`; };
     const rat = Object.entries(S.stats.q).filter(([id,s])=>s.n).sort((a,b)=>a[1].last-b[1].last).slice(0,8)
       .map(([id,s])=>{ const q=S.questions.find(x=>x.id===id); return q?`<li><b class="num">${Math.round(s.last*100)} %</b> · ${esc(q.q.replace(/\n/g," "))}</li>`:""; }).join("");
@@ -3227,11 +3247,12 @@ function rendR(){
   else if (ongletR==="sauve"){
     c.innerHTML = `<p class="note">${window.BATEAU_AUTONOME?"Le voyage est enregistré automatiquement sur cet appareil, et le téléphone relié en garde une copie (onglet « Téléphone »).":"Le voyage est enregistré automatiquement dans cette page : tu le retrouves sur n'importe quel ordinateur où tu ouvres ce lien avec ton compte."} Tu peux aussi garder une copie de sécurité dans un fichier.</p>
       <div class="ligne"><button class="btn mer" id="s-exp">Télécharger une copie</button>
-      <label class="btn" for="s-imp" style="cursor:pointer">Restaurer une copie…</label><input type="file" id="s-imp" accept="application/json,.json" hidden></div>
+      <label class="btn" for="s-imp" style="cursor:pointer">Restaurer une copie…</label><input type="file" id="s-imp" accept="application/json,.json,.txt,.csv" hidden></div>
       <h3>Questions d'origine</h3><p class="note">Remet la banque de questions préparée au départ (tes questions ajoutées seront effacées).</p>
       <button class="btn" id="s-orig">Remettre les questions d'origine</button>`;
     c.oninput=null;
     c.onclick = async e=>{
+      if (e.target.id==="s-exp" && window.Classe){ Classe.exporte().catch(()=>toast("La sauvegarde n'a pas pu être créée.")); return; } // version autonome : classe et voyage ensemble
       if (e.target.id==="s-exp"){
         const dl = await useCap("downloads");
         const data = JSON.stringify(S,null,1);
@@ -3242,6 +3263,7 @@ function rendR(){
         S.questions=banqueDefaut(); S.notions=NOTIONS.map(n=>({...n,vue:(S.notions.find(x=>x.id===n.id)||n).vue})); sauve(); toast("Questions d'origine remises."); rendR(); }
     };
     c.onchange = e=>{ if(e.target.id!=="s-imp"||!e.target.files[0]) return; const r=new FileReader();
+      if (window.Accueil){ r.onload=()=>{ document.querySelector(".panneau")?.remove(); Accueil.importe(String(r.result||""), null).then(ok=>{ if(ok) toast("Sauvegarde importée."); }); }; r.readAsText(e.target.files[0]); e.target.value=""; return; }
       r.onload=()=>{ try{ const ancien=S.voyage; S=charge(JSON.parse(r.result)); S.voyage=idVoyage(); S.remplace=ancien; sauve(); majBarre(); majMer(); Mer.snap(); toast("Copie restaurée."); if(!enJeu) accueil(); }catch(err){ toast("Ce fichier n'est pas une copie du Bateau-école."); } };
       r.readAsText(e.target.files[0]); };
   }
@@ -3807,7 +3829,8 @@ const EcransAutonome = (() => {
 @keyframes aut-pouls{50%{opacity:.35}}
 .aut-rappel{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#FFF6DB;border:2px solid #F3D9A4;border-radius:14px;padding:10px 12px}
 .aut-rappel b{font-family:var(--display);color:var(--nuit)}
-.aut-voile{position:fixed;inset:0;z-index:60;background:rgba(6,24,40,.72);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px))}
+.aut-voile{position:fixed;inset:0;z-index:60;background:rgba(6,24,40,.72);display:flex;flex-direction:column;align-items:center;justify-content:safe center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);box-sizing:border-box}
+.aut-voile .aut-fenetre{flex:none}
 .aut-fenetre{background:#FFFCF4;border-radius:22px;padding:20px;max-width:420px;width:100%;display:grid;gap:14px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
 .aut-fenetre h2{margin:0;font:800 1.35rem/1.15 var(--display);color:var(--nuit)}
 .aut-fenetre p{margin:0;line-height:1.45}
@@ -3834,7 +3857,7 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
 .aut-accueil b{font:800 1.15rem/1.15 var(--display);color:var(--nuit)}
 .aut-accueil p{margin:0;font-size:.95rem;line-height:1.35;color:var(--encre)}
 .aut-accueil button{justify-self:end}
-.aut-bandeau{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:21;background:#FFF6DB;color:var(--nuit);border:2px solid #F3D9A4;border-radius:12px;padding:8px 14px;font-weight:700;max-width:92%}
+.aut-bandeau{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translateX(-50%);z-index:21;background:#FFF6DB;color:var(--nuit);border:2px solid #F3D9A4;border-radius:12px;padding:8px 14px;font-weight:700;max-width:92%}
 @media (max-width:1199px),(max-height:620px){.aut-accueil{display:none}}
 #b-tel.appel{background:var(--soleil);color:var(--nuit);font-weight:800}
 @media (max-width:700px){.lier{grid-template-columns:1fr}.lier-qr{max-width:260px}}
@@ -3960,17 +3983,18 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
   function piedTel(box, ouvrir){
     box.innerHTML = `<button class="btn petit" id="t-afficher">Afficher le jeu sur un ordinateur</button>
       <span class="note">Code de la classe : <b class="num">${esc(L.code()||"")}</b></span>
-      <button class="btn petit" id="t-oublie">Changer de classe</button>`;
+      <button class="btn petit" id="t-oublie">Relier un autre écran</button>`;
     box.querySelector("#t-afficher").onclick = ouvrir;
     const b = box.querySelector("#t-oublie");
-    b.onclick = async ()=>{ if (!b.dataset.sur){ b.dataset.sur = 1; b.textContent = "Confirmer : oublier cette classe"; b.classList.add("prim"); return; } if (SRV) await SRV.arrete(); await L.oublie(); location.reload(); };
+    b.onclick = async ()=>{ if (!b.dataset.sur){ b.dataset.sur = 1; b.textContent = "Confirmer : oublier cet écran"; b.classList.add("prim"); return; } if (SRV) await SRV.arrete(); await L.oublie(); location.reload(); };
   }
 
   /* ---------- écran de la classe ---------- */
   let telVuUneFois = (()=>{ try { return localStorage.getItem("bateau-ecole-tel-vu")==="1"; } catch(e){ return false; } })();
   function tbi(){
-    const stage = $("#stage");
+    const stage = document.body;
     if (Autonome.LOCAL) return tbiLocal(stage);
+    if (window.Accueil) return; // l'accueil de l'écran de la classe montre le QR code
     let carte = null;
     const montre = on => {
       if (on && !carte && !telVuUneFois && L.code()){ carte = document.createElement("div"); carte.className = "aut-accueil";
@@ -4051,6 +4075,699 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
 })();
 function rendTel(c){ return EcransAutonome.rendTel(c); }
 window.EcransAutonome = EcransAutonome;
+
+/* ---------- version autonome : la classe (élèves, cartes-réponses, absences du jour) ----------
+   Commune à toutes les activités et synchronisée entre le téléphone et l'écran de la classe (document « classe/actuelle »).
+   Le Bateau-école y lit ses élèves : S.eleves en est une copie. Chaque élève garde toujours le même numéro de carte. */
+const Classe = (() => {
+  const DOC = "classe/actuelle", MAX = NB_CARTES;
+  const NIVEAUX = ["CP","CE1","CE2","CM1","CM2","Autre"];
+  const deux = x => String(x).padStart(2,"0");
+  const aujourdhui = () => { const d = new Date(); return d.getFullYear()+"-"+deux(d.getMonth()+1)+"-"+deux(d.getDate()); };
+  let c = null, db = null, pret = null, tEcrit = null;
+  const ecoutes = new Set();
+  const vide = () => ({v:1, id:"c"+Autonome.rid(6), nom:"", niveau:"", maj:0,
+    eleves:Array.from({length:MAX},(_,i)=>({n:i+1, prenom:"", actif:false})), absents:{jour:"", n:[]}});
+  function propre(o){
+    const d = vide(); if (!o || typeof o!=="object") return d;
+    const r = {v:1, id:typeof o.id==="string" && o.id ? o.id : d.id, nom:String(o.nom||"").slice(0,60), niveau:NIVEAUX.includes(o.niveau) ? o.niveau : "",
+      maj:+o.maj||0, eleves:d.eleves, absents:{jour:"", n:[]}};
+    (Array.isArray(o.eleves) ? o.eleves : []).forEach(e=>{ const n = +(e && e.n); if (n>=1 && n<=MAX) r.eleves[n-1] = {n, prenom:String(e.prenom||"").trim().slice(0,24), actif:!!e.actif}; });
+    if (o.absents && typeof o.absents.jour==="string") r.absents = {jour:o.absents.jour, n:(Array.isArray(o.absents.n) ? o.absents.n : []).map(Number).filter(n=>n>=1 && n<=MAX)};
+    return r;
+  }
+  const annonce = origine => ecoutes.forEach(f=>{ try { f(c, origine); } catch(e){ console.error(e); } });
+  async function init(){
+    if (pret) return pret;
+    pret = (async()=>{
+      db = await useCap("db");
+      const s = await db.doc(DOC).get();
+      c = s.exists ? propre(s.data()) : null;
+      db.doc(DOC).onSnapshot(snap=>{ if (!snap.distant) return; c = propre(snap.data()); annonce("distant"); });
+      return c;
+    })();
+    return pret;
+  }
+  function enregistre(){
+    c.maj = Date.now(); const copie = JSON.parse(JSON.stringify(c));
+    clearTimeout(tEcrit); tEcrit = setTimeout(()=>{ if (db) db.doc(DOC).set(copie).catch(e=>console.warn("classe", e)); }, 300);
+    annonce("local");
+  }
+  function modifie(fn){ if (!c) c = vide(); fn(c); enregistre(); }
+  /* la classe d'un voyage du Bateau-école (copie de sauvegarde, ou premier lancement de l'écran de la classe) */
+  function depuisEtat(S, maj){ const k = vide(); (S && Array.isArray(S.eleves) ? S.eleves : []).forEach(e=>{ const n = +e.n; if (n>=1 && n<=MAX) k.eleves[n-1] = {n, prenom:String(e.prenom||"").trim(), actif:!!e.actif}; });
+    k.maj = maj || 0; return k; }
+
+  /* ---------- listes collées (un prénom par ligne, tableur, ONDE…) ---------- */
+  const joli = p => p.toLocaleLowerCase("fr").replace(/(^|[\s'-])(\p{L})/gu, (m,a,b)=>a+b.toLocaleUpperCase("fr"));
+  const majuscules = w => w.length>1 && w===w.toLocaleUpperCase("fr") && /\p{L}/u.test(w);
+  function lisListe(t){
+    let lignes = String(t||"").replace(/\r/g,"").split("\n").map(l=>l.trim()).filter(Boolean);
+    if (lignes.length===1 && /,/.test(lignes[0]) && !/[;\t]/.test(lignes[0])) lignes = lignes[0].split(",").map(x=>x.trim()).filter(Boolean);
+    let col = -1;
+    const champs = l => l.split(/\t|;/).map(x=>x.replace(/^"|"$/g,"").trim());
+    if (lignes.length){ const t0 = champs(lignes[0]).map(x=>x.toLocaleLowerCase("fr").normalize("NFD").replace(/\p{M}/gu,""));
+      col = t0.findIndex(x=>/^prenom/.test(x)); if (col>=0 || t0.some(x=>/^nom/.test(x))) lignes = lignes.slice(1); }
+    const res = [];
+    lignes.forEach(l=>{
+      const f = champs(l).filter(Boolean); if (!f.length) return;
+      let prenom = "", nom = "";
+      if (col>=0 && f[col]) { prenom = f[col]; nom = f.find((x,i)=>i!==col && /\p{L}/u.test(x)) || ""; }
+      else if (f.length>1){ const i = f.findIndex(x=>!majuscules(x)); prenom = f[i>=0?i:1] || f[0]; nom = f.find(x=>x!==prenom) || ""; }
+      else { const mots = f[0].split(/\s+/); const gros = mots.filter(majuscules), petits = mots.filter(w=>!majuscules(w));
+        if (gros.length && petits.length){ prenom = petits.join(" "); nom = gros.join(" "); } else prenom = f[0]; }
+      prenom = prenom.replace(/^\d+[.)-]?\s*/,"").replace(/\s+/g," ").trim();
+      if (!/\p{L}/u.test(prenom)) return;
+      res.push({prenom: prenom===prenom.toLocaleUpperCase("fr") || prenom===prenom.toLocaleLowerCase("fr") ? joli(prenom) : prenom, nom});
+    });
+    // deux fois le même prénom : on ajoute l'initiale du nom (comme « Ethan F. »)
+    const compte = {}; res.forEach(r=>{ const k = r.prenom.toLocaleLowerCase("fr"); compte[k] = (compte[k]||0)+1; });
+    const vus = {}; res.forEach(r=>{ const k = r.prenom.toLocaleLowerCase("fr"); if (compte[k]>1){ vus[k] = (vus[k]||0)+1; r.prenom += r.nom ? " "+r.nom.trim()[0].toLocaleUpperCase("fr")+"." : " "+vus[k]; } });
+    return res.map(r=>r.prenom.slice(0,24));
+  }
+  function ajoute(prenoms){
+    let mis = 0;
+    modifie(k=>{ prenoms.forEach(p=>{ const e = k.eleves.find(x=>!x.actif && !x.prenom); if (e){ e.prenom = p; e.actif = true; mis++; } }); });
+    return {mis, refus:prenoms.length-mis};
+  }
+
+  /* ---------- absences du jour ---------- */
+  const absents = () => c && c.absents && c.absents.jour===aujourdhui() ? c.absents.n : [];
+  function basculeAbsent(n){ modifie(k=>{ const l = k.absents.jour===aujourdhui() ? k.absents.n.slice() : []; const i = l.indexOf(n); if (i>=0) l.splice(i,1); else l.push(n); k.absents = {jour:aujourdhui(), n:l}; }); }
+  window.absentAujourdhui = n => absents().includes(n);
+
+  /* ---------- motif d'une carte (le marqueur ArUco lu par la caméra) ---------- */
+  const bits = n => { const cd = AR.DICTIONARIES.CARTES40.codeList[n-1] || [0,0]; return cd.map(b=>b.toString(2).padStart(8,"0")).join(""); };
+  function motif(n, taille){
+    const cv = document.createElement("canvas"), px = taille||48, r = window.devicePixelRatio||1; cv.width = cv.height = Math.round(px*r);
+    cv.style.width = cv.style.height = px+"px"; cv.className = "cl-motif"; cv.setAttribute("aria-hidden", "true");
+    const g = cv.getContext("2d"), k = cv.width/6; g.fillStyle = "#000"; g.fillRect(0,0,cv.width,cv.width); g.fillStyle = "#fff";
+    const b = bits(n); for (let i=0;i<4;i++) for (let j=0;j<4;j++) if (b[i*4+j]==="1") g.fillRect((j+1)*k, (i+1)*k, k+.5, k+.5);
+    return cv;
+  }
+
+  /* ---------- cartes-réponses à imprimer (PDF A4, deux cartes A5 par page, comme outils/cartes_reponses.py) ---------- */
+  function chargeScript(src){ return new Promise((ok, ko)=>{ if (window.jspdf) return ok(); const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = ()=>ko(new Error("pdf")); document.head.appendChild(s); }); }
+  async function pdf(liste){
+    await chargeScript("vendor/jspdf.umd.min.js");
+    const doc = new window.jspdf.jsPDF({unit:"mm", format:"a4"});
+    const W = 210, H = 297, T = 120, k = T/6, gap = 6.5; // marqueur de 12 cm : les lettres restent loin du bord (marges des imprimantes)
+    doc.setProperties({title:"Cartes-réponses"+(c && c.nom ? " — "+c.nom : "")});
+    liste.forEach((e,i)=>{
+      if (i && i%2===0) doc.addPage();
+      const cx = W/2, cy = (i%2 ? H*3/4 : H/4), x0 = cx-T/2, y0 = cy-T/2, b = bits(e.n);
+      doc.setFillColor(0,0,0); doc.rect(x0, y0, T, T, "F"); doc.setFillColor(255,255,255);
+      for (let r=0;r<4;r++) for (let q=0;q<4;q++) if (b[r*4+q]==="1") doc.rect(x0+(q+1)*k, y0+(r+1)*k, k+.15, k+.15, "F");
+      doc.setTextColor(60,60,60); doc.setFont("helvetica","bold"); doc.setFontSize(16);
+      doc.text("A", cx, y0-gap, {align:"center", baseline:"middle"});
+      doc.text("B", x0+T+gap, cy, {align:"center", baseline:"middle", angle:-90});
+      doc.text("C", cx, y0+T+gap, {align:"center", baseline:"middle", angle:180});
+      doc.text("D", x0-gap, cy, {align:"center", baseline:"middle", angle:90});
+      const nom = (e.prenom||"").trim(), lab = e.n + (nom ? "  ·  "+nom : "");
+      doc.setFont("helvetica","normal"); doc.setFontSize(11); doc.setTextColor(90,90,90);
+      doc.text(lab, x0, y0-gap-1, {baseline:"middle"});
+      doc.text(lab, x0+T, y0+T+gap+1, {baseline:"middle", angle:180});
+      if (i%2===0){ doc.setDrawColor(170,170,170); doc.setLineDashPattern([2,2.5],0); doc.line(8, H/2, W-8, H/2); doc.setLineDashPattern([],0); }
+    });
+    return doc.output("blob");
+  }
+  async function imprimeCartes(){
+    const l = c ? c.eleves.filter(e=>e.actif) : [];
+    const liste = l.length ? l : Array.from({length:25},(_,i)=>({n:i+1, prenom:""}));
+    const blob = await pdf(liste);
+    await Autonome.partageFichier("Cartes-réponses"+(c && c.nom ? " - "+c.nom : "")+".pdf", blob, "application/pdf");
+  }
+
+  /* ---------- sauvegarde de la classe (et du voyage) ---------- */
+  async function exporte(){
+    const v = await (await useCap("db")).doc("jeu/etat").get();
+    const bateau = window.Accueil && Accueil.estEcran() && typeof S!=="undefined" && S.maj ? JSON.parse(JSON.stringify(S)) : (v.exists ? v.data() : null);
+    const o = {format:"bateau-ecole/sauvegarde", version:1, date:new Date().toISOString(), classe:c, bateau};
+    const nom = ("Classe "+(c && c.nom || "")).trim().replace(/[\\/:*?"<>|]/g,"-")+" - "+aujourdhui()+".json";
+    await Autonome.partageFichier(nom, new Blob([JSON.stringify(o, null, 1)], {type:"application/json"}), "application/json");
+  }
+  function lit(texte){
+    let o = null; try { o = JSON.parse(texte); } catch(e){}
+    if (o && o.format==="bateau-ecole/sauvegarde") return {type:"sauvegarde", classe:o.classe ? propre(o.classe) : null, bateau:o.bateau && typeof o.bateau==="object" ? o.bateau : null};
+    if (o && Array.isArray(o.eleves) && ("milles" in o || "questions" in o)) return {type:"bateau", classe:depuisEtat(o, Date.now()), bateau:o};
+    if (o) return {type:"inconnu"};
+    const l = lisListe(texte); return l.length ? {type:"liste", prenoms:l} : {type:"inconnu"};
+  }
+  /* applique une sauvegarde : la classe tout de suite, le voyage vers l'écran de la classe (qui remplacera le sien) */
+  async function importe(r){
+    if (r.classe){ const k = propre(r.classe); c = k; enregistre(); }
+    if (r.prenoms) ajoute(r.prenoms);
+    if (r.bateau){
+      const b = JSON.parse(JSON.stringify(r.bateau)), dbx = await useCap("db"), v = await dbx.doc("jeu/etat").get();
+      b.voyage = idVoyage(); b.remplace = (v.exists && v.data().voyage) || (typeof S!=="undefined" && S.voyage) || null; b.maj = Date.now();
+      if (window.Accueil && Accueil.estEcran() && typeof recupereEtat==="function"){ recupereEtat(b); }
+      else await dbx.doc("jeu/etat").set(b);
+    }
+  }
+  function choisitFichier(){
+    return new Promise(ok=>{ const i = document.createElement("input"); i.type = "file"; i.accept = ".json,.txt,.csv,application/json,text/plain,text/csv";
+      i.onchange = ()=>{ const f = i.files && i.files[0]; if (!f){ ok(null); return; } const fr = new FileReader(); fr.onload = ()=>ok(String(fr.result||"")); fr.onerror = ()=>ok(null); fr.readAsText(f); };
+      i.click(); });
+  }
+
+  /* ---------- l'écran de la classe suit la classe : le Bateau-école y prend ses élèves ---------- */
+  function versJeu(){
+    if (!c || typeof S==="undefined") return false;
+    const avant = JSON.stringify(S.eleves), apres = JSON.stringify(c.eleves);
+    if (avant===apres) return false;
+    S.eleves = JSON.parse(apres); sauve(); return true;
+  }
+
+  return { init, get:()=>c, existe:()=>!!c, NIVEAUX, MAX, aujourdhui,
+    surChange:f=>{ ecoutes.add(f); return ()=>ecoutes.delete(f); },
+    cree(o){ c = propre(Object.assign(vide(), o||{})); enregistre(); },
+    /* adopter une classe sans la dater (premier lancement de l'écran : elle ne doit pas écraser celle du téléphone) */
+    adopte(k){ c = propre(k); if (db) db.doc(DOC).set(JSON.parse(JSON.stringify(c))).catch(()=>{}); annonce("local"); },
+    modifie, ajoute, lisListe, basculeAbsent, absents, motif, pdf, imprimeCartes, exporte, lit, importe, choisitFichier, depuisEtat, versJeu,
+    actifs:()=> c ? c.eleves.filter(e=>e.actif) : [],
+    presents:()=> c ? c.eleves.filter(e=>e.actif && !absents().includes(e.n)) : [] };
+})();
+window.Classe = Classe;
+
+/* ---------- version autonome : l'appli autour des activités ----------
+   Écran de démarrage animé, accueil du téléphone (poste de pilotage de la maîtresse ou du maître), installation guidée,
+   classe (élèves, cartes, appel du jour, sauvegardes), et accueil de l'écran de la classe avec le choix de l'activité.
+   Première activité : le Bateau-école (lanceTBI / lanceTel, inchangés). */
+const Accueil = (() => {
+  const L = Autonome.Liaison;
+  const ACTIVITES = [
+    {id:"bateau", nom:"Le Bateau-école", texte:"Le rituel du matin : on révise, et chaque bonne réponse fait avancer le bateau autour du monde.", img:"img/bateau.webp"},
+    {id:"pavillons", nom:"Hissez les pavillons", texte:"Vrai ou faux ? Les calculs défilent, on lève sa carte seulement quand c'est juste.", img:"img/bouee2.webp", bientot:true}
+  ];
+  const IC = {
+    retour:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    suite:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    appel:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7M17 16l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    eleves:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 19c.8-3.4 3.2-5 6-5s5.2 1.6 6 5M16 5.2a3 3 0 010 5.6M18.5 14c1.4.7 2.3 2.4 2.5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    cartes:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8 8h3v3H8zM13 13h3v3h-3zM13 8h3M8 16h3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    sauve:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10l4 4 4-4M5 16v3h14v-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    ecran:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M9 20h6M12 16v4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    maison:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7M6 10v10h12V10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+  const st = document.createElement("style");
+  st.textContent = `
+.aa-page{min-height:100%;background:var(--ecume);color:var(--encre);box-sizing:border-box}
+.ic{width:1.3em;height:1.3em;flex:none}
+/* ---------- démarrage ---------- */
+#aa-intro{position:fixed;inset:0;z-index:200;background:var(--nuit);overflow:hidden;display:grid;place-items:center;cursor:pointer}
+#aa-intro .ciel{position:absolute;inset:0;background:linear-gradient(#58B7EC,#A7DDF7 70%);opacity:0;animation:aa-apparait .6s .15s ease forwards}
+#aa-intro .mer{position:absolute;left:0;right:0;bottom:0;height:24vh;background:url(img/vague-foncee.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 5s linear infinite}
+#aa-intro .mer2{position:absolute;left:0;right:0;bottom:0;height:17vh;background:url(img/vague-claire.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 3.6s linear infinite reverse}
+#aa-intro .bateau{position:absolute;bottom:11vh;left:50%;width:min(46vw,300px);transform:translateX(-50%);animation:aa-arrive 1.1s cubic-bezier(.2,.8,.3,1) both,aa-roulis 2.4s 1.1s ease-in-out infinite}
+#aa-intro .perro{position:absolute;top:14vh;left:50%;width:min(38vw,220px);transform:translateX(-50%) scale(0);animation:aa-coucou .7s .55s cubic-bezier(.3,1.6,.5,1) forwards}
+#aa-intro .mot{position:absolute;top:calc(14vh + min(38vw,220px)*1.12);left:0;right:0;text-align:center;font:800 clamp(2.6rem,11vw,4.4rem)/1 var(--display);color:#fff;text-shadow:0 3px 0 #1D6F93,0 8px 18px rgba(11,39,64,.35);opacity:0;animation:aa-mot .5s .9s ease forwards}
+#aa-intro.fin{animation:aa-part .45s ease forwards}
+@keyframes aa-apparait{to{opacity:1}}
+@keyframes aa-houle{to{background-position-x:-800px}}
+@keyframes aa-arrive{from{transform:translate(-120vw,0) rotate(-6deg)}to{transform:translate(-50%,0)}}
+@keyframes aa-roulis{50%{transform:translate(-50%,-6px) rotate(2deg)}}
+@keyframes aa-coucou{to{transform:translateX(-50%) scale(1)}}
+@keyframes aa-mot{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes aa-part{to{opacity:0;visibility:hidden}}
+/* ---------- accueil du téléphone ---------- */
+.aa-tete{position:relative;overflow:hidden;background:linear-gradient(#5BB8EC,#B4E2F8);padding:22px 18px 70px;color:var(--nuit)}
+.aa-tete .nuage{position:absolute;opacity:.95;pointer-events:none}
+.aa-tete .n1{top:10px;width:120px;animation:aa-nuage 38s linear infinite}
+.aa-tete .n2{top:58px;width:90px;animation:aa-nuage 52s -20s linear infinite}
+.aa-tete .vagues{position:absolute;left:0;right:0;bottom:-2px;height:62px;background:url(img/vague-claire.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 6s linear infinite}
+.aa-tete .bat{position:absolute;right:14px;bottom:26px;width:86px;animation:aa-berce 3s ease-in-out infinite}
+@keyframes aa-nuage{from{transform:translateX(-140px)}to{transform:translateX(110vw)}}
+@keyframes aa-berce{50%{transform:translateY(-5px) rotate(-2deg)}}
+.aa-salut{font:800 1rem/1 var(--display);color:#1D5C7A;letter-spacing:.02em;position:relative}
+.aa-classe{font:800 clamp(1.7rem,7.5vw,2.3rem)/1.05 var(--display);margin:6px 0 4px;position:relative;text-wrap:balance;max-width:calc(100% - 90px)}
+.aa-sous{position:relative;font-weight:700;color:#23506A}
+.aa-corps{display:grid;gap:14px;padding:0 16px 28px;margin-top:-34px;position:relative}
+.aa-carte{background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 2px 0 rgba(11,39,64,.07),0 8px 20px rgba(11,39,64,.06)}
+.aa-ecran{display:grid;gap:10px}
+.aa-ecran .aut-etat{margin:0}
+.aa-h2{font:800 1.15rem/1.2 var(--display);color:var(--nuit);margin:10px 4px 0}
+.aa-act{position:relative;display:grid;grid-template-columns:88px 1fr;grid-template-areas:"img titre" "img texte" "img bas";gap:4px 14px;align-items:center;text-align:left;width:100%;background:#fff;border-radius:22px;padding:14px;border:0;box-shadow:0 3px 0 #CFE4E8,0 10px 24px rgba(11,39,64,.08);font-family:var(--texte);color:var(--encre);cursor:pointer;overflow:hidden}
+.aa-act img{grid-area:img;width:88px;height:80px;object-fit:contain;animation:aa-berce 3.2s ease-in-out infinite}
+.aa-act .bas{grid-area:bas;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+.aa-act b{font:800 1.25rem/1.1 var(--display);color:var(--nuit)}
+.aa-act span{font-size:.95rem;line-height:1.35;color:var(--gris)}
+.aa-act em{font-style:normal;font-weight:700;color:var(--mer);font-size:.92rem}
+.aa-act .go{flex:none;font-style:normal;background:var(--corail);color:#fff;font:800 .95rem/1 var(--display);padding:.5em .9em;border-radius:999px;box-shadow:0 3px 0 #B8452D}
+.aa-act:active{transform:translateY(2px)}
+.aa-act.bientot{cursor:default;background:#F3F7F8;box-shadow:0 3px 0 #DDE7EA}
+.aa-act.bientot b{color:#4A6273}
+.aa-act.bientot img{animation:none;filter:saturate(.6)}
+.aa-act.bientot .go{background:#DCE6EA;color:var(--gris);box-shadow:none}
+.aa-liste{display:grid;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 0 rgba(11,39,64,.07)}
+.aa-liste button{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-align:left;background:none;border:0;border-top:1px solid #E4EEF0;padding:14px 16px;font:700 1.02rem/1.2 var(--texte);color:var(--encre);cursor:pointer}
+.aa-liste button:first-child{border-top:0}
+.aa-liste button > svg:first-child{color:var(--mer)}
+.aa-liste button > svg:last-child{color:#9DB3BF}
+.aa-liste small{display:block;font-weight:400;color:var(--gris);font-size:.88rem;margin-top:2px}
+.aa-pied{font-size:.88rem;color:var(--gris);text-align:center;line-height:1.45;margin:6px 10px 0}
+.aa-bandeau{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--nuit);color:#fff;border-radius:18px;padding:12px 14px;font-weight:700}
+.aa-bandeau .btn{flex:none}
+/* ---------- pages internes (classe, installation) ---------- */
+.aa-barre{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:8px;background:var(--ecume);padding:12px 12px 10px}
+.aa-barre h1{margin:0;font:800 1.35rem/1.1 var(--display);color:var(--nuit)}
+.aa-retour{display:inline-flex;align-items:center;gap:2px;background:#fff;border:0;border-radius:999px;padding:.45em .8em .45em .5em;font:800 .95rem var(--display);color:var(--mer);box-shadow:0 2px 0 #CFE4E8;cursor:pointer}
+.aa-bloc{background:#fff;border-radius:20px;padding:16px;display:grid;gap:12px;margin:0 12px 12px}
+.aa-bloc h3{margin:0;font:800 1.1rem/1.2 var(--display);color:var(--nuit);display:flex;align-items:baseline;gap:8px}
+.aa-bloc h3 span{font:700 .95rem var(--texte);color:var(--gris)}
+.aa-champ{display:grid;gap:6px;font-weight:700;color:var(--nuit)}
+.aa-champ input{font:700 1.15rem var(--texte);padding:.6em .7em;border-radius:14px;border:2px solid #C9D6DD;min-width:0}
+.aa-puces{display:flex;flex-wrap:wrap;gap:8px}
+.aa-puces button{font:800 1rem var(--display);padding:.5em .95em;border-radius:999px;border:2px solid #C9D6DD;background:#fff;color:var(--nuit);cursor:pointer}
+.aa-puces button[aria-pressed="true"]{background:var(--mer);border-color:var(--mer);color:#fff}
+.cl-liste{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.cl-liste li{display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:center;background:var(--ecume);border-radius:14px;padding:6px 8px}
+.cl-liste li.retire{background:#FBE4E0}
+.cl-motif{border-radius:4px;display:block}
+.cl-n{font:800 1.05rem var(--display);color:var(--mer);min-width:1.6em;text-align:center}
+.cl-liste input{font:700 1.08rem var(--texte);border:0;background:transparent;padding:.35em .2em;min-width:0;color:var(--encre)}
+.cl-liste input:focus{outline:none;background:#fff;border-radius:8px}
+.cl-moins{border:0;background:none;color:#9DB3BF;font:800 1.4rem/1 var(--display);width:36px;height:36px;border-radius:50%;cursor:pointer}
+.cl-liste li.retire .cl-moins{color:#fff;background:var(--ko);font-size:.8rem;width:auto;padding:0 10px;border-radius:999px}
+.cl-ajout{display:grid;grid-template-columns:1fr auto;gap:8px}
+.cl-ajout input{font:700 1.1rem var(--texte);padding:.6em .7em;border-radius:14px;border:2px dashed #9FC3D3;min-width:0}
+.cl-vide{color:var(--gris);text-align:center;padding:10px 0}
+.aa-actions{display:grid;gap:8px}
+.aa-actions .btn{width:100%;padding:.8em 1em;font-size:1.05rem}
+.aa-message{border-radius:14px;padding:10px 12px;background:#E3F4E9;color:#1f6b3d;font-weight:700}
+.aa-message.ko{background:#FBE4E0;color:#8a2c22}
+.aa-appel{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.aa-appel button{display:grid;gap:2px;padding:10px 6px;border-radius:14px;border:2px solid #CFE4E8;background:#fff;font:800 1rem/1.15 var(--display);color:var(--nuit);cursor:pointer}
+.aa-appel button small{font:700 .8rem var(--texte);color:var(--gris)}
+.aa-appel button[aria-pressed="true"]{background:#EEF1F3;border-color:#EEF1F3;color:#9DB3BF;text-decoration:line-through}
+/* ---------- installation guidée ---------- */
+.aa-pas{display:flex;gap:6px;justify-content:center;padding:14px 0 4px}
+.aa-pas i{width:9px;height:9px;border-radius:50%;background:#C3D5DC}
+.aa-pas i.fait{background:var(--mer)} .aa-pas i.ici{background:var(--corail);width:26px;border-radius:999px}
+.aa-etape{display:grid;gap:14px;padding:6px 16px 28px;max-width:560px;margin:0 auto}
+.aa-etape h1{margin:0;font:800 clamp(1.8rem,8vw,2.4rem)/1.05 var(--display);color:var(--nuit);text-wrap:balance}
+.aa-etape > p{margin:0;font-size:1.05rem;line-height:1.5}
+.aa-etape .perro{width:min(46vw,190px);justify-self:center;animation:aa-berce 3s ease-in-out infinite}
+.aa-carte-demo{justify-self:center;display:grid;grid-template-columns:auto auto auto;place-items:center;gap:6px 10px;background:#fff;border-radius:18px;padding:18px 22px;box-shadow:0 8px 22px rgba(11,39,64,.12);font:800 1.1rem var(--display);color:#3c3c3c}
+.aa-carte-demo .cl-motif{border-radius:6px}
+.aa-lien{background:none;border:0;color:var(--mer);font:800 1rem var(--display);text-decoration:underline;cursor:pointer;justify-self:center;padding:8px}
+/* ---------- accueil de l'écran de la classe ---------- */
+#aa-ecran{position:relative;min-height:100%;overflow:hidden;background:#6CC3F2 url(img/ciel.webp) center/cover;color:var(--nuit);display:grid;grid-template-rows:auto 1fr auto}
+#aa-ecran .soleil{position:absolute;top:4vh;right:6vw;width:clamp(80px,9vw,140px);animation:aa-tourne 60s linear infinite}
+#aa-ecran .nuage{position:absolute;opacity:.95;pointer-events:none}
+#aa-ecran .n1{top:12vh;width:clamp(140px,14vw,240px);animation:aa-nuage 70s linear infinite}
+#aa-ecran .n2{top:28vh;width:clamp(100px,10vw,180px);animation:aa-nuage 90s -40s linear infinite}
+#aa-ecran .n3{top:6vh;width:clamp(120px,12vw,200px);animation:aa-nuage 110s -75s linear infinite}
+#aa-ecran .mer{position:absolute;left:0;right:0;bottom:0;height:18vh;background:url(img/vague-foncee.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 7s linear infinite}
+#aa-ecran .mer2{position:absolute;left:0;right:0;bottom:0;height:12vh;background:url(img/vague-claire.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 5s linear infinite reverse}
+@keyframes aa-tourne{to{transform:rotate(360deg)}}
+.ec-haut{position:relative;z-index:2;display:flex;align-items:center;gap:14px;padding:18px 26px;flex-wrap:wrap}
+.ec-haut .ec-classe{font:800 clamp(1.6rem,2.6vw,2.4rem)/1 var(--display);color:#fff;text-shadow:0 3px 0 #1D6F93}
+.ec-haut .ec-date{font:700 clamp(1rem,1.3vw,1.3rem) var(--texte);color:#fff;text-shadow:0 2px 0 #1D6F93;flex:1}
+.ec-milieu{position:relative;z-index:2;display:grid;align-content:center;justify-items:center;gap:clamp(18px,3vh,34px);padding:0 24px 20vh}
+.ec-milieu h1{margin:0;font:800 clamp(2.2rem,4.4vw,4rem)/1 var(--display);color:#fff;text-shadow:0 4px 0 #1D6F93,0 10px 24px rgba(11,39,64,.3);text-align:center}
+.ec-tuiles{display:flex;gap:clamp(16px,2.4vw,32px);flex-wrap:wrap;justify-content:center}
+.ec-tuile{width:clamp(260px,26vw,380px);background:#FFFCF4;border:4px solid #E3CFA2;border-radius:28px;padding:18px 20px 20px;display:grid;justify-items:center;gap:8px;text-align:center;box-shadow:0 8px 0 #CDB482,0 18px 40px rgba(11,39,64,.25);cursor:pointer;font-family:var(--texte);color:var(--encre);transition:transform .15s}
+.ec-tuile:hover{transform:translateY(-4px)} .ec-tuile:active{transform:translateY(4px)}
+.ec-tuile img{height:clamp(120px,15vh,180px);animation:aa-berce 3.4s ease-in-out infinite}
+.ec-tuile b{font:800 clamp(1.5rem,2vw,2rem)/1.05 var(--display);color:var(--nuit)}
+.ec-tuile span{font-size:clamp(.95rem,1.1vw,1.1rem);line-height:1.35;color:var(--gris)}
+.ec-tuile em{font-style:normal;font-weight:700;color:var(--mer)}
+.ec-tuile .go{margin-top:6px;background:var(--corail);color:#fff;font:800 clamp(1.1rem,1.5vw,1.4rem)/1 var(--display);padding:.55em 1.5em;border-radius:999px;box-shadow:0 4px 0 #B8452D}
+.ec-tuile.bientot{cursor:default;background:#EEF4F6;border-color:#D3E1E6;box-shadow:0 8px 0 #BFD0D7,0 18px 40px rgba(11,39,64,.18)}
+.ec-tuile.bientot b{color:#4A6273}
+.ec-tuile.bientot img{animation:none;filter:saturate(.5)}
+.ec-tuile.bientot .go{background:#DCE6EA;color:var(--gris);box-shadow:none}
+#aa-ecran .aut-accueil{position:absolute;right:22px;bottom:22px;z-index:3;display:grid}
+@media (max-width:1199px),(max-height:620px){#aa-ecran .aut-accueil{display:none}}
+.bar .btn.aa-maison{display:inline-flex;align-items:center;gap:6px}
+.aa-tele{background:var(--nuit);border-radius:18px;padding:12px;display:grid;gap:10px;color:#fff}
+.aa-tele-t{font:800 .95rem/1 var(--display);letter-spacing:.03em;color:#9FD3E3;display:flex;align-items:center;gap:8px}
+.aa-tele-t::before{content:"";width:.6em;height:.6em;border-radius:50%;background:var(--ok)}
+.aa-tele-b{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.aa-tele-b .btn{width:100%;padding:.7em .6em;font-size:1rem;line-height:1.15}
+.aa-tele-b .btn:only-child{grid-column:1/-1}
+.aa-son{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);z-index:30;background:var(--soleil);color:var(--nuit);border-radius:999px;padding:10px 20px;font:800 1.1rem var(--display);box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer}
+.bar .btn.aa-maison svg{width:1.1em;height:1.1em}
+#scr-tel header .aa-retour{margin-right:4px}
+@media (prefers-reduced-motion:reduce){#aa-intro *,#aa-intro,.aa-tete *,#aa-ecran *,.aa-act img,.aa-etape .perro,.ec-tuile img{animation-duration:.01s!important;animation-iteration-count:1!important;animation-delay:0s!important}}`;
+  document.head.appendChild(st);
+
+  /* ---------- écrans ---------- */
+  const app = $("#app");
+  const section = (id, cls) => { let s = document.getElementById(id); if (!s){ s = document.createElement("section"); s.id = id; s.className = cls===undefined ? "aa-page" : cls; s.hidden = true; app.appendChild(s); } return s; };
+  const ECRANS = ["scr-choix","scr-tbi","scr-tel","aa-app","aa-classe","aa-bienvenue","aa-ecran"];
+  function montre(id){ ECRANS.forEach(x=>{ const e = document.getElementById(x); if (e) e.hidden = x!==id; }); window.scrollTo(0,0); courant = id;
+    document.body.style.background = /^(aa-app|aa-classe|aa-bienvenue|scr-tel)$/.test(id) ? "var(--ecume)" : ""; } // le bas de l'écran (sous la barre d'accueil de l'iPhone) prend la couleur de la page
+  let courant = null, roleCourant = "", tbiLance = false, telLance = false;
+  const estEcran = () => roleCourant==="tbi";
+  const dateLongue = () => { const t = new Date().toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long"}); return t.charAt(0).toUpperCase()+t.slice(1); };
+  const nomClasse = () => { const k = Classe.get(); return k && k.nom ? k.nom : "Ma classe"; };
+  const voile = html => { const d = document.createElement("div"); d.className = "aut-voile"; d.innerHTML = `<div class="aut-fenetre" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(d); return d; };
+
+  /* ---------- écran de démarrage (une fois par ouverture de l'appli) ---------- */
+  function intro(){
+    let deja = false; try { deja = sessionStorage.getItem("aa-intro")==="1"; sessionStorage.setItem("aa-intro","1"); } catch(e){}
+    if (deja) return;
+    const d = document.createElement("div"); d.id = "aa-intro"; d.setAttribute("aria-hidden","true");
+    d.innerHTML = `<div class="ciel"></div><img class="perro" src="img/perroquet-salut.webp" alt=""><div class="mot">Bonjour !</div><div class="mer"></div><img class="bateau" src="img/bateau.webp" alt=""><div class="mer2"></div>`;
+    document.body.appendChild(d);
+    const ferme = () => { if (d.classList.contains("fin")) return; d.classList.add("fin"); setTimeout(()=>d.remove(), 500); };
+    d.onclick = ferme; setTimeout(ferme, matchMedia("(prefers-reduced-motion: reduce)").matches ? 500 : 2100);
+  }
+
+  /* ---------- où en est le Bateau-école ? ---------- */
+  async function etatBateau(){
+    let s = null;
+    if (estEcran() && typeof S!=="undefined" && S.maj) s = S;
+    else { try { const v = await (await useCap("db")).doc("jeu/etat").get(); if (v.exists) s = v.data(); } catch(e){} }
+    if (!s || !s.milles) return "Départ de Marseille";
+    const p = position(s.milles), e = ESCALES[Math.min(p.i+1, ESCALES.length-1)];
+    return p.fin ? "Le tour du monde est bouclé !" : `Escale ${p.i+1} sur ${ESCALES.length-1} · cap sur ${e.v}`;
+  }
+
+  /* ---------- lancer une activité ---------- */
+  function ouvreActivite(id, aDistance){
+    const a = ACTIVITES.find(x=>x.id===id); if (!a || a.bientot) return;
+    if (estEcran()){
+      Classe.versJeu();
+      if (!tbiLance){ tbiLance = true; lanceTBI(); ajouteMaisonTBI(); telecommandeEcran(); }
+      if (aDistance) rappelSon();
+      montre("scr-tbi"); if (typeof Mer!=="undefined") Mer.snap();
+    } else {
+      if (!telLance){ telLance = true; lanceTel(); ajouteRetourTel(); telecommandeTel(); }
+      montre("scr-tel");
+      useCap("room").then(r=>r && r.emit("cmd", {a:"activite", id}).catch(()=>{}));
+    }
+  }
+  /* ---------- télécommande : les boutons de l'écran de la classe, sur le téléphone ---------- */
+  function telecommandeEcran(){
+    const layer = document.getElementById("layer"); let dernier = "", t = null;
+    useCap("room").then(room=>{ if (!room || !layer) return;
+      const lis = () => courant!=="scr-tbi" ? [] : [...layer.querySelectorAll("[data-go]")].filter(b=>b.offsetParent && !b.disabled && b.textContent.trim())
+        .map(b=>({go:b.dataset.go, t:b.textContent.trim().replace(/\s+/g," ").slice(0,48), p:b.classList.contains("prim")?1:0}))
+        .filter((x,i,l)=>l.findIndex(y=>y.go===x.go)===i).slice(0,10);
+      const envoie = force => { const l = lis(), j = JSON.stringify(l); if (!force && j===dernier) return; dernier = j; room.emit("ecran", {boutons:l}).catch(()=>{}); };
+      new MutationObserver(()=>{ clearTimeout(t); t = setTimeout(()=>envoie(false), 250); }).observe(layer, {childList:true, subtree:true, attributes:true, attributeFilter:["disabled","hidden","class"]});
+      setInterval(()=>envoie(true), 6000); envoie(true);
+      room.on("cmd", m=>{ const d = m.data||{}; if (d.a!=="clic" || typeof d.go!=="string") return;
+        const b = [...layer.querySelectorAll("[data-go]")].find(x=>x.dataset.go===d.go && !x.disabled && x.offsetParent); if (b) b.click(); });
+    });
+  }
+  function telecommandeTel(){
+    const q = $("#scr-tel .tel-q"); if (!q) return;
+    const z = document.createElement("div"); z.className = "aa-tele"; z.id = "t-tele"; z.hidden = true; q.before(z);
+    let boutons = [], ouverte = false;
+    const dessine = () => { z.hidden = !boutons.length || ouverte;
+      z.innerHTML = `<div class="aa-tele-t">Sur l'écran de la classe</div><div class="aa-tele-b">${boutons.map(b=>`<button class="btn ${b.p?"prim":""}" data-go="${esc(b.go)}">${esc(b.t)}</button>`).join("")}</div>`; };
+    z.onclick = e=>{ const b = e.target.closest("[data-go]"); if (!b) return; b.disabled = true; setTimeout(()=>{ b.disabled = false; }, 900);
+      useCap("room").then(r=>r && r.emit("cmd", {a:"clic", go:b.dataset.go}).catch(()=>{})); };
+    useCap("room").then(r=>{ if (!r) return;
+      r.on("ecran", m=>{ const d = m.data||{}; boutons = Array.isArray(d.boutons) ? d.boutons.filter(b=>b && typeof b.go==="string").slice(0,10) : []; dessine(); });
+      r.on("q", m=>{ const d = m.data||{}; ouverte = !!(d.qid && d.open); dessine(); }); });
+  }
+  /* jeu lancé depuis le téléphone : le navigateur attend un premier geste sur l'écran pour jouer les sons */
+  function rappelSon(){
+    if (document.getElementById("aa-son")) return;
+    const b = document.createElement("button"); b.id = "aa-son"; b.className = "aa-son"; b.textContent = "Touche l'écran une fois pour avoir le son";
+    document.body.appendChild(b);
+    const fin = () => { try { Son.init(); } catch(e){} b.remove(); document.removeEventListener("pointerdown", fin, true); document.removeEventListener("keydown", fin, true); };
+    document.addEventListener("pointerdown", fin, true); document.addEventListener("keydown", fin, true);
+  }
+  function ajouteMaisonTBI(){
+    const b = document.createElement("button"); b.className = "btn ghost aa-maison"; b.innerHTML = IC.maison+"Activités";
+    let t = null;
+    b.onclick = ()=>{ if (enJeu && !b.dataset.sur){ b.dataset.sur = 1; b.lastChild.textContent = "Quitter le jeu ?"; clearTimeout(t); t = setTimeout(()=>{ delete b.dataset.sur; b.lastChild.textContent = "Activités"; }, 4000); return; }
+      delete b.dataset.sur; b.lastChild.textContent = "Activités"; if (enJeu) retourMenu(); ecran(); };
+    const o = $(".bar .outils"); if (o) o.prepend(b);
+  }
+  function ajouteRetourTel(){
+    const h = $("#scr-tel header"); if (!h) return;
+    const b = document.createElement("button"); b.className = "aa-retour"; b.innerHTML = IC.retour+"Accueil"; b.onclick = ()=>accueilTel();
+    h.prepend(b); const t = h.querySelector("h1"); if (t) t.textContent = "Lire les cartes";
+    $("#t-mode") && ($("#t-mode").hidden = true);
+  }
+
+  /* ---------- accueil du téléphone ---------- */
+  let majEcran = null;
+  async function accueilTel(){
+    const s = section("aa-app"); montre("aa-app");
+    const k = Classe.get(), n = Classe.actifs().length, pres = Classe.presents().length;
+    s.innerHTML = `<header class="aa-tete">
+        <div class="aa-salut">Bonjour !</div><h1 class="aa-classe">${esc(nomClasse())}</h1>
+        <div class="aa-sous">${n ? `${n} élève${n>1?"s":""}` : "Pas encore d'élèves"} · ${esc(dateLongue())}</div>
+        <img class="bat" src="img/bateau.webp" alt=""><div class="vagues"></div></header>
+      <div class="aa-corps">
+        <div class="aa-bandeau" id="aa-bandeau" hidden><span>Une question est ouverte sur l'écran.</span><button class="btn jaune petit" id="aa-lire">Lire les cartes</button></div>
+        <div class="aa-carte aa-ecran" id="aa-ecran-etat"></div>
+        <h2 class="aa-h2">Activités</h2>
+        ${ACTIVITES.map(a=>`<button class="aa-act ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}>
+          <img src="${a.img}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span>
+          <span class="bas"><em data-etat="${a.id}">${a.bientot?"":"…"}</em><i class="go">${a.bientot?"Bientôt":"Jouer"}</i></span></button>`).join("")}
+        <h2 class="aa-h2">Ma classe</h2>
+        <div class="aa-liste">
+          <button data-v="appel">${IC.appel}<span>Faire l'appel<small id="aa-presents">${n ? `${pres} présent${pres>1?"s":""} sur ${n} aujourd'hui` : "Ajoute d'abord tes élèves"}</small></span>${IC.suite}</button>
+          <button data-v="eleves">${IC.eleves}<span>Élèves et cartes<small>${n ? `${n} élève${n>1?"s":""}, chacun sa carte numérotée` : "Ajoute tes élèves"}</small></span>${IC.suite}</button>
+          <button data-v="cartes">${IC.cartes}<span>Imprimer les cartes-réponses<small>PDF, deux cartes par page A4</small></span>${IC.suite}</button>
+          <button data-v="sauve">${IC.sauve}<span>Sauvegarder ou importer<small>Pour changer d'appareil ou garder une copie</small></span>${IC.suite}</button>
+        </div>
+        <p class="aa-pied">Pas de compte, pas de publicité : les prénoms restent sur tes appareils.<br>Les messages entre le téléphone et l'écran sont chiffrés.</p>
+      </div>`;
+    s.onclick = e=>{
+      const a = e.target.closest("[data-act]"); if (a){ ouvreActivite(a.dataset.act); return; }
+      const v = e.target.closest("[data-v]"); if (!v) return;
+      if (v.dataset.v==="appel") appel(); if (v.dataset.v==="eleves") classe(); if (v.dataset.v==="sauve") sauvegardes();
+      if (v.dataset.v==="cartes") imprime(v);
+    };
+    s.querySelector("#aa-lire").onclick = ()=>ouvreActivite("bateau");
+    etatBateau().then(t=>{ const e = s.querySelector('[data-etat="bateau"]'); if (e) e.textContent = t; });
+    dessineEcran();
+  }
+  let tbiVu = false, questionOuverte = false;
+  function dessineEcran(){
+    const z = document.getElementById("aa-ecran-etat"); if (!z) return;
+    z.innerHTML = tbiVu
+      ? `<p class="aut-etat ok">L'écran de la classe est relié</p>`
+      : `<p class="aut-etat">L'écran de la classe n'est pas relié</p><button class="btn mer" id="aa-relier">Afficher le jeu sur l'ordinateur</button>`;
+    const b = z.querySelector("#aa-relier"); if (b) b.onclick = ()=>relier();
+    const bd = document.getElementById("aa-bandeau"); if (bd) bd.hidden = !questionOuverte || courant!=="aa-app";
+  }
+  function relier(){
+    const s = section("aa-classe"); montre("aa-classe");
+    s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="aa-r">${IC.retour}Accueil</button></div><div style="padding:0 12px 24px" id="aa-rel"></div>`;
+    s.querySelector("#aa-r").onclick = accueilTel;
+    EcransAutonome.relier(s.querySelector("#aa-rel"));
+  }
+  async function imprime(b){
+    const sm = b && b.querySelector("small"), avant = sm && sm.textContent;
+    if (sm) sm.textContent = "Préparation du PDF…";
+    try { await Classe.imprimeCartes(); } catch(e){ console.warn(e); alerte("Le PDF n'a pas pu être créé", "Réessaie dans un instant."); }
+    if (sm) sm.textContent = avant;
+  }
+  function alerte(titre, texte){ const d = voile(`<h2>${titre}</h2><p>${texte}</p><div class="aut-boutons" style="grid-template-columns:1fr"><button class="btn prim">OK</button></div>`); d.querySelector("button").onclick = ()=>d.remove(); }
+
+  /* ---------- appel du jour ---------- */
+  function appel(){
+    const l = Classe.actifs();
+    if (!l.length){ classe(); return; }
+    const s = section("aa-classe"); montre("aa-classe");
+    const dessine = ()=>{ const abs = Classe.absents(), pres = l.length-abs.filter(n=>l.some(e=>e.n===n)).length;
+      s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="aa-r">${IC.retour}Accueil</button><h1>L'appel</h1></div>
+        <div class="aa-bloc"><h3>${esc(dateLongue())} <span>${pres} présent${pres>1?"s":""} sur ${l.length}</span></h3>
+          <p class="aut-note" style="margin:0">Touche les élèves absents : ils ne comptent pas dans les réponses d'aujourd'hui.</p>
+          <div class="aa-appel">${l.map(e=>`<button data-n="${e.n}" aria-pressed="${abs.includes(e.n)}">${esc(e.prenom||("Carte "+e.n))}<small>${abs.includes(e.n)?"absent":"carte "+e.n}</small></button>`).join("")}</div></div>
+        <div style="padding:0 12px"><button class="btn prim" style="width:100%;padding:.8em" id="aa-ok">C'est bon</button></div>`;
+      s.querySelector("#aa-r").onclick = accueilTel; s.querySelector("#aa-ok").onclick = accueilTel;
+      s.querySelector(".aa-appel").onclick = e=>{ const b = e.target.closest("[data-n]"); if (!b) return; Classe.basculeAbsent(+b.dataset.n); dessine(); }; };
+    dessine();
+  }
+
+  /* ---------- la classe : nom, niveau, élèves et cartes ---------- */
+  function editeur(box, o){
+    o = o || {};
+    const dessine = ()=>{
+      const k = Classe.get() || {nom:"", niveau:"", eleves:[]}, l = Classe.actifs();
+      box.innerHTML = `${o.sansNom ? "" : `<div class="aa-bloc">
+          <label class="aa-champ">Nom de la classe<input id="cl-nom" value="${esc(k.nom)}" placeholder="Par exemple : CM1 de Mme Martin" maxlength="60" autocomplete="off"></label>
+          <div class="aa-champ">Niveau<div class="aa-puces" id="cl-niv">${Classe.NIVEAUX.map(x=>`<button type="button" aria-pressed="${k.niveau===x}">${x}</button>`).join("")}</div></div></div>`}
+        <div class="aa-bloc"><h3>Élèves <span id="cl-compte">${l.length} sur ${Classe.MAX} cartes</span></h3>
+          ${l.length ? "" : `<p class="cl-vide">Écris un prénom ci-dessous, ou colle toute la liste de ta classe.</p>`}
+          <ol class="cl-liste">${l.map(e=>`<li data-n="${e.n}"><span data-motif="${e.n}"></span><span class="cl-n num">${e.n}</span>
+            <input value="${esc(e.prenom)}" placeholder="Prénom" maxlength="24" aria-label="Prénom de la carte ${e.n}" autocomplete="off" autocorrect="off"><button class="cl-moins" aria-label="Retirer">−</button></li>`).join("")}</ol>
+          <form class="cl-ajout" id="cl-ajout"><input id="cl-nouveau" placeholder="Prénom du nouvel élève" maxlength="24" enterkeyhint="done" autocomplete="off" autocorrect="off" ${l.length>=Classe.MAX?"disabled":""}><button class="btn mer" ${l.length>=Classe.MAX?"disabled":""}>Ajouter</button></form>
+          <button class="btn" id="cl-coller" type="button">Coller une liste d'élèves</button>
+          <p class="aut-note" style="margin:0">Chaque élève garde toujours la même carte : son numéro est imprimé dessus, à côté de son prénom.</p></div>`;
+      box.querySelectorAll("[data-motif]").forEach(x=>x.replaceWith(Classe.motif(+x.dataset.motif, 34)));
+      const nom = box.querySelector("#cl-nom"); if (nom) nom.oninput = ()=>Classe.modifie(c=>{ c.nom = nom.value.trim(); });
+      const niv = box.querySelector("#cl-niv"); if (niv) niv.onclick = e=>{ const b = e.target.closest("button"); if (!b) return; Classe.modifie(c=>{ c.niveau = c.niveau===b.textContent ? "" : b.textContent; }); niv.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b && Classe.get().niveau===b.textContent)); };
+      box.querySelector(".cl-liste").oninput = e=>{ const li = e.target.closest("li"); if (!li) return; const n = +li.dataset.n; Classe.modifie(c=>{ c.eleves[n-1].prenom = e.target.value.trim().slice(0,24); }); };
+      box.querySelector(".cl-liste").onclick = e=>{ const b = e.target.closest(".cl-moins"); if (!b) return; const li = b.closest("li");
+        if (!li.classList.contains("retire")){ li.classList.add("retire"); b.textContent = "Retirer"; setTimeout(()=>{ if (li.isConnected){ li.classList.remove("retire"); b.textContent = "−"; } }, 3500); return; }
+        const n = +li.dataset.n; Classe.modifie(c=>{ c.eleves[n-1] = {n, prenom:"", actif:false}; }); dessine(); };
+      box.querySelector("#cl-ajout").onsubmit = e=>{ e.preventDefault(); const i = box.querySelector("#cl-nouveau"), p = i.value.trim(); if (!p) return;
+        Classe.ajoute([p.slice(0,24)]); dessine(); const j = box.querySelector("#cl-nouveau"); if (j){ j.focus(); } };
+      box.querySelector("#cl-coller").onclick = ()=>colle(dessine);
+      if (o.surChange) o.surChange();
+    };
+    dessine();
+    return dessine;
+  }
+  function colle(apres){
+    const d = voile(`<h2>Coller une liste</h2><p>Colle les prénoms de ta classe : un par ligne, ou copiés depuis ONDE, ton tableur ou un courriel.</p>
+      <textarea id="cl-liste" rows="8" style="font:1rem var(--texte);border-radius:12px;border:2px solid #C9D6DD;padding:.6em;width:100%;box-sizing:border-box" placeholder="Cassy&#10;Noé&#10;Hugo…"></textarea>
+      <p class="aut-note" id="cl-apercu" style="margin:0">Les noms de famille en majuscules sont enlevés ; deux prénoms pareils reçoivent l'initiale du nom.</p>
+      <div class="aut-boutons"><button class="btn" data-r="non">Annuler</button><button class="btn prim" data-r="oui" disabled>Ajouter</button></div>`);
+    const t = d.querySelector("#cl-liste"), ok = d.querySelector('[data-r="oui"]'), ap = d.querySelector("#cl-apercu");
+    t.oninput = ()=>{ const l = Classe.lisListe(t.value); ok.disabled = !l.length; ok.textContent = l.length ? `Ajouter ${l.length} élève${l.length>1?"s":""}` : "Ajouter";
+      ap.textContent = l.length ? l.slice(0,6).join(", ")+(l.length>6?"…":"") : "Les noms de famille en majuscules sont enlevés ; deux prénoms pareils reçoivent l'initiale du nom."; };
+    d.addEventListener("click", e=>{ const b = e.target.closest("[data-r]"); if (!b) return;
+      if (b.dataset.r==="oui"){ const r = Classe.ajoute(Classe.lisListe(t.value)); if (r.refus) setTimeout(()=>alerte("Classe complète", `${r.refus} élève${r.refus>1?"s n'ont":" n'a"} pas pu être ajouté${r.refus>1?"s":""} : il y a ${Classe.MAX} cartes au maximum.`), 50); }
+      d.remove(); if (apres) apres(); });
+    setTimeout(()=>t.focus(), 50);
+  }
+  function classe(){
+    const s = section("aa-classe"); montre("aa-classe");
+    s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="aa-r">${IC.retour}Accueil</button><h1>Ma classe</h1></div><div id="aa-ed"></div>
+      <div class="aa-bloc"><div class="aa-actions"><button class="btn mer" id="aa-pdf">Imprimer les cartes-réponses (PDF)</button><button class="btn" id="aa-sv">Sauvegarder ou importer</button></div></div>`;
+    s.querySelector("#aa-r").onclick = accueilTel;
+    editeur(s.querySelector("#aa-ed"));
+    s.querySelector("#aa-pdf").onclick = ()=>Classe.imprimeCartes().catch(()=>alerte("Le PDF n'a pas pu être créé", "Réessaie dans un instant."));
+    s.querySelector("#aa-sv").onclick = sauvegardes;
+  }
+
+  /* ---------- sauvegardes ---------- */
+  function sauvegardes(){
+    const s = section("aa-classe"); montre("aa-classe");
+    s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="aa-r">${IC.retour}Accueil</button><h1>Sauvegardes</h1></div>
+      <div class="aa-bloc"><h3>Garder une copie</h3><p style="margin:0;line-height:1.45">Un fichier avec ta classe (prénoms, cartes) et ton voyage du Bateau-école. Range-le dans Fichiers, ou envoie-le par mail.</p>
+        <button class="btn mer" id="aa-exp">Enregistrer une sauvegarde</button></div>
+      <div class="aa-bloc"><h3>Importer</h3><p style="margin:0;line-height:1.45">Une sauvegarde de cette appli, la copie téléchargée depuis l'ancienne version du Bateau-école, ou une liste de prénoms (fichier texte ou tableur).</p>
+        <button class="btn" id="aa-imp">Choisir un fichier…</button><div id="aa-msg"></div></div>`;
+    s.querySelector("#aa-r").onclick = accueilTel;
+    s.querySelector("#aa-exp").onclick = ()=>Classe.exporte().catch(()=>alerte("La sauvegarde n'a pas pu être créée", "Réessaie dans un instant."));
+    s.querySelector("#aa-imp").onclick = async ()=>{ const t = await Classe.choisitFichier(); if (t==null) return; await importe(t, s.querySelector("#aa-msg")); };
+  }
+  async function importe(texte, zone){
+    const r = Classe.lit(texte), msg = (t, ko) => { if (zone) zone.innerHTML = `<p class="aa-message ${ko?"ko":""}">${t}</p>`; };
+    if (r.type==="inconnu"){ msg("Ce fichier n'est pas une sauvegarde de classe.", true); return false; }
+    const k = r.classe, n = k ? k.eleves.filter(e=>e.actif).length : (r.prenoms||[]).length;
+    const quoi = r.type==="liste" ? `${n} prénom${n>1?"s":""} à ajouter` : `la classe${k && k.nom ? " « "+esc(k.nom)+" »" : ""} (${n} élève${n>1?"s":""})${r.bateau ? " et son voyage du Bateau-école" : ""}`;
+    const ok = await new Promise(res=>{ const d = voile(`<h2>Importer ${r.type==="liste" ? "ces prénoms" : "cette sauvegarde"} ?</h2><p>Le fichier contient ${quoi}.${r.type!=="liste" ? " Elle remplacera la classe actuelle." : ""}</p>
+        <div class="aut-boutons"><button class="btn" data-r="non">Annuler</button><button class="btn prim" data-r="oui">Importer</button></div>`);
+      d.addEventListener("click", e=>{ const b = e.target.closest("[data-r]"); if (!b) return; d.remove(); res(b.dataset.r==="oui"); }); });
+    if (!ok) return false;
+    await Classe.importe(r);
+    msg(r.bateau ? "C'est fait. Le voyage passera sur l'écran de la classe dès qu'il sera relié." : "C'est fait.");
+    return true;
+  }
+
+  /* ---------- installation guidée (premier lancement du téléphone) ---------- */
+  function bienvenue(etape){
+    const s = section("aa-bienvenue"); montre("aa-bienvenue");
+    etape = etape || 0;
+    const pas = `<div class="aa-pas" aria-hidden="true">${[0,1,2,3,4].map(i=>`<i class="${i<etape?"fait":i===etape?"ici":""}"></i>`).join("")}</div>`;
+    const suite = n => ()=>bienvenue(n), fin = ()=>{ lsSet("bateau-ecole-bienvenue","1"); if (!Classe.existe()) Classe.cree({}); accueilTel(); };
+    if (etape===0){
+      s.innerHTML = `${pas}<div class="aa-etape"><img class="perro" src="img/perroquet-salut.webp" alt="">
+        <h1>Bienvenue à bord !</h1><p>En deux minutes, on prépare ta classe : les prénoms, les cartes-réponses, et l'écran de la classe.</p>
+        <div class="aa-actions"><button class="btn prim big" id="aa-go">Commencer</button><button class="btn" id="aa-imp">J'ai déjà une sauvegarde</button></div>
+        <div id="aa-msg"></div><p class="aa-pied">Pas de compte à créer. Les prénoms restent sur tes appareils.</p></div>`;
+      s.querySelector("#aa-go").onclick = suite(1);
+      s.querySelector("#aa-imp").onclick = async ()=>{ const t = await Classe.choisitFichier(); if (t==null) return; if (await importe(t, s.querySelector("#aa-msg"))) setTimeout(()=>bienvenue(3), 900); };
+      return;
+    }
+    if (!Classe.existe()) Classe.cree({});
+    if (etape===1){
+      s.innerHTML = `${pas}<div class="aa-etape"><h1>Ta classe</h1><p>Comment s'appelle-t-elle, et quel est son niveau ?</p><div id="aa-ed"></div>
+        <div class="aa-actions"><button class="btn prim big" id="aa-go">Suivant</button></div></div>`;
+      const ed = s.querySelector("#aa-ed"); editeur(ed); ed.querySelectorAll(".aa-bloc")[1].remove(); ed.firstElementChild.style.margin = "0";
+      s.querySelector("#aa-go").onclick = suite(2);
+      return;
+    }
+    if (etape===2){
+      s.innerHTML = `${pas}<div class="aa-etape"><h1>Tes élèves</h1><p>Écris les prénoms un par un, ou colle la liste de ta classe. Chaque élève reçoit une carte numérotée.</p><div id="aa-ed"></div>
+        <div class="aa-actions"><button class="btn prim big" id="aa-go">Suivant</button><button class="aa-lien" id="aa-plus-tard">Plus tard (25 cartes sans prénom)</button></div></div>`;
+      const ed = s.querySelector("#aa-ed"); const re = editeur(ed, {sansNom:true, surChange:()=>{ const b = ed.firstElementChild; if (b) b.style.margin = "0"; }}); re();
+      s.querySelector("#aa-go").onclick = suite(3);
+      s.querySelector("#aa-plus-tard").onclick = ()=>{ if (!Classe.actifs().length) Classe.modifie(c=>{ c.eleves.forEach((e,i)=>{ e.actif = i<25; }); }); bienvenue(3); };
+      return;
+    }
+    if (etape===3){
+      const n = Math.max(1, Classe.actifs().length);
+      s.innerHTML = `${pas}<div class="aa-etape"><h1>Les cartes-réponses</h1>
+        <div class="aa-carte-demo"><span></span><span>A</span><span></span><span style="transform:rotate(90deg)">D</span><span id="aa-motif"></span><span style="transform:rotate(-90deg)">B</span><span></span><span style="transform:rotate(180deg)">C</span><span></span></div>
+        <p>Chaque élève a sa carte. Pour répondre, il la lève en mettant en haut la lettre de sa réponse : le téléphone lit toute la classe d'un coup.</p>
+        <div class="aa-actions"><button class="btn mer big" id="aa-pdf">Imprimer les ${n>1?n+" ":""}cartes (PDF)</button>
+          <p class="aut-note" style="margin:0;text-align:center">Imprime en noir et blanc, à 100 %, sur papier épais (pas de plastification brillante).</p>
+          <button class="btn prim big" id="aa-go">Suivant</button></div></div>`;
+      s.querySelector("#aa-motif").replaceWith(Classe.motif((Classe.actifs()[0]||{n:1}).n, 120));
+      s.querySelector("#aa-pdf").onclick = ()=>Classe.imprimeCartes().catch(()=>alerte("Le PDF n'a pas pu être créé", "Tu pourras le refaire depuis l'accueil."));
+      s.querySelector("#aa-go").onclick = suite(4);
+      return;
+    }
+    s.innerHTML = `${pas}<div class="aa-etape"><h1>L'écran de la classe</h1><p>Le jeu s'affiche sur l'ordinateur du TBI, et ce téléphone lit les cartes.</p><div id="aa-rel"></div>
+      <div class="aa-actions"><button class="btn prim big" id="aa-go">Terminer</button></div></div>`;
+    EcransAutonome.relier(s.querySelector("#aa-rel"));
+    s.querySelector("#aa-go").onclick = fin;
+  }
+
+  /* ---------- accueil de l'écran de la classe ---------- */
+  async function ecran(){
+    const s = section("aa-ecran", ""); montre("aa-ecran");
+    s.innerHTML = `<img class="soleil" src="img/soleil.webp" alt=""><img class="nuage n1" src="img/nuage1.webp" alt=""><img class="nuage n2" src="img/nuage2.webp" alt=""><img class="nuage n3" src="img/nuage3.webp" alt="">
+      <div class="ec-haut"><div class="ec-classe">${esc(nomClasse())}</div><div class="ec-date">${esc(dateLongue())}</div><span class="pastille" id="ec-tel"></span></div>
+      <div class="ec-milieu"><h1>Que fait-on aujourd'hui ?</h1><div class="ec-tuiles">
+        ${ACTIVITES.map(a=>`<button class="ec-tuile ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}><img src="${a.img}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span><em data-etat="${a.id}"></em><i class="go">${a.bientot?"Bientôt":"Jouer"}</i></button>`).join("")}
+      </div></div><div class="mer"></div><div class="mer2"></div>`;
+    s.onclick = e=>{ const a = e.target.closest("[data-act]"); if (a) ouvreActivite(a.dataset.act); const p = e.target.closest("#ec-tel"); if (p && !tbiVuTel){ if (!tbiLance){ tbiLance = true; lanceTBI(); ajouteMaisonTBI(); montre("aa-ecran"); } ongletR = "tel"; montre("scr-tbi"); ouvreReglages(); } };
+    const e = s.querySelector('[data-etat="bateau"]'); if (e) e.textContent = await etatBateau();
+    dessineTelEcran();
+  }
+  let tbiVuTel = false, carteQR = null;
+  function dessineTelEcran(){
+    const p = document.getElementById("ec-tel"); if (!p) return;
+    p.textContent = tbiVuTel ? "Téléphone relié" : "Relier le téléphone"; p.style.cursor = tbiVuTel ? "default" : "pointer";
+    p.style.background = tbiVuTel ? "#D9F0E1" : "var(--soleil)"; p.style.color = tbiVuTel ? "#1f6b3d" : "var(--nuit)"; p.style.fontWeight = "800";
+    const s = document.getElementById("aa-ecran");
+    if (!tbiVuTel && !carteQR && s && L.code() && !Autonome.LOCAL){ carteQR = document.createElement("div"); carteQR.className = "aut-accueil";
+      carteQR.innerHTML = `<b>Relie ton téléphone</b><div class="lier-qr">${L.qr(null, 240)}</div><p>Dans l'appli du téléphone : « Afficher le jeu sur l'ordinateur », puis « Scanner le QR code ».</p>`;
+      s.appendChild(carteQR); }
+    if (tbiVuTel && carteQR){ carteQR.remove(); carteQR = null; }
+  }
+
+  /* ---------- démarrage ---------- */
+  async function demarre(mode){
+    roleCourant = mode;
+    intro();
+    await Classe.init();
+    Classe.surChange((k, origine)=>{
+      if (estEcran() && Classe.versJeu()){ if (typeof majBarre==="function") majBarre(); }
+      if (courant==="aa-app" && origine==="distant") accueilTel();
+      if (courant==="aa-ecran") { const c = document.querySelector(".ec-classe"); if (c) c.textContent = nomClasse(); }
+    });
+    const room = await useCap("room");
+    if (mode==="tbi"){
+      window.onEtatRecharge = ()=>{ if (courant==="aa-ecran") ecran(); }; // remplacé par celui du jeu quand il démarre
+      brancheDB(); // le voyage s'enregistre (et part en copie vers le téléphone) même avant d'ouvrir le jeu
+      if (!Classe.existe()){ const nom = S.eleves.some(e=>e.prenom.trim()); Classe.adopte(Classe.depuisEtat(S, nom ? (S.maj||1) : 0)); }
+      else Classe.versJeu();
+      if (room){ room.presence({role:"tbi"}).catch(()=>{});
+        room.onPeers(ch=>{ tbiVuTel = ch.peers.some(p=>p.presence && p.presence.role==="scanner"); dessineTelEcran(); });
+        room.on("cmd", m=>{ const d = m.data||{}; if (d.a==="activite" && courant==="aa-ecran") ouvreActivite(d.id, true); }); }
+      ecran();
+    } else {
+      if (room){ room.presence({role:"scanner"}).catch(()=>{});
+        room.onPeers(ch=>{ tbiVu = ch.peers.some(p=>p.presence && p.presence.role==="tbi"); dessineEcran(); });
+        room.on("q", m=>{ const d = m.data||{}; questionOuverte = !!(d.qid && d.open); dessineEcran(); }); }
+      if (!Classe.existe() && lsGet("bateau-ecole-bienvenue")!=="1") bienvenue(0);
+      else if (EcransAutonome.aRouvrir && EcransAutonome.aRouvrir()){ accueilTel(); relier(); }
+      else accueilTel();
+    }
+  }
+  /* où poser les panneaux et messages du jeu : sur l'accueil des activités s'il est affiché */
+  const conteneur = () => courant==="aa-ecran" ? document.getElementById("aa-ecran") : null;
+  return { demarre, ouvreActivite, accueilTel, ecran, classe, editeur, importe, estEcran, montre, bienvenue, conteneur, courant:()=>courant };
+})();
+window.Accueil = Accueil;
 
 /* ---------- téléphone : lecture des cartes ---------- */
 function reponseCarte(m){
@@ -4147,7 +4864,7 @@ function lanceTBI(){
   $("#b-journal").onclick=()=>{ Son.init(); ouvreJournal(); };
   $("#b-reglages").onclick=()=>{ Son.init(); ouvreReglages(); };
   window.onEtatRecharge = ()=>{ majBarre(); majMer(); Mer.snap(); if(!enJeu) accueil(); };
-  if (window.BATEAU_AUTONOME){ $("#b-tel").onclick=()=>{ Son.init(); ongletR="tel"; ouvreReglages(); }; EcransAutonome.tbi(); }
+  if (window.BATEAU_AUTONOME) $("#b-tel").onclick=()=>{ Son.init(); ongletR="tel"; ouvreReglages(); };
   brancheDB(); brancheRoom(); AudioPerso.branche();
 }
 function lanceTel(){ $("#scr-choix").hidden=true; $("#scr-tel").hidden=false; Tel.init(); }
@@ -4156,9 +4873,10 @@ function lanceTel(){ $("#scr-choix").hidden=true; $("#scr-tel").hidden=false; Te
   if (window.BATEAU_AUTONOME){ // l'appli sur un téléphone lit les cartes, un ordinateur affiche le jeu : pas de question inutile
     if (Autonome.LOCAL) mode = "tbi";
     else if (!mode){ const d = Autonome.modeParDefaut(); if (d){ mode = d; lsSet("bateau-ecole-mode", d); } } }
-  $("#go-tbi").onclick=()=>{ lsSet("bateau-ecole-mode","tbi"); lanceTBI(); };
-  $("#go-tel").onclick=()=>{ lsSet("bateau-ecole-mode","tel"); lanceTel(); };
-  if (mode==="tbi") lanceTBI(); else if (mode==="tel") lanceTel(); else $("#scr-choix").hidden=false;
+  const lance = m => window.Accueil ? (EcransAutonome.tbi && m==="tbi" && EcransAutonome.tbi(), Accueil.demarre(m)) : (m==="tbi" ? lanceTBI() : lanceTel());
+  $("#go-tbi").onclick=()=>{ lsSet("bateau-ecole-mode","tbi"); lance("tbi"); };
+  $("#go-tel").onclick=()=>{ lsSet("bateau-ecole-mode","tel"); lance("tel"); };
+  if (mode==="tbi"||mode==="tel") lance(mode); else $("#scr-choix").hidden=false;
   if (window.speechSynthesis) speechSynthesis.getVoices();
 })();
 
