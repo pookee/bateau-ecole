@@ -2600,7 +2600,7 @@ function majBarre(){
   }
 }
 function majMer(){ const p=position(S.milles); if(p.fin) Mer.vers(1,ESCALES[ESCALES.length-2].v,"Marseille"); else Mer.vers(p.p,ESCALES[p.i].v,ESCALES[p.i+1].v); }
-function setTel(on){ const b=$("#b-tel"); b.textContent = on ? "Téléphone relié" : "Téléphone non relié"; b.classList.toggle("on",on); }
+function setTel(on){ const b=$("#b-tel"); b.textContent = on ? "Téléphone relié" : (window.BATEAU_AUTONOME ? "Relier le téléphone" : "Téléphone non relié"); b.classList.toggle("on",on); b.classList.toggle("appel", !on && !!window.BATEAU_AUTONOME); }
 function chrono(on){ const b=$("#b-chrono"); clearInterval(chronoT); b.hidden=!on; if(!on) return; const t0=Date.now();
   const f=()=>{ const s=Math.floor((Date.now()-t0)/1000); b.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); b.style.background = s>720 ? "rgba(232,93,63,.35)" : ""; }; f(); chronoT=setInterval(f,1000); }
 
@@ -3829,13 +3829,14 @@ details.lier{display:block}
 .aut-code summary{cursor:pointer;color:var(--mer);font-weight:700;font-size:.95rem}
 .aut-code[open] summary{margin-bottom:8px}
 details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
-.aut-accueil{position:absolute;right:16px;bottom:16px;z-index:4;width:min(290px,34vw);background:#FFFCF4;border:3px solid #E3CFA2;border-radius:20px;padding:14px;display:grid;gap:10px;box-shadow:0 10px 28px rgba(6,24,40,.35)}
+.aut-accueil{position:absolute;right:16px;bottom:16px;z-index:4;width:236px;background:#FFFCF4;border:3px solid #E3CFA2;border-radius:20px;padding:14px;display:grid;gap:10px;box-shadow:0 10px 28px rgba(6,24,40,.35)}
 .aut-accueil .lier-qr{border:0;padding:0}
 .aut-accueil b{font:800 1.15rem/1.15 var(--display);color:var(--nuit)}
 .aut-accueil p{margin:0;font-size:.95rem;line-height:1.35;color:var(--encre)}
 .aut-accueil button{justify-self:end}
 .aut-bandeau{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:21;background:#FFF6DB;color:var(--nuit);border:2px solid #F3D9A4;border-radius:12px;padding:8px 14px;font-weight:700;max-width:92%}
-@media (max-width:760px),(max-height:520px){.aut-accueil{display:none}}
+@media (max-width:1199px),(max-height:620px){.aut-accueil{display:none}}
+#b-tel.appel{background:var(--soleil);color:var(--nuit);font-weight:800}
 @media (max-width:700px){.lier{grid-template-columns:1fr}.lier-qr{max-width:260px}}
 @media (prefers-reduced-motion:reduce){.aut-etat.attente::before{animation:none}}`;
   document.head.appendChild(st);
