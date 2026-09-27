@@ -415,7 +415,7 @@ const Autonome = (() => {
     return RELAIS_DEFAUT;
   }
   function transportNostr(url, k, recoit, change){
-    let ws=null, pret=false, fini=false, attente=1500, minuteur=null, jetons=5, remplie=Date.now(), pompe=null;
+    let ws=null, pret=false, fini=false, attente=1500, minuteur=null, jetons=5, remplie=Date.now(), pompe=null, direct=false, tDirect=null;
     const sub = "be"+rid(6), sk = NostrLite.cleSecrete(), pk = NostrLite.clePublique(sk), file = [];
     /* les relais Nostr limitent le débit : au plus ~1 message/s en continu (5 d'un coup), et un message d'état
        (présence, question, cartes lues) remplace le précédent du même genre encore en attente */
@@ -432,9 +432,15 @@ const Autonome = (() => {
       clearTimeout(minuteur); minuteur=null;
       try { ws = new WebSocket(url); } catch(e){ return plusTard(); }
       const moi = ws;
-      ws.onopen = ()=>{ if (moi!==ws) return; pret=true; attente=1500; ws.send(JSON.stringify(["REQ", sub, {kinds:[KIND], "#t":[k.tag]}])); change(); pompeFile(); };
+      /* certains relais gardent les événements « éphémères » et les renvoient à l'abonnement (constaté le 27/09/2026) :
+         tout ce qui arrive avant la fin des événements stockés (EOSE) est ignoré, sinon un vieux voyage ou une vieille commande reviendrait */
+      ws.onopen = ()=>{ if (moi!==ws) return; pret=true; attente=1500; direct=false; clearTimeout(tDirect); tDirect = setTimeout(()=>{ direct=true; }, 3000);
+        ws.send(JSON.stringify(["REQ", sub, {kinds:[KIND], "#t":[k.tag]}])); change(); pompeFile(); };
       ws.onmessage = e=>{ let m; try { m = JSON.parse(e.data); } catch(x){ return; }
-        if (m[0]==="EVENT" && m[1]===sub && m[2] && typeof m[2].content==="string") recoit(m[2].content);
+        if (m[0]==="EOSE" && m[1]===sub){ direct = true; clearTimeout(tDirect); return; }
+        if (m[0]==="EVENT" && m[1]===sub && m[2] && typeof m[2].content==="string"){
+          if (!direct || (m[2].created_at||0) < Date.now()/1000-900) return; // stocké, ou vieux de plus d'un quart d'heure
+          recoit(m[2].content); }
         else if (m[0]==="OK" && m[2]===false) console.warn("relais", url, m[3]); };
       ws.onclose = ()=>{ if (moi!==ws) return; pret=false; change(); if (!fini) plusTard(); };
       ws.onerror = ()=>{ try { moi.close(); } catch(e){} };
@@ -2842,8 +2848,8 @@ function cartePostale(k, arrivee){
       </div>
     </div>
     <div class="centre">
-      ${(e.voix||AudioPerso.url("voix-"+(fin?0:k)))?`<button class="btn mer" data-go="parle">Écouter « bonjour »</button>`:""}
-      <button class="btn mer" data-go="musique">Écouter la musique</button>
+      <button class="btn mer" data-go="parle">Écouter « bonjour »</button>
+      <button class="btn mer" data-go="musique">Écouter l'hymne</button>
       <button class="btn prim big" data-go="ok">${arrivee?"Tamponner le passeport !":"Fermer"}</button>
     </div>
     <p class="note credit-mus" id="m-credit" hidden>${esc(Musique.credit(k))}</p></div>`;
@@ -3309,17 +3315,17 @@ function rendQuestions(c){
 }
 
 /* ---------- musiques du monde : vrais enregistrements libres (Wikimedia Commons / Internet Archive), écoute au choix ---------- */
-const MUSIQUES = [{"t": "La Farandole de L'Arlésienne (Bizet), air provençal", "s": "la farandole provençale", "a": "Victor Herbert Orchestra (cylindre Edison, 1910)", "l": "Domaine public (enregistrement de 1910, versé en CC0 sur Commons)", "u": "https://commons.wikimedia.org/wiki/File:Victor_Herbert_Orchestra_-_08_-_1910_-_Farandole_from_LArlsienne_Bizet.ogg"}, {"t": "La Dansa de Castellterçol jouée par une cobla", "s": "la sardane et la cobla catalane", "a": "Enregistrement anonyme (Castellterçol, Catalogne)", "l": "CC0", "u": "https://commons.wikimedia.org/wiki/File:Fragment_de_la_melodia_de_la_Dansa_De_Castellter%C3%A7ol_(1)_-_Passeig.wav"}, {"t": "Chant « Âaita Baidaouiya » (1929)", "s": "l'aïta, chant traditionnel marocain", "a": "Chikha Aïcha El Hertitia (enr. Harold Fleming, Casablanca, 1929)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:%C3%82aita_Baidaouiya_(1929).ogg"}, {"t": "Fado joué dans un restaurant de Lisbonne", "s": "le fado", "a": "Groupe de fado, rua do Norte (enr. wijnand.bredewold, Radio Aporee)", "l": "Domaine public (marque PDM de l'auteur de l'enregistrement)", "u": "https://archive.org/details/aporee_62173_71560"}, {"t": "Musique du carnaval de Las Palmas", "s": "la fête du carnaval des Canaries", "a": "Luca Adami (Badflames), Carnaval de Las Palmas 2020", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Carnaval_Las_Palmas_2020.wav"}, {"t": "Chants des maraîchères de Toubacouta", "s": "les chants de travail sénégalais", "a": "Femmes maraîchères de Toubacouta, Sine-Saloum (enr. Eric Desjeux, Radio Aporee)", "l": "CC BY 3.0", "u": "https://archive.org/details/aporee_71997_84081"}, {"t": "Choro « Sofres porque queres » (1919)", "s": "le choro brésilien", "a": "Pixinguinha (flûte) et le groupe Choro Pixinguinha, Odeon 1919", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Sofres_porque_queres_-_Pixinguinha_1919.ogg"}, {"t": "Tango « Cara sucia » (1919)", "s": "le tango argentin", "a": "Orquesta de Francisco Canaro, chant Lola Membrives", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Canaro-Membrives-CaraSucia-(1919).ogg"}, {"t": "Chanson « El carretero » (1922)", "s": "la chanson folklorique argentine", "a": "Carlos Gardel et José Razzano, guitares J. Ricardo et G. Barbieri", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Gardel-Razzano-El_carretero_(1922).ogg"}, {"t": "Chant polynésien à Samoa", "s": "le chant polynésien", "a": "Chorale de l'église catholique de Tuasivi, Samoa (enr. g.plume, Radio Aporee)", "l": "Domaine public (marque PDM de l'auteur de l'enregistrement)", "u": "https://archive.org/details/aporee_48805_55560"}, {"t": "Flûtes de Pan des Andes (siku) et tambour", "s": "la flûte de Pan des Andes", "a": "Projet Sikuri Sumaq Taqi, Azángaro (Pérou) - Abel Christian Apaza Amanqui", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Interpretaci%C3%B3n_del_tema_%2229_de_setiembre%22_-_Maqueta_ejecutada_con_pareja_de_sikus_Malta_y_bombo.wav"}, {"t": "Son jarocho « El Pájaro Carpintero »", "s": "le son jarocho mexicain", "a": "Los Hijos de la Malinche (Jáltipan, Veracruz)", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:El_P_jaro_Carpintero_441.ogg"}, {"t": "« Rose Room » (1919), jazz de San Francisco", "s": "le jazz des années 1910", "a": "Art Hickman's Orchestra (orchestre de l'hôtel St. Francis, San Francisco)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Art_Hickman%27s_%22Rose_Room%22_(1919).oga"}, {"t": "« Hawaiian Echoes », guitare hawaïenne", "s": "la guitare hawaïenne", "a": "Frank Ferera et Helen Louise", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:HawaiianEchoes.ogg"}, {"t": "« Shika no Tōne » à la flûte shakuhachi", "s": "la flûte shakuhachi japonaise", "a": "Araki Kodō III (disque Victor 13029)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Shikanotoone.ogg"}, {"t": "« La pluie sur les bananiers » (musique cantonaise)", "s": "le violon chinois (gaohu/erhu)", "a": "Zhang Peijian (enr. David290)", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:%E9%9B%A8%E6%89%93%E8%8A%AD%E8%95%89.ogg"}, {"t": "Chant « Hát trống quân » (1931)", "s": "le chant traditionnel vietnamien", "a": "Đỗ Văn Thâm (Musée de la parole et du geste, 1931)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:H%C3%A1t_tr%E1%BB%91ng_qu%C3%A2n_-_%C4%90%E1%BB%97_V%C4%83n_Th%C3%A2m.mp3"}, {"t": "Chanson malaise « Nuri Terbang Malam » (enr. à Singapour, 1903)", "s": "la chanson malaise", "a": "Qasim (enr. Fred Gaisberg et George Dillnutt, Singapour 1903)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Lagu_Nuri_Terbang_Malam_(1903).ogg"}, {"t": "Xylophone de gamelan joué à Bali", "s": "le gamelan balinais", "a": "Deux musiciens balinais (enr. thedialogueproject)", "l": "CC0", "u": "https://commons.wikimedia.org/wiki/File:Bali_xylophone.ogg"}, {"t": "Le didgeridoo", "s": "le didgeridoo", "a": "Hangklang (enr. 2009)", "l": "CC BY-SA 3.0", "u": "https://commons.wikimedia.org/wiki/File:Hangklang_Didgeridoospiel.ogg"}, {"t": "Maloya au marché couvert de Saint-Pierre", "s": "le maloya réunionnais", "a": "Joueurs de maloya du marché de Saint-Pierre (enr. Pierre Gauthier, Radio Aporee)", "l": "CC BY-SA 3.0", "u": "https://archive.org/details/aporee_7717_9465"}, {"t": "« Mandihiza Rahitsikitsika » à la valiha", "s": "la valiha de Madagascar", "a": "Kaluvau (valiha)", "l": "CC BY-SA 3.0", "u": "https://commons.wikimedia.org/wiki/File:OldMalagasyFolkSongMandihizaRahitsikitsikaSteelStringValiha.ogg"}, {"t": "Tambours sur un bateau à Zanzibar", "s": "les tambours de Zanzibar", "a": "Tambourinaires sur un bateau, plage de Nungwi (enr. diane.barbe94, Radio Aporee)", "l": "CC BY 3.0", "u": "https://archive.org/details/aporee_35649_40923"}, {"t": "Sitar et tablas", "s": "le sitar et les tablas", "a": "Ashok Ayengar (sitar), tabla : non identifié (Bangalore, 2015)", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Sitar_and_Tabla_rendition_-_Freedom_Jam,_August_2015.oga"}, {"t": "« Bashraf » en maqam Hijaz (1931)", "s": "la musique classique égyptienne (oud, qanun)", "a": "Ensemble égyptien (coffret Musik des Orients, Hornbostel, 1931)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Baschrav_Kuzum_Maqam_Hijaz_part_1_(1931).ogg"}, {"t": "Chanson grecque « Fevgo kori » (1912)", "s": "la chanson grecque aux mandolines", "a": "Estudiantina Melizianos (enr. 1912)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Fevgo_Kori.ogg"}, {"t": "« Celebre tarantella » de Ricci", "s": "la tarentelle napolitaine", "a": "Orchestre (disque La Voce del Padrone, fonds ICBSA)", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:ICBSA_Ricci_-_Celebre_tarantella.ogg"}, {"t": "« Dio vi salvi Regina », chant corse", "s": "le chant polyphonique corse", "a": "E Più Belle Canzone, Damien Acquesta", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Lhymne_Corse_-_Dio_Vi_Salvi_Regina.ogg"}];
+const MUSIQUES = [{"t": "La Marseillaise, hymne national de la France", "s": "l'hymne national", "a": "United States Navy Band ; musique : Claude Joseph Rouget de Lisle", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:La_Marseillaise.ogg"}, {"t": "La Marcha Real, hymne national de l'Espagne", "s": "l'hymne national", "a": "United States Navy Band ; musique : anonyme (XVIIIe siècle)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Marcha_Real-Royal_March_by_US_Navy_Band.ogg"}, {"t": "L'Hymne chérifien, hymne national du Maroc", "s": "l'hymne national", "a": "United States Navy Band ; musique : Léo Morgan", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:National_Anthem_of_Morocco.ogg"}, {"t": "A Portuguesa, hymne national du Portugal", "s": "l'hymne national", "a": "United States Navy Band ; musique : Alfredo Keil", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:A_Portuguesa.ogg"}, {"t": "La Marcha Real, hymne national de l'Espagne (îles Canaries)", "s": "l'hymne national", "a": "United States Navy Band ; musique : anonyme (XVIIIe siècle)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Marcha_Real-Royal_March_by_US_Navy_Band.ogg"}, {"t": "Le Lion rouge, hymne national du Sénégal", "s": "l'hymne national", "a": "United States Navy Band ; musique : Herbert Pepper", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:National_Anthem_of_Senegal.ogg"}, {"t": "L'hymne national du Brésil (Hino Nacional Brasileiro)", "s": "l'hymne national", "a": "United States Navy Band ; musique : Francisco Manuel da Silva", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Hino_Nacional_Brasileiro_instrumental.ogg"}, {"t": "L'hymne national de l'Argentine (Himno Nacional Argentino)", "s": "l'hymne national", "a": "United States Navy Band ; musique : Blas Parera", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Himno_Nacional_Argentino_instrumental.ogg"}, {"t": "L'hymne national de l'Argentine (Himno Nacional Argentino)", "s": "l'hymne national", "a": "United States Navy Band ; musique : Blas Parera", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Himno_Nacional_Argentino_instrumental.ogg"}, {"t": "L'hymne national du Chili (Himno Nacional de Chile)", "s": "l'hymne national", "a": "United States Navy Band ; musique : Ramón Carnicer", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:United_States_Navy_Band_-_National_Anthem_of_Chile.ogg"}, {"t": "Salve, Oh Patria, hymne national de l'Équateur", "s": "l'hymne national", "a": "United States Navy Band ; musique : Antonio Neumane", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Anthem_of_Ecuador.ogg"}, {"t": "L'hymne national du Mexique (Himno Nacional Mexicano)", "s": "l'hymne national", "a": "United States Navy Band ; musique : Jaime Nunó", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Himno_Nacional_Mexicano_instrumental.ogg"}, {"t": "The Star-Spangled Banner, hymne national des États-Unis", "s": "l'hymne national", "a": "United States Navy Band ; musique : John Stafford Smith", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Star_Spangled_Banner_instrumental.ogg"}, {"t": "Hawaiʻi Ponoʻī, hymne de l'État de Hawaï", "s": "l'hymne de Hawaï", "a": "nationalanthems.info ; musique : Henry Berger", "l": "CC BY-SA 3.0", "u": "https://commons.wikimedia.org/wiki/File:Hawai%CA%BBi_pono%CA%BB%C4%AB.ogg"}, {"t": "Kimigayo, hymne national du Japon", "s": "l'hymne national", "a": "United States Navy Band ; musique : Hayashi Hiromori (harmonisation : Franz Eckert)", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Kimi_ga_Yo_instrumental.ogg"}, {"t": "La Marche des volontaires, hymne national de la Chine", "s": "l'hymne national", "a": "United States Navy Band ; musique : Nie Er", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:March_of_the_Volunteers_instrumental.ogg"}, {"t": "Tiến Quân Ca, hymne national du Viêt Nam", "s": "l'hymne national", "a": "United States Navy Band ; musique : Văn Cao", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:National_Anthem_of_Vietnam.ogg"}, {"t": "Majulah Singapura, hymne national de Singapour", "s": "l'hymne national", "a": "United States Navy Band ; musique : Zubir Said", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Majulah_Singapura.ogg"}, {"t": "Indonesia Raya, hymne national de l'Indonésie", "s": "l'hymne national", "a": "United States Navy Band ; musique : Wage Rudolf Supratman", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Indonesia_Raya_instrumental.ogg"}, {"t": "Advance Australia Fair, hymne national de l'Australie", "s": "l'hymne national", "a": "United States Navy Band ; musique : Peter Dodds McCormick", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:U.S._Navy_Band,_Advance_Australia_Fair_(instrumental).ogg"}, {"t": "La Marseillaise, hymne national de la France (La Réunion)", "s": "l'hymne national", "a": "United States Navy Band ; musique : Claude Joseph Rouget de Lisle", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:La_Marseillaise.ogg"}, {"t": "Ry Tanindrazanay malala ô !, hymne national de Madagascar", "s": "l'hymne national", "a": "United States Navy Band ; musique : Norbert Raharisoa", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Ry_Tanindrazanay_malala_%C3%B4!_(instrumental).ogg"}, {"t": "Mungu ibariki Afrika, hymne national de la Tanzanie", "s": "l'hymne national", "a": "United States Navy Band ; musique : Enoch Sontonga", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Tanzanian_national_anthem,_performed_by_the_United_States_Navy_Band.oga"}, {"t": "Jana Gana Mana, hymne national de l'Inde", "s": "l'hymne national", "a": "United States Navy Band ; musique : Rabindranath Tagore", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Jana_Gana_Mana_instrumental.ogg"}, {"t": "Bilady, Bilady, Bilady, hymne national de l'Égypte", "s": "l'hymne national", "a": "United States Navy Band ; musique : Sayed Darwish", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Bilady,_Bilady,_Bilady.ogg"}, {"t": "L'Hymne à la liberté, hymne national de la Grèce", "s": "l'hymne national", "a": "United States Navy Band ; musique : Nikolaos Mantzaros", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:Hymn_to_liberty_instrumental.oga"}, {"t": "Il Canto degli Italiani, hymne national de l'Italie", "s": "l'hymne national", "a": "United States Navy Band ; musique : Michele Novaro", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:National_anthem_of_Italy_-_U.S._Navy_Band_(long_version).ogg"}, {"t": "La Marseillaise, hymne national de la France (Corse)", "s": "l'hymne national", "a": "United States Navy Band ; musique : Claude Joseph Rouget de Lisle", "l": "Domaine public", "u": "https://commons.wikimedia.org/wiki/File:La_Marseillaise.ogg"}];
 const Musique = (() => {
   let au=null, cur=-1;
   const idx = k => (k>=ESCALES.length-1 ? 0 : k);
   function stop(){ if(au){ au.pause(); au.currentTime=0; } cur=-1; majBoutons(); }
-  function majBoutons(){ document.querySelectorAll('[data-go="musique"]').forEach(b=>{ b.textContent = cur>=0 ? "Arrêter la musique" : "Écouter la musique"; }); }
+  function majBoutons(){ document.querySelectorAll('[data-go="musique"]').forEach(b=>{ b.textContent = cur>=0 ? "Arrêter l'hymne" : "Écouter l'hymne"; }); }
   function joue(k){
     const i=idx(k);
     if (cur===i && au && !au.paused){ stop(); return; }
     if (!au){ au=new Audio(); au.preload="none"; au.addEventListener("ended",()=>{ cur=-1; majBoutons(); }); }
-    au.src = AudioPerso.url("mus-"+i) || ("musique/escale"+String(i).padStart(2,"0")+".mp3"); au.volume = .9; cur=i;
+    au.src = AudioPerso.url("mus-"+i) || ("hymnes/hymne"+String(i).padStart(2,"0")+".mp3"); au.volume = .9; cur=i;
     au.play().catch(()=>{ cur=-1; majBoutons(); toast("La musique n'a pas pu démarrer."); });
     majBoutons();
   }
@@ -3488,7 +3494,7 @@ function fxPerso(nom){
 /* la voix « bonjour » enregistrée pour une escale */
 let voixAu = null;
 function joueVoix(k){
-  const i = k>=ESCALES.length-1 ? 0 : k; const u = AudioPerso.url("voix-"+i); if (!u) return false;
+  const i = k>=ESCALES.length-1 ? 0 : k; const u = AudioPerso.url("voix-"+i) || ("voix/bonjour"+String(i).padStart(2,"0")+".mp3");
   try { if (voixAu) voixAu.pause(); voixAu = new Audio(u); voixAu.play().catch(()=>{}); } catch(e){ return false; }
   return true;
 }
@@ -3581,8 +3587,8 @@ const FX_LISTE = [["fanfare","Fanfare","arrivée, promotion, baptême"],["cloche
 const nbEsc = () => ESCALES.length-1; // 28 : le retour à Marseille reprend l'escale 0
 function sonInfo(k){
   const [type, x] = [k.split("-")[0], k.slice(k.indexOf("-")+1)];
-  if (type==="mus"){ const i=+x, m=MUSIQUES[i]||{}, e=ESCALES[i]; return {type, nom:`${i}. ${e.v}`, sous:e.p, defaut:"musique/escale"+String(i).padStart(2,"0")+".mp3", t:m.t, a:m.a, l:m.l, dur:60}; }
-  if (type==="voix"){ const i=+x, e=ESCALES[i]; return {type, nom:`${i}. ${e.v}`, sous:e.dit, defaut:null, dur:6}; }
+  if (type==="mus"){ const i=+x, m=MUSIQUES[i]||{}, e=ESCALES[i]; return {type, nom:`${i}. ${e.v}`, sous:e.p, defaut:"hymnes/hymne"+String(i).padStart(2,"0")+".mp3", t:m.t, a:m.a, l:m.l, dur:60}; }
+  if (type==="voix"){ const i=+x, e=ESCALES[i]; return {type, nom:`${i}. ${e.v}`, sous:e.dit, defaut:"voix/bonjour"+String(i).padStart(2,"0")+".mp3", dur:6}; }
   const f = FX_LISTE.find(z=>z[0]===x)||[x,x,""]; return {type, nom:f[1], sous:f[2], defaut:null, dur: x==="mer"?60:6};
 }
 let sonTest = null;
@@ -3608,9 +3614,9 @@ function rendSons(c){
     </div>${sonsOuvert===k?`<div class="son-ed" id="son-ed"></div>`:""}`; };
   const mus = Array.from({length:nbEsc()},(_,i)=>"mus-"+i), vx = Array.from({length:nbEsc()},(_,i)=>"voix-"+i), fx = FX_LISTE.map(f=>"fx-"+f[0]);
   const assetsOk = !!window.__assetsCap;
-  c.innerHTML = `<p class="note">Tous les sons du jeu. <b>Écouter</b> pour vérifier, <b>Modifier</b> pour changer le titre, choisir un autre extrait ou mettre ton propre fichier (mp3, m4a, wav, ogg… : il est découpé, égalisé et enregistré avec la page). La musique n'est jamais jouée toute seule : seulement quand on appuie sur « Écouter la musique ».</p>
+  c.innerHTML = `<p class="note">Tous les sons du jeu. <b>Écouter</b> pour vérifier, <b>Modifier</b> pour changer le titre, choisir un autre extrait ou mettre ton propre fichier (mp3, m4a, wav, ogg… : il est découpé, égalisé et enregistré avec la page). L'hymne n'est jamais joué tout seul : seulement quand on appuie sur « Écouter l'hymne ».</p>
     ${assetsOk?"":`<p class="note" style="color:var(--ko)">Changer un fichier n'est possible que dans la page publiée, ouverte avec ton compte (pas en lecture seule). Les titres restent modifiables.</p>`}
-    <div class="tabs" id="son-cat">${[["mus","Musiques des escales ("+mus.length+")"],["voix","Voix « bonjour » ("+vx.length+")"],["fx","Effets sonores ("+fx.length+")"]].map(([k,t])=>`<button data-cat="${k}" class="${k===(rendSons.cat||"mus")?"act":""}">${t}</button>`).join("")}</div>
+    <div class="tabs" id="son-cat">${[["mus","Hymnes des escales ("+mus.length+")"],["voix","Voix « bonjour » ("+vx.length+")"],["fx","Effets sonores ("+fx.length+")"]].map(([k,t])=>`<button data-cat="${k}" class="${k===(rendSons.cat||"mus")?"act":""}">${t}</button>`).join("")}</div>
     <div class="son-liste">${({mus, voix:vx, fx})[rendSons.cat||"mus"].map(ligne).join("")}</div>`;
   if (sonsOuvert && $("#son-ed")) editeSon(sonsOuvert, $("#son-ed"));
   c.oninput = null; c.onchange = null;
@@ -3690,7 +3696,7 @@ function editeSon(k, box){
 function nouvelleCamera(opt){
   opt = Object.assign({bouton:"Lire les cartes en direct", note:"Pose le téléphone face à la classe : les cartes levées sont lues toutes seules.", attente:" · en attente d'une question", presence:false}, opt||{});
   let flux=null, video=null, marques=null, travail=null, det=null, actif=false, voulu=false, raf=0, dernier=0, tour=0, rapide=false, duree=40;
-  let surLus=()=>{}, surVue=null, etatEl=null, choixEl=null, boutonEl=null, perimees=new Map();
+  let surLus=()=>{}, surVue=null, etatEl=null, choixEl=null, boutonEl=null, badgeEl=null, perimees=new Map();
   const vus = new Map(); // carte → {r:lettre, k:lectures, t:vue la dernière fois, c:coins}
   const CLE = "bateau-ecole-objectif";
   const lsG = k => { try { return localStorage.getItem(k); } catch(e){ return null; } };
@@ -3708,12 +3714,12 @@ function nouvelleCamera(opt){
   function monte(box, o){
     surLus = o.surCartes || surLus; surVue = o.surVue || null;
     box.innerHTML = `<div class="cam">
-      <div class="cam-vue" hidden><video playsinline muted autoplay></video><canvas class="cam-marques"></canvas></div>
+      <div class="cam-vue" hidden><video playsinline muted autoplay></video><canvas class="cam-marques"></canvas><div class="cam-badge" hidden aria-live="polite"></div></div>
       <div class="cam-bar"><button class="btn prim cam-go">${opt.bouton}</button>
         <select class="cam-obj" aria-label="Objectif" hidden></select></div>
       <div class="note cam-etat" role="status">${opt.note}</div></div>`;
     video = box.querySelector("video"); marques = box.querySelector(".cam-marques"); travail = document.createElement("canvas");
-    etatEl = box.querySelector(".cam-etat"); choixEl = box.querySelector(".cam-obj"); boutonEl = box.querySelector(".cam-go");
+    etatEl = box.querySelector(".cam-etat"); choixEl = box.querySelector(".cam-obj"); boutonEl = box.querySelector(".cam-go"); badgeEl = box.querySelector(".cam-badge");
     if (opt.id) boutonEl.id = opt.id;
     boutonEl.onclick = ()=>{ actif ? (voulu=false, arrete()) : (voulu=true, demarre()); };
     choixEl.onchange = ()=>{ lsS(CLE, choixEl.value); arrete(); demarre(); };
@@ -3729,14 +3735,14 @@ function nouvelleCamera(opt){
     video.srcObject = flux; try { await video.play(); } catch(e){}
     if (!det) det = new AR.Detector({dictionaryName:"CARTES40", maxHammingDistance:2});
     actif = true; vus.clear(); perimees.clear();
-    video.parentElement.hidden = false; boutonEl.textContent = "Arrêter la caméra"; boutonEl.classList.remove("prim");
+    video.parentElement.hidden = false; boutonEl.textContent = "Arrêter la caméra"; boutonEl.classList.remove("prim"); boutonEl.classList.add("petit");
     Autonome.eveille(true); objectifs(); boucle(); if (opt.surEtat) opt.surEtat(true);
   }
   function arrete(pause){
     actif = false; cancelAnimationFrame(raf);
     if (flux) flux.getTracks().forEach(t=>t.stop()); flux = null;
     if (video){ video.srcObject = null; video.parentElement.hidden = true; }
-    if (boutonEl){ boutonEl.textContent = opt.bouton; boutonEl.classList.add("prim"); }
+    if (boutonEl){ boutonEl.textContent = opt.bouton; boutonEl.classList.add("prim"); boutonEl.classList.remove("petit"); }
     Autonome.eveille(false); vus.clear(); if (opt.surEtat) opt.surEtat(false);
     if (!pause) etat("Caméra arrêtée.");
   }
@@ -3795,6 +3801,8 @@ function nouvelleCamera(opt){
     /* une autre activité prend la caméra (ou on quitte l'écran) : elle s'éteint et ne se rallume plus toute seule */
     coupe(){ const v = voulu; voulu = false; if (actif) arrete(true); return v; },
     lance(){ voulu = true; if (!actif) demarre(); },
+    /* le compteur posé sur l'image (« 18 / 21 », vert quand toutes les cartes sont lues) */
+    badge(html, etat){ if (!badgeEl) return; badgeEl.hidden = !html; badgeEl.innerHTML = html||""; badgeEl.className = "cam-badge"+(etat ? " "+etat : ""); },
     actif:()=>actif };
 }
 const CameraDirect = nouvelleCamera({id:"cam-go"});
@@ -3869,7 +3877,34 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
 @media (max-width:1199px),(max-height:620px){.aut-accueil{display:none}}
 #b-tel.appel{background:var(--soleil);color:var(--nuit);font-weight:800}
 @media (max-width:700px){.lier{grid-template-columns:1fr}.lier-qr{max-width:260px}}
-@media (prefers-reduced-motion:reduce){.aut-etat.attente::before{animation:none}}`;
+.cam-badge{position:absolute;left:10px;top:10px;display:flex;align-items:baseline;gap:6px;background:rgba(11,39,64,.82);color:#fff;border-radius:16px;padding:7px 13px 8px;font:800 clamp(1.7rem,7.5vw,2.6rem)/1 var(--display);box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none}
+.cam-badge small{font:800 .48em/1 var(--display);opacity:.85}
+.cam-badge.ok{background:rgba(47,158,91,.95)}
+.cam-badge.mer{background:rgba(29,92,122,.92)}
+/* lecture des cartes : le compteur et les prénoms manquants près de l'image, la photo en solution de secours */
+#scr-tel > header{order:0} #t-auto{order:1} #t-rappel{order:2} #t-tele{order:3} #scr-tel .tel-q{order:4} #t-cam{order:5}
+#scr-tel .tel-actions{order:6} #scr-tel .tel-res{order:7} #scr-tel .photo-btn{order:8} #t-pied{order:9} #t-mode{order:10}
+#scr-tel .tel-q.vide{display:none}
+#scr-tel .tel-res .gros{font-size:1.5rem}
+#t-cam .tel-manque{font-size:1.05rem}
+#scr-tel .photo-btn{background:#fff;color:var(--mer);box-shadow:0 2px 0 #CFE4E8;border-radius:14px;padding:12px;font-size:1.02rem}
+#scr-tel .photo-btn small{display:none}
+.tel-manque{margin:0;font-weight:700;line-height:1.4;color:var(--encre)}
+.tel-manque b{color:var(--nuit)} .tel-manque .ok{color:var(--ok)}
+@media (orientation:landscape) and (max-height:560px){
+  #scr-tel{display:grid;max-width:none;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:start;grid-auto-flow:row dense}
+  #scr-tel > header,#t-auto,#t-rappel,#t-tele,#t-pied{grid-column:1/-1}
+  #t-cam{grid-column:1;grid-row:span 4}
+  #scr-tel .tel-q,#scr-tel .tel-res,#scr-tel .tel-actions,#scr-tel .photo-btn{grid-column:2}
+}
+.aut-reussi{justify-items:center;text-align:center;padding:26px 18px 20px}
+.aut-reussi h2{font-size:1.7rem}
+.aut-reussi .aut-boutons{width:100%}
+.aut-coche svg{width:84px;height:84px;display:block}
+.aut-coche circle{fill:#E3F4E9;stroke:var(--ok);stroke-width:3}
+.aut-coche path{fill:none;stroke:var(--ok);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:aut-coche .5s .15s ease forwards}
+@keyframes aut-coche{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.aut-etat.attente::before{animation:none}.aut-coche path{animation:none;stroke-dashoffset:0}}`;
   document.head.appendChild(st);
   const g = document.querySelector("#go-tel span"); if (g) g.textContent = "Pour lire les cartes-réponses des élèves, en direct avec la caméra.";
   const voile = html => { const d = document.createElement("div"); d.className = "aut-voile"; d.innerHTML = `<div class="aut-fenetre" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(d); return d; };
@@ -3889,7 +3924,7 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
 
   /* ---------- téléphone : lire le QR code affiché sur l'écran de la classe ---------- */
   function codeDans(txt){ const m = /(?:lier\/|lien=)([0-9A-Za-z-]{10,13})/.exec(txt||""); return L.normalise(m ? m[1] : txt); }
-  async function scanne(){
+  async function scanne(retour){
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ message("Caméra indisponible", "Tape plutôt le code de la classe affiché sur l'écran (Réglages › Téléphone)."); return; }
     const d = document.createElement("div"); d.className = "aut-scan";
     d.innerHTML = `<video playsinline muted autoplay></video><div class="viseur"></div>
@@ -3910,7 +3945,7 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
         cv.width = w; cv.height = h; const gc = cv.getContext("2d", {willReadFrequently:true}); gc.drawImage(video, 0, 0, w, h);
         const r = LecteurQR(gc.getImageData(0, 0, w, h).data, w, h, {inversionAttempts:"dontInvert"});
         const c = r && codeDans(r.data);
-        if (c){ fini = true; msg.textContent = "C'est bon : l'écran de la classe est relié."; await L.fixe(c); setTimeout(()=>{ ferme(); location.reload(); }, 700); return; }
+        if (c){ fini = true; msg.textContent = "QR code lu : connexion à l'écran de la classe…"; await L.fixe(c); setTimeout(()=>{ ferme(); rouvre(retour); }, 500); return; }
         if (r && r.data) msg.textContent = "Ce QR code n'est pas celui du Bateau-école.";
       }
       setTimeout(tour, 160);
@@ -3919,12 +3954,14 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
   }
 
   /* ---------- téléphone : « Afficher le jeu sur l'ordinateur » ---------- */
-  let majServeur = null;
+  let majServeur = null, finPairs = null;
   function relier(box, o){
     o = o || {};
     if (majServeur){ majServeur(); majServeur = null; }
+    if (finPairs){ finPairs(); finPairs = null; }
     box.innerHTML = `<div class="aut-carte" id="aut-relier">
       <h2>Afficher le jeu sur l'ordinateur de la classe</h2>
+      ${o.attente ? `<p class="aut-etat attente" id="aut-attente">Connexion à l'écran de la classe…</p>` : ""}
       <div class="aut-voie"><h3><i>1</i>Avec internet</h3>
         <p>Sur l'ordinateur, ouvre :</p><div class="aut-adresse">${esc(WEB_COURT)}</div>
         <p>puis scanne le QR code qui s'affiche à l'écran.</p>
@@ -3938,20 +3975,20 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
         <p>Mets l'ordinateur sur le même Wi-Fi que ce téléphone, ou sur son partage de connexion.</p>
         <div id="aut-wifi"></div></div>` : ""}
       ${o.fermer ? `<button class="btn petit" id="aut-fermer" style="justify-self:end">Fermer</button>` : ""}</div>`;
-    box.querySelector("#aut-scan").onclick = scanne;
+    box.querySelector("#aut-scan").onclick = ()=>scanne(o.retour);
     const tape = async ()=>{ const c = L.normalise(box.querySelector("#t-code").value);
       if (!c){ box.querySelector("#t-code-msg").textContent = "Le code fait 10 caractères, par exemple 7K2QM-9XA3F."; return; }
-      await L.fixe(c); location.reload(); };
+      await L.fixe(c); rouvre(o.retour); };
     box.querySelector("#t-code-ok").onclick = tape;
     box.querySelector("#t-code").onkeydown = e=>{ if (e.key==="Enter") tape(); };
-    box.querySelector("#aut-envoi").onclick = envoieLien;
+    box.querySelector("#aut-envoi").onclick = ()=>envoieLien(o.retour);
     if (o.fermer) box.querySelector("#aut-fermer").onclick = o.fermer;
     if (SRV){
       const zone = box.querySelector("#aut-wifi");
       const dessine = inf => {
         if (!zone.isConnected) return;
         if (!inf.actif){ zone.innerHTML = `<div class="aut-boutons"><button class="btn mer" id="aut-wifi-go">Afficher par le Wi-Fi</button></div>`;
-          zone.querySelector("#aut-wifi-go").onclick = activeWifi; return; }
+          zone.querySelector("#aut-wifi-go").onclick = ()=>activeWifi(o.retour); return; }
         const a = (inf.adresses||[])[0];
         if (!a){ zone.innerHTML = `<p class="aut-etat">Ce téléphone n'est sur aucun Wi-Fi.</p><p class="aut-note">Active le Wi-Fi, ou le partage de connexion (Réglages de l'iPhone › Partage de connexion), puis reviens ici.</p>`; return; }
         const adr = a.ip + (inf.http && inf.http!==80 ? ":"+inf.http : "");
@@ -3963,8 +4000,30 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
       };
       majServeur = SRV.surMaj(dessine); dessine(SRV.infos()); SRV.rafraichit();
     }
+    // l'ordinateur se relie : la validation s'affiche ici, sans revenir à l'accueil
+    useCap("room").then(room=>{ if (!room || !box.isConnected) return;
+      let avant = null, f = null;
+      f = room.onPeers(ch=>{ if (!box.isConnected){ if (f) f(); return; }
+        const lie = ch.peers.some(p=>!p.isMe && p.presence && p.presence.role==="tbi");
+        if (avant===null){ avant = lie; if (lie && !o.attente) return; }
+        if (lie && (!avant || o.attente)){ if (f) f(); finPairs = null; reussi(box, o); return; }
+        avant = lie; });
+      finPairs = f; });
+    if (o.attente) setTimeout(()=>{ const a = box.querySelector("#aut-attente"); if (a) a.textContent = "Toujours en attente… Vérifie que l'ordinateur affiche bien le jeu, et qu'il est connecté à internet."; }, 15000);
   }
-  async function envoieLien(){
+  function reussi(box, o){
+    if (majServeur){ majServeur(); majServeur = null; }
+    const inf = SRV && SRV.infos ? SRV.infos() : null;
+    box.innerHTML = `<div class="aut-carte aut-reussi" role="status">
+      <div class="aut-coche" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
+      <h2>C'est relié !</h2>
+      <p>Le jeu s'affiche sur l'ordinateur de la classe. Ce téléphone lance les activités et lit les cartes.</p>
+      ${inf && inf.actif && inf.clients ? `<p class="aut-note">Par le Wi-Fi de ce téléphone : garde l'appli ouverte pendant l'activité.</p>` : ""}
+      <div class="aut-boutons"><button class="btn prim" id="aut-ok">${esc(o.suiteTexte || "Continuer")}</button></div></div>`;
+    box.querySelector("#aut-ok").onclick = ()=>{ if (o.suite) o.suite(); else if (o.fermer) o.fermer(); else if (window.Accueil) Accueil.accueilTel(); };
+    try { if (navigator.vibrate) navigator.vibrate(30); } catch(e){}
+  }
+  async function envoieLien(retour){
     const avant = L.code(), code = await L.assure(), url = L.lienWeb(code);
     const P = Autonome.partage;
     try {
@@ -3972,15 +4031,34 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
       else if (navigator.share) await navigator.share({title:"Le Bateau-école", url});
       else { await navigator.clipboard.writeText(url); message("Lien copié", "Colle-le dans le navigateur de l'ordinateur de la classe."); }
     } catch(e){}
-    if (!avant) rouvre(); // code tout neuf : on se branche dessus
+    if (!avant) rouvre(retour); // code tout neuf : on se branche dessus
   }
-  async function activeWifi(){
+  async function activeWifi(retour){
     const avant = L.code(); await L.assure(); await SRV.demarre();
-    if (!avant) rouvre();
+    if (!avant) rouvre(retour);
   }
-  /* recharger en gardant le panneau ouvert (la liaison démarre avec le nouveau code) */
-  function rouvre(){ try { sessionStorage.setItem("bateau-ecole-relier", "1"); } catch(e){} location.reload(); }
-  function aRouvrir(){ try { const v = sessionStorage.getItem("bateau-ecole-relier")==="1"; sessionStorage.removeItem("bateau-ecole-relier"); return v; } catch(e){ return false; } }
+  /* recharger en gardant le panneau ouvert (la liaison démarre avec le nouveau code) ; retour : l'écran où revenir une fois relié */
+  function rouvre(retour){ try { sessionStorage.setItem("bateau-ecole-relier", retour || "accueil"); } catch(e){} location.reload(); }
+  function aRouvrir(){ try { const v = sessionStorage.getItem("bateau-ecole-relier"); sessionStorage.removeItem("bateau-ecole-relier"); return v ? (v==="1" ? "accueil" : v) : ""; } catch(e){ return ""; } }
+
+  /* ---------- téléphone : lecture des cartes (Bateau-école) : compteur sur l'image, prénoms pas encore lus ---------- */
+  function scan(cs, rep, TQ){
+    const res = document.querySelector("#scr-tel .tel-res"); if (!res) return;
+    let m = document.getElementById("t-manque");
+    if (!m){ m = document.createElement("p"); m.id = "t-manque"; m.className = "tel-manque"; m.setAttribute("aria-live", "polite"); }
+    const vue = document.querySelector("#t-cam .cam-vue"); // juste sous l'image de la caméra
+    if (vue && m.previousElementSibling!==vue) vue.after(m); else if (!vue && !m.isConnected) res.firstElementChild.after(m);
+    const tq = document.querySelector("#scr-tel .tel-q"); if (tq) tq.classList.toggle("vide", !(TQ && TQ.qid) && !!window.Accueil);
+    const manque = cs.filter(([n])=>!rep[n]), lus = cs.length-manque.length, q = TQ && TQ.qid, bonne = q && TQ.bonne;
+    const nom = ([n,p]) => esc(p || "carte "+n);
+    if (bonne){ const ok = cs.filter(([n])=>rep[n]===bonne).length;
+      m.innerHTML = `<b>Réponse ${esc(bonne)}</b> · ${ok} bonne${ok>1?"s":""} réponse${ok>1?"s":""} sur ${lus} carte${lus>1?"s":""} lue${lus>1?"s":""}`; }
+    else if (!cs.length) m.innerHTML = "";
+    else if (!manque.length) m.innerHTML = `<b class="ok">Toutes les cartes sont lues ✓</b>`;
+    else if (!lus) m.innerHTML = q && TQ.open ? "Levez les cartes !" : "Pas de question en cours : lève une carte devant le téléphone pour l'essayer.";
+    else m.innerHTML = `<b>Pas encore lue${manque.length>1?"s":""} (${manque.length}) :</b> ${manque.slice(0,16).map(nom).join(", ")}${manque.length>16 ? "…" : ""}`;
+    if (window.CameraDirect) CameraDirect.badge(cs.length ? `${lus}<small>/ ${cs.length}</small>` : "", cs.length && !manque.length ? "ok" : "");
+  }
   /* téléphone relié mais écran absent : rappel ; pied de page avec le code */
   function rappel(box, visible, ouvrir){
     if (!visible){ box.innerHTML = ""; return; }
@@ -4079,7 +4157,7 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
     };
     c.oninput = c.onchange = null;
   }
-  return { relier, rappel, piedTel, scanne, accord, tbi, rendTel, aRouvrir };
+  return { relier, rappel, piedTel, scanne, accord, tbi, rendTel, aRouvrir, scan };
 })();
 function rendTel(c){ return EcransAutonome.rendTel(c); }
 window.EcransAutonome = EcransAutonome;
@@ -4570,11 +4648,15 @@ const Accueil = (() => {
     const b = z.querySelector("#aa-relier"); if (b) b.onclick = ()=>relier();
     const bd = document.getElementById("aa-bandeau"); if (bd) bd.hidden = !questionOuverte || courant!=="aa-app";
   }
-  function relier(){
+  /* o.retour : où revenir une fois relié (accueil, bateau, pavillons) ; o.attente : l'appli vient de recharger avec le nouveau code */
+  function relier(o){
+    o = o || {};
     const s = section("aa-classe"); montre("aa-classe");
-    s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="aa-r">${IC.retour}Accueil</button></div><div style="padding:0 12px 24px" id="aa-rel"></div>`;
-    s.querySelector("#aa-r").onclick = accueilTel;
-    EcransAutonome.relier(s.querySelector("#aa-rel"));
+    const retour = () => o.retour==="pavillons" || o.retour==="bateau" ? ouvreActivite(o.retour) : accueilTel();
+    s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="aa-r">${IC.retour}${o.retour==="pavillons" ? "Pavillons" : o.retour==="bateau" ? "Bateau-école" : "Accueil"}</button></div><div style="padding:0 12px 24px" id="aa-rel"></div>`;
+    s.querySelector("#aa-r").onclick = retour;
+    EcransAutonome.relier(s.querySelector("#aa-rel"), {retour:o.retour, attente:o.attente, suite:retour,
+      suiteTexte:o.retour==="pavillons" ? "Retour aux pavillons" : o.retour==="bateau" ? "Retour au Bateau-école" : "Continuer"});
   }
   async function imprime(b){
     const sm = b && b.querySelector("small"), avant = sm && sm.textContent;
@@ -4725,7 +4807,7 @@ const Accueil = (() => {
     }
     s.innerHTML = `${pas}<div class="aa-etape"><h1>L'écran de la classe</h1><p>Le jeu s'affiche sur l'ordinateur du TBI, et ce téléphone lit les cartes.</p><div id="aa-rel"></div>
       <div class="aa-actions"><button class="btn prim big" id="aa-go">Terminer</button></div></div>`;
-    EcransAutonome.relier(s.querySelector("#aa-rel"));
+    EcransAutonome.relier(s.querySelector("#aa-rel"), {suite:fin, suiteTexte:"Terminer"});
     s.querySelector("#aa-go").onclick = fin;
   }
 
@@ -4782,8 +4864,7 @@ const Accueil = (() => {
         room.onPeers(ch=>{ tbiVu = ch.peers.some(p=>p.presence && p.presence.role==="tbi"); dessineEcran(); });
         room.on("q", m=>{ const d = m.data||{}; questionOuverte = !!(d.qid && d.open); dessineEcran(); }); }
       if (!Classe.existe() && lsGet("bateau-ecole-bienvenue")!=="1") bienvenue(0);
-      else if (EcransAutonome.aRouvrir && EcransAutonome.aRouvrir()){ accueilTel(); relier(); }
-      else accueilTel();
+      else { const r = EcransAutonome.aRouvrir ? EcransAutonome.aRouvrir() : ""; if (r){ accueilTel(); relier({retour:r, attente:true}); } else accueilTel(); }
     }
   }
   /* où poser les panneaux et messages du jeu : sur l'accueil des activités s'il est affiché */
@@ -4998,6 +5079,30 @@ const Pavillons = (() => {
 .pv-rc b{font-size:.85em;background:rgba(255,255,255,.75);border-radius:999px;padding:.2em .45em} .pv-rc s{opacity:.7}
 .pv-fin .pv-boutons{justify-content:flex-start}
 #pv-ecran[data-phase="salon"] .pv-titre{visibility:hidden}
+.pv-fin.deux{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:stretch;width:min(96vw,1260px)}
+.pv-arevoir{display:grid;gap:6px}
+.pv-arevoir > b{font:800 clamp(.95rem,1.2vw,1.15rem) var(--display);color:var(--nuit)}
+.pv-bravo{color:var(--ok)!important;font-weight:800!important}
+.pv-palmares{background:#FFFCF4;border:4px solid #E3CFA2;border-radius:28px;padding:clamp(12px,2vh,22px) clamp(16px,2vw,28px);box-shadow:0 8px 0 #CDB482,0 18px 40px rgba(11,39,64,.25);display:grid;gap:clamp(8px,1.4vh,14px);align-content:start}
+.pv-palmares h2{margin:0;font:800 clamp(1.4rem,2.4vw,2.2rem)/1 var(--display);color:var(--nuit)}
+.pv-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:clamp(6px,1vw,14px)}
+.pv-marche{display:grid;justify-items:center;gap:3px;text-align:center;min-width:0}
+.pv-mat{position:relative;padding:0 0 4px 7px}
+.pv-mat::before{content:"";position:absolute;left:0;top:-3px;bottom:-6px;width:4px;border-radius:2px;background:#8A6536}
+.pv-mat .pv-dr{display:block;width:clamp(40px,4.4vw,66px);height:auto;animation:pv-hisse .8s cubic-bezier(.2,1.3,.4,1) both}
+.m3 .pv-mat .pv-dr{animation-delay:.5s} .m2 .pv-mat .pv-dr{animation-delay:.75s} .m1 .pv-mat .pv-dr{animation-delay:1s}
+@keyframes pv-hisse{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.pv-marche b{font:800 clamp(1rem,1.6vw,1.5rem)/1.05 var(--display);color:var(--nuit);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv-marche small{font:700 clamp(.75rem,.95vw,.95rem)/1.1 var(--texte);color:var(--gris)}
+.pv-bloc{width:100%;margin-top:4px;border-radius:12px 12px 4px 4px;display:grid;place-items:center;font:800 clamp(1.4rem,2.6vw,2.4rem)/1 var(--display);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.18);box-shadow:inset 0 -6px 0 rgba(0,0,0,.12);transform-origin:50% 100%;animation:pv-monte .55s cubic-bezier(.2,1.2,.4,1) both}
+.m1 .pv-bloc{height:clamp(66px,12vh,118px);background:linear-gradient(#FFD45A,#E9AE1C);animation-delay:.3s}
+.m2 .pv-bloc{height:clamp(48px,8.5vh,84px);background:linear-gradient(#DDE6EA,#A9BBC4);animation-delay:.15s}
+.m3 .pv-bloc{height:clamp(36px,6vh,60px);background:linear-gradient(#EDB888,#C98A52)}
+@keyframes pv-monte{from{transform:scaleY(0)}to{transform:none}}
+.pv-records{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pv-records li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;background:var(--ecume);border-radius:14px;padding:7px 12px;font:700 clamp(.85rem,1.1vw,1.08rem)/1.3 var(--texte);color:var(--encre)}
+.pv-records svg{width:clamp(26px,2.6vw,36px);height:auto;display:block}
+.pv-records b{font-family:var(--display);color:var(--nuit);margin-right:.2em}
 @media (prefers-reduced-motion:reduce){#pv-ecran *,#pv-ecran{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}}
 /* ---------- Hissez les pavillons : téléphone ---------- */
 .pv-t{display:grid;gap:12px;padding:0 0 24px}
@@ -5039,6 +5144,21 @@ const Pavillons = (() => {
 .pv-t-durs ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:2px}
 .pv-t-durs li{font-weight:700}
 .pv-t-durs s{color:var(--ko)}
+.pv-t-grand{font:800 1.4rem/1 var(--display);color:var(--gris);display:flex;align-items:baseline;gap:6px}
+.pv-t-grand b{font-size:3.2rem;color:var(--nuit)} .pv-t-grand.ok b{color:var(--ok)}
+.pv-t-grand small{font:700 .95rem var(--texte);margin-left:6px}
+.pv-t-manque .ok{color:var(--ok)}
+.pv-t-podium{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pv-t-podium li{display:grid;grid-template-columns:30px 34px minmax(0,1fr) auto;gap:10px;align-items:center;border-radius:14px;padding:8px 10px;background:var(--ecume)}
+.pv-t-podium i{font:800 1.1rem/30px var(--display);font-style:normal;text-align:center;border-radius:50%;color:#fff;width:30px;height:30px}
+.pv-t-podium .or i{background:#E9AE1C} .pv-t-podium .argent i{background:#A9BBC4} .pv-t-podium .bronze i{background:#C98A52}
+.pv-t-podium .pv-dr{width:34px;height:auto}
+.pv-t-podium b{font:800 1.05rem var(--display);color:var(--nuit);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv-t-podium em{font-style:normal;font-weight:800;color:var(--mer);font-size:.92rem}
+.pv-t-records{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pv-t-records li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:center;font-size:.92rem;line-height:1.35}
+.pv-t-records svg{width:28px;height:28px}
+.pv-t-records b{font-family:var(--display);color:var(--nuit)}
 .pv-regl{display:grid;gap:14px}
 .pv-regl .aa-puces button{padding:.45em .8em}
 .pv-regl .aa-puces.tables button{min-width:2.6em}`;
@@ -5063,7 +5183,7 @@ const Pavillons = (() => {
       pres:(P ? P.pres : presents()).map(e=>e.n), compte:c ? !!c.tel : telPv,
       hisses:montre ? [...P.hisses[P.i]] : phase==="verif" ? [...verifVus] : [],
       bons:montre && phase==="revele" ? c.bons : null, score:P ? P.score : null,
-      fin:phase==="fin" && P ? {res:P.res, calcs:P.calcs.map(x=>({txt:texte(x), juste:x.juste, vrai:texte(x, x.r), bons:x.bons})), nb:P.pres.length} : null};
+      fin:phase==="fin" && P ? {res:P.res, calcs:P.calcs.map(x=>({txt:texte(x), juste:x.juste, vrai:texte(x, x.r), bons:x.bons})), nb:P.pres.length, pm:P.pm} : null};
   }
   function emet(){ if (roomE) roomE.emit("pv", sur() ? etat() : {v:1, phase:null}).catch(()=>{}); }
   function brancheEcran(){
@@ -5095,7 +5215,7 @@ const Pavillons = (() => {
     try { Son.init(); } catch(e){}
     clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf);
     const pres = presents(), calcs = genere(R);
-    P = {id:Autonome.rid(4), calcs, i:0, hisses:calcs.map(()=>new Set()), pres, score:{bons:0, total:0}, res:null, pause:false};
+    P = {id:Autonome.rid(4), calcs, i:0, hisses:calcs.map(()=>new Set()), temps:calcs.map(()=>new Map()), pres, score:{bons:0, total:0}, res:null, pm:null, pause:false};
     phase = "compte"; dessine(); emet();
     const pas = k => { if (!P) return; if (k===0){ calc(); return; } const z = document.querySelector("#pv-ecran .pv-decompte"); if (z){ z.textContent = k; z.style.animation = "none"; void z.offsetWidth; z.style.animation = ""; } sons("pop"); programme(900, ()=>pas(k-1)); };
     pas(3);
@@ -5106,8 +5226,10 @@ const Pavillons = (() => {
     if (!sur()) return;
     if (d.cid==="verif"){ if (phase!=="verif") return; verifVus = new Set((Array.isArray(d.n) ? d.n : []).map(Number).filter(estPresent)); dessineDrisse(); dessineCentre(); return; }
     if (!P || (phase!=="calc" && phase!=="ferme") || d.cid!==P.id+":"+P.i) return;
-    const h = P.hisses[P.i]; let neuf = 0;
-    (Array.isArray(d.n) ? d.n : []).forEach(x=>{ x = +x; if (estPresent(x) && !h.has(x)){ h.add(x); neuf++; } });
+    const h = P.hisses[P.i], tl = Array.isArray(d.t) ? d.t : []; let neuf = 0;
+    (Array.isArray(d.n) ? d.n : []).forEach((x,j)=>{ x = +x; if (!estPresent(x)) return;
+      if (!h.has(x)){ h.add(x); neuf++; }
+      if (tl[j]!=null && !P.temps[P.i].has(x)) P.temps[P.i].set(x, Math.max(0, +tl[j])*100); }); // temps de réaction (dixièmes de seconde, mesurés par le téléphone)
     P.calcs[P.i].tel = true;
     if (neuf){ dessineDrisse(); const b = document.querySelector("#pv-ecran .pv-compte"); if (b){ b.querySelector("b").textContent = h.size; b.querySelector("small").textContent = h.size>1 ? "pavillons hissés" : "pavillon hissé"; b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
       if (Date.now()-dernierPop>140){ dernierPop = Date.now(); sons("pop"); } }
@@ -5124,7 +5246,25 @@ const Pavillons = (() => {
   function fin(){
     phase = "fin"; cancelAnimationFrame(raf);
     P.res = {}; P.pres.forEach(e=>{ P.res[e.n] = P.calcs.map((c,i)=>c.bons==null ? "-" : (P.hisses[i].has(e.n)===c.juste ? "1" : "0")).join(""); });
+    P.pm = palmares();
     dessine(); emet(); sons("fanfare");
+  }
+  /* le palmarès : les meilleurs matelots (bonnes réponses, puis rapidité), et des records qui ne récompensent que du bon */
+  function palmares(){
+    const compte = P.calcs.map((c,i)=>c.bons!=null ? i : -1).filter(i=>i>=0); if (!compte.length) return null;
+    const L = P.pres.map(e=>{ const s = P.res[e.n]||"", ok = [...s].filter(x=>x==="1").length, faits = [...s].filter(x=>x!=="-").length;
+      const tps = compte.filter(i=>P.calcs[i].juste && P.hisses[i].has(e.n) && P.temps[i].has(e.n)).map(i=>P.temps[i].get(e.n));
+      const pieges = compte.filter(i=>!P.calcs[i].juste), justes = compte.filter(i=>P.calcs[i].juste), hj = justes.filter(i=>P.hisses[i].has(e.n)).length;
+      return {n:e.n, ok, faits, moy:tps.length ? Math.round(tps.reduce((a,b)=>a+b,0)/tps.length) : null, nbT:tps.length,
+        actif:!justes.length || hj>0, // a hissé au moins un pavillon sur un calcul juste : garder sa carte baissée tout le temps ne suffit pas
+        aucunPiege:pieges.length>0 && pieges.every(i=>!P.hisses[i].has(e.n)) && hj>=Math.max(1, Math.ceil(justes.length/2))}; });
+    const lent = x => x.moy==null ? 1e9 : x.moy, bons = L.filter(x=>x.faits && x.actif && x.ok/x.faits>=.6);
+    const podium = L.filter(x=>x.ok>0 && x.actif).sort((a,b)=>b.ok-a.ok || lent(a)-lent(b) || a.n-b.n).slice(0,3).map(x=>({n:x.n, ok:x.ok, faits:x.faits, moy:x.moy}));
+    let eclair = null;
+    compte.forEach(i=>{ if (P.calcs[i].juste) P.temps[i].forEach((t,n)=>{ if (P.hisses[i].has(n) && bons.some(x=>x.n===n) && (!eclair || t<eclair.t)) eclair = {n, t, txt:texte(P.calcs[i])}; }); });
+    const vite = bons.filter(x=>x.nbT>=2).sort((a,b)=>a.moy-b.moy || a.n-b.n)[0];
+    return {podium, eclair, vite:vite ? {n:vite.n, moy:vite.moy} : null,
+      sansFaute:L.filter(x=>x.faits && x.ok===x.faits).map(x=>x.n), aucunPiege:bons.filter(x=>x.aucunPiege && x.ok<x.faits).map(x=>x.n)}; // (les sans-faute ont déjà leur record)
   }
   function verif(){ clearTimeout(minuteur); clearTimeout(attenteFin); P = null; phase = "verif"; verifVus = new Set(); dessine(); emet(); }
   function arrete(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; dessine(); emet(); }
@@ -5223,18 +5363,44 @@ const Pavillons = (() => {
       ${c.tel ? `<div class="pv-compte"><b>${h.size}</b><small>${h.size>1 ? "pavillons hissés" : "pavillon hissé"}</small></div>` : ""}`;
     if (phase==="calc") anime();
   }
+  const sec = ms => (ms/1000).toFixed(1).replace(".", ",")+" s";
+  const noms = (l, nom) => l.length<=5 ? liste(l.map(nom)) : l.slice(0,4).map(nom).join(", ")+" et "+(l.length-4)+" autres";
+  const ICONES = {
+    eclair:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#FFF1CF"/><path d="M13.5 3.5L6.5 13h5l-1 7.5 7-9.5h-5z" fill="#F2A900" stroke="#9A6A00" stroke-width="1.2" stroke-linejoin="round"/></svg>',
+    vite:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#DDF0F7"/><circle cx="12" cy="13.5" r="6.5" fill="#fff" stroke="#1D5C7A" stroke-width="1.8"/><path d="M12 13.5V9.8M10 3.8h4M12 3.8v3" stroke="#1D5C7A" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    etoile:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#FFF1CF"/><path d="M12 5l2.1 4.4 4.8.6-3.5 3.3.9 4.8L12 15.8l-4.3 2.3.9-4.8-3.5-3.3 4.8-.6z" fill="#FFC94A" stroke="#C99A1C" stroke-width="1.1" stroke-linejoin="round"/></svg>',
+    bouclier:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#E3F4E9"/><path d="M12 4.5l6 2.3v4.6c0 3.8-2.6 6.4-6 7.6-3.4-1.2-6-3.8-6-7.6V6.8z" fill="#fff" stroke="#2F9E5B" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.2 11.8l2 2 3.7-3.8" fill="none" stroke="#2F9E5B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+  /* records du palmarès, en phrases (écran de la classe et téléphone) */
+  function records(pm, nom){
+    const l = [];
+    if (pm.eclair) l.push(["eclair", "Pavillon éclair", `${esc(nom(pm.eclair.n))} a hissé son pavillon en ${sec(pm.eclair.t)} sur ${esc(pm.eclair.txt)}`]);
+    if (pm.vite) l.push(["vite", "Vitesse record", `${esc(nom(pm.vite.n))} : ${sec(pm.vite.moy)} en moyenne pour hisser son pavillon`]);
+    if (pm.sansFaute.length) l.push(["etoile", "Sans faute", esc(noms(pm.sansFaute, nom))]);
+    if (pm.aucunPiege.length) l.push(["bouclier", "Aucun piège", `${esc(noms(pm.aucunPiege, nom))} ${pm.aucunPiege.length>1 ? "n'ont" : "n'a"} jamais hissé de pavillon sur un calcul faux`]);
+    return l;
+  }
+  function palmaresHTML(pm){
+    const nom = n => nomDe(n).replace(/^carte /, "Carte ");
+    const ordre = [[pm.podium[1],2],[pm.podium[0],1],[pm.podium[2],3]];
+    const pod = ordre.map(([x,r])=>x ? `<div class="pv-marche m${r}"><div class="pv-mat">${drapeau(x.n)}</div><b>${esc(nom(x.n))}</b><small>${x.ok}/${x.faits}${x.moy!=null ? " · "+sec(x.moy) : ""}</small><div class="pv-bloc">${r}</div></div>` : `<div class="pv-marche"></div>`).join("");
+    const rec = records(pm, nom).slice(0,4).map(([ic,t,x])=>`<li>${ICONES[ic]}<span><b>${t}</b> ${x}</span></li>`).join("");
+    return `<div class="pv-palmares"><h2>Le palmarès</h2><div class="pv-podium">${pod}</div>${rec ? `<ul class="pv-records">${rec}</ul>` : ""}</div>`;
+  }
   function finHTML(){
     const compte = P.calcs.filter(c=>c.bons!=null), nb = P.pres.length;
     const pct = P.score.total ? Math.round(100*P.score.bons/P.score.total) : 0, et = pct>=90 ? 3 : pct>=75 ? 2 : pct>=50 ? 1 : 0;
     const titre = !compte.length ? "Partie terminée !" : pct>=90 ? "Équipage d'élite !" : pct>=75 ? "Bravo l'équipage !" : pct>=50 ? "Bien joué, moussaillons !" : "On s'entraîne encore ?";
-    const recap = P.calcs.map(c=>{ const t = c.bons==null ? null : Math.round(100*c.bons/Math.max(1,nb));
-      return `<span class="pv-rc ${t==null ? "" : t>=80 ? "" : t>=50 ? "moyen" : "dur"}"><span>${c.a} ${OPS[c.op]} ${c.b} = ${c.juste ? c.r : `<s>${c.aff}</s> ${c.r}`}</span>${t==null ? "" : `<b>${t} %</b>`}</span>`; }).join("");
-    return `<div class="pv-fin"><img class="perro" src="img/perroquet-bravo.webp" alt=""><div class="pv-fin-carte"><h1>${titre}</h1>
+    const durs = P.calcs.map(c=>({c, t:c.bons==null ? null : Math.round(100*c.bons/Math.max(1,nb))})).filter(x=>x.t!=null && x.t<80).sort((a,b)=>a.t-b.t).slice(0,3);
+    const chip = ({c,t}) => `<span class="pv-rc ${t>=50 ? "moyen" : "dur"}"><span>${c.a} ${OPS[c.op]} ${c.b} = ${c.juste ? c.r : `<s>${c.aff}</s> ${c.r}`}</span><b>${t} %</b></span>`;
+    const carte = `<div class="pv-fin-carte"><h1>${titre}</h1>
       ${compte.length ? `<div class="pv-pct">${pct} %<span class="pv-etoiles">${"★".repeat(et)}<i>${"★".repeat(3-et)}</i></span></div>
-        <p>${br(P.score.bons)} sur ${P.score.total} : pavillons hissés sur les calculs justes, gardés baissés sur les faux.</p>`
+        <p>${br(P.score.bons)} sur ${P.score.total} : pavillons hissés sur les calculs justes, gardés baissés sur les faux.</p>
+        ${durs.length ? `<div class="pv-arevoir"><b>À revoir ensemble</b><div class="pv-recap">${durs.map(chip).join("")}</div></div>` : `<p class="pv-bravo">Tous les calculs ont été bien réussis !</p>`}`
         : `<p>Sans téléphone qui filme, les cartes n'ont pas été comptées.</p>`}
-      <div class="pv-recap">${recap}</div>
-      <div class="pv-boutons"><button class="btn" data-pv="salon">Changer les calculs</button><button class="btn prim" data-pv="lance">Rejouer</button></div></div></div>`;
+      <div class="pv-boutons"><button class="btn" data-pv="salon">Changer les calculs</button><button class="btn prim" data-pv="lance">Rejouer</button></div></div>`;
+    return P.pm && P.pm.podium.length ? `<div class="pv-fin deux">${carte}${palmaresHTML(P.pm)}</div>`
+      : `<div class="pv-fin"><img class="perro" src="img/perroquet-bravo.webp" alt="">${carte}</div>`;
   }
 
   /* ---------- réglages (sur l'écran de la classe comme sur le téléphone) ---------- */
@@ -5258,28 +5424,43 @@ const Pavillons = (() => {
 
   /* ================= téléphone : il filme, compte et télécommande ================= */
   let E = null, cam = null, roomT = null, lie = false, cid = null, debut = 0, cumul = new Set(), ouvert = false, envoiT = null, vusVerif = [], reprendre = false, dernier = null;
+  let recu = 0, deja = new Set(), tps = new Map(), dernierVus = null; // temps de réaction : depuis l'arrivée du calcul (les cartes déjà levées n'ont pas de temps)
   const emetT = (t, d) => roomT && roomT.emit(t, d).catch(()=>{});
   const cmd = (f, x) => emetT("cmd", Object.assign({a:"pv", f}, x||{}));
   const telOuvert = () => Accueil.courant()==="pv-tel";
   function recoitEtat(d){
     const avant = E; E = d && d.phase ? d : null;
-    if (E && E.phase==="calc" && E.cid && E.cid!==cid){ cid = E.cid; debut = Date.now()+GRACE; cumul = new Set(); ouvert = true; }
+    if (E && E.phase==="calc" && E.cid && E.cid!==cid){ cid = E.cid; recu = Date.now(); debut = recu+GRACE; cumul = new Set(); ouvert = true;
+      tps = new Map(); deja = new Set(); if (dernierVus) dernierVus.forEach((v,n)=>{ if (recu-v.t<900) deja.add(n); }); }
     if (E && E.phase==="ferme" && E.cid===cid && ouvert){ ouvert = false; envoie(true); }
     if (!E || (E.phase!=="calc" && E.phase!=="ferme")) ouvert = false;
     if (cam) cam.question(!!E && ["calc","ferme","verif","compte"].includes(E.phase), false);
     if (E && E.phase==="fin" && E.fin) garde(E);
-    if (telOuvert()){ if (!avant || !E || avant.phase!==E.phase || avant.cid!==E.cid || avant.pause!==E.pause || JSON.stringify(avant.r)!==JSON.stringify(E.r) || E.phase==="verif") dessineJeu(); dessineLien(); }
+    if (telOuvert()){ if (!avant || !E || avant.phase!==E.phase || avant.cid!==E.cid || avant.pause!==E.pause || JSON.stringify(avant.r)!==JSON.stringify(E.r) || E.phase==="verif") dessineJeu(); dessineLien(); majBadge(); }
     else if (Accueil.courant()==="aa-app") bandeau();
   }
   function vue(vus, t){
+    dernierVus = vus;
     if (!E) return;
     if (E.phase==="verif"){ const l = [...vus].filter(([n,v])=>v.k>=2 && t-v.t<1500).map(([n])=>n).sort((a,b)=>a-b);
-      if (l.join()!==vusVerif.join()){ vusVerif = l; emetT("pvc", {cid:"verif", n:l}); if (telOuvert()) dessineJeu(); } return; }
+      if (l.join()!==vusVerif.join()){ vusVerif = l; emetT("pvc", {cid:"verif", n:l}); if (telOuvert()){ dessineJeu(); majBadge(); } } return; }
     if (!ouvert) return;
-    let neuf = false; vus.forEach((v,n)=>{ if (v.k>=2 && v.t>=debut && !cumul.has(n)){ cumul.add(n); neuf = true; } });
-    if (neuf){ majCompte(); if (!envoiT) envoiT = setTimeout(()=>{ envoiT = null; envoie(false); }, 250); }
+    let neuf = false; vus.forEach((v,n)=>{ if (v.k>=2 && v.t>=debut && !cumul.has(n)){ cumul.add(n); neuf = true; if (!deja.has(n)) tps.set(n, Date.now()-recu); } });
+    if (neuf){ majCompte(); majBadge(); if (!envoiT) envoiT = setTimeout(()=>{ envoiT = null; envoie(false); }, 250); }
   }
-  function envoie(fin){ if (!cid) return; clearTimeout(envoiT); envoiT = null; emetT("pvc", {cid, n:[...cumul], fin:!!fin}); }
+  function envoie(fin){ if (!cid) return; clearTimeout(envoiT); envoiT = null; const l = [...cumul];
+    emetT("pvc", {cid, n:l, t:l.map(n=>tps.has(n) ? Math.round(tps.get(n)/100) : null), fin:!!fin}); }
+  /* le compteur posé sur l'image : cartes vues pendant l'essai, pavillons hissés pendant un calcul */
+  const DRAPEAU_IC = '<svg viewBox="0 0 20 20" width=".75em" height=".75em" aria-hidden="true"><path d="M4 2v16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M5 3h11l-3 4 3 4H5z" fill="currentColor"/></svg>';
+  function majBadge(){
+    if (!cam) return;
+    if (!E || !cam.actif()){ cam.badge(""); return; }
+    const pres = presT();
+    if (E.phase==="verif"){ const v = vusVerif.filter(n=>pres.includes(n)).length; cam.badge(`${v}<small>/ ${pres.length}</small>`, pres.length && v===pres.length ? "ok" : ""); return; }
+    if (E.phase==="calc" || E.phase==="ferme"){ const n = [...cumul].filter(x=>pres.includes(x)).length; cam.badge(`${DRAPEAU_IC} ${n}<small>hissé${n>1?"s":""}</small>`, "mer"); return; }
+    if (E.phase==="revele" && E.bons!=null){ cam.badge(`${E.bons}<small>/ ${pres.length} bien</small>`, "ok"); return; }
+    cam.badge("");
+  }
   const presT = () => E && Array.isArray(E.pres) ? E.pres : Classe.presents().map(e=>e.n);
   function majCompte(){ const b = document.getElementById("pv-nb"); if (!b) return; const n = [...cumul].filter(x=>presT().includes(x)).length;
     b.textContent = n; const s = b.nextSibling; if (s) s.textContent = n>1 ? " pavillons hissés" : " pavillon hissé"; }
@@ -5298,10 +5479,10 @@ const Pavillons = (() => {
       cam = nouvelleCamera({id:"pv-cam-go", bouton:"Filmer la classe", presence:true, attente:"",
         note:"Pose le téléphone debout, en hauteur, face à la classe : il doit voir toutes les cartes levées. Fais un essai des cartes avant de jouer.",
         gris:(n)=>!presT().includes(n) || (ouvert && !cumul.has(n)),
-        surEtat:a=>{ if (roomT) roomT.presence({pv:a ? 1 : null}).catch(()=>{}); if (telOuvert()) dessineJeu(); }});
+        surEtat:a=>{ if (roomT) roomT.presence({pv:a ? 1 : null}).catch(()=>{}); if (telOuvert()){ dessineJeu(); majBadge(); } }});
       cam.monte(s.querySelector("#pv-cam"), {surVue:vue});
       s.querySelector("#pv-jeu").addEventListener("click", clic);
-      s.querySelector("#pv-lien").addEventListener("click", e=>{ if (e.target.closest("#pv-relier")) Accueil.relier(); if (e.target.closest("[data-c]")) emetT("cmd", {a:"activite", id:"pavillons"}); });
+      s.querySelector("#pv-lien").addEventListener("click", e=>{ if (e.target.closest("#pv-relier")) Accueil.relier({retour:"pavillons"}); if (e.target.closest("[data-c]")) emetT("cmd", {a:"activite", id:"pavillons"}); });
     }
     if (reprendre){ reprendre = false; cam.lance(); }
     dessineLien(); dessineJeu();
@@ -5312,7 +5493,7 @@ const Pavillons = (() => {
     const b = e.target.closest("[data-c]"); if (!b) return;
     const f = b.dataset.c;
     if (f==="reglages"){ reglages(E ? E.r : null, r=>cmd("reglages", {r})); return; }
-    if (f==="relier"){ Accueil.relier(); return; }
+    if (f==="relier"){ Accueil.relier({retour:"pavillons"}); return; }
     if ((f==="lance" || f==="verif") && cam && !cam.actif()) cam.lance();
     b.disabled = true; setTimeout(()=>{ b.disabled = false; }, 900);
     cmd(f);
@@ -5336,13 +5517,15 @@ const Pavillons = (() => {
     }
     if (E.phase==="verif"){
       const vus = vusVerif.filter(n=>pres.includes(n)), manque = pres.filter(n=>!vusVerif.includes(n));
-      z.innerHTML = `<div class="aa-bloc"><h3>Essai des cartes <span>${vus.length} sur ${pres.length}</span></h3>
-        <p class="pv-t-manque">${!filme ? "Touche « Filmer la classe » au-dessus." : !manque.length ? "Toutes les cartes sont vues. Parfait !" : "Pas encore vues : "+esc(liste(manque.map(nomT)))+"."}</p>
+      z.innerHTML = `<div class="aa-bloc pv-t-essai"><h3>Essai des cartes</h3>
+        <div class="pv-t-grand ${pres.length && !manque.length ? "ok" : ""}"><b>${vus.length}</b> / ${pres.length}<small>cartes vues</small></div>
+        <p class="pv-t-manque">${!filme ? "Touche « Filmer la classe » au-dessus." : !manque.length ? "<b class=\"ok\">Tout le monde est vu ✓</b>" : `<b>Pas encore vue${manque.length>1?"s":""} (${manque.length}) :</b> `+esc(liste(manque.map(nomT)))+"."}</p>
         <div class="aa-actions"><button class="btn prim" data-c="lance">C'est parti !</button><button class="btn" data-c="salon">Retour</button></div></div>`;
       return;
     }
     if (E.phase==="fin" && E.fin){
-      z.innerHTML = `<div class="aa-bloc">${resultatsHTML(E.fin)}<div class="aa-actions"><button class="btn prim" data-c="lance">Rejouer</button><button class="btn" data-c="salon">Changer les calculs</button></div></div>`;
+      z.innerHTML = `<div class="aa-bloc"><div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer</button><button class="btn" data-c="salon">Changer les calculs</button></div></div>
+        ${palmaresTel(E.fin.pm)}<div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;
       return;
     }
     const c = E.calc, rev = E.phase==="revele";
@@ -5355,6 +5538,12 @@ const Pavillons = (() => {
       ${filme ? `<div class="pv-t-compte"><b id="pv-nb">${n}</b><span>${n>1 ? " pavillons hissés" : " pavillon hissé"}</span></div>` : `<p class="aut-note" style="margin:0">La caméra est éteinte : les cartes ne sont pas comptées.</p>`}
       ${verdict}
       <div class="aa-actions deux"><button class="btn" data-c="${E.pause ? "reprend" : "pause"}">${E.pause ? "Reprendre" : "Pause"}</button><button class="btn" data-c="stop">Arrêter</button></div></div>`;
+  }
+  function palmaresTel(pm){
+    if (!pm || !pm.podium || !pm.podium.length) return "";
+    const med = ["or","argent","bronze"], rec = records(pm, nomT);
+    return `<div class="aa-bloc"><h3>Le palmarès</h3><ol class="pv-t-podium">${pm.podium.map((x,k)=>`<li class="${med[k]}"><i>${k+1}</i>${drapeau(x.n)}<b>${esc(nomT(x.n))}</b><em>${x.ok}/${x.faits}${x.moy!=null ? " · "+sec(x.moy) : ""}</em></li>`).join("")}</ol>
+      ${rec.length ? `<ul class="pv-t-records">${rec.map(([ic,tt,x])=>`<li>${ICONES[ic]}<span><b>${tt}</b> ${x}</span></li>`).join("")}</ul>` : ""}</div>`;
   }
   function derniereHTML(){
     if (!dernier || !dernier.fin) return "";
@@ -5393,7 +5582,9 @@ const Pavillons = (() => {
 
   /* ---------- démarrage ---------- */
   async function demarre(mode){
-    if (mode==="tbi"){ brancheEcran(); return; }
+    if (mode==="tbi"){ brancheEcran();
+      Classe.surChange(()=>{ if (sur() && !P){ dessineDrisse(); if (phase==="salon" || phase==="verif") dessineCentre(); emet(); } });
+      return; }
     roomT = await useCap("room"); if (!roomT) return;
     roomT.on("pv", m=>recoitEtat(m.data||{}));
     roomT.onPeers(ch=>{ const a = lie; lie = ch.peers.some(p=>!p.isMe && p.presence && p.presence.role==="tbi"); if (!lie) E = null;
@@ -5403,7 +5594,7 @@ const Pavillons = (() => {
   /* l'écran de la classe passe à autre chose : la partie s'arrête, et le téléphone l'apprend */
   function quitteEcran(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; emet(); }
   return { demarre, ecran, tel, quitteTel, quitteEcran, bandeau, image, drapeau, occupe:enPartie,
-    _test:{ durees(o){ dureesTest = o; }, etat:()=>({phase, P, R, telPv}), genere, faux, propre } };
+    _test:{ durees(o){ dureesTest = o; }, etat:()=>({phase, P, R, telPv}), fin, genere, faux, propre } };
 })();
 window.Pavillons = Pavillons;
 
@@ -5417,7 +5608,9 @@ function reponseCarte(m){
 const Tel = (() => {
   let ROOMt=null, TQ=null, rep={}, tbiVu=false, det=null, envoiT=null;
   const lien=$("#t-lien");
-  function cartes(){ return TQ && Array.isArray(TQ.cartes) && TQ.cartes.length ? TQ.cartes : S.eleves.filter(e=>e.actif).map(e=>[e.n,e.prenom]); }
+  function cartes(){ if (TQ && Array.isArray(TQ.cartes) && TQ.cartes.length) return TQ.cartes;
+    if (window.Classe && Classe.actifs().length) return Classe.presents().map(e=>[e.n,e.prenom]); // version autonome : la classe (appel du jour compris)
+    return S.eleves.filter(e=>e.actif).map(e=>[e.n,e.prenom]); }
   function maj(){
     const cs=cartes(); const lus=cs.filter(([n])=>rep[n]).length;
     $("#t-cpt").textContent = lus+" / "+cs.length;
@@ -5426,6 +5619,7 @@ const Tel = (() => {
     if (!TQ||!TQ.qid){ $("#t-qk").textContent="Pas de question en cours"; $("#t-qt").textContent= tbiVu ? "Lance le rituel sur le TBI." : (window.BATEAU_AUTONOME ? "Affiche le jeu sur l'ordinateur de la classe." : "Ouvre le jeu sur l'ordinateur du TBI (même lien, même compte)."); }
     else { $("#t-qk").textContent = TQ.open ? "Question en cours : levez les cartes !" : (TQ.bonne ? "Réponse : "+TQ.bonne : "Question fermée"); $("#t-qt").textContent = TQ.txt||""; }
     $("#t-rev").disabled = !(TQ&&TQ.open); $("#t-next").disabled = !(TQ&&TQ.qid&&!TQ.open);
+    if (window.EcransAutonome && EcransAutonome.scan) EcransAutonome.scan(cs, rep, TQ);
   }
   function envoie(){ if(ROOMt && TQ && TQ.open && TQ.qid) ROOMt.emit("scan",{qid:TQ.qid,answers:rep}).catch(()=>{}); }
   /* cartes lues en direct par la caméra (version autonome) */
@@ -5471,7 +5665,7 @@ const Tel = (() => {
     let ouvreRelier = null;
     if (auto){ $("#scr-tel header").after(zone("t-auto")); $("#t-auto").after(zone("t-rappel")); $(".photo-btn").before(zone("t-cam")); $("#t-mode").before(zone("t-pied")); $("#t-pied").className="tel-pied";
       CameraDirect.monte($("#t-cam"), {surCartes:ajoute}); $(".photo-btn small").textContent="Si la lecture en direct ne suffit pas : cartes levées, de face.";
-      ouvreRelier = ()=>{ EcransAutonome.relier($("#t-auto"), {fermer:()=>{ $("#t-auto").innerHTML=""; }}); $("#t-auto").scrollIntoView({block:"start", behavior:"smooth"}); };
+      ouvreRelier = ()=>{ EcransAutonome.relier($("#t-auto"), {retour:"bateau", fermer:()=>{ $("#t-auto").innerHTML=""; }}); $("#t-auto").scrollIntoView({block:"start", behavior:"smooth"}); };
       lien.onclick = ()=>{ if(!tbiVu) ouvreRelier(); }; }
     ROOMt = await useCap("room");
     if (!ROOMt && auto){ lien.textContent="Écran non relié"; EcransAutonome.relier($("#t-auto")); $("#t-qk").textContent="Première étape"; $("#t-qt").textContent="Relie ce téléphone à l'écran de la classe, juste au-dessus."; return; }
