@@ -3685,10 +3685,12 @@ function editeSon(k, box){
 (async()=>{ window.__assetsCap = await useCap("assets"); if (typeof ongletR!=="undefined" && ongletR==="sons" && $("#r-corps")) rendR(); })();
 
 /* ---------- téléphone : lecture des cartes en direct avec la caméra (version autonome) ----------
-   Les images sont analysées dans le téléphone puis oubliées : seuls les numéros de carte et les lettres lues sortent. */
-const CameraDirect = (() => {
+   Les images sont analysées dans le téléphone puis oubliées : seuls les numéros de carte et les lettres lues sortent.
+   Une caméra par activité (une seule filme à la fois) : le Bateau-école lit les lettres, les pavillons voient les cartes levées. */
+function nouvelleCamera(opt){
+  opt = Object.assign({bouton:"Lire les cartes en direct", note:"Pose le téléphone face à la classe : les cartes levées sont lues toutes seules.", attente:" · en attente d'une question", presence:false}, opt||{});
   let flux=null, video=null, marques=null, travail=null, det=null, actif=false, voulu=false, raf=0, dernier=0, tour=0, rapide=false, duree=40;
-  let surLus=()=>{}, etatEl=null, choixEl=null, boutonEl=null, perimees=new Map();
+  let surLus=()=>{}, surVue=null, etatEl=null, choixEl=null, boutonEl=null, perimees=new Map();
   const vus = new Map(); // carte → {r:lettre, k:lectures, t:vue la dernière fois, c:coins}
   const CLE = "bateau-ecole-objectif";
   const lsG = k => { try { return localStorage.getItem(k); } catch(e){ return null; } };
@@ -3704,14 +3706,15 @@ const CameraDirect = (() => {
     return l || "Caméra";
   }
   function monte(box, o){
-    surLus = o.surCartes || surLus;
+    surLus = o.surCartes || surLus; surVue = o.surVue || null;
     box.innerHTML = `<div class="cam">
       <div class="cam-vue" hidden><video playsinline muted autoplay></video><canvas class="cam-marques"></canvas></div>
-      <div class="cam-bar"><button class="btn prim" id="cam-go">Lire les cartes en direct</button>
-        <select id="cam-obj" aria-label="Objectif" hidden></select></div>
-      <div class="note" id="cam-etat" role="status">Pose le téléphone face à la classe : les cartes levées sont lues toutes seules.</div></div>`;
+      <div class="cam-bar"><button class="btn prim cam-go">${opt.bouton}</button>
+        <select class="cam-obj" aria-label="Objectif" hidden></select></div>
+      <div class="note cam-etat" role="status">${opt.note}</div></div>`;
     video = box.querySelector("video"); marques = box.querySelector(".cam-marques"); travail = document.createElement("canvas");
-    etatEl = box.querySelector("#cam-etat"); choixEl = box.querySelector("#cam-obj"); boutonEl = box.querySelector("#cam-go");
+    etatEl = box.querySelector(".cam-etat"); choixEl = box.querySelector(".cam-obj"); boutonEl = box.querySelector(".cam-go");
+    if (opt.id) boutonEl.id = opt.id;
     boutonEl.onclick = ()=>{ actif ? (voulu=false, arrete()) : (voulu=true, demarre()); };
     choixEl.onchange = ()=>{ lsS(CLE, choixEl.value); arrete(); demarre(); };
     document.addEventListener("visibilitychange", ()=>{ if (document.visibilityState==="hidden"){ if (actif) arrete(true); } else if (voulu && !actif) demarre(); });
@@ -3727,14 +3730,14 @@ const CameraDirect = (() => {
     if (!det) det = new AR.Detector({dictionaryName:"CARTES40", maxHammingDistance:2});
     actif = true; vus.clear(); perimees.clear();
     video.parentElement.hidden = false; boutonEl.textContent = "Arrêter la caméra"; boutonEl.classList.remove("prim");
-    Autonome.eveille(true); objectifs(); boucle();
+    Autonome.eveille(true); objectifs(); boucle(); if (opt.surEtat) opt.surEtat(true);
   }
   function arrete(pause){
     actif = false; cancelAnimationFrame(raf);
     if (flux) flux.getTracks().forEach(t=>t.stop()); flux = null;
     if (video){ video.srcObject = null; video.parentElement.hidden = true; }
-    if (boutonEl){ boutonEl.textContent = "Lire les cartes en direct"; boutonEl.classList.add("prim"); }
-    Autonome.eveille(false); vus.clear();
+    if (boutonEl){ boutonEl.textContent = opt.bouton; boutonEl.classList.add("prim"); }
+    Autonome.eveille(false); vus.clear(); if (opt.surEtat) opt.surEtat(false);
     if (!pause) etat("Caméra arrêtée.");
   }
   async function objectifs(){
@@ -3764,7 +3767,7 @@ const CameraDirect = (() => {
     duree = duree*.8 + (performance.now()-t0)*.2;
     const t = Date.now(), trouve = {};
     ms.forEach(m=>{ const n = m.id+1; if (n>NB_CARTES) return; const r = reponseCarte(m);
-      const v = vus.get(n) || {k:0}; if (v.r===r) v.k++; else { v.r = r; v.k = 1; } v.t = t; v.c = m.corners.map(p=>({x:p.x/k, y:p.y/k})); vus.set(n, v); });
+      const v = vus.get(n) || {k:0}; if (v.r===r || opt.presence) v.k++; else v.k = 1; v.r = r; v.t = t; v.c = m.corners.map(p=>({x:p.x/k, y:p.y/k})); vus.set(n, v); });
     vus.forEach((v,n)=>{ if (t-v.t > 1600){ vus.delete(n); perimees.delete(n); return; }
       const p = perimees.get(n); // carte encore levée depuis la question d'avant : on attend qu'elle bouge
       if (p && (p.r!==v.r || t-p.t > 4500)) perimees.delete(n);
@@ -3772,25 +3775,30 @@ const CameraDirect = (() => {
     dessine(vw, vh);
     const nb = Object.keys(trouve).length;
     if (nb) surLus(trouve);
-    etat(`${vus.size} carte${vus.size>1?"s":""} en vue${rapide?"":" · en attente d'une question"} · ${Math.max(1, Math.round(1000/periode))} image${periode<500?"s":""}/s`);
+    if (surVue) surVue(vus, t);
+    etat(`${vus.size} carte${vus.size>1?"s":""} en vue${rapide?"":opt.attente} · ${Math.max(1, Math.round(1000/periode))} image${periode<500?"s":""}/s`);
   }
   function dessine(vw, vh){
     if (marques.width!==vw || marques.height!==vh){ marques.width = vw; marques.height = vh; }
     const g = marques.getContext("2d"); g.clearRect(0, 0, vw, vh);
     const e = Math.max(2, vw/480);
-    vus.forEach((v,n)=>{ const vieux = perimees.has(n) || v.k<2, coul = vieux ? "#9AA9B4" : "#2F9E5B";
+    vus.forEach((v,n)=>{ const vieux = perimees.has(n) || v.k<2 || (opt.gris && opt.gris(n, v)), coul = vieux ? "#9AA9B4" : "#2F9E5B";
       g.strokeStyle = coul; g.lineWidth = e*1.5; g.beginPath(); v.c.forEach((p,i)=>i ? g.lineTo(p.x,p.y) : g.moveTo(p.x,p.y)); g.closePath(); g.stroke();
       const cx = v.c.reduce((a,p)=>a+p.x,0)/4, cy = v.c.reduce((a,p)=>a+p.y,0)/4, r = e*9;
       g.fillStyle = coul; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI*2); g.fill();
-      g.fillStyle = "#fff"; g.font = `700 ${Math.round(r)}px sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(n+" "+v.r, cx, cy); });
+      g.fillStyle = "#fff"; g.font = `700 ${Math.round(r)}px sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(opt.presence ? String(n) : n+" "+v.r, cx, cy); });
   }
   return { monte,
     /* question ouverte : lecture rapide ; nouvelle question : les cartes encore levées ne comptent qu'une fois bougées */
     question(ouverte, nouvelle){ rapide = !!ouverte; if (nouvelle){ const t = Date.now(); perimees = new Map(); vus.forEach((v,n)=>perimees.set(n, {r:v.r, t})); } },
     oublie(){ vus.clear(); perimees.clear(); },
+    /* une autre activité prend la caméra (ou on quitte l'écran) : elle s'éteint et ne se rallume plus toute seule */
+    coupe(){ const v = voulu; voulu = false; if (actif) arrete(true); return v; },
+    lance(){ voulu = true; if (!actif) demarre(); },
     actif:()=>actif };
-})();
-window.CameraDirect = CameraDirect;
+}
+const CameraDirect = nouvelleCamera({id:"cam-go"});
+window.CameraDirect = CameraDirect; window.nouvelleCamera = nouvelleCamera;
 
 /* ---------- version autonome : écrans pour relier le téléphone et l'écran de la classe ----------
    Téléphone : « Afficher le jeu sur l'ordinateur » (avec internet : scanner le QR code ou envoyer le lien ;
@@ -4257,7 +4265,7 @@ const Accueil = (() => {
   const L = Autonome.Liaison;
   const ACTIVITES = [
     {id:"bateau", nom:"Le Bateau-école", texte:"Le rituel du matin : on révise, et chaque bonne réponse fait avancer le bateau autour du monde.", img:"img/bateau.webp"},
-    {id:"pavillons", nom:"Hissez les pavillons", texte:"Vrai ou faux ? Les calculs défilent, on lève sa carte seulement quand c'est juste.", img:"img/bouee2.webp", bientot:true}
+    {id:"pavillons", nom:"Hissez les pavillons", texte:"Vrai ou faux ? Les calculs défilent, on lève sa carte seulement quand c'est juste.", img:()=>window.Pavillons ? Pavillons.image() : "img/bouee2.webp"}
   ];
   const IC = {
     retour:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -4415,10 +4423,16 @@ const Accueil = (() => {
   /* ---------- écrans ---------- */
   const app = $("#app");
   const section = (id, cls) => { let s = document.getElementById(id); if (!s){ s = document.createElement("section"); s.id = id; s.className = cls===undefined ? "aa-page" : cls; s.hidden = true; app.appendChild(s); } return s; };
-  const ECRANS = ["scr-choix","scr-tbi","scr-tel","aa-app","aa-classe","aa-bienvenue","aa-ecran"];
-  function montre(id){ ECRANS.forEach(x=>{ const e = document.getElementById(x); if (e) e.hidden = x!==id; }); window.scrollTo(0,0); courant = id;
-    document.body.style.background = /^(aa-app|aa-classe|aa-bienvenue|scr-tel)$/.test(id) ? "var(--ecume)" : ""; } // le bas de l'écran (sous la barre d'accueil de l'iPhone) prend la couleur de la page
-  let courant = null, roleCourant = "", tbiLance = false, telLance = false;
+  const ECRANS = ["scr-choix","scr-tbi","scr-tel","aa-app","aa-classe","aa-bienvenue","aa-ecran","pv-ecran","pv-tel"];
+  function montre(id){ const avant = courant; ECRANS.forEach(x=>{ const e = document.getElementById(x); if (e) e.hidden = x!==id; }); window.scrollTo(0,0); courant = id;
+    document.body.style.background = /^(aa-app|aa-classe|aa-bienvenue|scr-tel|pv-tel)$/.test(id) ? "var(--ecume)" : ""; // le bas de l'écran (sous la barre d'accueil de l'iPhone) prend la couleur de la page
+    // une seule caméra à la fois, et seulement sur l'écran qui s'en sert : elle se rallume quand on y revient
+    if (avant==="scr-tel" && id!=="scr-tel" && window.CameraDirect) camBateau = CameraDirect.coupe();
+    if (id==="scr-tel" && avant!=="scr-tel" && camBateau){ camBateau = false; CameraDirect.lance(); }
+    if (avant==="pv-tel" && id!=="pv-tel" && window.Pavillons) Pavillons.quitteTel();
+    if (avant==="pv-ecran" && id!=="pv-ecran" && window.Pavillons) Pavillons.quitteEcran(); }
+  let courant = null, roleCourant = "", tbiLance = false, telLance = false, camBateau = false;
+  const imgAct = a => typeof a.img==="function" ? a.img() : a.img;
   const estEcran = () => roleCourant==="tbi";
   const dateLongue = () => { const t = new Date().toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long"}); return t.charAt(0).toUpperCase()+t.slice(1); };
   const nomClasse = () => { const k = Classe.get(); return k && k.nom ? k.nom : "Ma classe"; };
@@ -4448,6 +4462,11 @@ const Accueil = (() => {
   /* ---------- lancer une activité ---------- */
   function ouvreActivite(id, aDistance){
     const a = ACTIVITES.find(x=>x.id===id); if (!a || a.bientot) return;
+    if (id==="pavillons"){
+      if (estEcran()) Pavillons.ecran(aDistance);
+      else { Pavillons.tel(); useCap("room").then(r=>r && r.emit("cmd", {a:"activite", id}).catch(()=>{})); }
+      return;
+    }
     if (estEcran()){
       Classe.versJeu();
       if (!tbiLance){ tbiLance = true; lanceTBI(); ajouteMaisonTBI(); telecommandeEcran(); }
@@ -4521,7 +4540,7 @@ const Accueil = (() => {
         <div class="aa-carte aa-ecran" id="aa-ecran-etat"></div>
         <h2 class="aa-h2">Activités</h2>
         ${ACTIVITES.map(a=>`<button class="aa-act ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}>
-          <img src="${a.img}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span>
+          <img src="${imgAct(a)}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span>
           <span class="bas"><em data-etat="${a.id}">${a.bientot?"":"…"}</em><i class="go">${a.bientot?"Bientôt":"Jouer"}</i></span></button>`).join("")}
         <h2 class="aa-h2">Ma classe</h2>
         <div class="aa-liste">
@@ -4540,7 +4559,7 @@ const Accueil = (() => {
     };
     s.querySelector("#aa-lire").onclick = ()=>ouvreActivite("bateau");
     etatBateau().then(t=>{ const e = s.querySelector('[data-etat="bateau"]'); if (e) e.textContent = t; });
-    dessineEcran();
+    dessineEcran(); if (window.Pavillons) Pavillons.bandeau();
   }
   let tbiVu = false, questionOuverte = false;
   function dessineEcran(){
@@ -4716,9 +4735,10 @@ const Accueil = (() => {
     s.innerHTML = `<img class="soleil" src="img/soleil.webp" alt=""><img class="nuage n1" src="img/nuage1.webp" alt=""><img class="nuage n2" src="img/nuage2.webp" alt=""><img class="nuage n3" src="img/nuage3.webp" alt="">
       <div class="ec-haut"><div class="ec-classe">${esc(nomClasse())}</div><div class="ec-date">${esc(dateLongue())}</div><span class="pastille" id="ec-tel"></span></div>
       <div class="ec-milieu"><h1>Que fait-on aujourd'hui ?</h1><div class="ec-tuiles">
-        ${ACTIVITES.map(a=>`<button class="ec-tuile ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}><img src="${a.img}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span><em data-etat="${a.id}"></em><i class="go">${a.bientot?"Bientôt":"Jouer"}</i></button>`).join("")}
+        ${ACTIVITES.map(a=>`<button class="ec-tuile ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}><img src="${imgAct(a)}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span><em data-etat="${a.id}"></em><i class="go">${a.bientot?"Bientôt":"Jouer"}</i></button>`).join("")}
       </div></div><div class="mer"></div><div class="mer2"></div>`;
     s.onclick = e=>{ const a = e.target.closest("[data-act]"); if (a) ouvreActivite(a.dataset.act); const p = e.target.closest("#ec-tel"); if (p && !tbiVuTel){ if (!tbiLance){ tbiLance = true; lanceTBI(); ajouteMaisonTBI(); montre("aa-ecran"); } ongletR = "tel"; montre("scr-tbi"); ouvreReglages(); } };
+    const p = s.querySelector('[data-etat="pavillons"]'); if (p) p.textContent = "Tables, additions et soustractions";
     const e = s.querySelector('[data-etat="bateau"]'); if (e) e.textContent = await etatBateau();
     dessineTelEcran();
   }
@@ -4745,6 +4765,7 @@ const Accueil = (() => {
       if (courant==="aa-ecran") { const c = document.querySelector(".ec-classe"); if (c) c.textContent = nomClasse(); }
     });
     const room = await useCap("room");
+    if (window.Pavillons) Pavillons.demarre(mode);
     if (mode==="tbi"){
       window.onEtatRecharge = ()=>{ if (courant==="aa-ecran") ecran(); }; // remplacé par celui du jeu quand il démarre
       brancheDB(); // le voyage s'enregistre (et part en copie vers le téléphone) même avant d'ouvrir le jeu
@@ -4752,7 +4773,9 @@ const Accueil = (() => {
       else Classe.versJeu();
       if (room){ room.presence({role:"tbi"}).catch(()=>{});
         room.onPeers(ch=>{ tbiVuTel = ch.peers.some(p=>p.presence && p.presence.role==="scanner"); dessineTelEcran(); });
-        room.on("cmd", m=>{ const d = m.data||{}; if (d.a==="activite" && courant==="aa-ecran") ouvreActivite(d.id, true); }); }
+        room.on("cmd", m=>{ const d = m.data||{}; if (d.a!=="activite") return; // le téléphone choisit l'activité, sauf en pleine partie
+          const libre = courant==="aa-ecran" || (courant==="pv-ecran" && !Pavillons.occupe()) || (courant==="scr-tbi" && typeof enJeu!=="undefined" && !enJeu);
+          if (libre && !(courant==="pv-ecran" && d.id==="pavillons") && !(courant==="scr-tbi" && d.id==="bateau")) ouvreActivite(d.id, true); }); }
       ecran();
     } else {
       if (room){ room.presence({role:"scanner"}).catch(()=>{});
@@ -4764,10 +4787,625 @@ const Accueil = (() => {
     }
   }
   /* où poser les panneaux et messages du jeu : sur l'accueil des activités s'il est affiché */
-  const conteneur = () => courant==="aa-ecran" ? document.getElementById("aa-ecran") : null;
-  return { demarre, ouvreActivite, accueilTel, ecran, classe, editeur, importe, estEcran, montre, bienvenue, conteneur, courant:()=>courant };
+  const conteneur = () => courant==="aa-ecran" || courant==="pv-ecran" ? document.getElementById(courant) : null;
+  return { demarre, ouvreActivite, accueilTel, ecran, classe, editeur, importe, estEcran, montre, bienvenue, conteneur, courant:()=>courant,
+    section, voile, relier, rappelSon, IC };
 })();
 window.Accueil = Accueil;
+
+/* ---------- version autonome : « Hissez les pavillons » ----------
+   Vrai ou faux ? Des calculs défilent sur l'écran de la classe, certains justes, d'autres faux. Chaque élève hisse son pavillon
+   (lève sa carte) seulement quand le calcul est juste ; le téléphone, posé face à la classe, filme et compte les cartes levées en direct.
+   L'écran de la classe mène la partie et l'annonce (sujet « pv ») ; le téléphone renvoie les cartes vues pendant chaque calcul
+   (sujet « pvc ») et sert de télécommande (sujet « cmd », a:"pv"). Les images restent dans le téléphone.
+   Chaque carte a son pavillon : celui de sa lettre dans le Code international des signaux (A à Z), puis les flammes 1 à 6. */
+const Pavillons = (() => {
+  const CLE = "bateau-ecole-pavillons", GRACE = 400;
+  const VITESSES = {tranquille:{nom:"Tranquille", calc:9000, revele:3800}, normal:{nom:"Normal", calc:6500, revele:3200}, rapide:{nom:"Rapide", calc:4500, revele:2600}};
+  const OPS = {fois:"×", plus:"+", moins:"−"}, NOMS = {fois:"Tables de multiplication", plus:"Additions", moins:"Soustractions"};
+  const DEFAUT = {op:"fois", tables:[2,3,4,5], max:20, nb:10, vitesse:"normal"};
+  const pl = (n, mot) => n+" "+mot+(n>1 ? "s" : ""), br = n => `${n} bonne${n>1?"s":""} réponse${n>1?"s":""}`;
+  let dureesTest = null;
+
+  /* ---------- les pavillons (dessins du Code international des signaux) ---------- */
+  const C = {R:"#D7322F", B:"#1F4E9E", Y:"#F7C51E", W:"#FFFFFF", K:"#1B1B1B"};
+  const re = (x,y,w,h,c) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${C[c]}"/>`;
+  const po = (pts,c) => `<polygon points="${pts}" fill="${C[c]}"/>`;
+  const ro = (x,y,r,c) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${C[c]}"/>`;
+  const sautoir = c => `<path d="M0 0L60 40M60 0L0 40" stroke="${C[c]}" stroke-width="9"/>`;
+  const bandes = (cs, vert) => cs.map((c,i)=>vert ? re(+(i*60/cs.length).toFixed(2),0,+(60/cs.length+.3).toFixed(2),40,c) : re(0,+(i*40/cs.length).toFixed(2),60,+(40/cs.length+.3).toFixed(2),c)).join("");
+  const LETTRES = {
+    C:bandes(["B","W","R","W","B"]), D:re(0,0,60,40,"Y")+re(0,10,60,20,"B"), E:bandes(["B","R"]), F:re(0,0,60,40,"W")+po("30,4 56,20 30,36 4,20","R"),
+    G:bandes(["Y","B","Y","B","Y","B"],1), H:bandes(["W","R"],1), I:re(0,0,60,40,"Y")+ro(30,20,9,"K"), J:bandes(["B","W","B"]), K:bandes(["Y","B"],1),
+    L:re(0,0,30,20,"Y")+re(30,0,30,20,"K")+re(0,20,30,20,"K")+re(30,20,30,20,"Y"), M:re(0,0,60,40,"B")+sautoir("W"),
+    N:[0,1,2,3].map(i=>[0,1,2,3].map(j=>re(i*15,j*10,15.3,10.3,(i+j)%2 ? "W" : "B")).join("")).join(""),
+    O:po("0,0 60,40 0,40","Y")+po("0,0 60,0 60,40","R"), P:re(0,0,60,40,"B")+re(20,13,20,14,"W"), Q:re(0,0,60,40,"Y"),
+    R:re(0,0,60,40,"R")+re(26,0,8,40,"Y")+re(0,16,60,8,"Y"), S:re(0,0,60,40,"W")+re(20,13,20,14,"B"), T:bandes(["R","W","B"],1),
+    U:re(0,0,30,20,"R")+re(30,0,30,20,"W")+re(0,20,30,20,"W")+re(30,20,30,20,"R"), V:re(0,0,60,40,"W")+sautoir("R"),
+    W:re(0,0,60,40,"B")+re(8,6,44,28,"W")+re(17,12,26,16,"R"), X:re(0,0,60,40,"W")+re(26,0,8,40,"B")+re(0,16,60,8,"B"),
+    Y:re(0,0,60,40,"Y")+[-40,-20,0,20,40,60].map(x=>`<path d="M${x} 40L${x+40} 0" stroke="${C.R}" stroke-width="7"/>`).join(""),
+    Z:po("0,0 60,0 30,20","Y")+po("60,0 60,40 30,20","B")+po("0,40 60,40 30,20","R")+po("0,0 0,40 30,20","K")
+  };
+  const bf = (x0,x1,c) => po(`${x0},${+(13*x0/60).toFixed(2)} ${x1},${+(13*x1/60).toFixed(2)} ${x1},${+(40-13*x1/60).toFixed(2)} ${x0},${+(40-13*x0/60).toFixed(2)}`, c); // bande d'une flamme
+  const FLAMMES = [bf(0,60,"W")+ro(21,20,8,"R"), bf(0,60,"B")+ro(21,20,8,"W"), bf(0,20,"R")+bf(20,40,"W")+bf(40,60,"B"),
+    bf(0,60,"R")+bf(17,25,"W")+po("0,16 60,16 60,24 0,24","W"), bf(0,30,"Y")+bf(30,60,"B"), po("0,0 60,13 60,20 0,20","K")+po("0,20 60,20 60,27 0,40","W")];
+  const memo = new Map();
+  function corps(n){
+    const i = (n-1)%32, l = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i];
+    if (l==="A") return ["M0 0H60L45 20L60 40H0Z", re(0,0,30,40,"W")+po("30,0 60,0 45,20 60,40 30,40","B")];
+    if (l==="B") return ["M0 0H60L45 20L60 40H0Z", po("0,0 60,0 45,20 60,40 0,40","R")];
+    if (l) return ["M0 0H60V40H0Z", `<svg width="60" height="40" viewBox="0 0 60 40">${LETTRES[l]}</svg>`];
+    return ["M0 0L60 13V27L0 40Z", FLAMMES[i-26]];
+  }
+  function drapeau(n){
+    if (!memo.has(n)){ const [f, c] = corps(n); memo.set(n, `<svg class="pv-dr" viewBox="-2 -2 64 44" aria-hidden="true">${c}<path d="${f}" fill="none" stroke="#2B1E12" stroke-width="2.4" stroke-linejoin="round"/></svg>`); }
+    return memo.get(n);
+  }
+  /* image de l'activité : « BRAVO » en pavillons, sur une drisse qui descend du mât */
+  function image(){
+    const pts = [[0.1,"B"],[0.3,"R"],[0.5,"A"],[0.7,"V"],[0.9,"O"]], P0 = [22,14], P1 = [96,62], P2 = [198,40];
+    const q = t => [(1-t)*(1-t)*P0[0]+2*(1-t)*t*P1[0]+t*t*P2[0], (1-t)*(1-t)*P0[1]+2*(1-t)*t*P1[1]+t*t*P2[1]];
+    const ang = t => Math.atan2(2*(1-t)*(P1[1]-P0[1])+2*t*(P2[1]-P1[1]), 2*(1-t)*(P1[0]-P0[0])+2*t*(P2[0]-P1[0]))*180/Math.PI;
+    const fl = pts.map(([t,l])=>{ const [x,y] = q(t), n = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(l)+1, [f, c] = corps(n);
+      return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang(t).toFixed(1)}) translate(-16 1) scale(.54)">${c}<path d="${f}" fill="none" stroke="#2B1E12" stroke-width="3.4" stroke-linejoin="round"/></g>`; }).join("");
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204 132"><rect x="14" y="6" width="8" height="122" rx="3" fill="#B07A3E" stroke="#2B1E12" stroke-width="3"/><circle cx="18" cy="7" r="6" fill="#F7C51E" stroke="#2B1E12" stroke-width="3"/>`+
+      `<path d="M${P0} Q${P1} ${P2}" fill="none" stroke="#6B4A22" stroke-width="3" stroke-linecap="round"/>${fl}</svg>`;
+    return "data:image/svg+xml,"+encodeURIComponent(svg);
+  }
+
+  /* ---------- les calculs ---------- */
+  function propre(r){
+    r = r && typeof r==="object" ? r : {};
+    const o = {op:OPS[r.op] ? r.op : DEFAUT.op,
+      tables:(Array.isArray(r.tables) ? r.tables : DEFAUT.tables).map(Number).filter((n,i,l)=>n>=1 && n<=10 && l.indexOf(n)===i).sort((a,b)=>a-b),
+      max:[10,20,100].includes(+r.max) ? +r.max : DEFAUT.max, nb:[5,10,15,20].includes(+r.nb) ? +r.nb : DEFAUT.nb, vitesse:VITESSES[r.vitesse] ? r.vitesse : DEFAUT.vitesse};
+    if (!o.tables.length) o.tables = DEFAUT.tables.slice();
+    return o;
+  }
+  const liste = l => l.length<2 ? String(l[0]) : l.slice(0,-1).join(", ")+" et "+l[l.length-1];
+  function resume(r){
+    r = propre(r);
+    const quoi = r.op==="fois" ? (r.tables.length===10 ? "Toutes les tables" : r.tables.length===1 ? "Table de "+r.tables[0] : "Tables de "+liste(r.tables)) : NOMS[r.op]+" jusqu'à "+r.max;
+    return `${OPS[r.op]} ${quoi} · ${r.nb} calculs · ${VITESSES[r.vitesse].nom}`;
+  }
+  const hasard = n => Math.floor(Math.random()*n), pioche = l => l[hasard(l.length)];
+  function melange(l){ for (let i=l.length-1;i>0;i--){ const j = hasard(i+1); [l[i], l[j]] = [l[j], l[i]]; } return l; }
+  function paire(r){
+    if (r.op==="fois"){ const t = pioche(r.tables), k = 1+hasard(10); return Math.random()<.5 ? [t,k] : [k,t]; }
+    if (r.op==="plus"){ if (r.max===10){ const a = hasard(11); return [a, hasard(11-a)]; }
+      if (r.max===20){ const a = 1+hasard(19); return [a, 1+hasard(20-a)]; }
+      const a = 10+hasard(80); return [a, 1+hasard(99-a)]; }
+    const a = r.max===10 ? 1+hasard(10) : r.max===20 ? 5+hasard(16) : 20+hasard(80); return [a, hasard(a+1)];
+  }
+  /* un résultat faux, mais plausible : la case d'à côté dans la table, une unité de trop, une retenue oubliée, des chiffres inversés */
+  function faux(a, b, op, r){
+    const c = [r+1, r-1], inv = r>=10 && r<100 && r%10!==Math.floor(r/10) ? +String(r).split("").reverse().join("") : null;
+    if (op==="fois"){ c.push(r+a, r-a, r+b, r-b, r+a, r-b, r+2, r-2); if (inv && Math.abs(inv-r)<40) c.push(inv); }
+    else if (op==="plus"){ c.push(r+1, r-1, r+2, r-2); if (r>=20) c.push(r+10, r-10, r-10); if (inv) c.push(inv); }
+    else { c.push(r+1, r-1, r+2, r-2, a+b); if (a>=20) c.push(r+10, r-10, r+10); }
+    const ok = c.filter(x=>x>=0 && x!==r && (op!=="fois" || x<=100));
+    return ok.length ? pioche(ok) : r+1;
+  }
+  function genere(r){
+    let js = [];
+    for (let k=0; k<60; k++){ // la moitié de calculs justes, jamais quatre pareils de suite
+      const nj = Math.round(r.nb/2 + (Math.random()-.5));
+      js = melange(Array.from({length:r.nb}, (_,i)=>i<nj));
+      if (!js.some((x,i)=>i>=3 && js[i-1]===x && js[i-2]===x && js[i-3]===x)) break;
+    }
+    const vus = new Set();
+    return js.map(juste=>{
+      let a, b, k = 0; do { [a, b] = paire(r); } while (vus.has(a+r.op+b) && ++k<40); vus.add(a+r.op+b);
+      const res = r.op==="fois" ? a*b : r.op==="plus" ? a+b : a-b;
+      return {a, b, op:r.op, r:res, aff:juste ? res : faux(a, b, r.op, res), juste};
+    });
+  }
+  const texte = (c, x) => `${c.a} ${OPS[c.op]} ${c.b} = ${x==null ? c.aff : x}`;
+
+  const st = document.createElement("style");
+  st.textContent = `
+/* ---------- Hissez les pavillons : écran de la classe ---------- */
+#pv-ecran{position:fixed;inset:0;overflow:hidden;background:#6CC3F2 url(img/ciel.webp) center/cover;color:var(--nuit);font-family:var(--texte);-webkit-user-select:none;user-select:none;--haut:clamp(58px,9vh,92px);--pan:min(44vh,33vw)}
+#pv-ecran .nuage{position:absolute;opacity:.9;pointer-events:none}
+#pv-ecran .n1{top:36vh;width:clamp(140px,13vw,230px);animation:aa-nuage 80s -10s linear infinite}
+#pv-ecran .n2{top:56vh;width:clamp(100px,9vw,170px);animation:aa-nuage 100s -60s linear infinite}
+#pv-ecran .mer{position:absolute;left:0;right:0;bottom:0;height:16vh;background:url(img/vague-foncee.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 7s linear infinite;z-index:1}
+#pv-ecran .mer2{position:absolute;left:0;right:0;bottom:0;height:10vh;background:url(img/vague-claire.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 5s linear infinite reverse;z-index:3}
+#pv-ecran .pv-bateau{position:absolute;bottom:6vh;left:0;width:clamp(90px,9vw,150px);z-index:2;animation:pv-vogue 70s linear infinite}
+@keyframes pv-vogue{from{transform:translateX(-14vw)}to{transform:translateX(110vw)}}
+.pv-haut{position:absolute;top:0;left:0;right:0;height:var(--haut);display:flex;align-items:center;gap:14px;padding:0 22px;z-index:7}
+.pv-haut .btn{display:inline-flex;align-items:center;gap:6px}
+.pv-titre{font:800 clamp(1.2rem,2vw,1.9rem)/1 var(--display);color:#fff;text-shadow:0 3px 0 #1D6F93;flex:1}
+.pv-score{font:800 clamp(1rem,1.5vw,1.4rem)/1 var(--display);background:#FFFCF4;color:var(--nuit);border-radius:999px;padding:.45em .9em;box-shadow:0 3px 0 #CDB482;display:flex;align-items:center;gap:.35em}
+.pv-score b{color:#C98A00}
+.pv-score.plus{animation:pv-plus .6s ease}
+.pv-haut .pastille{font:800 clamp(.85rem,1vw,1rem) var(--texte);padding:8px 14px;border-radius:999px;cursor:pointer}
+.pv-drisse{position:absolute;left:2.5vw;right:2.5vw;top:calc(var(--haut) + 4px);display:grid;grid-template-columns:repeat(var(--nb,20),minmax(0,1fr));z-index:6;--dw:min(4.4vw,calc(86vw / var(--nb,20)),80px)}
+.pv-drisse::before{content:"";position:absolute;left:-2.5vw;right:-2.5vw;top:0;height:5px;border-radius:3px;background:repeating-linear-gradient(115deg,#C09358 0 5px,#8A6536 5px 8px);box-shadow:0 2px 0 rgba(11,39,64,.18)}
+.pv-place{position:relative;display:grid;justify-items:center;padding-top:4px}
+.pv-fl{display:block;width:var(--dw);opacity:0;transform:translateY(70vh) scale(.6);transition:opacity .25s,transform .45s ease-in}
+.pv-place.haut .pv-fl{opacity:1;transform:none;transition:opacity .15s,transform .8s cubic-bezier(.18,1.25,.4,1)}
+.pv-fl svg{display:block;width:100%;height:auto;transform-origin:0 0}
+.pv-place.haut .pv-fl svg{animation:pv-flotte 1.8s ease-in-out infinite;animation-delay:calc(var(--k,0) * -130ms)}
+@keyframes pv-flotte{0%,100%{transform:none}50%{transform:skewY(4deg) scaleX(.96)}}
+.pv-place i{font:800 clamp(.7rem,1vw,1rem)/1 var(--display);font-style:normal;color:#fff;background:rgba(11,39,64,.45);border-radius:999px;padding:.22em .45em;margin-top:4px;min-width:1.2em;text-align:center;transition:background .3s}
+.pv-place:not(.haut) i{background:rgba(11,39,64,.2);color:rgba(255,255,255,.8)}
+.pv-drisse.fete .pv-fl{transition-delay:calc(var(--k,0) * 40ms)}
+.pv-drisse.juste .haut .pv-fl{filter:drop-shadow(0 0 .45vw rgba(47,158,91,.95))}
+.pv-drisse.juste .haut i{background:var(--ok)}
+.pv-drisse.faux .haut .pv-fl{filter:grayscale(.8);transform:translateY(3px) rotate(5deg)}
+.pv-drisse.faux .haut i{background:var(--ko)}
+.pv-centre{position:absolute;left:0;right:0;top:calc(var(--haut) + 14vh);bottom:14vh;display:grid;place-items:center;z-index:5;padding:0 3vw}
+.pv-bas{position:absolute;left:22px;bottom:20px;z-index:8;display:flex;gap:10px}
+.pv-bas[hidden]{display:none}
+/* salon, essai des cartes, fin */
+.pv-salon,.pv-verif{width:min(94vw,1100px);display:grid;justify-items:center;gap:clamp(10px,2.2vh,24px);text-align:center}
+.pv-salon h1,.pv-verif h1{margin:0;font:800 clamp(2rem,4.4vw,4rem)/1 var(--display);color:#fff;text-shadow:0 4px 0 #1D6F93,0 10px 24px rgba(11,39,64,.3);text-wrap:balance}
+.pv-regles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,22px);width:100%}
+.pv-regle{background:#FFFCF4;border:3px solid #E3CFA2;border-radius:22px;padding:clamp(10px,1.6vh,18px) 14px;display:grid;gap:6px;justify-items:center;align-content:start;box-shadow:0 5px 0 #CDB482}
+.pv-regle b{font:800 clamp(1.05rem,1.7vw,1.6rem)/1.1 var(--display);color:var(--nuit)}
+.pv-regle span{font-size:clamp(.9rem,1.15vw,1.15rem);line-height:1.3;color:var(--gris);text-wrap:balance}
+.pv-regle .ill{height:clamp(54px,9vh,92px);display:flex;align-items:center;justify-content:center;gap:8px}
+.pv-mini{font:800 clamp(1.1rem,2vw,1.9rem)/1 var(--display);color:#3E2A12;background:url(img/pancarte.webp) center/100% 100%;padding:.62em .85em .28em;white-space:nowrap}
+.pv-regle .pv-dr{width:clamp(56px,5.6vw,86px);height:auto}
+.pv-regle .ill em{font:800 clamp(1.6rem,3vw,2.6rem)/1 var(--display);font-style:normal}
+.pv-regle .ill.oui em{color:var(--ok)} .pv-regle .ill.non em{color:var(--ko)}
+.pv-regle .ill.non .pv-dr{transform:translateY(6px) rotate(8deg);filter:grayscale(.35)}
+.pv-resume{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;background:rgba(255,252,244,.96);border-radius:999px;padding:8px 10px 8px 20px;font:800 clamp(1rem,1.4vw,1.3rem) var(--display);color:var(--nuit);box-shadow:0 4px 0 rgba(11,39,64,.12)}
+.pv-boutons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.pv-boutons .btn{font-size:clamp(1.1rem,1.6vw,1.5rem);padding:.6em 1.3em}
+.pv-info{margin:0;font:700 clamp(.95rem,1.2vw,1.15rem)/1.35 var(--texte);color:#fff;text-shadow:0 1px 0 rgba(11,39,64,.45);max-width:62ch;text-wrap:balance}
+.pv-grand{font:800 clamp(4rem,11vw,10rem)/1 var(--display);color:#fff;text-shadow:0 6px 0 #1D6F93}
+.pv-grand small{font-size:.35em}
+.pv-verif p{margin:0;font:700 clamp(1rem,1.6vw,1.5rem)/1.35 var(--texte);color:#fff;text-shadow:0 1px 0 rgba(11,39,64,.45);max-width:66ch;text-wrap:balance}
+.pv-decompte{font:800 clamp(7rem,24vw,20rem)/1 var(--display);color:#fff;text-shadow:0 8px 0 #1D6F93,0 18px 40px rgba(11,39,64,.3);animation:pv-pouls .9s ease both}
+@keyframes pv-pouls{from{transform:scale(1.6);opacity:0}30%{transform:scale(1);opacity:1}to{transform:scale(.92)}}
+.pv-sous{font:800 clamp(1.2rem,2.2vw,2.1rem)/1.1 var(--display);color:#fff;text-shadow:0 3px 0 rgba(11,39,64,.35);text-align:center}
+.pv-attente{display:grid;justify-items:center;gap:8px}
+/* un calcul */
+.pv-jeu{display:grid;justify-items:center;gap:1.6vh}
+.pv-num{font:800 clamp(1rem,1.6vw,1.5rem)/1 var(--display);color:#fff;text-shadow:0 2px 0 #1D6F93;letter-spacing:.02em}
+.pv-pancarte{position:relative;height:var(--pan);aspect-ratio:1400/773;background:url(img/pancarte.webp) center/100% 100% no-repeat;display:grid;place-items:center;padding-top:calc(var(--pan)*.14);box-sizing:border-box;filter:drop-shadow(0 12px 18px rgba(11,39,64,.25))}
+.pv-pancarte.neuve{animation:pv-balance .6s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pv-balance{from{transform:translateY(-6vh) rotate(-4deg);opacity:0}to{transform:none;opacity:1}}
+.pv-calc{font:800 calc(var(--pan)*.27)/1 var(--display);color:#3E2A12;white-space:nowrap;text-shadow:0 2px 0 rgba(255,255,255,.4)}
+.pv-calc s{color:#A2402F;text-decoration-thickness:.09em}
+.pv-calc ins{text-decoration:none;color:#1F7A45;margin-left:.22em}
+.pv-tampon{position:absolute;right:2%;top:6%;transform:rotate(-12deg);font:800 calc(var(--pan)*.13)/1 var(--display);padding:.12em .45em;border:.1em solid currentColor;border-radius:.3em;background:rgba(255,252,244,.9);animation:pv-tampon .4s cubic-bezier(.3,1.7,.5,1) both}
+.pv-tampon.ok{color:var(--ok)} .pv-tampon.ko{color:var(--ko)}
+@keyframes pv-tampon{from{transform:rotate(-12deg) scale(2.2);opacity:0}to{transform:rotate(-12deg) scale(1);opacity:1}}
+.pv-temps{width:min(40vw,560px);height:clamp(10px,1.4vh,16px);border-radius:999px;background:rgba(255,255,255,.55);overflow:hidden;box-shadow:inset 0 1px 3px rgba(11,39,64,.2)}
+.pv-temps i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#FFC94A,#F28C3A);border-radius:inherit;transform-origin:0 50%}
+.pv-msg{font:800 clamp(1.2rem,2.3vw,2.2rem)/1.15 var(--display);color:#fff;text-shadow:0 3px 0 rgba(11,39,64,.35);text-align:center;min-height:1.2em;text-wrap:balance}
+.pv-compte{position:absolute;right:3.5vw;top:50%;transform:translateY(-50%);width:clamp(110px,11vw,170px);aspect-ratio:1;border-radius:50%;background:#FFFCF4;border:4px solid #E3CFA2;box-shadow:0 6px 0 #CDB482;display:grid;place-content:center;text-align:center;z-index:5}
+.pv-compte b{font:800 clamp(2.4rem,4.6vw,4.6rem)/1 var(--display);color:var(--nuit)}
+.pv-compte small{font:700 clamp(.72rem,.95vw,.95rem)/1.15 var(--texte);color:var(--gris);padding:0 12px}
+.pv-compte.pop b{animation:pv-plus .35s ease}
+@keyframes pv-plus{50%{transform:scale(1.25)}}
+/* fin de partie */
+.pv-fin{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:2.4vw;width:min(94vw,1150px)}
+.pv-fin .perro{height:min(44vh,30vw);animation:aa-berce 3s ease-in-out infinite}
+.pv-fin-carte{background:#FFFCF4;border:4px solid #E3CFA2;border-radius:28px;padding:clamp(14px,2.4vh,28px) clamp(18px,2.4vw,34px);box-shadow:0 8px 0 #CDB482,0 18px 40px rgba(11,39,64,.25);display:grid;gap:clamp(8px,1.4vh,14px)}
+.pv-fin-carte h1{margin:0;font:800 clamp(1.8rem,3.4vw,3.2rem)/1 var(--display);color:var(--nuit)}
+.pv-fin-carte p{margin:0;font:700 clamp(1rem,1.3vw,1.25rem)/1.35 var(--texte);color:var(--gris)}
+.pv-pct{display:flex;align-items:baseline;gap:.3em;flex-wrap:wrap;font:800 clamp(3rem,7vw,6.5rem)/1 var(--display);color:var(--mer)}
+.pv-etoiles{font-size:.5em;color:var(--soleil);letter-spacing:.08em;text-shadow:0 2px 0 #C99A1C}
+.pv-etoiles i{font-style:normal;color:#E6DCC5;text-shadow:none}
+.pv-recap{display:flex;flex-wrap:wrap;gap:6px}
+.pv-rc{font:700 clamp(.8rem,1vw,1rem)/1 var(--texte);padding:.45em .7em;border-radius:999px;background:#E3F4E9;color:#1f6b3d;white-space:nowrap}
+.pv-rc.moyen{background:#FFF1CF;color:#7A5200} .pv-rc.dur{background:#FBE4E0;color:#8a2c22}
+.pv-rc{display:inline-flex;align-items:center;gap:.5em}
+.pv-rc b{font-size:.85em;background:rgba(255,255,255,.75);border-radius:999px;padding:.2em .45em} .pv-rc s{opacity:.7}
+.pv-fin .pv-boutons{justify-content:flex-start}
+#pv-ecran[data-phase="salon"] .pv-titre{visibility:hidden}
+@media (prefers-reduced-motion:reduce){#pv-ecran *,#pv-ecran{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}}
+/* ---------- Hissez les pavillons : téléphone ---------- */
+.pv-t{display:grid;gap:12px;padding:0 0 24px}
+.pv-t .aa-bloc{margin:0 12px}
+.pv-t-cote{display:grid;gap:12px}
+.pv-t-cam .cam{padding:0}
+.pv-t-cam .aut-note{margin:0}
+@media (orientation:landscape) and (min-width:640px){.pv-t{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}}
+.pv-t-lien{margin:0 12px;display:grid;gap:10px}
+.pv-t-lien .aut-etat{margin:0}
+.pv-t-resume{margin:0;font-weight:700;line-height:1.4}
+.pv-t-jeu{text-align:center;justify-items:center}
+.pv-t-num{font:800 .95rem var(--display);color:var(--gris)}
+.pv-t-calc{font:800 2.3rem/1.1 var(--display);color:var(--nuit);white-space:nowrap}
+.pv-t-calc s{color:var(--ko)} .pv-t-calc ins{text-decoration:none;color:var(--ok);margin-left:.2em}
+.pv-t-compte{font-weight:700;color:var(--gris)}
+.pv-t-compte b{font:800 2rem/1 var(--display);color:var(--mer);margin-right:4px}
+.pv-t-verdict{margin:0;font:800 1.1rem/1.3 var(--display)} .pv-t-verdict.ok{color:var(--ok)} .pv-t-verdict.ko{color:var(--ko)}
+.aa-actions.deux{grid-template-columns:1fr 1fr;width:100%}
+.pv-t-manque{margin:0;line-height:1.45}
+.pv-t-pct{font:800 2.6rem/1 var(--display);color:var(--mer)}
+.pv-res{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pv-res li{background:var(--ecume);border-radius:14px}
+.pv-res summary{display:grid;grid-template-columns:34px minmax(0,1fr) auto;grid-template-areas:"d n s" "d p p";gap:3px 10px;align-items:center;padding:8px 10px;cursor:pointer;list-style:none}
+.pv-res summary::-webkit-details-marker{display:none}
+.pv-res .pv-dr{grid-area:d;width:34px;height:auto}
+.pv-res b{grid-area:n;font:800 1.02rem var(--display);color:var(--nuit);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv-res em{grid-area:s;font:800 1rem var(--display);font-style:normal;color:var(--mer)}
+.pv-res li.parfait em{color:var(--ok)}
+.pv-pts{grid-area:p;display:flex;flex-wrap:wrap;gap:3px}
+.pv-pts i{width:9px;height:9px;border-radius:50%;background:#C9D6DD}
+.pv-pts i.ok{background:var(--ok)} .pv-pts i.ko{background:var(--ko)}
+.pv-res small{display:block;padding:0 12px 10px 54px;color:var(--gris);font-size:.88rem;line-height:1.4}
+.pv-t-durs{margin:0;line-height:1.5}
+.pv-t-detail{display:grid;gap:10px}
+.pv-t-detail > summary{font:800 1rem var(--display);color:var(--mer);cursor:pointer;padding:4px 0}
+.pv-t-detail[open] > summary{margin-bottom:8px}
+.pv-t-durs em{font-style:normal;font-weight:700;color:var(--ko);font-size:.9em;margin-left:.3em}
+.pv-t-durs ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:2px}
+.pv-t-durs li{font-weight:700}
+.pv-t-durs s{color:var(--ko)}
+.pv-regl{display:grid;gap:14px}
+.pv-regl .aa-puces button{padding:.45em .8em}
+.pv-regl .aa-puces.tables button{min-width:2.6em}`;
+  document.head.appendChild(st);
+
+  /* ================= écran de la classe : il mène la partie ================= */
+  let R = propre(lisReglages()), P = null, phase = "salon", minuteur = null, echeance = 0, reste = 0, suite = null, attenteFin = null;
+  let verifVus = new Set(), telPv = false, telLie = false, roomE = null, raf = 0, dernierPop = 0, brancheE = null;
+  function lisReglages(){ try { return JSON.parse(lsGet(CLE)||"null"); } catch(e){ return null; } }
+  const sauveReglages = () => lsSet(CLE, JSON.stringify(R));
+  const durees = () => dureesTest || VITESSES[R.vitesse];
+  function presents(){ const l = Classe.presents(); return l.length ? l.map(e=>({n:e.n, prenom:e.prenom})) : Array.from({length:25}, (_,i)=>({n:i+1, prenom:""})); }
+  const estPresent = n => (P ? P.pres : presents()).some(e=>e.n===n);
+  const nomDe = n => { const e = (P ? P.pres : presents()).find(x=>x.n===n); return e && e.prenom ? e.prenom : "carte "+n; };
+  const enPartie = () => !!P && ["compte","calc","ferme","revele"].includes(phase);
+  const sur = () => Accueil.courant()==="pv-ecran";
+
+  function etat(){
+    const c = P && P.calcs[P.i], montre = c && ["calc","ferme","revele"].includes(phase);
+    return {v:1, phase, r:R, id:P ? P.id : null, i:P ? P.i : 0, n:P ? P.calcs.length : 0, pause:!!(P && P.pause),
+      cid:montre ? P.id+":"+P.i : null, calc:montre ? {txt:texte(c), juste:c.juste, vrai:texte(c, c.r)} : null,
+      pres:(P ? P.pres : presents()).map(e=>e.n), compte:c ? !!c.tel : telPv,
+      hisses:montre ? [...P.hisses[P.i]] : phase==="verif" ? [...verifVus] : [],
+      bons:montre && phase==="revele" ? c.bons : null, score:P ? P.score : null,
+      fin:phase==="fin" && P ? {res:P.res, calcs:P.calcs.map(x=>({txt:texte(x), juste:x.juste, vrai:texte(x, x.r), bons:x.bons})), nb:P.pres.length} : null};
+  }
+  function emet(){ if (roomE) roomE.emit("pv", sur() ? etat() : {v:1, phase:null}).catch(()=>{}); }
+  function brancheEcran(){
+    if (brancheE) return brancheE;
+    brancheE = useCap("room").then(r=>{ roomE = r; if (!r) return;
+      r.onPeers(ch=>{ const tel = ch.peers.filter(p=>!p.isMe && p.presence && p.presence.role==="scanner");
+        const a = telPv+"/"+telLie; telPv = tel.some(p=>p.presence.pv); telLie = tel.length>0;
+        if (a!==telPv+"/"+telLie && sur()){ dessineHaut(); if (phase==="salon" || phase==="verif") dessineCentre(); } });
+      r.on("pvc", m=>recoitCartes(m.data||{}));
+      r.on("cmd", m=>{ const d = m.data||{};
+        if (d.a==="activite" && d.id==="pavillons" && sur()) emet();
+        if (d.a==="pv") commande(d); });
+      setInterval(()=>{ if (sur()) emet(); }, 3000);
+    });
+    return brancheE;
+  }
+  function commande(d){
+    if (!sur()) return;
+    if (d.f==="lance") lance();
+    else if (d.f==="verif") verif();
+    else if (d.f==="salon" || d.f==="stop") arrete();
+    else if (d.f==="pause") pause();
+    else if (d.f==="reprend") reprend();
+    else if (d.f==="reglages"){ R = propre(d.r); sauveReglages(); if (phase==="salon" || phase==="verif" || phase==="fin") dessineCentre(); emet(); }
+  }
+  function programme(ms, fn){ clearTimeout(minuteur); suite = fn; echeance = Date.now()+ms; minuteur = setTimeout(()=>{ minuteur = null; fn(); }, ms); }
+  function sons(f){ try { Son[f](); } catch(e){} }
+  function lance(){
+    try { Son.init(); } catch(e){}
+    clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf);
+    const pres = presents(), calcs = genere(R);
+    P = {id:Autonome.rid(4), calcs, i:0, hisses:calcs.map(()=>new Set()), pres, score:{bons:0, total:0}, res:null, pause:false};
+    phase = "compte"; dessine(); emet();
+    const pas = k => { if (!P) return; if (k===0){ calc(); return; } const z = document.querySelector("#pv-ecran .pv-decompte"); if (z){ z.textContent = k; z.style.animation = "none"; void z.offsetWidth; z.style.animation = ""; } sons("pop"); programme(900, ()=>pas(k-1)); };
+    pas(3);
+  }
+  function calc(){ phase = "calc"; P.calcs[P.i].tel = telPv; dessine(); emet(); programme(durees().calc, ferme); anime(); } // tel : le téléphone compte ce calcul
+  function ferme(){ if (phase!=="calc") return; phase = "ferme"; dessineCentre(); emet(); clearTimeout(attenteFin); attenteFin = setTimeout(revele, P.calcs[P.i].tel ? 1800 : 0); }
+  function recoitCartes(d){
+    if (!sur()) return;
+    if (d.cid==="verif"){ if (phase!=="verif") return; verifVus = new Set((Array.isArray(d.n) ? d.n : []).map(Number).filter(estPresent)); dessineDrisse(); dessineCentre(); return; }
+    if (!P || (phase!=="calc" && phase!=="ferme") || d.cid!==P.id+":"+P.i) return;
+    const h = P.hisses[P.i]; let neuf = 0;
+    (Array.isArray(d.n) ? d.n : []).forEach(x=>{ x = +x; if (estPresent(x) && !h.has(x)){ h.add(x); neuf++; } });
+    P.calcs[P.i].tel = true;
+    if (neuf){ dessineDrisse(); const b = document.querySelector("#pv-ecran .pv-compte"); if (b){ b.querySelector("b").textContent = h.size; b.querySelector("small").textContent = h.size>1 ? "pavillons hissés" : "pavillon hissé"; b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
+      if (Date.now()-dernierPop>140){ dernierPop = Date.now(); sons("pop"); } }
+    if (d.fin && phase==="ferme"){ clearTimeout(attenteFin); revele(); }
+  }
+  function revele(){
+    if (!P || phase!=="ferme") return;
+    const c = P.calcs[P.i], h = P.hisses[P.i];
+    if (c.tel){ c.bons = P.pres.filter(e=>h.has(e.n)===c.juste).length; P.score.bons += c.bons; P.score.total += P.pres.length; } else c.bons = null;
+    phase = "revele"; dessine(); emet(); sons(c.juste ? "cloche" : "plouf");
+    const s = document.querySelector("#pv-ecran .pv-score"); if (s && c.bons){ s.classList.remove("plus"); void s.offsetWidth; s.classList.add("plus"); }
+    programme(durees().revele, ()=>{ if (!P) return; P.i++; if (P.i>=P.calcs.length) fin(); else calc(); });
+  }
+  function fin(){
+    phase = "fin"; cancelAnimationFrame(raf);
+    P.res = {}; P.pres.forEach(e=>{ P.res[e.n] = P.calcs.map((c,i)=>c.bons==null ? "-" : (P.hisses[i].has(e.n)===c.juste ? "1" : "0")).join(""); });
+    dessine(); emet(); sons("fanfare");
+  }
+  function verif(){ clearTimeout(minuteur); clearTimeout(attenteFin); P = null; phase = "verif"; verifVus = new Set(); dessine(); emet(); }
+  function arrete(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; dessine(); emet(); }
+  function pause(){ if (!P || P.pause || (phase!=="calc" && phase!=="revele")) return; P.pause = true; reste = Math.max(0, echeance-Date.now()); clearTimeout(minuteur); minuteur = null; dessineCentre(); dessineBas(); emet(); }
+  function reprend(){ if (!P || !P.pause) return; P.pause = false; programme(reste, suite); dessineCentre(); dessineBas(); emet(); if (phase==="calc") anime(); }
+  function anime(){
+    cancelAnimationFrame(raf);
+    const pas = () => { const b = document.querySelector("#pv-ecran .pv-temps i"); if (!b || !P || phase!=="calc") return;
+      const d = durees().calc, r = P.pause ? reste : Math.max(0, echeance-Date.now()); b.style.transform = `scaleX(${(r/d).toFixed(4)})`;
+      if (!P.pause) raf = requestAnimationFrame(pas); };
+    pas();
+  }
+
+  /* ---------- dessin de l'écran ---------- */
+  function ecran(aDistance){
+    const s = Accueil.section("pv-ecran", ""); Accueil.montre("pv-ecran");
+    if (!s.dataset.pret){ s.dataset.pret = 1;
+      s.innerHTML = `<img class="nuage n1" src="img/nuage1.webp" alt=""><img class="nuage n2" src="img/nuage3.webp" alt="">
+        <div class="pv-haut"><button class="btn petit" id="pv-maison">${Accueil.IC.maison}<span>Activités</span></button><div class="pv-titre">Hissez les pavillons</div><div class="pv-score" hidden></div><span class="pastille" id="pv-tel"></span></div>
+        <div class="pv-drisse"></div><div class="pv-centre"></div>
+        <div class="pv-bas" hidden><button class="btn petit" data-pv="pause">Pause</button><button class="btn petit" data-pv="stop">Arrêter la partie</button></div>
+        <div class="mer"></div><img class="pv-bateau" src="img/bateau.webp" alt=""><div class="mer2"></div>`;
+      const m = s.querySelector("#pv-maison"); let t = null;
+      m.onclick = ()=>{ if (enPartie() && !m.dataset.sur){ m.dataset.sur = 1; m.lastChild.textContent = "Quitter la partie ?"; clearTimeout(t); t = setTimeout(()=>{ delete m.dataset.sur; m.lastChild.textContent = "Activités"; }, 4000); return; }
+        delete m.dataset.sur; m.lastChild.textContent = "Activités"; arrete(); Accueil.ecran(); };
+      s.querySelector("#pv-tel").onclick = ()=>{ if (!telLie){ arrete(); Accueil.ecran(); } };
+      s.addEventListener("click", e=>{ const b = e.target.closest("[data-pv]"); if (!b) return; try { Son.init(); } catch(x){}
+        const f = b.dataset.pv;
+        if (f==="reglages") reglages(R, r=>{ R = r; sauveReglages(); dessineCentre(); emet(); });
+        else if (f==="pause") P && P.pause ? reprend() : pause();
+        else commande({f}); });
+    }
+    brancheEcran().then(emet);
+    if (!enPartie() && phase!=="verif") phase = P && phase==="fin" ? "fin" : "salon";
+    dessine();
+    if (aDistance) Accueil.rappelSon();
+  }
+  function dessine(){ const s = document.getElementById("pv-ecran"); if (!s) return; s.dataset.phase = phase; dessineHaut(); dessineDrisse(); dessineCentre(); dessineBas(); }
+  function dessineHaut(){
+    const s = document.querySelector("#pv-ecran .pv-score"), p = document.getElementById("pv-tel"); if (!s || !p) return;
+    const vis = P && P.calcs.some(c=>c.tel) && ["calc","ferme","revele","fin"].includes(phase);
+    s.hidden = !vis; if (vis) s.innerHTML = `<b>★</b> ${P.score.bons} <small style="font:700 .7em var(--texte);color:var(--gris)">bonne${P.score.bons>1?"s":""} réponse${P.score.bons>1?"s":""}</small>`;
+    p.textContent = telPv ? "Le téléphone filme" : telLie ? "Téléphone relié, caméra éteinte" : "Relier le téléphone";
+    p.style.background = telPv ? "#D9F0E1" : telLie ? "#FFF1CF" : "var(--soleil)"; p.style.color = telPv ? "#1f6b3d" : "var(--nuit)"; p.style.cursor = telLie ? "default" : "pointer";
+  }
+  function dessineDrisse(){
+    const d = document.querySelector("#pv-ecran .pv-drisse"); if (!d) return;
+    const pres = P ? P.pres : presents(), cle = pres.map(e=>e.n).join(",");
+    if (d.dataset.cle!==cle){ d.dataset.cle = cle; d.style.setProperty("--nb", pres.length);
+      d.innerHTML = pres.map((e,k)=>`<div class="pv-place" data-n="${e.n}" style="--k:${k}"><b class="pv-fl">${drapeau(e.n)}</b><i>${e.n}</i></div>`).join(""); }
+    const c = P && P.calcs[P.i], joue = c && ["calc","ferme","revele"].includes(phase);
+    const haut = phase==="salon" || phase==="fin" ? null : phase==="verif" ? verifVus : joue ? P.hisses[P.i] : new Set();
+    d.querySelectorAll(".pv-place").forEach(el=>el.classList.toggle("haut", haut===null || haut.has(+el.dataset.n)));
+    d.classList.toggle("fete", haut===null);
+    d.classList.toggle("juste", phase==="revele" && !!c && c.juste); d.classList.toggle("faux", phase==="revele" && !!c && !c.juste);
+  }
+  function dessineBas(){ const b = document.querySelector("#pv-ecran .pv-bas"); if (!b) return; b.hidden = !enPartie() || phase==="compte";
+    const p = b.querySelector('[data-pv="pause"]'); if (p) p.textContent = P && P.pause ? "Reprendre" : "Pause"; }
+  function dessineCentre(){
+    const z = document.querySelector("#pv-ecran .pv-centre"); if (!z) return;
+    if (phase==="salon"){
+      z.innerHTML = `<div class="pv-salon"><h1>Hissez les pavillons !</h1>
+        <div class="pv-regles">
+          <div class="pv-regle"><div class="ill"><span class="pv-mini">3 × 4 = 12</span></div><b>Un calcul s'affiche</b><span>Juste ou faux ? Quelques secondes pour décider.</span></div>
+          <div class="pv-regle"><div class="ill oui">${drapeau(1)}<em>✓</em></div><b>Il est juste ?</b><span>Hisse ton pavillon : lève ta carte bien haut !</span></div>
+          <div class="pv-regle"><div class="ill non">${drapeau(2)}<em>✗</em></div><b>Il est faux ?</b><span>Garde ta carte baissée : ne tombe pas dans le piège !</span></div></div>
+        <div class="pv-resume"><span>${esc(resume(R))}</span><button class="btn petit" data-pv="reglages">Modifier</button></div>
+        <div class="pv-boutons"><button class="btn" data-pv="verif">Essayer les cartes</button><button class="btn prim" data-pv="lance">C'est parti !</button></div>
+        <p class="pv-info">${telPv ? "Le téléphone filme la classe : il comptera les pavillons hissés." : telLie ? "Sur le téléphone, ouvre « Hissez les pavillons » et touche « Filmer la classe » : il comptera les pavillons." : "Sans téléphone, on joue à main levée. Pour compter les pavillons, relie le téléphone depuis l'accueil des activités."}</p></div>`;
+      return;
+    }
+    if (phase==="verif"){
+      const pres = presents(), manque = pres.filter(e=>!verifVus.has(e.n));
+      z.innerHTML = `<div class="pv-verif"><h1>Tout le monde lève sa carte !</h1>
+        <p>Bien droite, face au téléphone. Chaque pavillon hissé, c'est une carte que le téléphone voit.</p>
+        <div class="pv-grand">${verifVus.size} <small>sur ${pres.length}</small></div>
+        <p>${!telPv ? "Le téléphone ne filme pas encore : dans l'appli, touche « Filmer la classe »." : !manque.length ? "Le téléphone voit toutes les cartes. Parfait !" : "Le téléphone ne voit pas encore "+(manque.length>12 ? esc(manque.slice(0,12).map(e=>e.prenom || "carte "+e.n).join(", "))+"… ("+manque.length+" cartes)." : esc(liste(manque.map(e=>e.prenom || "carte "+e.n)))+".")}</p>
+        <div class="pv-boutons"><button class="btn" data-pv="salon">Retour</button><button class="btn prim" data-pv="lance">C'est parti !</button></div></div>`;
+      return;
+    }
+    if (phase==="compte"){ z.innerHTML = `<div class="pv-attente"><div class="pv-decompte">3</div><div class="pv-sous">Préparez vos pavillons…</div></div>`; return; }
+    if (phase==="fin"){ z.innerHTML = finHTML(); return; }
+    const c = P.calcs[P.i], h = P.hisses[P.i], d = phase==="revele";
+    const calcul = d && !c.juste ? `${c.a} ${OPS[c.op]} ${c.b} = <s>${c.aff}</s><ins>${c.r}</ins>` : esc(texte(c));
+    let msg = "Juste ? Hissez vos pavillons !";
+    if (P.pause) msg = "Pause";
+    else if (phase==="ferme") msg = c.tel ? "On compte les pavillons…" : "Temps écoulé !";
+    else if (d){ const bons = c.bons, nb = P.pres.length;
+      msg = bons==null ? (c.juste ? "C'était juste !" : "C'était faux !")
+        : c.juste ? (bons===nb ? "Tous les pavillons sont hissés, bravo !" : `${pl(bons, "pavillon")} bien hissé${bons>1?"s":""} sur ${nb}`)
+        : (bons===nb ? "Personne n'est tombé dans le piège, bravo !" : `${pl(nb-bons, "élève")} ${nb-bons>1 ? "sont tombés" : "est tombé"} dans le piège`); }
+    const neuve = z.dataset.calc!==P.id+":"+P.i; z.dataset.calc = P.id+":"+P.i;
+    z.innerHTML = `<div class="pv-jeu"><div class="pv-num">Calcul ${P.i+1} sur ${P.calcs.length}</div>
+        <div class="pv-pancarte ${neuve ? "neuve" : ""}"><div class="pv-calc">${calcul}</div>${d ? `<div class="pv-tampon ${c.juste ? "ok" : "ko"}">${c.juste ? "Juste !" : "Faux !"}</div>` : ""}</div>
+        <div class="pv-temps" ${d ? "hidden" : ""}><i style="transform:scaleX(${phase==="ferme" ? 0 : 1})"></i></div><div class="pv-msg">${msg}</div></div>
+      ${c.tel ? `<div class="pv-compte"><b>${h.size}</b><small>${h.size>1 ? "pavillons hissés" : "pavillon hissé"}</small></div>` : ""}`;
+    if (phase==="calc") anime();
+  }
+  function finHTML(){
+    const compte = P.calcs.filter(c=>c.bons!=null), nb = P.pres.length;
+    const pct = P.score.total ? Math.round(100*P.score.bons/P.score.total) : 0, et = pct>=90 ? 3 : pct>=75 ? 2 : pct>=50 ? 1 : 0;
+    const titre = !compte.length ? "Partie terminée !" : pct>=90 ? "Équipage d'élite !" : pct>=75 ? "Bravo l'équipage !" : pct>=50 ? "Bien joué, moussaillons !" : "On s'entraîne encore ?";
+    const recap = P.calcs.map(c=>{ const t = c.bons==null ? null : Math.round(100*c.bons/Math.max(1,nb));
+      return `<span class="pv-rc ${t==null ? "" : t>=80 ? "" : t>=50 ? "moyen" : "dur"}"><span>${c.a} ${OPS[c.op]} ${c.b} = ${c.juste ? c.r : `<s>${c.aff}</s> ${c.r}`}</span>${t==null ? "" : `<b>${t} %</b>`}</span>`; }).join("");
+    return `<div class="pv-fin"><img class="perro" src="img/perroquet-bravo.webp" alt=""><div class="pv-fin-carte"><h1>${titre}</h1>
+      ${compte.length ? `<div class="pv-pct">${pct} %<span class="pv-etoiles">${"★".repeat(et)}<i>${"★".repeat(3-et)}</i></span></div>
+        <p>${br(P.score.bons)} sur ${P.score.total} : pavillons hissés sur les calculs justes, gardés baissés sur les faux.</p>`
+        : `<p>Sans téléphone qui filme, les cartes n'ont pas été comptées.</p>`}
+      <div class="pv-recap">${recap}</div>
+      <div class="pv-boutons"><button class="btn" data-pv="salon">Changer les calculs</button><button class="btn prim" data-pv="lance">Rejouer</button></div></div></div>`;
+  }
+
+  /* ---------- réglages (sur l'écran de la classe comme sur le téléphone) ---------- */
+  function reglages(depart, ok){
+    let o = propre(depart);
+    const d = Accueil.voile(`<h2>Les calculs</h2><div class="pv-regl"></div><div class="aut-boutons"><button class="btn prim" data-r="oui">C'est bon</button><button class="btn" data-r="non">Annuler</button></div>`);
+    const z = d.querySelector(".pv-regl");
+    const groupe = (k, titre, choix, actif, cls) => `<div class="aa-champ">${titre}<div class="aa-puces ${cls||""}" data-k="${k}">${choix.map(([v,t])=>`<button type="button" data-v="${v}" aria-pressed="${actif(v)}">${t}</button>`).join("")}</div></div>`;
+    const rend = () => { z.innerHTML = groupe("op", "Calculs", [["fois","× Tables"],["plus","+ Additions"],["moins","− Soustractions"]], v=>o.op===v)
+      + (o.op==="fois" ? groupe("tables", "Quelles tables ?", Array.from({length:10},(_,i)=>[i+1, i+1]), v=>o.tables.includes(+v), "tables")
+                       : groupe("max", "Nombres jusqu'à", [[10,"10"],[20,"20"],[100,"100"]], v=>o.max===+v))
+      + groupe("nb", "Combien de calculs ?", [[5,"5"],[10,"10"],[15,"15"],[20,"20"]], v=>o.nb===+v)
+      + groupe("vitesse", "Temps pour décider", Object.entries(VITESSES).map(([k,x])=>[k, x.nom+" · "+Math.round(x.calc/1000)+" s"]), v=>o.vitesse===v); };
+    rend();
+    z.onclick = e=>{ const b = e.target.closest("[data-v]"); if (!b) return; const k = b.parentElement.dataset.k, v = b.dataset.v;
+      if (k==="tables"){ const n = +v, i = o.tables.indexOf(n); if (i>=0){ if (o.tables.length>1) o.tables.splice(i,1); } else o.tables.push(n); o.tables.sort((a,b)=>a-b); }
+      else if (k==="op" || k==="vitesse") o[k] = v; else o[k] = +v;
+      rend(); };
+    d.addEventListener("click", e=>{ const b = e.target.closest("[data-r]"); if (!b) return; d.remove(); if (b.dataset.r==="oui") ok(propre(o)); });
+  }
+
+  /* ================= téléphone : il filme, compte et télécommande ================= */
+  let E = null, cam = null, roomT = null, lie = false, cid = null, debut = 0, cumul = new Set(), ouvert = false, envoiT = null, vusVerif = [], reprendre = false, dernier = null;
+  const emetT = (t, d) => roomT && roomT.emit(t, d).catch(()=>{});
+  const cmd = (f, x) => emetT("cmd", Object.assign({a:"pv", f}, x||{}));
+  const telOuvert = () => Accueil.courant()==="pv-tel";
+  function recoitEtat(d){
+    const avant = E; E = d && d.phase ? d : null;
+    if (E && E.phase==="calc" && E.cid && E.cid!==cid){ cid = E.cid; debut = Date.now()+GRACE; cumul = new Set(); ouvert = true; }
+    if (E && E.phase==="ferme" && E.cid===cid && ouvert){ ouvert = false; envoie(true); }
+    if (!E || (E.phase!=="calc" && E.phase!=="ferme")) ouvert = false;
+    if (cam) cam.question(!!E && ["calc","ferme","verif","compte"].includes(E.phase), false);
+    if (E && E.phase==="fin" && E.fin) garde(E);
+    if (telOuvert()){ if (!avant || !E || avant.phase!==E.phase || avant.cid!==E.cid || avant.pause!==E.pause || JSON.stringify(avant.r)!==JSON.stringify(E.r) || E.phase==="verif") dessineJeu(); dessineLien(); }
+    else if (Accueil.courant()==="aa-app") bandeau();
+  }
+  function vue(vus, t){
+    if (!E) return;
+    if (E.phase==="verif"){ const l = [...vus].filter(([n,v])=>v.k>=2 && t-v.t<1500).map(([n])=>n).sort((a,b)=>a-b);
+      if (l.join()!==vusVerif.join()){ vusVerif = l; emetT("pvc", {cid:"verif", n:l}); if (telOuvert()) dessineJeu(); } return; }
+    if (!ouvert) return;
+    let neuf = false; vus.forEach((v,n)=>{ if (v.k>=2 && v.t>=debut && !cumul.has(n)){ cumul.add(n); neuf = true; } });
+    if (neuf){ majCompte(); if (!envoiT) envoiT = setTimeout(()=>{ envoiT = null; envoie(false); }, 250); }
+  }
+  function envoie(fin){ if (!cid) return; clearTimeout(envoiT); envoiT = null; emetT("pvc", {cid, n:[...cumul], fin:!!fin}); }
+  const presT = () => E && Array.isArray(E.pres) ? E.pres : Classe.presents().map(e=>e.n);
+  function majCompte(){ const b = document.getElementById("pv-nb"); if (!b) return; const n = [...cumul].filter(x=>presT().includes(x)).length;
+    b.textContent = n; const s = b.nextSibling; if (s) s.textContent = n>1 ? " pavillons hissés" : " pavillon hissé"; }
+  const nomT = n => { const e = Classe.actifs().find(x=>x.n===n); return e && e.prenom ? e.prenom : "Carte "+n; };
+  async function garde(d){
+    if (dernier && dernier.id===d.id) return;
+    dernier = {id:d.id, date:Date.now(), r:d.r, fin:d.fin};
+    try { await (await useCap("db")).doc("pavillons/derniere").set(JSON.parse(JSON.stringify(dernier))); } catch(e){}
+  }
+  function tel(){
+    const s = Accueil.section("pv-tel"); Accueil.montre("pv-tel");
+    if (!s.dataset.pret){ s.dataset.pret = 1;
+      s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="pv-r">${Accueil.IC.retour}Accueil</button><h1>Hissez les pavillons</h1></div>
+        <div class="pv-t"><div class="pv-t-cam aa-bloc"><div id="pv-cam"></div></div><div class="pv-t-cote"><div class="pv-t-lien" id="pv-lien"></div><div id="pv-jeu"></div></div></div>`;
+      s.querySelector("#pv-r").onclick = ()=>Accueil.accueilTel();
+      cam = nouvelleCamera({id:"pv-cam-go", bouton:"Filmer la classe", presence:true, attente:"",
+        note:"Pose le téléphone debout, en hauteur, face à la classe : il doit voir toutes les cartes levées. Fais un essai des cartes avant de jouer.",
+        gris:(n)=>!presT().includes(n) || (ouvert && !cumul.has(n)),
+        surEtat:a=>{ if (roomT) roomT.presence({pv:a ? 1 : null}).catch(()=>{}); if (telOuvert()) dessineJeu(); }});
+      cam.monte(s.querySelector("#pv-cam"), {surVue:vue});
+      s.querySelector("#pv-jeu").addEventListener("click", clic);
+      s.querySelector("#pv-lien").addEventListener("click", e=>{ if (e.target.closest("#pv-relier")) Accueil.relier(); if (e.target.closest("[data-c]")) emetT("cmd", {a:"activite", id:"pavillons"}); });
+    }
+    if (reprendre){ reprendre = false; cam.lance(); }
+    dessineLien(); dessineJeu();
+    if (!dernier) useCap("db").then(db=>db.doc("pavillons/derniere").get()).then(v=>{ if (v && v.exists && !dernier){ dernier = v.data(); if (telOuvert()) dessineJeu(); } }).catch(()=>{});
+  }
+  function quitteTel(){ if (cam) reprendre = cam.coupe(); }
+  function clic(e){
+    const b = e.target.closest("[data-c]"); if (!b) return;
+    const f = b.dataset.c;
+    if (f==="reglages"){ reglages(E ? E.r : null, r=>cmd("reglages", {r})); return; }
+    if (f==="relier"){ Accueil.relier(); return; }
+    if ((f==="lance" || f==="verif") && cam && !cam.actif()) cam.lance();
+    b.disabled = true; setTimeout(()=>{ b.disabled = false; }, 900);
+    cmd(f);
+  }
+  function dessineLien(){
+    const z = document.getElementById("pv-lien"); if (!z) return;
+    z.innerHTML = !lie ? `<div class="aa-carte aa-ecran"><p class="aut-etat">L'écran de la classe n'est pas relié</p><button class="btn mer" id="pv-relier">Afficher le jeu sur l'ordinateur</button></div>`
+      : !E ? `<div class="aa-carte aa-ecran"><p class="aut-etat attente">L'écran de la classe est relié</p><button class="btn mer" data-c="ouvre">Ouvrir « Hissez les pavillons » sur l'écran</button></div>` : "";
+  }
+  function dessineJeu(){
+    const z = document.getElementById("pv-jeu"); if (!z) return;
+    const filme = cam && cam.actif();
+    if (!E){ z.innerHTML = derniereHTML(); return; }
+    const pres = presT();
+    if (E.phase==="salon"){
+      z.innerHTML = `<div class="aa-bloc"><h3>Les calculs</h3><p class="pv-t-resume">${esc(resume(E.r))}</p><button class="btn" data-c="reglages">Modifier les calculs</button>
+        <div class="aa-actions"><button class="btn prim" data-c="lance">C'est parti !</button><button class="btn" data-c="verif">Essayer les cartes</button></div>
+        ${filme ? "" : `<p class="aut-note" style="margin:0">La caméra s'allume au départ de la partie : le téléphone compte les cartes levées.</p>`}</div>
+        ${derniereHTML()}`;
+      return;
+    }
+    if (E.phase==="verif"){
+      const vus = vusVerif.filter(n=>pres.includes(n)), manque = pres.filter(n=>!vusVerif.includes(n));
+      z.innerHTML = `<div class="aa-bloc"><h3>Essai des cartes <span>${vus.length} sur ${pres.length}</span></h3>
+        <p class="pv-t-manque">${!filme ? "Touche « Filmer la classe » au-dessus." : !manque.length ? "Toutes les cartes sont vues. Parfait !" : "Pas encore vues : "+esc(liste(manque.map(nomT)))+"."}</p>
+        <div class="aa-actions"><button class="btn prim" data-c="lance">C'est parti !</button><button class="btn" data-c="salon">Retour</button></div></div>`;
+      return;
+    }
+    if (E.phase==="fin" && E.fin){
+      z.innerHTML = `<div class="aa-bloc">${resultatsHTML(E.fin)}<div class="aa-actions"><button class="btn prim" data-c="lance">Rejouer</button><button class="btn" data-c="salon">Changer les calculs</button></div></div>`;
+      return;
+    }
+    const c = E.calc, rev = E.phase==="revele";
+    let calcul = c ? esc(c.txt) : "…", verdict = "";
+    if (rev && c){ if (!c.juste){ const m = /^(.*= )(.*)$/.exec(c.txt), v = /= (.*)$/.exec(c.vrai); calcul = m && v ? `${esc(m[1])}<s>${esc(m[2])}</s><ins>${esc(v[1])}</ins>` : esc(c.txt); }
+      verdict = `<p class="pv-t-verdict ${c.juste ? "ok" : "ko"}">${c.juste ? "C'était juste" : "C'était faux"}${E.bons!=null ? ` · ${br(E.bons)} sur ${pres.length}` : ""}</p>`; }
+    const n = E.phase==="compte" ? 0 : [...cumul].filter(x=>pres.includes(x)).length;
+    z.innerHTML = `<div class="aa-bloc pv-t-jeu"><div class="pv-t-num">${E.phase==="compte" ? "Départ…" : `Calcul ${E.i+1} sur ${E.n}`}</div>
+      <div class="pv-t-calc">${E.phase==="compte" ? "3, 2, 1…" : calcul}</div>
+      ${filme ? `<div class="pv-t-compte"><b id="pv-nb">${n}</b><span>${n>1 ? " pavillons hissés" : " pavillon hissé"}</span></div>` : `<p class="aut-note" style="margin:0">La caméra est éteinte : les cartes ne sont pas comptées.</p>`}
+      ${verdict}
+      <div class="aa-actions deux"><button class="btn" data-c="${E.pause ? "reprend" : "pause"}">${E.pause ? "Reprendre" : "Pause"}</button><button class="btn" data-c="stop">Arrêter</button></div></div>`;
+  }
+  function derniereHTML(){
+    if (!dernier || !dernier.fin) return "";
+    const j = new Date(dernier.date||Date.now()).toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long"});
+    return `<div class="aa-bloc"><h3>Dernière partie <span>${esc(j)}</span></h3><p class="aut-note" style="margin:0">${esc(resume(dernier.r))}</p>${resultatsHTML(dernier.fin, "tete")}
+      <details class="pv-t-detail"><summary>Voir le détail par élève</summary>${resultatsHTML(dernier.fin, "liste")}</details></div>`;
+  }
+  function resultatsHTML(f, court){
+    const calcs = f.calcs || [], lignes = Object.entries(f.res||{}).map(([n, s])=>({n:+n, s, ok:[...s].filter(x=>x==="1").length, faits:[...s].filter(x=>x!=="-").length})).sort((a,b)=>a.n-b.n);
+    const tot = lignes.reduce((a,l)=>a+l.faits, 0), bons = lignes.reduce((a,l)=>a+l.ok, 0);
+    if (!tot) return `<p class="pv-t-manque">Les cartes n'ont pas été comptées : le téléphone ne filmait pas.</p>`;
+    const nb = lignes.length, taux = calcs.map((c,i)=>({c, i, t:c.bons==null ? null : Math.round(100*c.bons/Math.max(1,nb))}));
+    const durs = taux.filter(x=>x.t!=null && x.t<60).sort((a,b)=>a.t-b.t).slice(0,4);
+    const cal = c => { const m = /^(.*= )(.*)$/.exec(c.txt), v = /= (.*)$/.exec(c.vrai); return c.juste || !m || !v ? esc(c.txt) : `${esc(m[1])}<s>${esc(m[2])}</s> ${esc(v[1])}`; };
+    const tete = `<div class="pv-t-pct">${Math.round(100*bons/tot)} %</div><p class="pv-t-manque">${br(bons)} sur ${tot}.</p>
+      ${durs.length ? `<div class="pv-t-durs"><b>À revoir</b><ul>${durs.map(x=>`<li>${cal(x.c)} <em>${x.t} % de réussite</em></li>`).join("")}</ul></div>` : `<p class="pv-t-durs"><b>Aucun calcul raté par la moitié de la classe.</b></p>`}`;
+    if (court==="tete") return tete;
+    return (court==="liste" ? "" : tete) + `<p class="aut-note" style="margin:0">Touche un élève pour voir ses erreurs : « oublié », pavillon pas hissé sur un calcul juste ; « piégé », hissé sur un calcul faux.</p>
+      <ol class="pv-res">${lignes.map(l=>{ const err = [...l.s].map((x,i)=>x==="0" ? (calcs[i].juste ? "oublié " : "piégé ")+calcs[i].txt : "").filter(Boolean);
+        return `<li class="${l.ok===l.faits ? "parfait" : ""}"><details ${err.length ? "" : "inert"}><summary>${drapeau(l.n)}<b>${esc(nomT(l.n))}</b><em>${l.ok}/${l.faits}</em>
+          <span class="pv-pts">${[...l.s].map(x=>`<i class="${x==="1" ? "ok" : x==="0" ? "ko" : ""}"></i>`).join("")}</span></summary>${err.length ? `<small>${esc(err.join(" · "))}</small>` : ""}</details></li>`; }).join("")}</ol>`;
+  }
+  /* sur l'accueil du téléphone : l'activité ouverte sur l'écran de la classe, et la dernière partie */
+  function bandeau(){
+    const s = document.getElementById("aa-app"); if (!s || Accueil.courant()!=="aa-app") return;
+    let b = document.getElementById("pv-bandeau");
+    if (!b){ const ref = s.querySelector("#aa-ecran-etat"); if (!ref) return; b = document.createElement("div"); b.id = "pv-bandeau"; b.className = "aa-bandeau"; ref.before(b);
+      b.innerHTML = `<span>« Hissez les pavillons » est ouvert sur l'écran.</span><button class="btn jaune petit">Filmer la classe</button>`;
+      b.querySelector("button").onclick = ()=>{ tel(); if (cam && !cam.actif()) cam.lance(); }; }
+    b.hidden = !E;
+    const t = s.querySelector('[data-etat="pavillons"]');
+    if (t){ const f = dernier && dernier.fin; let x = "Vrai ou faux, avec les cartes-réponses";
+      if (f){ const l = Object.values(f.res||{}).join(""), tot = [...l].filter(c=>c!=="-").length, ok = [...l].filter(c=>c==="1").length; if (tot) x = `Dernière partie : ${Math.round(100*ok/tot)} % de bonnes réponses`; }
+      t.textContent = x; }
+  }
+
+  /* ---------- démarrage ---------- */
+  async function demarre(mode){
+    if (mode==="tbi"){ brancheEcran(); return; }
+    roomT = await useCap("room"); if (!roomT) return;
+    roomT.on("pv", m=>recoitEtat(m.data||{}));
+    roomT.onPeers(ch=>{ const a = lie; lie = ch.peers.some(p=>!p.isMe && p.presence && p.presence.role==="tbi"); if (!lie) E = null;
+      if (a!==lie){ if (telOuvert()){ dessineLien(); dessineJeu(); } else bandeau(); } });
+    useCap("db").then(db=>db.doc("pavillons/derniere").get()).then(v=>{ if (v && v.exists && !dernier){ dernier = v.data(); bandeau(); } }).catch(()=>{});
+  }
+  /* l'écran de la classe passe à autre chose : la partie s'arrête, et le téléphone l'apprend */
+  function quitteEcran(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; emet(); }
+  return { demarre, ecran, tel, quitteTel, quitteEcran, bandeau, image, drapeau, occupe:enPartie,
+    _test:{ durees(o){ dureesTest = o; }, etat:()=>({phase, P, R, telPv}), genere, faux, propre } };
+})();
+window.Pavillons = Pavillons;
 
 /* ---------- téléphone : lecture des cartes ---------- */
 function reponseCarte(m){
