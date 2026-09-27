@@ -603,7 +603,7 @@ const Autonome = (() => {
     const signale = (j,l) => { const ch = {peers:tous(), joined:j.map(vue), left:l.map(vue)}; ecPairs.forEach(f=>{ try { f(ch); } catch(e){ console.error(e); } }); };
     let rep = null;
     const coucou = () => rel.publie({k:"hb", f:moi.peer, p:moi.presence}, "hb").catch(()=>{});
-    const ETATS = {q:1, scan:1, ecran:1}; // sujets du jeu qui décrivent un état complet : le dernier suffit
+    const ETATS = {q:1, scan:1, ecran:1, pv:1, pvc:1, "hist:ids":1}; // sujets qui décrivent un état complet : le dernier suffit
     rel.ecoute(m=>{
       if (m.f===moi.peer) return;
       if (m.k==="hb"){ const neuf = !pairs.has(m.f), p = pairs.get(m.f) || {peer:m.f}, avant = JSON.stringify(p.presence||null);
@@ -814,7 +814,7 @@ const Autonome = (() => {
     if (name==="downloads") return Telechargements;
     return null;
   } };
-  return { NATIF, LOCAL, Liaison, Serveur, LienTel, Stock, eveille, rid, normalise, modeParDefaut, partageFichier, partage:plug("Share") };
+  return { NATIF, LOCAL, Liaison, Serveur, LienTel, Stock, eveille, rid, normalise, modeParDefaut, partageFichier, partage:plug("Share"), fichiers:plug("Filesystem") };
 })();
 window.Autonome = Autonome;
 
@@ -2785,6 +2785,7 @@ function poserQuestion(q, i, n, mode){
       pct = cpt[qv.ok]/repondu.length;
       // stats par élève
       repondu.forEach(e=>{ const el=S.stats.el[e.n]=S.stats.el[e.n]||{}; const a=el[q.n]=el[q.n]||[0,0]; a[1]++; if(rep[e.n]===LET[qv.ok]) a[0]++; });
+      if (window.Historique) Historique.question(q, qv, rep, act, pct); // version autonome : l'historique des séances, dès la réponse montrée
       Son.cloche();
       pct = await afficheScore(pct, `${cpt[qv.ok]} bonne${cpt[qv.ok]>1?"s":""} réponse${cpt[qv.ok]>1?"s":""} sur ${repondu.length}`, mode);
     } else {
@@ -2792,6 +2793,7 @@ function poserQuestion(q, i, n, mode){
       $("#q-pied").innerHTML = `<div class="manuel"><span class="lab">Combien ont trouvé ?</span>
         <button class="btn" data-go="1">Tout le monde</button><button class="btn" data-go="0.8">Presque tous</button><button class="btn" data-go="0.5">La moitié</button><button class="btn" data-go="0.2">Peu</button></div>`;
       const v = await attendre();
+      if (window.Historique) Historique.question(q, qv, rep, act, +v);
       pct = await afficheScore(+v, null, mode);
     }
     const s=S.stats.q[q.id]||{n:0}; S.stats.q[q.id]={n:s.n+1,last:pct,t:Date.now()};
@@ -2913,6 +2915,7 @@ async function rituel(mode){
   }
   if ((await attendre())==="non"){ enJeu=false; return accueil(); }
   chrono(true);
+  if (window.Historique) Historique.debutRituel(mode, actifs());
   const depart = S.milles; const res = []; ritExtra = [];
   orageForce = 100;
   for (let i=0;i<qs.length;i++){
@@ -2961,6 +2964,7 @@ async function bilan(res, gagne, mode){
   noteJournal({type:mode||"matin", titre, esc: p.fin?"Marseille":`${ESCALES[p.i].v} → ${ESCALES[p.i+1].v}`, m:gagne,
     resume:`${res.length} question${res.length>1?"s":""} · ${Math.round(moyG*100)} % de bonnes réponses`, det:det.concat(ritExtra), txt:t});
   ritExtra = [];
+  if (window.Historique) Historique.finRituel(gagne, moyG);
   sauve();
 }
 
@@ -4285,22 +4289,30 @@ const Classe = (() => {
   }
 
   /* ---------- sauvegarde de la classe (et du voyage) ---------- */
-  async function exporte(){
+  /* tout ce qu'il faut garder : la classe, le voyage du Bateau-école et l'historique des séances */
+  async function contenu(){
     const v = await (await useCap("db")).doc("jeu/etat").get();
     const bateau = window.Accueil && Accueil.estEcran() && typeof S!=="undefined" && S.maj ? JSON.parse(JSON.stringify(S)) : (v.exists ? v.data() : null);
-    const o = {format:"bateau-ecole/sauvegarde", version:1, date:new Date().toISOString(), classe:c, bateau};
+    if (window.Historique) await Historique.init();
+    return {format:"bateau-ecole/sauvegarde", version:2, date:new Date().toISOString(), classe:c, bateau, historique:window.Historique ? Historique.tout() : []};
+  }
+  async function exporte(){
+    const o = await contenu();
     const nom = ("Classe "+(c && c.nom || "")).trim().replace(/[\\/:*?"<>|]/g,"-")+" - "+aujourdhui()+".json";
     await Autonome.partageFichier(nom, new Blob([JSON.stringify(o, null, 1)], {type:"application/json"}), "application/json");
+    try { localStorage.setItem("bateau-ecole-export", String(Date.now())); } catch(e){}
   }
   function lit(texte){
     let o = null; try { o = JSON.parse(texte); } catch(e){}
-    if (o && o.format==="bateau-ecole/sauvegarde") return {type:"sauvegarde", classe:o.classe ? propre(o.classe) : null, bateau:o.bateau && typeof o.bateau==="object" ? o.bateau : null};
+    if (o && o.format==="bateau-ecole/sauvegarde") return {type:"sauvegarde", classe:o.classe ? propre(o.classe) : null, bateau:o.bateau && typeof o.bateau==="object" ? o.bateau : null,
+      historique:Array.isArray(o.historique) ? o.historique : []};
     if (o && Array.isArray(o.eleves) && ("milles" in o || "questions" in o)) return {type:"bateau", classe:depuisEtat(o, Date.now()), bateau:o};
     if (o) return {type:"inconnu"};
     const l = lisListe(texte); return l.length ? {type:"liste", prenoms:l} : {type:"inconnu"};
   }
   /* applique une sauvegarde : la classe tout de suite, le voyage vers l'écran de la classe (qui remplacera le sien) */
   async function importe(r){
+    if (r.historique && r.historique.length && window.Historique) await Historique.importe(r.historique); // les séances s'ajoutent à celles déjà là
     if (r.classe){ const k = propre(r.classe); c = k; enregistre(); }
     if (r.prenoms) ajoute(r.prenoms);
     if (r.bateau){
@@ -4329,7 +4341,7 @@ const Classe = (() => {
     cree(o){ c = propre(Object.assign(vide(), o||{})); enregistre(); },
     /* adopter une classe sans la dater (premier lancement de l'écran : elle ne doit pas écraser celle du téléphone) */
     adopte(k){ c = propre(k); if (db) db.doc(DOC).set(JSON.parse(JSON.stringify(c))).catch(()=>{}); annonce("local"); },
-    modifie, ajoute, lisListe, basculeAbsent, absents, motif, pdf, imprimeCartes, exporte, lit, importe, choisitFichier, depuisEtat, versJeu,
+    modifie, ajoute, lisListe, basculeAbsent, absents, motif, pdf, imprimeCartes, exporte, contenu, lit, importe, choisitFichier, depuisEtat, versJeu,
     actifs:()=> c ? c.eleves.filter(e=>e.actif) : [],
     presents:()=> c ? c.eleves.filter(e=>e.actif && !absents().includes(e.n)) : [] };
 })();
@@ -4353,7 +4365,8 @@ const Accueil = (() => {
     cartes:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8 8h3v3H8zM13 13h3v3h-3zM13 8h3M8 16h3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
     sauve:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10l4 4 4-4M5 16v3h14v-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     ecran:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M9 20h6M12 16v4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
-    maison:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7M6 10v10h12V10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    maison:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7M6 10v10h12V10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    suivi:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M5 15l4-4 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="7" r="1.6" fill="currentColor"/></svg>'
   };
   const st = document.createElement("style");
   st.textContent = `
@@ -4623,9 +4636,10 @@ const Accueil = (() => {
         <h2 class="aa-h2">Ma classe</h2>
         <div class="aa-liste">
           <button data-v="appel">${IC.appel}<span>Faire l'appel<small id="aa-presents">${n ? `${pres} présent${pres>1?"s":""} sur ${n} aujourd'hui` : "Ajoute d'abord tes élèves"}</small></span>${IC.suite}</button>
+          <button data-v="suivi">${IC.suivi}<span>Suivi de la classe<small id="aa-suivi">${window.Historique ? esc(Historique.resumeCourt()) : ""}</small></span>${IC.suite}</button>
           <button data-v="eleves">${IC.eleves}<span>Élèves et cartes<small>${n ? `${n} élève${n>1?"s":""}, chacun sa carte numérotée` : "Ajoute tes élèves"}</small></span>${IC.suite}</button>
           <button data-v="cartes">${IC.cartes}<span>Imprimer les cartes-réponses<small>PDF, deux cartes par page A4</small></span>${IC.suite}</button>
-          <button data-v="sauve">${IC.sauve}<span>Sauvegarder ou importer<small>Pour changer d'appareil ou garder une copie</small></span>${IC.suite}</button>
+          <button data-v="sauve">${IC.sauve}<span>Sauvegarder ou importer<small>${esc(etatSauve())}</small></span>${IC.suite}</button>
         </div>
         <p class="aa-pied">Pas de compte, pas de publicité : les prénoms restent sur tes appareils.<br>Les messages entre le téléphone et l'écran sont chiffrés.</p>
       </div>`;
@@ -4633,6 +4647,7 @@ const Accueil = (() => {
       const a = e.target.closest("[data-act]"); if (a){ ouvreActivite(a.dataset.act); return; }
       const v = e.target.closest("[data-v]"); if (!v) return;
       if (v.dataset.v==="appel") appel(); if (v.dataset.v==="eleves") classe(); if (v.dataset.v==="sauve") sauvegardes();
+      if (v.dataset.v==="suivi" && window.Historique) Historique.suivi();
       if (v.dataset.v==="cartes") imprime(v);
     };
     s.querySelector("#aa-lire").onclick = ()=>ouvreActivite("bateau");
@@ -4736,22 +4751,33 @@ const Accueil = (() => {
   }
 
   /* ---------- sauvegardes ---------- */
+  const ilYa = d => { const j = Math.floor((Date.now()-d)/864e5); return j<=0 ? "aujourd'hui" : j===1 ? "hier" : `il y a ${j} jours`; };
+  function etatSauve(){
+    const a = window.AutoSauve && AutoSauve.possible() ? AutoSauve.derniere() : null, e = +lsGet("bateau-ecole-export") || null;
+    if (a) return `Sauvegarde automatique ${ilYa(a)}${e ? " · copie envoyée "+ilYa(e) : ""}`;
+    return e ? `Dernière copie envoyée ${ilYa(e)}` : "Pour changer d'appareil ou garder une copie";
+  }
   function sauvegardes(){
     const s = section("aa-classe"); montre("aa-classe");
+    const auto = window.AutoSauve && AutoSauve.possible(), a = auto ? AutoSauve.derniere() : null, e = +lsGet("bateau-ecole-export") || null;
     s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="aa-r">${IC.retour}Accueil</button><h1>Sauvegardes</h1></div>
-      <div class="aa-bloc"><h3>Garder une copie</h3><p style="margin:0;line-height:1.45">Un fichier avec ta classe (prénoms, cartes) et ton voyage du Bateau-école. Range-le dans Fichiers, ou envoie-le par mail.</p>
-        <button class="btn mer" id="aa-exp">Enregistrer une sauvegarde</button></div>
+      ${auto ? `<div class="aa-bloc"><h3>Sauvegarde automatique</h3><p style="margin:0;line-height:1.45">Chaque jour de classe, ce téléphone garde une copie complète (classe, voyage, historique des séances) dans l'app <b>Fichiers › Sur mon iPhone › Bateau-école › Sauvegardes</b> : les 30 derniers jours, et un fichier par mois.</p>
+        <p class="aa-message ${a ? "" : "ko"}" style="margin:0">${a ? `Dernière sauvegarde : ${esc(ilYa(a))} à ${esc(new Date(a).toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"}))}` : "Pas encore de sauvegarde automatique : elle se fera dans quelques secondes."}</p></div>` : ""}
+      <div class="aa-bloc"><h3>Garder une copie ailleurs</h3><p style="margin:0;line-height:1.45">Un fichier avec ta classe (prénoms, cartes), ton voyage du Bateau-école et tout l'historique des séances. Envoie-le par mail, ou range-le dans iCloud Drive : même si le téléphone est perdu, rien n'est perdu. Une fois par mois, c'est bien.</p>
+        ${e ? `<p class="aut-note" style="margin:0">Dernière copie envoyée : ${esc(ilYa(e))}.</p>` : ""}
+        <button class="btn mer" id="aa-exp">Envoyer une copie</button></div>
       <div class="aa-bloc"><h3>Importer</h3><p style="margin:0;line-height:1.45">Une sauvegarde de cette appli, la copie téléchargée depuis l'ancienne version du Bateau-école, ou une liste de prénoms (fichier texte ou tableur).</p>
         <button class="btn" id="aa-imp">Choisir un fichier…</button><div id="aa-msg"></div></div>`;
     s.querySelector("#aa-r").onclick = accueilTel;
-    s.querySelector("#aa-exp").onclick = ()=>Classe.exporte().catch(()=>alerte("La sauvegarde n'a pas pu être créée", "Réessaie dans un instant."));
+    s.querySelector("#aa-exp").onclick = ()=>Classe.exporte().then(()=>{ if (courant==="aa-classe") sauvegardes(); }).catch(()=>alerte("La sauvegarde n'a pas pu être créée", "Réessaie dans un instant."));
     s.querySelector("#aa-imp").onclick = async ()=>{ const t = await Classe.choisitFichier(); if (t==null) return; await importe(t, s.querySelector("#aa-msg")); };
+    if (auto && !a) AutoSauve.ecrit().then(()=>{ if (courant==="aa-classe" && document.getElementById("aa-exp")) sauvegardes(); });
   }
   async function importe(texte, zone){
     const r = Classe.lit(texte), msg = (t, ko) => { if (zone) zone.innerHTML = `<p class="aa-message ${ko?"ko":""}">${t}</p>`; };
     if (r.type==="inconnu"){ msg("Ce fichier n'est pas une sauvegarde de classe.", true); return false; }
-    const k = r.classe, n = k ? k.eleves.filter(e=>e.actif).length : (r.prenoms||[]).length;
-    const quoi = r.type==="liste" ? `${n} prénom${n>1?"s":""} à ajouter` : `la classe${k && k.nom ? " « "+esc(k.nom)+" »" : ""} (${n} élève${n>1?"s":""})${r.bateau ? " et son voyage du Bateau-école" : ""}`;
+    const k = r.classe, n = k ? k.eleves.filter(e=>e.actif).length : (r.prenoms||[]).length, h = (r.historique||[]).length;
+    const quoi = r.type==="liste" ? `${n} prénom${n>1?"s":""} à ajouter` : `la classe${k && k.nom ? " « "+esc(k.nom)+" »" : ""} (${n} élève${n>1?"s":""})${r.bateau ? ", son voyage du Bateau-école" : ""}${h ? ` et ${h} séance${h>1?"s":""} de l'historique (ajoutées à celles déjà là)` : ""}`;
     const ok = await new Promise(res=>{ const d = voile(`<h2>Importer ${r.type==="liste" ? "ces prénoms" : "cette sauvegarde"} ?</h2><p>Le fichier contient ${quoi}.${r.type!=="liste" ? " Elle remplacera la classe actuelle." : ""}</p>
         <div class="aut-boutons"><button class="btn" data-r="non">Annuler</button><button class="btn prim" data-r="oui">Importer</button></div>`);
       d.addEventListener("click", e=>{ const b = e.target.closest("[data-r]"); if (!b) return; d.remove(); res(b.dataset.r==="oui"); }); });
@@ -4841,6 +4867,13 @@ const Accueil = (() => {
     roleCourant = mode;
     intro();
     await Classe.init();
+    if (window.Historique) Historique.init().then(()=>{
+      const majSuivi = ()=>{ const x = document.getElementById("aa-suivi"); if (x) x.textContent = Historique.resumeCourt(); };
+      Historique.surChange(majSuivi); majSuivi();
+      if (mode!=="tbi" && window.AutoSauve && AutoSauve.possible()){ // téléphone : une sauvegarde par jour, et après chaque changement
+        const a = AutoSauve.derniere(); if (!a || new Date(a).toDateString()!==new Date().toDateString()) AutoSauve.bientot();
+        Classe.surChange(()=>AutoSauve.bientot());
+        useCap("db").then(db=>db.doc("jeu/etat").onSnapshot(sn=>{ if (sn.distant) AutoSauve.bientot(); })); } });
     Classe.surChange((k, origine)=>{
       if (estEcran() && Classe.versJeu()){ if (typeof majBarre==="function") majBarre(); }
       if (courant==="aa-app" && origine==="distant") accueilTel();
@@ -5215,7 +5248,7 @@ const Pavillons = (() => {
     try { Son.init(); } catch(e){}
     clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf);
     const pres = presents(), calcs = genere(R);
-    P = {id:Autonome.rid(4), calcs, i:0, hisses:calcs.map(()=>new Set()), temps:calcs.map(()=>new Map()), pres, score:{bons:0, total:0}, res:null, pm:null, pause:false};
+    P = {id:Autonome.rid(4), debut:Date.now(), calcs, i:0, hisses:calcs.map(()=>new Set()), temps:calcs.map(()=>new Map()), pres, score:{bons:0, total:0}, res:null, pm:null, pause:false};
     phase = "compte"; dessine(); emet();
     const pas = k => { if (!P) return; if (k===0){ calc(); return; } const z = document.querySelector("#pv-ecran .pv-decompte"); if (z){ z.textContent = k; z.style.animation = "none"; void z.offsetWidth; z.style.animation = ""; } sons("pop"); programme(900, ()=>pas(k-1)); };
     pas(3);
@@ -5239,7 +5272,7 @@ const Pavillons = (() => {
     if (!P || phase!=="ferme") return;
     const c = P.calcs[P.i], h = P.hisses[P.i];
     if (c.tel){ c.bons = P.pres.filter(e=>h.has(e.n)===c.juste).length; P.score.bons += c.bons; P.score.total += P.pres.length; } else c.bons = null;
-    phase = "revele"; dessine(); emet(); sons(c.juste ? "cloche" : "plouf");
+    phase = "revele"; dessine(); emet(); sons(c.juste ? "cloche" : "plouf"); archive(false);
     const s = document.querySelector("#pv-ecran .pv-score"); if (s && c.bons){ s.classList.remove("plus"); void s.offsetWidth; s.classList.add("plus"); }
     programme(durees().revele, ()=>{ if (!P) return; P.i++; if (P.i>=P.calcs.length) fin(); else calc(); });
   }
@@ -5247,7 +5280,17 @@ const Pavillons = (() => {
     phase = "fin"; cancelAnimationFrame(raf);
     P.res = {}; P.pres.forEach(e=>{ P.res[e.n] = P.calcs.map((c,i)=>c.bons==null ? "-" : (P.hisses[i].has(e.n)===c.juste ? "1" : "0")).join(""); });
     P.pm = palmares();
-    dessine(); emet(); sons("fanfare");
+    dessine(); emet(); sons("fanfare"); archive(true);
+  }
+  /* l'historique de la classe (version autonome) : la partie est gardée calcul après calcul, même interrompue */
+  function archive(fini){
+    if (!window.Historique || !P) return;
+    const faits = P.calcs.slice(0, P.i+1), res = {}, tm = {};
+    P.pres.forEach(e=>{ res[e.n] = faits.map((c,i)=>c.bons==null ? "-" : (P.hisses[i].has(e.n)===c.juste ? "1" : "0")).join("");
+      const t = faits.map((c,i)=>c.juste && c.bons!=null && P.hisses[i].has(e.n) ? P.temps[i].get(e.n) : null).filter(x=>x!=null);
+      if (t.length) tm[e.n] = Math.round(t.reduce((a,b)=>a+b,0)/t.length); });
+    Historique.enreg({id:"p"+P.id, a:"pavillons", d:P.debut, r:R, fini, pres:P.pres.map(e=>[e.n, e.prenom||""]),
+      c:faits.map(c=>({t:texte(c), j:c.juste ? 1 : 0, b:c.bons, op:c.op, a:c.a, x:c.b})), res, tm});
   }
   /* le palmarès : les meilleurs matelots (bonnes réponses, puis rapidité), et des records qui ne récompensent que du bon */
   function palmares(){
@@ -5593,10 +5636,321 @@ const Pavillons = (() => {
   }
   /* l'écran de la classe passe à autre chose : la partie s'arrête, et le téléphone l'apprend */
   function quitteEcran(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; emet(); }
-  return { demarre, ecran, tel, quitteTel, quitteEcran, bandeau, image, drapeau, occupe:enPartie,
+  return { demarre, ecran, tel, quitteTel, quitteEcran, bandeau, image, drapeau, resume, occupe:enPartie,
     _test:{ durees(o){ dureesTest = o; }, etat:()=>({phase, P, R, telPv}), fin, genere, faux, propre } };
 })();
 window.Pavillons = Pavillons;
+
+/* ---------- version autonome : l'historique de la classe ----------
+   Chaque séance (rituel du Bateau-école, partie de « Hissez les pavillons ») est enregistrée au fur et à mesure, avec la
+   réponse de chaque élève, sur l'écran de la classe ET sur le téléphone (document « historique/seances ») : une séance
+   interrompue garde ce qui a été fait. Les deux appareils se complètent à chaque liaison (sujets « hist » : des séances,
+   « hist:ids » : la liste de celles qu'on a) ; la sauvegarde de la classe les contient aussi.
+   Sur le téléphone : le suivi de la classe et de chaque élève, et une sauvegarde automatique chaque jour dans Fichiers. */
+const Historique = (() => {
+  const DOC = "historique/seances", MAX = 3000;
+  let seances = null, pret = null, db = null, room = null, tEcrit = null, courante = null;
+  const ecoutes = new Set();
+  const valide = s => !!s && typeof s==="object" && typeof s.id==="string" && s.id.length<40 && (s.a==="bateau" || s.a==="pavillons") && typeof s.d==="number";
+  const copie = o => JSON.parse(JSON.stringify(o));
+
+  /* ---------- enregistrement, et échanges entre l'écran et le téléphone ---------- */
+  function init(){
+    if (pret) return pret;
+    pret = (async()=>{
+      db = await useCap("db");
+      try { const v = await db.doc(DOC).get(); seances = v.exists && Array.isArray(v.data().seances) ? v.data().seances.filter(valide) : []; } catch(e){ seances = []; }
+      seances.sort((a,b)=>b.d-a.d);
+      room = await useCap("room");
+      if (room){
+        room.on("hist", m=>{ const l = m.data && Array.isArray(m.data.s) ? m.data.s : []; let neuf = false; l.forEach(s=>{ if (valide(s) && fusionne(copie(s))) neuf = true; }); if (neuf) enregistre(); });
+        room.on("hist:ids", m=>{ const ids = m.data && m.data.ids; if (ids && typeof ids==="object") envoieManquantes(ids); });
+        room.onPeers(ch=>{ if (ch.joined.some(p=>!p.isMe)) setTimeout(annonce, 400+Math.random()*900); });
+        setInterval(annonce, 60000); setTimeout(annonce, 1500);
+      }
+    })();
+    return pret;
+  }
+  /* la version la plus récente d'une séance gagne (une séance s'enrichit à chaque question) */
+  function fusionne(s){
+    const i = seances.findIndex(x=>x.id===s.id);
+    if (i>=0){ if ((s.maj||0) <= (seances[i].maj||0)) return false; seances[i] = s; } else seances.push(s);
+    seances.sort((a,b)=>b.d-a.d); if (seances.length>MAX) seances.length = MAX; return true;
+  }
+  function enregistre(){
+    clearTimeout(tEcrit);
+    tEcrit = setTimeout(()=>{ if (db) db.doc(DOC).set({v:1, seances}).catch(e=>console.warn("historique", e)); AutoSauve.bientot(); }, 250);
+    ecoutes.forEach(f=>{ try { f(); } catch(e){ console.error(e); } });
+  }
+  function annonce(){ if (!room || !seances) return; const ids = {}; seances.slice(0,800).forEach(s=>{ ids[s.id] = s.maj||0; }); room.emit("hist:ids", {ids}).catch(()=>{}); }
+  function envoieManquantes(ids){
+    if (!room || !seances) return;
+    const l = seances.filter(s=>!(s.id in ids) || (+ids[s.id]||0) < (s.maj||0));
+    for (let i=0;i<l.length;i+=6) room.emit("hist", {s:l.slice(i,i+6)}).catch(()=>{});
+  }
+  async function enreg(s){
+    await init(); const c = copie(s); c.maj = Date.now(); s.maj = c.maj;
+    if (fusionne(c)){ enregistre(); if (room) room.emit("hist", {s:[c]}).catch(()=>{}); }
+  }
+  /* sauvegarde importée : ses séances s'ajoutent à celles qu'on a déjà */
+  async function importe(l){ await init(); let n = 0; (Array.isArray(l) ? l : []).forEach(s=>{ if (valide(s) && fusionne(copie(s))) n++; }); if (n){ enregistre(); annonce(); } return n; }
+
+  /* ---------- le Bateau-école : un rituel, question après question ---------- */
+  const enDemo = () => typeof DEMO!=="undefined" && DEMO;
+  function debutRituel(mode, pres){
+    courante = enDemo() ? null : {id:"b"+Autonome.rid(5), a:"bateau", mode:mode||"matin", d:Date.now(), pres:(pres||[]).map(e=>[e.n, e.prenom||""]), q:[], fini:false};
+  }
+  function question(q, qv, rep, act, pct){
+    if (!courante || enDemo()) return;
+    const r = {}; act.forEach(e=>{ if (rep && rep[e.n]) r[e.n] = rep[e.n]; });
+    courante.q.push({id:q.id, n:q.n, t:String(qv.q||"").slice(0,140), ok:LET[qv.ok], nb:qv.c.length, p:act.map(e=>e.n), r, pct:pct==null ? null : Math.round(pct*100)/100});
+    enreg(courante);
+  }
+  function finRituel(gagne, moy){
+    if (!courante) return;
+    courante.fini = true; courante.gagne = gagne||0; courante.pct = Math.round((moy||0)*100)/100; enreg(courante); courante = null;
+  }
+
+  /* ---------- lectures ---------- */
+  const tout = () => (seances||[]).slice();
+  /* réussite de la classe à une séance (0 à 1), ou null */
+  function reussite(s){
+    if (s.a==="pavillons"){ let ok = 0, n = 0; Object.values(s.res||{}).forEach(x=>{ for (const c of x){ if (c==="1"){ ok++; n++; } else if (c==="0") n++; } }); return n ? ok/n : null; }
+    const l = (s.q||[]).filter(q=>q.pct!=null); return l.length ? l.reduce((a,q)=>a+q.pct,0)/l.length : null;
+  }
+  /* un élève à une séance : {ok, n} (réponses justes, réponses données) ou null s'il n'y était pas */
+  function eleveSeance(s, n){
+    if (s.a==="pavillons"){ const x = (s.res||{})[n]; if (x==null) return null; let ok = 0, t = 0; for (const c of x){ if (c==="1"){ ok++; t++; } else if (c==="0") t++; } return t ? {ok, n:t} : null; }
+    let ok = 0, t = 0, la = false; (s.q||[]).forEach(q=>{ if (!(q.p||[]).includes(n)) return; la = true; const r = (q.r||{})[n]; if (!r) return; t++; if (r===q.ok) ok++; });
+    return la && t ? {ok, n:t} : la ? {ok:0, n:0} : null;
+  }
+  const nomNotion = id => { const x = (typeof S!=="undefined" && S.notions || []).find(n=>n.id===id) || (typeof NOTIONS!=="undefined" ? NOTIONS.find(n=>n.id===id) : null); return x ? x.t : id; };
+  function titre(s){
+    if (s.a==="pavillons") return "Hissez les pavillons";
+    return s.mode==="tempete" ? "Tempête du vendredi" : s.mode==="tresor" ? "L'île au trésor" : "Rituel du matin";
+  }
+  function sousTitre(s){
+    if (s.a==="pavillons") return (window.Pavillons && Pavillons.resume ? Pavillons.resume(s.r) : "")+(s.fini ? "" : " · interrompue");
+    const nb = (s.q||[]).length, nots = [...new Set((s.q||[]).map(q=>q.n))].map(nomNotion);
+    return `${nb} question${nb>1?"s":""}${nots.length ? " · "+nots.slice(0,3).join(", ")+(nots.length>3 ? "…" : "") : ""}${s.fini ? "" : " · interrompu"}`;
+  }
+
+  /* ================= téléphone : le suivi ================= */
+  const esc2 = x => esc(String(x==null ? "" : x));
+  const pc = x => x==null ? "–" : Math.round(x*100)+" %";
+  const jour = d => new Date(d).toLocaleDateString("fr-FR", {weekday:"short", day:"numeric", month:"short"});
+  const jourLong = d => new Date(d).toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long"});
+  const heure = d => new Date(d).toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"});
+  const couleur = x => x==null ? "var(--gris)" : x>=.75 ? "var(--ok)" : x>=.5 ? "#B86E0A" : "var(--ko)";
+  const ACT = {bateau:{nom:"Bateau-école", c:"#2B8CB5"}, pavillons:{nom:"Pavillons", c:"#E85D3F"}};
+  const st = document.createElement("style");
+  st.textContent = `
+.hi-resume{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.hi-chiffre{background:var(--ecume);border-radius:14px;padding:10px 12px;display:grid;gap:2px}
+.hi-chiffre b{font:800 1.6rem/1 var(--display);color:var(--nuit)}
+.hi-chiffre span{font-size:.86rem;color:var(--gris);line-height:1.3}
+.hi-courbe{display:block;width:100%;height:auto;overflow:visible}
+.hi-courbe text{font:700 10px var(--texte);fill:#5B7285}
+.hi-legende{display:flex;gap:14px;flex-wrap:wrap;font-size:.86rem;color:var(--gris)}
+.hi-legende i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.hi-onglets{display:flex;gap:6px;margin:0 12px 12px;background:#fff;border-radius:999px;padding:4px}
+.hi-onglets button{flex:1;border:0;background:none;border-radius:999px;padding:.55em;font:800 1rem var(--display);color:var(--gris);cursor:pointer}
+.hi-onglets button[aria-pressed="true"]{background:var(--mer);color:#fff}
+.hi-liste{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.hi-liste li > button{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;text-align:left;background:var(--ecume);border:0;border-radius:14px;padding:10px 12px;font:inherit;color:var(--encre);cursor:pointer}
+.hi-liste b{font:800 1.02rem/1.2 var(--display);color:var(--nuit)}
+.hi-liste small{display:block;color:var(--gris);font-size:.85rem;line-height:1.3;margin-top:1px}
+.hi-liste em{font:800 1.05rem var(--display);font-style:normal}
+.hi-pastille{width:12px;height:12px;border-radius:50%;flex:none}
+.hi-mois{font:800 .85rem var(--display);color:var(--gris);text-transform:uppercase;letter-spacing:.05em;margin:8px 4px 0}
+.hi-el .pv-dr{width:32px;height:auto}
+.hi-mini{display:block;width:64px;height:22px}
+.hi-table{width:100%;border-collapse:collapse;font-size:.92rem}
+.hi-table th{font:800 .8rem var(--display);color:var(--gris);text-align:left;padding:4px 6px;border-bottom:1px solid #E3ECF0}
+.hi-table td{padding:6px;border-bottom:1px solid #EEF3F5;vertical-align:middle}
+.hi-table td:last-child{text-align:right;font-weight:800}
+.hi-barre{height:8px;border-radius:999px;background:#E3ECF0;overflow:hidden;min-width:60px}
+.hi-barre i{display:block;height:100%;border-radius:inherit}
+.hi-grille{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.hi-grille table{border-collapse:collapse;font-size:.85rem}
+.hi-grille th,.hi-grille td{padding:4px 5px;text-align:center;white-space:nowrap}
+.hi-grille th:first-child,.hi-grille td:first-child{text-align:left;position:sticky;left:0;background:#fff}
+.hi-grille .o{color:var(--ok);font-weight:800} .hi-grille .x{color:var(--ko);font-weight:800} .hi-grille .v{color:#B7C6CF}
+.hi-vide{color:var(--gris);text-align:center;padding:14px 6px;line-height:1.5}
+.hi-sauve{display:flex;gap:10px;align-items:flex-start;background:#E3F4E9;color:#1f6b3d;border-radius:14px;padding:10px 12px;font-weight:700;line-height:1.4}
+.hi-sauve.ko{background:#FFF1CF;color:#7A5200}`;
+  document.head.appendChild(st);
+
+  /* une courbe de réussite (0 à 100 %) : séries de points {d, y} */
+  function courbe(series, o){
+    o = o||{}; const W = 320, H = o.h||120, g = 26, bas = H-18, haut = 8;
+    const pts = series.flatMap(s=>s.pts); if (!pts.length) return "";
+    const d0 = Math.min(...pts.map(p=>p.d)), d1 = Math.max(...pts.map(p=>p.d)), span = Math.max(1, d1-d0);
+    const X = d => pts.length===1 || d1===d0 ? (g+W)/2 : g+ (d-d0)/span*(W-g-6), Y = y => bas-(Math.max(0,Math.min(1,y)))*(bas-haut);
+    const grille = [0,.5,1].map(v=>`<line x1="${g}" x2="${W}" y1="${Y(v)}" y2="${Y(v)}" stroke="#E3ECF0" stroke-width="1"/><text x="${g-4}" y="${Y(v)+3.5}" text-anchor="end">${v*100}</text>`).join("");
+    const traits = series.map(s=>{ const l = s.pts.slice().sort((a,b)=>a.d-b.d);
+      return (l.length>1 ? `<polyline points="${l.map(p=>X(p.d).toFixed(1)+","+Y(p.y).toFixed(1)).join(" ")}" fill="none" stroke="${s.c}" stroke-width="${s.fin ? 1.5 : 2.5}" stroke-linejoin="round" stroke-linecap="round" ${s.fin ? 'stroke-dasharray="4 3"' : ""}/>` : "")
+        + (s.fin ? "" : l.map(p=>`<circle cx="${X(p.d).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="3" fill="${s.c}"/>`).join("")); }).join("");
+    const dates = `<text x="${g}" y="${H-3}">${esc2(jour(d0))}</text>${d1!==d0 ? `<text x="${W}" y="${H-3}" text-anchor="end">${esc2(jour(d1))}</text>` : ""}`;
+    return `<svg class="hi-courbe" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc2(o.titre||"Progression")}">${grille}${traits}${dates}</svg>`;
+  }
+  /* au-delà de 40 séances, une moyenne par semaine */
+  function points(l, f){
+    let p = l.map(s=>({d:s.d, y:f(s)})).filter(x=>x.y!=null);
+    if (p.length>40){ const sem = new Map(); p.forEach(x=>{ const k = Math.floor((x.d/864e5+3)/7); const v = sem.get(k)||{d:0, y:0, n:0}; v.d += x.d; v.y += x.y; v.n++; sem.set(k, v); });
+      p = [...sem.values()].map(v=>({d:v.d/v.n, y:v.y/v.n})); }
+    return p;
+  }
+  function mini(p){ if (p.length<2) return ""; const l = p.slice(-10), W = 64, H = 22;
+    const X = i => 2+i*(W-4)/(l.length-1), Y = y => H-3-y*(H-6);
+    return `<svg class="hi-mini" viewBox="0 0 ${W} ${H}" aria-hidden="true"><polyline points="${l.map((q,i)=>X(i).toFixed(1)+","+Y(q.y).toFixed(1)).join(" ")}" fill="none" stroke="#2B8CB5" stroke-width="2" stroke-linejoin="round"/></svg>`; }
+
+  let onglet = "seances", nbVus = 15;
+  const eleves = () => { const a = Classe.actifs(); return a.length ? a : []; };
+  const nomEl = (n, s) => { const e = Classe.actifs().find(x=>x.n===n); if (e && e.prenom) return e.prenom; const p = s && (s.pres||[]).find(x=>x[0]===n); return p && p[1] ? p[1] : "Carte "+n; };
+  function page(titreP, retour){
+    const s = Accueil.section("aa-classe"); Accueil.montre("aa-classe");
+    s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="hi-r">${Accueil.IC.retour}${retour ? "Suivi" : "Accueil"}</button><h1>${esc2(titreP)}</h1></div><div id="hi-corps"></div>`;
+    s.querySelector("#hi-r").onclick = retour || (()=>Accueil.accueilTel());
+    return s.querySelector("#hi-corps");
+  }
+  async function suivi(){
+    await init();
+    const z = page("Suivi de la classe");
+    const l = tout(), b = l.filter(s=>s.a==="bateau"), p = l.filter(s=>s.a==="pavillons");
+    const moy = x => { const v = x.map(reussite).filter(y=>y!=null); return v.length ? v.reduce((a,c)=>a+c,0)/v.length : null; };
+    if (!l.length){ z.innerHTML = `<div class="aa-bloc"><p class="hi-vide">Aucune séance pour l'instant.<br>Chaque rituel du Bateau-école et chaque partie de « Hissez les pavillons » s'enregistre ici tout seul, avec les réponses de chaque élève.</p></div>${blocSauve()}`; return; }
+    const debut = l[l.length-1].d;
+    z.innerHTML = `<div class="aa-bloc"><h3>Depuis le ${esc2(new Date(debut).toLocaleDateString("fr-FR", {day:"numeric", month:"long"}))}</h3>
+        <div class="hi-resume"><div class="hi-chiffre"><b>${l.length}</b><span>séance${l.length>1?"s":""} enregistrée${l.length>1?"s":""}</span></div>
+          ${b.length ? `<div class="hi-chiffre"><b style="color:${couleur(moy(b))}">${pc(moy(b))}</b><span>Bateau-école · ${b.length} rituel${b.length>1?"s":""}</span></div>` : ""}
+          ${p.length ? `<div class="hi-chiffre"><b style="color:${couleur(moy(p))}">${pc(moy(p))}</b><span>Pavillons · ${p.length} partie${p.length>1?"s":""}</span></div>` : ""}</div></div>
+      <div class="aa-bloc"><h3>Progression de la classe</h3>
+        ${courbe([b.length && {c:ACT.bateau.c, pts:points(b, reussite)}, p.length && {c:ACT.pavillons.c, pts:points(p, reussite)}].filter(Boolean), {titre:"Réussite de la classe"})}
+        <div class="hi-legende">${b.length ? `<span><i style="background:${ACT.bateau.c}"></i>Bateau-école</span>` : ""}${p.length ? `<span><i style="background:${ACT.pavillons.c}"></i>Hissez les pavillons</span>` : ""}<span>% de bonnes réponses</span></div></div>
+      <div class="hi-onglets" role="tablist"><button data-o="seances" aria-pressed="${onglet==="seances"}">Séances</button><button data-o="eleves" aria-pressed="${onglet==="eleves"}">Élèves</button></div>
+      <div id="hi-onglet"></div>${blocSauve()}`;
+    z.querySelector(".hi-onglets").onclick = e=>{ const o = e.target.closest("[data-o]"); if (!o) return; onglet = o.dataset.o; z.querySelectorAll(".hi-onglets button").forEach(x=>x.setAttribute("aria-pressed", x===o)); rendOnglet(z.querySelector("#hi-onglet"), l); };
+    rendOnglet(z.querySelector("#hi-onglet"), l);
+  }
+  function rendOnglet(z, l){
+    if (onglet==="seances"){
+      let mois = "";
+      z.innerHTML = `<div class="aa-bloc"><ul class="hi-liste">${l.slice(0,nbVus).map(s=>{ const m = new Date(s.d).toLocaleDateString("fr-FR", {month:"long", year:"numeric"}), r = reussite(s);
+        const t = m!==mois ? `<li class="hi-mois">${esc2(m)}</li>` : ""; mois = m;
+        return t+`<li><button data-s="${esc2(s.id)}"><span class="hi-pastille" style="background:${ACT[s.a].c}"></span><span><b>${esc2(titre(s))}</b><small>${esc2(jour(s.d))} · ${esc2(sousTitre(s))}</small></span><em style="color:${couleur(r)}">${pc(r)}</em></button></li>`; }).join("")}</ul>
+        ${l.length>nbVus ? `<button class="btn" id="hi-plus">Voir les séances plus anciennes (${l.length-nbVus})</button>` : ""}</div>`;
+      z.onclick = e=>{ if (e.target.closest("#hi-plus")){ nbVus += 30; rendOnglet(z, l); return; } const b = e.target.closest("[data-s]"); if (b) seance(b.dataset.s); };
+      return;
+    }
+    const els = eleves();
+    if (!els.length){ z.innerHTML = `<div class="aa-bloc"><p class="hi-vide">Ajoute d'abord les élèves de la classe.</p></div>`; return; }
+    // à accompagner : moins de 65 % sur leurs 5 dernières séances
+    const recent = n => { let ok = 0, t = 0, k = 0; for (const s of l){ const x = eleveSeance(s, n); if (!x || !x.n) continue; ok += x.ok; t += x.n; if (++k>=5) break; } return t>=8 ? ok/t : null; };
+    const aider = els.map(e=>({e, r:recent(e.n)})).filter(x=>x.r!=null && x.r<.65).sort((a,b)=>a.r-b.r);
+    z.innerHTML = `${aider.length ? `<div class="aa-bloc"><h3>À accompagner <span>sur les 5 dernières séances</span></h3><p style="margin:0;line-height:1.5">${aider.map(x=>`<b>${esc2(x.e.prenom||"Carte "+x.e.n)}</b> <span style="color:${couleur(x.r)};font-weight:800">${pc(x.r)}</span>`).join(" · ")}</p></div>` : ""}
+      <div class="aa-bloc"><ul class="hi-liste hi-el">${els.map(e=>{ const pts = points(l.slice().reverse(), s=>{ const x = eleveSeance(s, e.n); return x && x.n ? x.ok/x.n : null; });
+        const tot = l.reduce((a,s)=>{ const x = eleveSeance(s, e.n); if (x){ a.ok += x.ok; a.n += x.n; } return a; }, {ok:0, n:0}), r = tot.n ? tot.ok/tot.n : null;
+        return `<li><button data-e="${e.n}">${window.Pavillons ? Pavillons.drapeau(e.n) : ""}<span><b>${esc2(e.prenom||"Carte "+e.n)}</b><small>${tot.n ? `${tot.n} réponse${tot.n>1?"s":""}` : "pas encore de réponse"}</small></span><span style="display:flex;align-items:center;gap:8px">${mini(pts)}<em style="color:${couleur(r)}">${pc(r)}</em></span></button></li>`; }).join("")}</ul></div>`;
+    z.onclick = e=>{ const b = e.target.closest("[data-e]"); if (b) eleve(+b.dataset.e); };
+  }
+  function seance(id){
+    const s = tout().find(x=>x.id===id); if (!s) return suivi();
+    const z = page(titre(s), suivi), r = reussite(s);
+    const presents = (s.pres||[]).map(x=>x[0]);
+    let corps = "";
+    if (s.a==="pavillons"){
+      const c = s.c||[];
+      corps = `<div class="aa-bloc"><h3>Les calculs</h3><table class="hi-table"><tr><th>Calcul</th><th></th><th>Réussite</th></tr>${c.map(x=>{ const t = x.b==null ? null : x.b/Math.max(1,presents.length);
+          return `<tr><td>${esc2(x.t)} ${x.j ? "" : "<small style=\"color:var(--ko)\">(faux)</small>"}</td><td><div class="hi-barre"><i style="width:${Math.round((t||0)*100)}%;background:${couleur(t)}"></i></div></td><td style="color:${couleur(t)}">${pc(t)}</td></tr>`; }).join("")}</table></div>
+        <div class="aa-bloc"><h3>Élève par élève</h3><div class="hi-grille"><table><tr><th></th>${c.map((x,i)=>`<th title="${esc2(x.t)}">${i+1}</th>`).join("")}<th>Total</th></tr>
+          ${presents.map(n=>{ const x = (s.res||{})[n]||""; const e = eleveSeance(s, n);
+            return `<tr><td>${esc2(nomEl(n, s))}</td>${c.map((_,i)=>`<td class="${x[i]==="1" ? "o" : x[i]==="0" ? "x" : "v"}">${x[i]==="1" ? "✓" : x[i]==="0" ? "✗" : "·"}</td>`).join("")}<td><b>${e ? e.ok+"/"+e.n : "–"}</b></td></tr>`; }).join("")}</table></div>
+          <p class="aut-note" style="margin:0">✓ bonne réponse · ✗ erreur (pavillon oublié sur un calcul juste, ou hissé sur un faux)</p></div>`;
+    } else {
+      const q = s.q||[];
+      corps = `<div class="aa-bloc"><h3>Les questions</h3><table class="hi-table"><tr><th>Question</th><th></th><th>Réussite</th></tr>${q.map(x=>`<tr><td>${esc2(x.t.length>70 ? x.t.slice(0,68)+"…" : x.t)}<small style="display:block;color:var(--gris)">${esc2(nomNotion(x.n))} · réponse ${esc2(x.ok)}</small></td><td><div class="hi-barre"><i style="width:${Math.round((x.pct||0)*100)}%;background:${couleur(x.pct)}"></i></div></td><td style="color:${couleur(x.pct)}">${pc(x.pct)}</td></tr>`).join("")}</table></div>
+        ${q.some(x=>Object.keys(x.r||{}).length) ? `<div class="aa-bloc"><h3>Élève par élève</h3><div class="hi-grille"><table><tr><th></th>${q.map((x,i)=>`<th title="${esc2(x.t)}">${i+1}</th>`).join("")}<th>Total</th></tr>
+          ${presents.map(n=>{ const e = eleveSeance(s, n); return `<tr><td>${esc2(nomEl(n, s))}</td>${q.map(x=>{ const a = (x.r||{})[n]; return `<td class="${!a ? "v" : a===x.ok ? "o" : "x"}">${!a ? "·" : a===x.ok ? "✓" : esc2(a)}</td>`; }).join("")}<td><b>${e && e.n ? e.ok+"/"+e.n : "–"}</b></td></tr>`; }).join("")}</table></div>
+          <p class="aut-note" style="margin:0">✓ bonne réponse · la lettre : la réponse choisie quand elle était fausse · « · » : pas de carte lue</p></div>` : `<div class="aa-bloc"><p class="hi-vide">Réussite estimée à main levée : pas de réponse par élève pour cette séance.</p></div>`}`;
+    }
+    z.innerHTML = `<div class="aa-bloc"><h3>${esc2(jourLong(s.d))} <span>${esc2(heure(s.d))}</span></h3>
+        <div class="hi-resume"><div class="hi-chiffre"><b style="color:${couleur(r)}">${pc(r)}</b><span>de bonnes réponses</span></div><div class="hi-chiffre"><b>${presents.length}</b><span>élève${presents.length>1?"s":""} présent${presents.length>1?"s":""}</span></div>
+        ${s.a==="bateau" && s.gagne ? `<div class="hi-chiffre"><b>+${s.gagne}</b><span>milles pour le bateau</span></div>` : ""}</div>
+        <p class="aut-note" style="margin:0">${esc2(sousTitre(s))}</p></div>${corps}`;
+  }
+  function eleve(n){
+    const l = tout(), nom = nomEl(n), z = page(nom, suivi);
+    const avec = l.filter(s=>(s.pres||[]).some(x=>x[0]===n)), tot = {ok:0, n:0};
+    avec.forEach(s=>{ const x = eleveSeance(s, n); if (x){ tot.ok += x.ok; tot.n += x.n; } });
+    const lui = points(avec.slice().reverse(), s=>{ const x = eleveSeance(s, n); return x && x.n ? x.ok/x.n : null; });
+    const classe = points(avec.slice().reverse(), reussite);
+    // par notion (Bateau-école) et par table (pavillons)
+    const par = new Map(), tables = new Map();
+    avec.forEach(s=>{
+      if (s.a==="bateau") (s.q||[]).forEach(q=>{ if (!(q.p||[]).includes(n)) return; const r = (q.r||{})[n]; if (!r) return; const v = par.get(q.n)||{ok:0, n:0}; v.n++; if (r===q.ok) v.ok++; par.set(q.n, v); });
+      else { const x = (s.res||{})[n]||"", choisies = s.r && Array.isArray(s.r.tables) ? s.r.tables : null;
+        (s.c||[]).forEach((c,i)=>{ if (c.op!=="fois" || (x[i]!=="1" && x[i]!=="0")) return;
+          [...new Set([c.a, c.x])].filter(t=>!choisies || choisies.includes(t)).forEach(t=>{ const v = tables.get(t)||{ok:0, n:0}; v.n++; if (x[i]==="1") v.ok++; tables.set(t, v); }); }); }
+    });
+    const lignes = (m, nomF) => [...m.entries()].map(([k,v])=>({k, v, r:v.ok/v.n})).sort((a,b)=>a.r-b.r).map(x=>`<tr><td>${esc2(nomF(x.k))}<small style="display:block;color:var(--gris)">${x.v.ok}/${x.v.n}</small></td><td><div class="hi-barre"><i style="width:${Math.round(x.r*100)}%;background:${couleur(x.r)}"></i></div></td><td style="color:${couleur(x.r)}">${pc(x.r)}</td></tr>`).join("");
+    const r = tot.n ? tot.ok/tot.n : null, nbS = l.length;
+    z.innerHTML = `<div class="aa-bloc"><div style="display:flex;align-items:center;gap:12px">${window.Pavillons ? Pavillons.drapeau(n).replace('class="pv-dr"', 'class="pv-dr" style="width:48px;height:auto"') : ""}<div><b style="font:800 1.3rem var(--display);color:var(--nuit)">${esc2(nom)}</b><div class="aut-note">Carte ${n}</div></div></div>
+        <div class="hi-resume"><div class="hi-chiffre"><b style="color:${couleur(r)}">${pc(r)}</b><span>de bonnes réponses${tot.n ? ` (${tot.ok}/${tot.n})` : ""}</span></div>
+          <div class="hi-chiffre"><b>${avec.length}</b><span>séance${avec.length>1?"s":""} sur ${nbS}</span></div></div></div>
+      ${lui.length ? `<div class="aa-bloc"><h3>Progression</h3>${courbe([{c:"#2B8CB5", pts:lui}, {c:"#9AA9B4", pts:classe, fin:true}], {titre:"Progression de "+nom})}
+        <div class="hi-legende"><span><i style="background:#2B8CB5"></i>${esc2(nom)}</span><span><i style="background:#9AA9B4"></i>moyenne de la classe</span></div></div>` : ""}
+      ${par.size ? `<div class="aa-bloc"><h3>Par notion <span>Bateau-école</span></h3><table class="hi-table">${lignes(par, nomNotion)}</table></div>` : ""}
+      ${tables.size ? `<div class="aa-bloc"><h3>Par table <span>Hissez les pavillons</span></h3><table class="hi-table">${lignes(tables, t=>"Table de "+t)}</table></div>` : ""}
+      ${!avec.length ? `<div class="aa-bloc"><p class="hi-vide">Pas encore de séance pour cet élève.</p></div>` : `<div class="aa-bloc"><h3>Ses dernières séances</h3><ul class="hi-liste">${avec.slice(0,15).map(s=>{ const x = eleveSeance(s, n), rr = x && x.n ? x.ok/x.n : null;
+        return `<li><button data-s="${esc2(s.id)}"><span class="hi-pastille" style="background:${ACT[s.a].c}"></span><span><b>${esc2(titre(s))}</b><small>${esc2(jour(s.d))}${x && x.n ? ` · ${x.ok}/${x.n}` : " · pas de carte lue"}</small></span><em style="color:${couleur(rr)}">${pc(rr)}</em></button></li>`; }).join("")}</ul></div>`}`;
+    z.onclick = e=>{ const b = e.target.closest("[data-s]"); if (b) seance(b.dataset.s); };
+  }
+  function blocSauve(){
+    const d = AutoSauve.derniere();
+    if (!AutoSauve.possible()) return "";
+    return `<div class="aa-bloc"><div class="hi-sauve ${d ? "" : "ko"}">${d ? `Sauvegarde automatique du ${esc2(jour(d))} à ${esc2(heure(d))}, sur ce téléphone : app Fichiers › Sur mon iPhone › Bateau-école › Sauvegardes.` : "La première sauvegarde automatique se fera après la prochaine séance."}</div></div>`;
+  }
+  /* pour l'accueil du téléphone : « 12 séances · dernière aujourd'hui » */
+  function resumeCourt(){ const l = tout(); if (!l.length) return "Les séances s'enregistrent toutes seules"; const d = l[0].d, auj = new Date().toDateString()===new Date(d).toDateString();
+    return `${l.length} séance${l.length>1?"s":""} · dernière ${auj ? "aujourd'hui" : "le "+new Date(d).toLocaleDateString("fr-FR", {day:"numeric", month:"long"})}`; }
+
+  return { init, debutRituel, question, finRituel, enreg, importe, tout, reussite, eleveSeance, suivi, seance, eleve, resumeCourt,
+    surChange:f=>{ ecoutes.add(f); return ()=>ecoutes.delete(f); },
+    _test:{ vide(){ seances = []; if (db) return db.doc(DOC).set({v:1, seances:[]}); }, annonce } };
+})();
+window.Historique = Historique;
+
+/* ---------- téléphone (appli) : une sauvegarde automatique par jour dans Documents/Sauvegardes (visible dans l'app Fichiers) ----------
+   On garde les 30 derniers jours, et le premier fichier de chaque mois. */
+const AutoSauve = (() => {
+  const FS = Autonome.fichiers, DOSSIER = "Sauvegardes", CLE = "bateau-ecole-autosauve";
+  let t = null, enCours = false;
+  const possible = () => !!FS && !(window.Accueil && Accueil.estEcran());
+  const derniere = () => { const v = +lsGet(CLE); return v || null; };
+  function bientot(){ if (!possible()) return; clearTimeout(t); t = setTimeout(ecrit, 5000); }
+  async function ecrit(){
+    if (!possible() || enCours) return; enCours = true;
+    try {
+      const o = await Classe.contenu(), j = Classe.aujourdhui();
+      await FS.writeFile({path:`${DOSSIER}/Bateau-école ${j}.json`, data:JSON.stringify(o), directory:"DOCUMENTS", encoding:"utf8", recursive:true});
+      lsSet(CLE, String(Date.now()));
+      await nettoie();
+    } catch(e){ console.warn("sauvegarde automatique", e); }
+    enCours = false;
+  }
+  async function nettoie(){
+    try {
+      const r = await FS.readdir({path:DOSSIER, directory:"DOCUMENTS"});
+      const noms = (r.files||[]).map(f=>typeof f==="string" ? f : f.name).filter(n=>/^Bateau-école \d{4}-\d{2}-\d{2}\.json$/.test(n)).sort().reverse();
+      const garde = new Set(noms.slice(0,30)), mois = new Set();
+      noms.slice().reverse().forEach(n=>{ const m = n.slice(13,20); if (!mois.has(m)){ mois.add(m); garde.add(n); } }); // le premier de chaque mois
+      for (const n of noms) if (!garde.has(n)) await FS.deleteFile({path:`${DOSSIER}/${n}`, directory:"DOCUMENTS"}).catch(()=>{});
+    } catch(e){}
+  }
+  return { bientot, ecrit, derniere, possible };
+})();
+window.AutoSauve = AutoSauve;
 
 /* ---------- téléphone : lecture des cartes ---------- */
 function reponseCarte(m){
