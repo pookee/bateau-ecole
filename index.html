@@ -148,6 +148,22 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .manuel{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .manuel .lab{font-weight:700;color:var(--gris)}
 .gain{font-family:var(--display);font-weight:800;font-size:1.6rem;color:var(--mer)}
+/* écran des questions (TBI) : --qf est choisie par ajusteQ() pour que le texte soit le plus grand possible en laissant la mer et le bateau visibles */
+.carte.qc{width:min(1600px,100%);font-size:var(--qf,28px);padding:clamp(12px,1.8vh,22px) clamp(16px,1.8vw,30px)}
+.qc .chip{font-size:max(1rem,.4em)}
+.qc .q-num{font-size:max(1.1rem,.4em)}
+.qc .q-txt{font-size:1.3em;line-height:1.12;margin:.2em 0 .38em}
+.qc .choixq{gap:clamp(8px,1.3vh,14px)}
+.qc .opt{font-size:1em;min-height:0;padding:.2em .5em .2em .3em;gap:.35em;line-height:1.15}
+.qc .opt .l{width:1.75em;height:1.75em;font-size:.95em}
+.q-bas{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-top:clamp(8px,1.5vh,16px)}
+.q-bas .q-pied{flex:1 1 auto;margin:0}
+.qc .truc{flex:2 1 560px;margin:0;font-size:var(--tf,1.3rem);padding:8px 14px}
+.qc .truc img{height:max(48px,2.6em)}
+.qc .lus{flex:1 1 300px;white-space:nowrap}.qc .lus .dots{white-space:normal}
+.qc .dots{max-width:none}
+.qc .gains{display:flex;flex-direction:column;align-items:flex-start;gap:0;line-height:1.1;flex:1 1 auto}
+.qc .q-pied > .btn{margin-left:auto}
 .msg-big{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,3.4vw,3rem);text-align:center;line-height:1.1;text-wrap:balance;color:var(--encre);margin:.2em 0}
 .sous{text-align:center;color:var(--gris);font-size:1.15rem;line-height:1.45;margin:0 auto;max-width:60ch}
 .centre{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:16px}
@@ -178,8 +194,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .panneau h3{font-family:var(--display);margin:18px 0 8px;font-size:1.3rem;color:var(--mer)}
 .monde{width:100%;height:auto;display:block;border-radius:14px;background:rgba(90,170,200,.3);border:3px solid rgba(160,110,50,.35)}
 .monde .terre{fill:#E6C27E;stroke:#A87838;stroke-width:.3}
-.monde .route{fill:none;stroke:var(--mer);stroke-width:.5;stroke-dasharray:1.2 1}
-.monde .faite{fill:none;stroke:var(--corail);stroke-width:.8}
+.monde .route{fill:none;stroke:var(--mer);stroke-width:.5;stroke-dasharray:1.2 1;stroke-linejoin:round}
+.monde .faite{fill:none;stroke:var(--corail);stroke-width:.8;stroke-linejoin:round;stroke-linecap:round}
 .monde .esc{fill:#fff;stroke:var(--mer);stroke-width:.4;cursor:pointer}
 .monde .esc.ok{fill:var(--corail);stroke:#fff}
 .monde text{font-family:var(--texte);font-size:2.6px;fill:var(--nuit);font-weight:700;paint-order:stroke;stroke:#fff;stroke-width:.6px}
@@ -2073,10 +2089,13 @@ const NOTIONS = [
  {id:"formes",m:"fr",t:"Phrase affirmative ou négative",vue:false},
  {id:"presER",m:"fr",t:"Le présent des verbes en -er",vue:false},
  {id:"alpha",m:"fr",t:"L'ordre alphabétique",vue:false},
+ {id:"kayabu",m:"fr",t:"Lecture : Kayabu",vue:true},
+ {id:"dictee1",m:"fr",t:"Dictée 1 : la rentrée des classes",vue:true},
  {id:"nombres",m:"ma",t:"Lire et écrire les nombres",vue:true},
  {id:"decomp",m:"ma",t:"Décomposer les nombres",vue:true},
  {id:"addition",m:"ma",t:"L'addition",vue:true},
  {id:"tables",m:"ma",t:"Les tables de 1 à 5",vue:true},
+ {id:"probleme",m:"ma",t:"Problèmes : le tout et les parties",vue:true},
  {id:"soustr",m:"ma",t:"La soustraction",vue:false},
  {id:"fractions",m:"ma",t:"Les fractions",vue:false},
  {id:"classer",m:"sc",t:"Classer les êtres vivants",vue:true},
@@ -2085,18 +2104,19 @@ const NOTIONS = [
  {id:"anglais",m:"an",t:"Describing myself",vue:true}
 ];
 
-// [notion, question, [choix], index bonne réponse]
+// [notion, question, [choix], index bonne réponse, date de la leçon (facultative : les leçons récentes reviennent plus souvent)]
+// Les nouvelles questions s'ajoutent à la fin (leur numéro « d… » est leur rang) ; une question réécrite garde sa place et va dans QREVUES.
 const Q_RAW = [
-["types","Quel est le type de cette phrase ?\n« Range ta chambre. »",["déclarative","interrogative","exclamative","impérative"],3],
-["types","Quel est le type de cette phrase ?\n« Est-ce que tu viens au parc ? »",["déclarative","interrogative","exclamative","impérative"],1],
-["types","Quel est le type de cette phrase ?\n« Quelle belle journée ! »",["déclarative","interrogative","exclamative","impérative"],2],
-["types","Quel est le type de cette phrase ?\n« Le chat dort sur le canapé. »",["déclarative","interrogative","exclamative","impérative"],0],
+["types","Quel est le type de cette phrase ?\n« Range ta chambre. »",["déclarative","interrogative","impérative"],2,"2026-09-28"],
+["types","Quel est le type de cette phrase ?\n« Est-ce que tu viens au parc ? »",["déclarative","interrogative","impérative"],1,"2026-09-28"],
+["types","Quel est le type de cette phrase ?\n« Viens-tu pour le dîner ? »",["déclarative","interrogative","impérative"],1,"2026-09-28"],
+["types","Quel est le type de cette phrase ?\n« Le chat dort sur le canapé. »",["déclarative","interrogative","impérative"],0,"2026-09-28"],
 ["types","Par quel signe se termine une phrase interrogative ?",["le point .","le point d'interrogation ?","le point d'exclamation !","la virgule ,"],1],
 ["types","Une phrase impérative sert à…",["raconter quelque chose","poser une question","donner un ordre ou un conseil","montrer une émotion"],2],
 ["types","Quelle phrase est interrogative ?",["Tu as faim.","As-tu faim ?","Mange !","Que j'ai faim !"],1],
-["types","Quelle phrase est exclamative ?",["Quel beau dessin !","Dessine un chat.","Il dessine.","Dessines-tu ?"],0],
+["types","Quelle phrase est impérative ?",["Prends ton manteau.","Tu prends ton manteau.","Prends-tu ton manteau ?","Il prend son manteau."],0,"2026-09-28"],
 ["types","Une phrase commence toujours par…",["une majuscule","un point","un verbe","une virgule"],0],
-["types","Quel est le type de cette phrase ?\n« Ferme la porte, s'il te plaît. »",["déclarative","interrogative","exclamative","impérative"],3],
+["types","Quel est le type de cette phrase ?\n« Ferme la porte, s'il te plaît. »",["déclarative","interrogative","impérative"],2,"2026-09-28"],
 ["invar","Un mot invariable…",["change au pluriel","ne change jamais d'orthographe","est toujours un verbe","prend toujours un s"],1],
 ["invar","Quelle est la bonne orthographe ?",["toujour","toujours","toujoure","tou jours"],1],
 ["invar","Quelle est la bonne orthographe ?",["beaucoup","baucoup","beaucou","boucoup"],0],
@@ -2214,19 +2234,98 @@ const Q_RAW = [
 ["anglais","« What's your name? » veut dire…",["Quel âge as-tu ?","Comment t'appelles-tu ?","Tu aimes quoi ?","Qui est-ce ?"],1],
 ["anglais","« I have blue eyes. » veut dire…",["J'ai les yeux bleus.","J'ai les cheveux bleus.","J'aime le bleu.","Je suis bleu."],0],
 ["anglais","Comment dit-on « au revoir » ?",["Hello","Goodbye","Please","Thank you"],1],
-["anglais","« I'm tall. » veut dire…",["Je suis grand(e).","Je suis petit(e).","J'ai faim.","Je suis content(e)."],0]
+["anglais","« I'm tall. » veut dire…",["Je suis grand(e).","Je suis petit(e).","J'ai faim.","Je suis content(e)."],0],
+// leçons du lundi 28 septembre 2026
+["types","Une phrase déclarative sert à…",["donner une information ou décrire un fait", "poser une question", "donner un ordre", "appeler quelqu'un"],0,"2026-09-28"],
+["types","Dans une phrase impérative, il n'y a pas de…",["sujet", "verbe", "point", "majuscule"],0,"2026-09-28"],
+["types","Une phrase impérative se termine par…",["un point ou un point d'exclamation", "un point d'interrogation", "une virgule", "rien du tout"],0,"2026-09-28"],
+["types","Quel est le type de cette phrase ?\n« Viens ! »",["déclarative", "interrogative", "impérative"],2,"2026-09-28"],
+["types","Quel est le type de cette phrase ?\n« Qui est parti ? »",["déclarative", "interrogative", "impérative"],1,"2026-09-28"],
+["types","Pour poser une question, on peut…",["inverser le verbe et le sujet", "enlever le verbe", "enlever le sujet", "finir par une virgule"],0,"2026-09-28"],
+["types","« Julia est arrivée ce matin. »\nQuelle question porte sur « ce matin » ?",["Quand Julia est-elle arrivée ?", "Qui est arrivé ce matin ?", "Où Julia est-elle arrivée ?", "Pourquoi Julia est-elle arrivée ?"],0,"2026-09-28"],
+["types","« Paolo prendra le train. »\nQuelle question porte sur « Paolo » ?",["Qui prendra le train ?", "Que prendra Paolo ?", "Quand Paolo prendra-t-il le train ?", "Où Paolo prendra-t-il le train ?"],0,"2026-09-28"],
+["types","« Il l'a trouvé sur la route. »\nQuelle question porte sur « sur la route » ?",["Où l'a-t-il trouvé ?", "Qui l'a trouvé ?", "Quand l'a-t-il trouvé ?", "Que fait-il ?"],0,"2026-09-28"],
+["tables","2 × 8 = ?",["16", "10", "18", "28"],0,"2026-09-28"],
+["tables","2 × 6 = ?",["12", "8", "14", "26"],0,"2026-09-28"],
+["tables","3 × 6 = ?",["18", "9", "16", "21"],0,"2026-09-28"],
+["tables","3 × 9 = ?",["27", "12", "24", "36"],0,"2026-09-28"],
+["tables","4 × 6 = ?",["24", "20", "26", "28"],0,"2026-09-28"],
+["tables","5 × 5 = ?",["25", "10", "20", "55"],0,"2026-09-28"],
+["tables","5 × 10 = ?",["50", "15", "510", "40"],0,"2026-09-28"],
+["tables","3 × 0 = ?",["0", "3", "30", "1"],0,"2026-09-28"],
+["tables","1 × 8 = ?",["8", "1", "9", "18"],0,"2026-09-28"],
+["tables","2 × 8 = 8 × …",["2", "8", "16", "10"],0,"2026-09-28"],
+["tables","3 × 3 = ?",["9", "6", "33", "12"],0,"2026-09-28"],
+["tables","2 × 7 = ?",["14", "9", "12", "27"],0,"2026-09-28"],
+["decomp","Quelle est la décomposition de 3 654 ?",["(3 × 1 000) + (6 × 100) + (5 × 10) + 4", "(3 × 1 000) + (5 × 100) + (6 × 10) + 4", "(3 × 100) + (6 × 10) + 5 + 4", "(6 × 1 000) + (3 × 100) + (5 × 10) + 4"],0,"2026-09-28"],
+["decomp","7 803 = (7 × 1 000) + (8 × 100) + (… × 10) + 3",["0", "8", "3", "7"],0,"2026-09-28"],
+["decomp","(6 × 1 000) + (3 × 100) + (5 × 10) + 1 = ?",["6 351", "6 531", "6 315", "63 051"],0,"2026-09-28"],
+["decomp","8 milliers + 2 centaines + 0 dizaine + 5 unités = ?",["8 205", "8 250", "825", "8 025"],0,"2026-09-28"],
+["decomp","32 centaines + 46 unités = ?",["3 246", "78", "32 046", "3 206"],0,"2026-09-28"],
+["decomp","Quelle est la décomposition additive de 8 492 ?",["8 000 + 400 + 90 + 2", "8 000 + 40 + 90 + 2", "800 + 400 + 90 + 2", "8 000 + 400 + 9 + 2"],0,"2026-09-28"],
+["decomp","8 cartons de 1 000 bonbons et 12 sachets de 10 bonbons : combien de bonbons en tout ?",["8 120", "8 012", "812", "9 200"],0,"2026-09-28"],
+["nombres","Comment s'écrit 8 492 en lettres ?",["huit-mille-quatre-cent-quatre-vingt-douze", "huit-mille-quatre-cent-quatre-vingt-deux", "quatre-mille-huit-cent-quatre-vingt-douze"],0,"2026-09-28"],
+["nombres","Quand on écrit un nombre en chiffres, on met un espace…",["entre chaque classe", "entre chaque chiffre", "avant le dernier chiffre", "jamais"],0,"2026-09-28"],
+["nombres","Encadre à la centaine :\n8 400 < 8 492 < …",["8 500", "8 490", "9 000", "8 493"],0,"2026-09-28"],
+["nombres","Encadre au millier :\n… < 8 492 < 9 000",["8 000", "8 400", "8 490", "7 000"],0,"2026-09-28"],
+["nombres","Quel encadrement est à la dizaine ?",["8 490 < 8 492 < 8 500", "8 491 < 8 492 < 8 493", "8 400 < 8 492 < 8 500", "8 000 < 8 492 < 9 000"],0,"2026-09-28"],
+["nombres","Quels nombres sont rangés dans l'ordre croissant ?",["8 492 < 8 567 < 9 600", "9 600 > 8 567 > 8 492", "8 567 < 8 492 < 9 600", "9 600 < 8 492 < 8 567"],0,"2026-09-28"],
+["nombres","Ranger dans l'ordre décroissant, c'est ranger…",["du plus grand au plus petit", "du plus petit au plus grand"],0,"2026-09-28"],
+["nombres","Quel signe faut-il mettre ?\n8 492 … 9 512",["<", ">", "="],0,"2026-09-28"],
+["nombres","Sur une droite graduée de 7 000 à 10 000, où se place 8 492 ?",["entre 8 000 et 9 000", "entre 7 000 et 8 000", "entre 9 000 et 10 000", "après 10 000"],0,"2026-09-28"],
+["probleme","Malika a dépensé 3,50 €, Youssef 2,10 € et Louisa 5,20 €.\nCombien ont-ils dépensé en tout ?",["10,80 €", "9,80 €", "10,70 €", "5,20 €"],0,"2026-09-28"],
+["probleme","Yann a 199 billes, Karine 127 et Pierre 331.\nCombien ont-ils de billes en tout ?",["657", "557", "647", "331"],0,"2026-09-28"],
+["probleme","Pour trouver le tout, on…",["additionne les parties", "soustrait les parties", "prend la plus grande partie", "compte les parties"],0,"2026-09-28"],
+["probleme","« Léa a 12 billes et Tom en a 15. Combien en ont-ils en tout ? »\nQue cherche-t-on ?",["le tout", "une partie"],0,"2026-09-28"],
+["probleme","Dans la classe, il y a 13 filles et 12 garçons.\nCombien d'élèves en tout ?",["25", "24", "1", "35"],0,"2026-09-28"],
+["probleme","Un fermier a 24 poules, 8 canards et 3 oies.\nCombien d'animaux en tout ?",["35", "32", "27", "45"],0,"2026-09-28"],
+["kayabu","Où vit Kayabu ?",["en Amazonie", "en Afrique", "en Australie", "au Canada"],0,"2026-09-28"],
+["kayabu","Pourquoi Kayabu a-t-il dû quitter son village ?",["à cause d'un incendie", "à cause d'une inondation", "pour aller à l'école", "pour chercher de l'argent"],0,"2026-09-28"],
+["kayabu","Avec qui Kayabu se lie-t-il d'amitié ?",["Nana", "sa mère", "son grand-père", "les anciens"],0,"2026-09-28"],
+["kayabu","Selon la mère de Kayabu, dans les communautés…",["les gens ont des moteurs pour tout", "les gens n'ont pas de pirogues", "il n'y a pas de fleuve", "tout le monde rame"],0,"2026-09-28"],
+["kayabu","Pourquoi les oiseaux et les singes sont-ils devenus très agités ?",["le vent chaud a apporté une odeur de fumée", "il pleuvait très fort", "les moteurs faisaient du bruit", "ils avaient faim"],0,"2026-09-28"],
+["kayabu","Selon les anciens, que faut-il faire quand on sent une odeur de brûlé ?",["partir tout de suite avec ses affaires", "attendre de voir la fumée", "se cacher dans la forêt", "appeler les pompiers"],0,"2026-09-28"],
+["kayabu","Pourquoi la marche dans la forêt était-elle dangereuse ?",["serpents, bruits étranges la nuit, chemin inconnu", "il faisait trop froid", "il n'y avait pas d'arbres", "ils marchaient sur la route"],0,"2026-09-28"],
+["kayabu","Dans quoi la pirogue a-t-elle été creusée ?",["dans un tronc d'arbre", "dans un rocher", "dans du plastique", "dans une caisse"],0,"2026-09-28"],
+["kayabu","« Le rugissement des moteurs », c'est…",["le bruit puissant des moteurs", "le cri d'un lion", "des moteurs cassés", "le silence"],0,"2026-09-28"],
+["kayabu","« Pendant plusieurs lunes » veut dire…",["pendant plusieurs mois", "pendant plusieurs nuits", "sur la Lune", "pendant une heure"],0,"2026-09-28"],
+["kayabu","Une « communauté riveraine », c'est une communauté qui vit…",["au bord des fleuves", "dans les montagnes", "au bord de la route", "dans le désert"],0,"2026-09-28"],
+["kayabu","D'après Nana, comment trouve-t-on l'argent ?",["on ne le trouve pas, on le gagne en travaillant", "on le trouve dans la forêt", "on le pêche dans le fleuve", "on le reçoit sans rien faire"],0,"2026-09-28"],
+["dictee1","Les élèves … à l'école avant l'ouverture du grand portail.",["arrivent", "arrive", "arrives", "arrivons"],0,"2026-09-28"],
+["dictee1","Dans la cour, ils … leurs amis avec joie.",["retrouvent", "retrouve", "retrouves", "retrouvez"],0,"2026-09-28"],
+["dictee1","Ils retrouvent … amis avec joie.",["leurs", "leur", "l'heure", "leures"],0,"2026-09-28"],
+["dictee1","La maîtresse … souhaite une bonne rentrée.",["leur", "leurs", "l'heure", "leure"],0,"2026-09-28"],
+["dictee1","La maîtresse … les enfants.",["accueille", "acceuille", "accueil", "accueillent"],0,"2026-09-28"],
+["dictee1","« Les élèves arrivent. »\nQuel est le sujet du verbe « arrivent » ?",["les élèves", "arrivent", "l'école", "le portail"],0,"2026-09-28"],
+["dictee1","« le grand portail » : avec quel mot s'accorde « grand » ?",["portail", "le", "école", "élèves"],0,"2026-09-28"],
+["anglais","« What is it? » veut dire…",["Qu'est-ce que c'est ?", "Qui est-ce ?", "Où est-il ?", "Quel âge as-tu ?"],0,"2026-09-28"],
+["anglais","« What's missing? » veut dire…",["Qu'est-ce qui manque ?", "Qu'est-ce que c'est ?", "Où est-il ?", "Comment t'appelles-tu ?"],0,"2026-09-28"],
+["anglais","Pour répondre à « What is it? », on dit…",["It's…", "I'm…", "My name's…", "Goodbye!"],0,"2026-09-28"],
+["anglais","« I have glasses. » veut dire…",["J'ai des lunettes.", "J'ai des verres.", "J'ai les yeux verts.", "Je suis grand(e)."],0,"2026-09-28"],
+["anglais","« I have long hair. » veut dire…",["J'ai les cheveux longs.", "J'ai les cheveux courts.", "J'ai les yeux bleus.", "Je suis grand(e)."],0,"2026-09-28"],
+["anglais","« I have brown eyes. » veut dire…",["J'ai les yeux marron.", "J'ai les cheveux bruns.", "J'ai les yeux bleus.", "Je suis brun."],0,"2026-09-28"]
 ];
+
+// questions réécrites : [ancienne question, anciennes réponses, ancienne bonne réponse] ; remplacées dans les voyages en cours si la maîtresse ne les a pas modifiées
+const QREVUES = {
+ d0:["Quel est le type de cette phrase ?\n« Range ta chambre. »",["déclarative","interrogative","exclamative","impérative"],3],
+ d1:["Quel est le type de cette phrase ?\n« Est-ce que tu viens au parc ? »",["déclarative","interrogative","exclamative","impérative"],1],
+ d2:["Quel est le type de cette phrase ?\n« Quelle belle journée ! »",["déclarative","interrogative","exclamative","impérative"],2],
+ d3:["Quel est le type de cette phrase ?\n« Le chat dort sur le canapé. »",["déclarative","interrogative","exclamative","impérative"],0],
+ d7:["Quelle phrase est exclamative ?",["Quel beau dessin !","Dessine un chat.","Il dessine.","Dessines-tu ?"],0],
+ d9:["Quel est le type de cette phrase ?\n« Ferme la porte, s'il te plaît. »",["déclarative","interrogative","exclamative","impérative"],3]
+};
 
 // « Le truc du perroquet » : une explication courte par question (même ordre que Q_RAW)
 const TRUCS = [
-"Elle donne un ordre et se termine par un point : c'est une phrase impérative.",
+"Elle donne un ordre, sans sujet, et se termine par un point : c'est une phrase impérative.",
 "Elle pose une question et se termine par un point d'interrogation : c'est une phrase interrogative.",
-"Elle montre une émotion (ici, l'émerveillement) et se termine par un point d'exclamation : c'est une phrase exclamative.",
+"Le verbe et le sujet sont inversés (viens-tu) et elle se termine par « ? » : c'est une phrase interrogative.",
 "Elle raconte ou donne une information, et se termine par un point : c'est une phrase déclarative.",
 "Une question se termine toujours par un point d'interrogation « ? ».",
 "La phrase impérative dit à quelqu'un de faire quelque chose : c'est un ordre ou un conseil. Il n'y a pas de sujet écrit : « Range ! »",
 "« As-tu faim ? » pose une question et se termine par « ? ».",
-"« Quel beau dessin ! » exprime l'admiration et se termine par « ! ».",
+"« Prends ton manteau. » donne un ordre et n'a pas de sujet : c'est une phrase impérative.",
 "Une phrase commence par une majuscule et se termine par un point.",
 "Même avec « s'il te plaît », elle demande de faire quelque chose : c'est une phrase impérative.",
 "Un mot invariable garde toujours la même orthographe : jamais de s, jamais de e en plus.",
@@ -2347,6 +2446,106 @@ const TRUCS = [
 "« I have » = j'ai, « blue eyes » = les yeux bleus.",
 "« Goodbye » veut dire au revoir. « Hello » veut dire bonjour.",
 "« I'm » = je suis, « tall » = grand(e). Le contraire : « short ».",
+"Elle déclare : elle donne une information ou décrit un fait, et se termine par un point. « Je vais à la boulangerie. »",
+"« Prends ton manteau. » : on ne dit pas qui doit le faire, il n'y a pas de sujet.",
+"« Prends ton manteau. » ou « Viens ! » : un point ou un point d'exclamation.",
+"Elle donne un ordre, sans sujet : c'est une phrase impérative, même avec un point d'exclamation.",
+"« Qui » est un mot interrogatif et la phrase se termine par « ? » : elle est interrogative.",
+"On inverse le verbe et le sujet (Viens-tu ?) ou on emploie un mot interrogatif (Qui ? Où ? Quand ?).",
+"« ce matin » dit quand : la question commence par « Quand ».",
+"« Paolo » est une personne : la question commence par « Qui ».",
+"« sur la route » dit où : la question commence par « Où ».",
+"2 × 8, c'est le double de 8 : 16.",
+"2 × 6, c'est le double de 6 : 12.",
+"3 × 6 = 6 + 6 + 6 = 18.",
+"3 × 9 = 27. Astuce : 3 × 10 = 30, on enlève 3.",
+"4 × 6 = 24 : le double de 2 × 6 = 12.",
+"5 × 5 = 25.",
+"Multiplier par 10, c'est ajouter un zéro : 5 × 10 = 50.",
+"Zéro fois quelque chose, ça fait toujours 0 : 3 × 0 = 0.",
+"1 fois un nombre, c'est ce nombre : 1 × 8 = 8.",
+"On peut retourner la multiplication : 2 × 8 = 8 × 2 = 16.",
+"3 × 3 = 3 + 3 + 3 = 9.",
+"2 × 7, c'est le double de 7 : 14.",
+"3 654 : 3 milliers, 6 centaines, 5 dizaines et 4 unités.",
+"7 803 : il n'y a pas de dizaines, on écrit (0 × 10).",
+"6 milliers, 3 centaines, 5 dizaines, 1 unité : 6 351.",
+"8 milliers, 2 centaines, 0 dizaine, 5 unités : 8 205.",
+"32 centaines, c'est 3 200. 3 200 + 46 = 3 246. Attention au piège !",
+"Additive, c'est en additionnant : 8 000 + 400 + 90 + 2.",
+"8 × 1 000 = 8 000 et 12 × 10 = 120 : 8 000 + 120 = 8 120 bonbons.",
+"8 492 : huit-mille (8), quatre-cent (4), quatre-vingt-douze (92).",
+"On sépare la classe des mille et la classe des unités : 8 492.",
+"À la centaine : la centaine juste avant (8 400) et juste après (8 500).",
+"Au millier : le millier juste avant (8 000) et juste après (9 000).",
+"À la dizaine : 8 490 et 8 500. Les autres sont à l'unité, à la centaine et au millier.",
+"Croissant : du plus petit au plus grand, avec le signe <.",
+"Décroissant, ça descend : du plus grand au plus petit (9 600 > 8 567 > 8 492).",
+"On compare les milliers : 8 est plus petit que 9, donc 8 492 < 9 512.",
+"8 492 a 8 milliers : il est entre 8 000 et 9 000.",
+"On cherche le tout : on additionne les trois parties. 3,50 + 2,10 + 5,20 = 10,80 €.",
+"Le tout, c'est la somme des parties : 199 + 127 + 331 = 657 billes.",
+"Le tout est fait de toutes les parties : on les additionne.",
+"« en tout » : on cherche le tout. Les billes de Léa et de Tom sont les parties.",
+"Les filles et les garçons sont les parties : 13 + 12 = 25 élèves.",
+"Trois parties à additionner : 24 + 8 + 3 = 35 animaux.",
+"L'histoire se passe en Amazonie, près du fleuve Amazone.",
+"Les feux de forêt ont brûlé son village : il est contraint de partir.",
+"Dans le nouveau village, près du fleuve, Kayabu rencontre Nana.",
+"Dans les communautés, les gens ont des moteurs pour tout, même pour les pirogues : ils n'ont plus besoin de ramer.",
+"Un matin, le vent chaud a apporté une forte odeur de fumée.",
+"Il faut rassembler ses affaires et partir immédiatement, avant même de voir la fumée.",
+"Il y avait beaucoup de serpents, des bruits étranges la nuit, et ils ne connaissaient pas le chemin dans une forêt si dense.",
+"Ils ont construit une pirogue en creusant un tronc d'arbre.",
+"Un rugissement, c'est un cri très fort, comme celui du lion : ici, le bruit puissant des moteurs.",
+"Une lune, c'est le temps entre deux pleines lunes : environ un mois.",
+"Riverain vient de « rivière » : la communauté vit au bord des fleuves, en Amazonie.",
+"« On ne trouve pas l'argent, on le gagne », en travaillant : en épluchant, râpant et pressant le manioc.",
+"Le sujet « les élèves », c'est « ils » : le verbe se termine par -ent.",
+"Avec « ils », le verbe au présent se termine par -ent : ils retrouvent.",
+"« amis » est au pluriel : leurs prend un s.",
+"« leur » devant un verbe (souhaite) ne prend jamais de s.",
+"On écrit « accueille » : c + cueille. Le sujet « la maîtresse » est au singulier, pas de -nt.",
+"Qui est-ce qui arrive ? Les élèves : c'est le sujet, le verbe s'accorde avec lui.",
+"Dans le groupe nominal, l'adjectif s'accorde avec le nom : grand portail (masculin singulier).",
+"« What is it? » : qu'est-ce que c'est ? On répond « It's… ».",
+"« missing » veut dire « qui manque » : on cache une carte et on devine laquelle.",
+"« It's… » veut dire « C'est… ».",
+"« glasses » veut dire « lunettes ».",
+"« long » = long, « hair » = cheveux.",
+"« eyes » = les yeux, « brown » = marron.",
+];
+
+// Routes du bateau par la mer pour la carte du voyage (une par étape, [longitude, latitude]) : généré par outils/routes_mer.mjs, ne pas modifier à la main.
+const ROUTES = [
+ [[5.37,43.3],[2.3,40.9],[2.1,41.1],[2.17,41.38]],
+ [[2.17,41.38],[2.1,41.1],[2.1,39.7],[0.1,37.1],[-1.9,36.1],[-5.7,36.1],[-5.9,35.9],[-5.81,35.78]],
+ [[-5.81,35.78],[-10.5,36.5],[-9.7,38.3],[-9.5,38.5],[-9.2,38.7]],
+ [[-9.2,38.7],[-9.5,38.5],[-9.7,38.3],[-16.7,28.1],[-16.8,28.1]],
+ [[-16.8,28.1],[-18.7,17.5],[-17.7,15.1],[-17.5,14.9],[-17.6,14.69]],
+ [[-17.6,14.69],[-17.9,14.7],[-41.7,-24.3],[-42.9,-23.1],[-43.1,-22.95]],
+ [[-43.1,-22.95],[-42.9,-24.5],[-54.5,-36.5],[-57.5,-34.7],[-58.2,-34.7]],
+ [[-58.2,-34.7],[-57.7,-34.7],[-55.3,-36.9],[-65.1,-56.7],[-68.3,-55.7],[-68.3,-54.9]],
+ [[-68.3,-54.9],[-68.3,-55.7],[-73.9,-55.7],[-109.3,-27.1],[-109.4,-27.12]],
+ [[-109.4,-27.12],[-90.9,-0.9],[-90.97,-0.95]],
+ [[-90.97,-0.95],[-100.1,16.5],[-99.9,16.8]],
+ [[-99.9,16.8],[-100.3,16.5],[-107.7,19.5],[-119.3,30.1],[-123.3,37.1],[-122.9,37.5],[-122.7,37.7],[-122.5,37.8]],
+ [[-122.5,37.8],[-122.9,37.5],[-157.3,21.5],[-157.5,21.3],[-157.9,21.3]],
+ [[-157.9,21.3],[-163.5,21.1],[-219.9,34.9],[-220.15,35.5]],
+ [[139.85,35.5],[140.1,34.9],[140.1,33.7],[129.1,29.5],[122.1,31.1],[121.8,31.2]],
+ [[121.8,31.2],[122.1,31.1],[123.5,24.1],[120.7,20.5],[108.9,17.1],[107.3,20.9],[107.2,20.85]],
+ [[107.2,20.85],[110.7,11.1],[104.9,1.1],[103.9,1.1],[103.85,1.25]],
+ [[103.85,1.25],[116.1,-8.1],[115.5,-8.7],[115.2,-8.75]],
+ [[115.2,-8.75],[123.5,-11.9],[133.9,-9.9],[143.5,-10.1],[154.7,-26.3],[153.7,-33.5],[151.5,-33.9],[151.3,-33.85]],
+ [[151.3,-33.85],[151.5,-37.9],[146.3,-39.9],[76.5,-30.5],[55.5,-20.9],[55.4,-20.88]],
+ [[55.4,-20.88],[49.5,-10.5],[47.5,-12.5],[48.1,-13.3],[48.1,-13.4]],
+ [[48.1,-13.4],[47.9,-13.3],[39.3,-6.1],[39.15,-6.16]],
+ [[39.15,-6.16],[72.5,18.9],[72.8,18.95]],
+ [[72.8,18.95],[44.1,11.9],[42.9,13.1],[42.7,13.7],[42.1,14.5],[41.9,15.1],[33.1,28.7],[32.3,30.3],[32.35,31.3]],
+ [[32.35,31.3],[30.5,33.3],[23.5,37.5],[23.6,37.9]],
+ [[23.6,37.9],[23.5,36.5],[22.1,35.1],[12.3,36.1],[11.3,38.7],[14.3,40.5],[14.2,40.8]],
+ [[14.2,40.8],[14.3,40.5],[11.1,40.5],[9.1,41.5],[8.5,41.5],[8.7,41.9]],
+ [[8.7,41.9],[5.3,42.9],[5.35,43.28]]
 ];
 
 "use strict";
@@ -2376,15 +2575,16 @@ function position(m){ // {i: escale atteinte, p: progression 0-1 vers i+1}
 }
 
 /* ---------- état du jeu ---------- */
+function questionDefaut(k){ const q=Q_RAW[k]; const o={id:"d"+k,n:q[0],q:q[1],c:q[2].slice(),ok:q[3]}; if(q[4]) o.le=q[4]; return o; } // le : date de la leçon
 function banqueDefaut(){
-  return Q_RAW.map((q,k)=>({id:"d"+k,n:q[0],q:q[1],c:q[2].slice(),ok:q[3]}));
+  return Q_RAW.map((_,k)=>questionDefaut(k));
 }
 const idVoyage = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function etatDefaut(){
   return {v:1,rv:RESET_V,migPilote:1,maj:0,voyage:idVoyage(),nom:"La Vaillante",nomChoisi:false,nomsProposes:["La Vaillante","L'Étoile des Mers","Le Grand Plouf","La Perle Bleue"],milles:0,
     eleves:Array.from({length:NB_CARTES},(_,i)=>({n:i+1,prenom:CLASSE[i]||"",actif:i<(CLASSE.length||25)})),
     reglages:{nbQ:6,piloteTous:0,vitesse:1,son:true,stormQ:6},
-    notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),
+    notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),banque:Q_RAW.length,
     stats:{q:{},el:{}},journal:[],pilotes:[],escalesVues:[0]};
 }
 let S = etatDefaut();
@@ -2402,7 +2602,13 @@ function charge(obj){
   if (!obj.migPilote){ o.reglages.piloteTous = 0; o.migPilote = 1; } // mini-jeu « À la barre » désactivé le 26/09
   // questions corrigées après coup (remplacées seulement si la maîtresse ne les a pas modifiées)
   const CORRIGE = {d108:"Qui habitait le château fort ?"};
-  o.questions = o.questions.map(q=>{ if(CORRIGE[q.id] && q.q===CORRIGE[q.id]){ const k=+q.id.slice(1); const r=Q_RAW[k]; delete o.stats.q[q.id]; return {id:q.id,n:r[0],q:r[1],c:r[2].slice(),ok:r[3]}; } return q; });
+  o.questions = o.questions.map(q=>{ if(CORRIGE[q.id] && q.q===CORRIGE[q.id]){ delete o.stats.q[q.id]; return questionDefaut(+q.id.slice(1)); } return q; });
+  // questions réécrites (QREVUES, par exemple les types de phrases le 28/09) et nouvelles questions de la banque : le voyage en cours les reçoit aussi
+  const ancienne = (q,r)=>q.q===r[0] && q.ok===r[2] && JSON.stringify(q.c)===JSON.stringify(r[1]) && !q.truc;
+  o.questions = o.questions.map(q=>{ const r=typeof QREVUES!=="undefined" && QREVUES[q.id]; if(r && ancienne(q,r)){ delete o.stats.q[q.id]; return questionDefaut(+q.id.slice(1)); } return q; });
+  const ont = new Set(o.questions.map(q=>q.id));
+  for (let k=(obj.banque||128); k<Q_RAW.length; k++) if(!ont.has("d"+k)) o.questions.push(questionDefaut(k)); // 128 : la banque avant le 28/09 ; une question supprimée ne revient pas
+  o.banque = Math.max(obj.banque||128, Q_RAW.length);
   return o;
 }
 const localBrut = lsGet("bateau-ecole-etat");
@@ -2712,7 +2918,8 @@ function choisirQuestions(n){
   const vues = new Set(S.notions.filter(x=>x.vue).map(x=>x.id));
   const pool = S.questions.filter(q=>vues.has(q.n) && q.c.length>=2 && q.q.trim());
   const now = Date.now();
-  const w = q => { const s=S.stats.q[q.id]; if(!s) return 3; return 1 + 4*(1-s.last) + Math.min(3,(now-(s.t||0))/(7*864e5)); };
+  const recente = q => q.le && now-Date.parse(q.le) < 12*864e5 ? 2.5 : 1; // les leçons des 12 derniers jours reviennent plus souvent
+  const w = q => { const s=S.stats.q[q.id]; if(!s) return 3*recente(q); return (1 + 4*(1-s.last) + Math.min(3,(now-(s.t||0))/(7*864e5)))*recente(q); };
   const pris=[]; const reste=pool.slice();
   while (pris.length<n && reste.length){
     const tot = reste.reduce((a,q)=>a+w(q),0); let r=Math.random()*tot, k=0;
@@ -2748,6 +2955,8 @@ function majLus(){
 }
 
 /* ---------- une question ---------- */
+// espaces insécables : « ? », « » », « 4 986 » ou « 3,50 € » ne se coupent pas en bout de ligne sur le grand écran
+const insec = t => t.replace(/ ([?!:;»])/g,"\u00a0$1").replace(/« /g,"«\u00a0").replace(/(\d) (?=\d{3}(?!\d))/g,"$1\u00a0").replace(/(\d) ([€%])/g,"$1\u00a0$2");
 function poserQuestion(q, i, n, mode){
   return new Promise(async fin=>{
     const ordre = q.c.length>2 ? q.c.map((_,k)=>k).sort(()=>Math.random()-.5) : q.c.map((_,k)=>k);
@@ -2758,19 +2967,18 @@ function poserQuestion(q, i, n, mode){
     const telOn = $("#b-tel").classList.contains("on");
     layer.innerHTML = `
       ${mode==="tempete"?`<div class="orage-jauge"><div style="color:#fff;font-family:var(--display);font-weight:700;display:flex;justify-content:space-between"><span>Force de la tempête</span><span class="num" id="o-pct"></span></div><div class="jauge"><i id="o-j"></i></div></div>`:""}
-      <div class="carte" style="margin-top:${mode==="tempete"?"10px":"0"}">
+      <div class="carte qc" style="margin-top:${mode==="tempete"?"10px":"0"}">
         <div class="q-head"><span class="chip" style="background:${m.c}">${esc(m.nom)} · ${esc(no.t)}</span><span class="q-num num">Question ${i+1} / ${n}</span></div>
-        <div class="q-txt">${esc(qv.q)}</div>
-        <div class="choixq">${qv.c.map((c,k)=>`<div class="opt" id="opt${k}"><span class="bar-r"></span><span class="l L${k}">${LET[k]}</span><span class="tx">${esc(c)}</span><span class="cpt num"></span></div>`).join("")}</div>
-        <div class="q-pied" id="q-pied">
+        <div class="q-txt">${insec(esc(qv.q))}</div>
+        <div class="choixq">${qv.c.map((c,k)=>`<div class="opt" id="opt${k}"><span class="bar-r"></span><span class="l L${k}">${LET[k]}</span><span class="tx">${insec(esc(c))}</span><span class="cpt num"></span></div>`).join("")}</div>
+        <div class="q-bas"><div class="q-pied" id="q-pied">
           <div class="lus"><div><div class="num"><b id="q-lus">0 / 0</b></div><div style="font-size:.85rem">cartes lues</div></div><div class="dots" id="q-dots"></div></div>
-          <span class="espace"></span>
-          ${telOn?"":`<span class="note" style="max-width:26ch">Levez vos cartes (ou vos ardoises), puis on regarde la réponse.</span>`}
+          ${telOn?"":`<span class="note" style="max-width:24ch">Levez vos cartes (ou vos ardoises), puis on regarde la réponse.</span>`}
           <button class="btn prim big" data-go="reveal">Voir la réponse</button>
-        </div>
+        </div></div>
       </div>`;
     if (mode==="tempete") majOrage();
-    majLus();
+    majLus(); ajusteQ();
     await attendre();
     // révélation
     QCUR.open=false; QCUR.revele=true; emitQ();
@@ -2792,6 +3000,7 @@ function poserQuestion(q, i, n, mode){
       Son.cloche();
       $("#q-pied").innerHTML = `<div class="manuel"><span class="lab">Combien ont trouvé ?</span>
         <button class="btn" data-go="1">Tout le monde</button><button class="btn" data-go="0.8">Presque tous</button><button class="btn" data-go="0.5">La moitié</button><button class="btn" data-go="0.2">Peu</button></div>`;
+      ajusteQ();
       const v = await attendre();
       if (window.Historique) Historique.question(q, qv, rep, act, +v);
       pct = await afficheScore(+v, null, mode);
@@ -2803,13 +3012,13 @@ function poserQuestion(q, i, n, mode){
 }
 function trucDe(q){ if(q.truc) return q.truc; const m=/^d(\d+)$/.exec(q.id||""); if(m){ const r=Q_RAW[+m[1]]; if(r && r[1]===q.q && typeof TRUCS!=="undefined") return TRUCS[+m[1]]; } return ""; }
 function afficheTruc(q){ const t=trucDe(q); if(!t) return; const p=$("#q-pied"); if(!p) return;
-  p.insertAdjacentHTML("beforebegin",`<div class="truc"><img src="img/perroquet-salut.webp" alt=""><div><b>Le truc du perroquet</b><span>${esc(t)}</span></div></div>`); }
+  p.insertAdjacentHTML("beforebegin",`<div class="truc"><img src="img/perroquet-salut.webp" alt=""><div><b>Le truc du perroquet</b><span>${insec(esc(t))}</span></div></div>`); }
 function gainPour(pct){ return Math.max(1,Math.round((1+4*pct)*S.reglages.vitesse)); }
 async function afficheScore(pct, texte, mode){
   let html = texte ? `<span class="gain">${esc(texte)}</span>` : "";
   if (mode==="matin"||mode==="tresor"){ const g=gainPour(pct); html += `<span class="gain" style="color:var(--corail)">+${g} milles</span>`; }
   else html += `<span class="gain" style="color:#4B3F8F">${pct>=.7?"La tempête faiblit !":pct>=.4?"On tient bon !":"Le bateau tangue…"}</span>`;
-  $("#q-pied").innerHTML = html + `<span class="espace"></span><button class="btn prim big" data-go="next">Continuer</button>`;
+  $("#q-pied").innerHTML = `<div class="gains">${html}</div><button class="btn prim big" data-go="next">Continuer</button>`; ajusteQ();
   if (mode==="matin"||mode==="tresor"){ S.milles = Math.min(TOTAL, S.milles + gainPour(pct)); Mer.rafale(pct); Son.vent(); majBarre(); majMer(); sauve(); }
   else { Mer.rafale(pct); if (pct<.5){ Mer.eclair(); Son.tonnerre(); } }
   await attendre();
@@ -3034,6 +3243,26 @@ async function bapteme(){
   enJeu=false; accueil();
 }
 
+/* écran des questions : le texte prend la plus grande taille qui laisse en bas la place de la mer et du bateau.
+   La taille est choisie à l'arrivée de la question ; après la réponse, c'est d'abord le truc du perroquet qui se resserre. */
+function ajusteQ(){
+  const c = layer.querySelector(".qc"), st = $("#stage"); if (!c || !st || !st.clientHeight) return;
+  const H = st.clientHeight, W = st.clientWidth, haut = st.getBoundingClientRect().top;
+  const limite = H - Math.max(140, Math.min(300, H*.25)); // la mer et le bateau gardent le quart du bas
+  layer.scrollTop = 0;
+  const bas = ()=>{ let b=0; for (const e of layer.children){ const r=e.getBoundingClientRect(); if (r.height>0) b=Math.max(b,r.bottom-haut); } return b; };
+  const truc = c.querySelector(".truc");
+  const essai = (f,t)=>{ c.style.setProperty("--qf",f+"px"); if (truc) c.style.setProperty("--tf",t+"px"); return bas()<=limite; };
+  const cherche = (min,max,ok)=>{ if (ok(max)) return max; let a=min, b=max; for (let k=0;k<9;k++){ const m=(a+b)/2; if (ok(m)) a=m; else b=m; } return a; };
+  const fMax = Math.max(20, Math.min(66, W*.042, H*.075)), tDe = f=>Math.max(16,Math.min(34,f*.55));
+  let f = +c.dataset.f || 0;
+  if (!f){ f = Math.floor(cherche(16, fMax, x=>essai(x,tDe(x)))); c.dataset.f = f; }
+  if (truc){ const tMin = x=>Math.min(tDe(x), Math.max(18, x*.42));
+    let t = Math.floor(cherche(tMin(f), tDe(f), x=>essai(f,x)));
+    if (!essai(f,t)){ f = Math.floor(cherche(16, f, x=>essai(x,tMin(x)))); t = Math.floor(tMin(f)); }
+    essai(f,t); }
+  else essai(f,0);
+}
 /* place la mer sous le contenu pour que rien ne chevauche le bateau */
 function ajusteMer(){
   const st=$("#stage").getBoundingClientRect(); if(!st.height) return;
@@ -3042,7 +3271,8 @@ function ajusteMer(){
 }
 let ajT=0; const planifie=()=>{ const m=$("#b-menu"); if(m){ m.hidden=!enJeu; } cancelAnimationFrame(ajT); ajT=requestAnimationFrame(()=>requestAnimationFrame(ajusteMer)); };
 new MutationObserver(planifie).observe(layer,{childList:true,subtree:true});
-window.addEventListener("resize",planifie); layer.addEventListener("scroll",planifie);
+window.addEventListener("resize",()=>{ const c=layer.querySelector(".qc"); if(c){ delete c.dataset.f; ajusteQ(); } planifie(); }); layer.addEventListener("scroll",planifie);
+if (document.fonts) document.fonts.addEventListener("loadingdone",()=>{ const c=layer.querySelector(".qc"); if(c){ delete c.dataset.f; ajusteQ(); planifie(); } });
 
 /* ---------- mini-jeux du pilote ---------- */
 const MiniJeu = (() => {
@@ -3139,24 +3369,36 @@ function panneau(html,cls){
 }
 const X = lo => { let x=lo+170; while(x<0)x+=360; while(x>=360)x-=360; return x; };
 const Y = la => 85-la;
-function segments(a,b){ // liste de segments [x1,y1,x2,y2] avec passage du bord
-  let d=b.lo-a.lo; if(d>180)d-=360; if(d<-180)d+=360;
-  const x1=X(a.lo),y1=Y(a.la),x2=x1+d,y2=Y(b.la);
-  if (x2>=0 && x2<360) return [[x1,y1,x2,y2]];
-  const bord = x2<0?0:360, k=(bord-x1)/(x2-x1), ym=y1+(y2-y1)*k;
-  return [[x1,y1,bord,ym],[360-bord,ym,x2+(x2<0?360:-360),y2]];
+/* la route de chaque étape passe par la mer (src/routes.js, calculé par outils/routes_mer.mjs) ; longitudes continues */
+function routeEtape(i){
+  const a=ESCALES[i], b=ESCALES[i+1], r=typeof ROUTES!=="undefined" && ROUTES[i];
+  const pres=(p,e)=>Math.abs(p[1]-e.la)<.01 && Math.abs(((p[0]-e.lo)%360+540)%360-180)<.01;
+  if (r && r.length>=2 && pres(r[0],a) && pres(r[r.length-1],b)) return r;
+  let d=b.lo-a.lo; if(d>180)d-=360; if(d<-180)d+=360; return [[a.lo,a.la],[a.lo+d,b.la]]; // escales changées : tout droit
+}
+function surRoute(r,p){ // le point à la fraction p de la route, et la route parcourue jusque-là
+  const L=[0]; for(let k=1;k<r.length;k++) L.push(L[k-1]+Math.hypot(r[k][0]-r[k-1][0],r[k][1]-r[k-1][1]));
+  const c=Math.max(0,Math.min(1,p))*L[L.length-1]; let k=1; while(k<r.length-1 && L[k]<c) k++;
+  const t=(c-L[k-1])/((L[k]-L[k-1])||1), m=[r[k-1][0]+(r[k][0]-r[k-1][0])*t, r[k-1][1]+(r[k][1]-r[k-1][1])*t];
+  return {m, avant:r.slice(0,k).concat([m])};
+}
+function traits(r){ // lignes brisées sur la carte, coupées au bord (x = 0 ou 360)
+  let dec=X(r[0][0])-(r[0][0]+170), prec=null; const out=[[]];
+  for (const [lo,la] of r){ let x=lo+170+dec; const y=Y(la);
+    if (prec && (x<0||x>=360)){ const bord=x<0?0:360, k=(bord-prec[0])/(x-prec[0]), ym=prec[1]+(y-prec[1])*k;
+      out[out.length-1].push([bord,ym]); dec+=x<0?360:-360; x=lo+170+dec; out.push([[360-bord,ym]]); }
+    out[out.length-1].push([x,y]); prec=[x,y]; }
+  return out.filter(l=>l.length>1).map(l=>`<polyline points="${l.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")}"/>`).join("");
 }
 function ouvreCarte(){
   const p=position(S.milles); const vues=new Set(S.escalesVues);
   let route="", faite="";
   for(let i=0;i<ESCALES.length-1;i++){
-    const segs=segments(ESCALES[i],ESCALES[i+1]);
-    segs.forEach(s=>{ const l=`<line x1="${s[0].toFixed(1)}" y1="${s[1].toFixed(1)}" x2="${s[2].toFixed(1)}" y2="${s[3].toFixed(1)}"/>`; if(i<p.i) faite+=l; else route+=l; });
+    const r=routeEtape(i);
+    if (i<p.i || p.fin) faite+=traits(r); else route+=traits(r);
     if (i===p.i && !p.fin){ // morceau déjà parcouru de l'étape en cours
-      const a=ESCALES[i],b=ESCALES[i+1]; let d=b.lo-a.lo; if(d>180)d-=360; if(d<-180)d+=360;
-      const m={lo:a.lo+d*p.p, la:a.la+(b.la-a.la)*p.p};
-      segments(a,m).forEach(s=>faite+=`<line x1="${s[0].toFixed(1)}" y1="${s[1].toFixed(1)}" x2="${s[2].toFixed(1)}" y2="${s[3].toFixed(1)}"/>`);
-      ouvreCarte.bx=X(m.lo); ouvreCarte.by=Y(m.la);
+      const {m,avant}=surRoute(r,p.p); faite+=traits(avant);
+      ouvreCarte.bx=X(m[0]); ouvreCarte.by=Y(m[1]);
     }
   }
   if (p.fin){ ouvreCarte.bx=X(ESCALES[0].lo); ouvreCarte.by=Y(ESCALES[0].la); }
@@ -3270,7 +3512,7 @@ function rendR(){
         try { await dl.save({filename:`bateau-ecole-${new Date().toISOString().slice(0,10)}.json`, data}); } catch(err){ if(err&&err.code!=="cancelled") toast("Téléchargement annulé."); }
       }
       if (e.target.id==="s-orig"){ const b=e.target; if(!b.dataset.sur){ b.dataset.sur=1; b.textContent="Confirmer"; b.classList.add("prim"); return; }
-        S.questions=banqueDefaut(); S.notions=NOTIONS.map(n=>({...n,vue:(S.notions.find(x=>x.id===n.id)||n).vue})); sauve(); toast("Questions d'origine remises."); rendR(); }
+        S.questions=banqueDefaut(); S.banque=Q_RAW.length; S.notions=NOTIONS.map(n=>({...n,vue:(S.notions.find(x=>x.id===n.id)||n).vue})); sauve(); toast("Questions d'origine remises."); rendR(); }
     };
     c.onchange = e=>{ if(e.target.id!=="s-imp"||!e.target.files[0]) return; const r=new FileReader();
       if (window.Accueil){ r.onload=()=>{ document.querySelector(".panneau")?.remove(); Accueil.importe(String(r.result||""), null).then(ok=>{ if(ok) toast("Sauvegarde importée."); }); }; r.readAsText(e.target.files[0]); e.target.value=""; return; }
@@ -3311,6 +3553,7 @@ function rendQuestions(c){
       if(garde.length<2){ toast("Il faut au moins 2 réponses."); return; }
       const tr=(zone.querySelector("#fq-truc")?.value||"").trim();
       const nq={id:q.id,n:q.n,q:txt,c:garde,ok:nok}; if(tr && tr!==trucDe({id:q.id,q:txt})) nq.truc=tr; const i=S.questions.findIndex(x=>x.id===q.id);
+      nq.le = q.le || (i<0 ? new Date().toISOString().slice(0,10) : undefined); if(!nq.le) delete nq.le; // une question ajoutée compte comme une leçon récente
       if(i>=0) S.questions[i]=nq; else S.questions.push(nq);
       delete S.stats.q[q.id]; sauve(); rendQuestions(c); toast("Question enregistrée."); }
     if (t.id==="nn-ok"){ const titre=$("#nn-t").value.trim(); if(!titre){ toast("Donne un nom à la notion."); return; }
@@ -4915,7 +5158,8 @@ window.Accueil = Accueil;
    Chaque carte a son pavillon : celui de sa lettre dans le Code international des signaux (A à Z), puis les flammes 1 à 6. */
 const Pavillons = (() => {
   const CLE = "bateau-ecole-pavillons", GRACE = 400;
-  const VITESSES = {tranquille:{nom:"Tranquille", calc:9000, revele:3800}, normal:{nom:"Normal", calc:6500, revele:3200}, rapide:{nom:"Rapide", calc:4500, revele:2600}};
+  // le 28/09, l'enseignante n'avait pas le temps de filmer toute la classe : plus de temps, « Voir la réponse » pour abréger, et « À mon signal » sans minuteur
+  const VITESSES = {tranquille:{nom:"Tranquille", calc:15000, revele:4000}, normal:{nom:"Normal", calc:10000, revele:3500}, rapide:{nom:"Rapide", calc:6000, revele:2800}, signal:{nom:"À mon signal", calc:0, revele:3500}};
   const OPS = {fois:"×", plus:"+", moins:"−"}, NOMS = {fois:"Tables de multiplication", plus:"Additions", moins:"Soustractions"};
   const DEFAUT = {op:"fois", tables:[2,3,4,5], max:20, nb:10, vitesse:"normal"};
   const pl = (n, mot) => n+" "+mot+(n>1 ? "s" : ""), br = n => `${n} bonne${n>1?"s":""} réponse${n>1?"s":""}`;
@@ -5052,6 +5296,8 @@ const Pavillons = (() => {
 .pv-centre{position:absolute;left:0;right:0;top:calc(var(--haut) + 14vh);bottom:14vh;display:grid;place-items:center;z-index:5;padding:0 3vw}
 .pv-bas{position:absolute;left:22px;bottom:20px;z-index:8;display:flex;gap:10px}
 .pv-bas[hidden]{display:none}
+.pv-bas.droite{left:auto;right:22px}
+.pv-bas [hidden]{display:none}
 /* salon, essai des cartes, fin */
 .pv-salon,.pv-verif{width:min(94vw,1100px);display:grid;justify-items:center;gap:clamp(10px,2.2vh,24px);text-align:center}
 .pv-salon h1,.pv-verif h1{margin:0;font:800 clamp(2rem,4.4vw,4rem)/1 var(--display);color:#fff;text-shadow:0 4px 0 #1D6F93,0 10px 24px rgba(11,39,64,.3);text-wrap:balance}
@@ -5203,6 +5449,7 @@ const Pavillons = (() => {
   function lisReglages(){ try { return JSON.parse(lsGet(CLE)||"null"); } catch(e){ return null; } }
   const sauveReglages = () => lsSet(CLE, JSON.stringify(R));
   const durees = () => dureesTest || VITESSES[R.vitesse];
+  const sansMinuteur = () => !durees().calc; // « À mon signal » : le calcul reste affiché jusqu'à « Voir la réponse »
   function presents(){ const l = Classe.presents(); return l.length ? l.map(e=>({n:e.n, prenom:e.prenom})) : Array.from({length:25}, (_,i)=>({n:i+1, prenom:""})); }
   const estPresent = n => (P ? P.pres : presents()).some(e=>e.n===n);
   const nomDe = n => { const e = (P ? P.pres : presents()).find(x=>x.n===n); return e && e.prenom ? e.prenom : "carte "+n; };
@@ -5239,6 +5486,7 @@ const Pavillons = (() => {
     else if (d.f==="verif") verif();
     else if (d.f==="salon" || d.f==="stop") arrete();
     else if (d.f==="pause") pause();
+    else if (d.f==="ferme"){ if (phase==="calc"){ clearTimeout(minuteur); minuteur = null; if (P) P.pause = false; ferme(); dessineBas(); } }
     else if (d.f==="reprend") reprend();
     else if (d.f==="reglages"){ R = propre(d.r); sauveReglages(); if (phase==="salon" || phase==="verif" || phase==="fin") dessineCentre(); emet(); }
   }
@@ -5253,7 +5501,8 @@ const Pavillons = (() => {
     const pas = k => { if (!P) return; if (k===0){ calc(); return; } const z = document.querySelector("#pv-ecran .pv-decompte"); if (z){ z.textContent = k; z.style.animation = "none"; void z.offsetWidth; z.style.animation = ""; } sons("pop"); programme(900, ()=>pas(k-1)); };
     pas(3);
   }
-  function calc(){ phase = "calc"; P.calcs[P.i].tel = telPv; dessine(); emet(); programme(durees().calc, ferme); anime(); } // tel : le téléphone compte ce calcul
+  function calc(){ phase = "calc"; P.calcs[P.i].tel = telPv; dessine(); emet(); // tel : le téléphone compte ce calcul
+    if (sansMinuteur()){ clearTimeout(minuteur); minuteur = null; suite = ferme; } else { programme(durees().calc, ferme); anime(); } }
   function ferme(){ if (phase!=="calc") return; phase = "ferme"; dessineCentre(); emet(); clearTimeout(attenteFin); attenteFin = setTimeout(revele, P.calcs[P.i].tel ? 1800 : 0); }
   function recoitCartes(d){
     if (!sur()) return;
@@ -5312,10 +5561,10 @@ const Pavillons = (() => {
   function verif(){ clearTimeout(minuteur); clearTimeout(attenteFin); P = null; phase = "verif"; verifVus = new Set(); dessine(); emet(); }
   function arrete(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; dessine(); emet(); }
   function pause(){ if (!P || P.pause || (phase!=="calc" && phase!=="revele")) return; P.pause = true; reste = Math.max(0, echeance-Date.now()); clearTimeout(minuteur); minuteur = null; dessineCentre(); dessineBas(); emet(); }
-  function reprend(){ if (!P || !P.pause) return; P.pause = false; programme(reste, suite); dessineCentre(); dessineBas(); emet(); if (phase==="calc") anime(); }
+  function reprend(){ if (!P || !P.pause) return; P.pause = false; if (!(phase==="calc" && sansMinuteur())) programme(reste, suite); dessineCentre(); dessineBas(); emet(); if (phase==="calc") anime(); }
   function anime(){
     cancelAnimationFrame(raf);
-    const pas = () => { const b = document.querySelector("#pv-ecran .pv-temps i"); if (!b || !P || phase!=="calc") return;
+    const pas = () => { const b = document.querySelector("#pv-ecran .pv-temps i"); if (!b || !P || phase!=="calc" || sansMinuteur()) return;
       const d = durees().calc, r = P.pause ? reste : Math.max(0, echeance-Date.now()); b.style.transform = `scaleX(${(r/d).toFixed(4)})`;
       if (!P.pause) raf = requestAnimationFrame(pas); };
     pas();
@@ -5329,6 +5578,7 @@ const Pavillons = (() => {
         <div class="pv-haut"><button class="btn petit" id="pv-maison">${Accueil.IC.maison}<span>Activités</span></button><div class="pv-titre">Hissez les pavillons</div><div class="pv-score" hidden></div><span class="pastille" id="pv-tel"></span></div>
         <div class="pv-drisse"></div><div class="pv-centre"></div>
         <div class="pv-bas" hidden><button class="btn petit" data-pv="pause">Pause</button><button class="btn petit" data-pv="stop">Arrêter la partie</button></div>
+        <div class="pv-bas droite" hidden><button class="btn prim" data-pv="ferme">Voir la réponse</button></div>
         <div class="mer"></div><img class="pv-bateau" src="img/bateau.webp" alt=""><div class="mer2"></div>`;
       const m = s.querySelector("#pv-maison"); let t = null;
       m.onclick = ()=>{ if (enPartie() && !m.dataset.sur){ m.dataset.sur = 1; m.lastChild.textContent = "Quitter la partie ?"; clearTimeout(t); t = setTimeout(()=>{ delete m.dataset.sur; m.lastChild.textContent = "Activités"; }, 4000); return; }
@@ -5365,13 +5615,14 @@ const Pavillons = (() => {
     d.classList.toggle("juste", phase==="revele" && !!c && c.juste); d.classList.toggle("faux", phase==="revele" && !!c && !c.juste);
   }
   function dessineBas(){ const b = document.querySelector("#pv-ecran .pv-bas"); if (!b) return; b.hidden = !enPartie() || phase==="compte";
-    const p = b.querySelector('[data-pv="pause"]'); if (p) p.textContent = P && P.pause ? "Reprendre" : "Pause"; }
+    const p = b.querySelector('[data-pv="pause"]'); if (p){ p.textContent = P && P.pause ? "Reprendre" : "Pause"; p.hidden = phase==="calc" && sansMinuteur(); }
+    const v = document.querySelector("#pv-ecran .pv-bas.droite"); if (v) v.hidden = phase!=="calc"; }
   function dessineCentre(){
     const z = document.querySelector("#pv-ecran .pv-centre"); if (!z) return;
     if (phase==="salon"){
       z.innerHTML = `<div class="pv-salon"><h1>Hissez les pavillons !</h1>
         <div class="pv-regles">
-          <div class="pv-regle"><div class="ill"><span class="pv-mini">3 × 4 = 12</span></div><b>Un calcul s'affiche</b><span>Juste ou faux ? Quelques secondes pour décider.</span></div>
+          <div class="pv-regle"><div class="ill"><span class="pv-mini">3 × 4 = 12</span></div><b>Un calcul s'affiche</b><span>Juste ou faux ? ${R.vitesse==="signal" ? "Prends le temps de décider." : "Quelques secondes pour décider."}</span></div>
           <div class="pv-regle"><div class="ill oui">${drapeau(1)}<em>✓</em></div><b>Il est juste ?</b><span>Hisse ton pavillon : lève ta carte bien haut !</span></div>
           <div class="pv-regle"><div class="ill non">${drapeau(2)}<em>✗</em></div><b>Il est faux ?</b><span>Garde ta carte baissée : ne tombe pas dans le piège !</span></div></div>
         <div class="pv-resume"><span>${esc(resume(R))}</span><button class="btn petit" data-pv="reglages">Modifier</button></div>
@@ -5402,9 +5653,10 @@ const Pavillons = (() => {
     const neuve = z.dataset.calc!==P.id+":"+P.i; z.dataset.calc = P.id+":"+P.i;
     z.innerHTML = `<div class="pv-jeu"><div class="pv-num">Calcul ${P.i+1} sur ${P.calcs.length}</div>
         <div class="pv-pancarte ${neuve ? "neuve" : ""}"><div class="pv-calc">${calcul}</div>${d ? `<div class="pv-tampon ${c.juste ? "ok" : "ko"}">${c.juste ? "Juste !" : "Faux !"}</div>` : ""}</div>
-        <div class="pv-temps" ${d ? "hidden" : ""}><i style="transform:scaleX(${phase==="ferme" ? 0 : 1})"></i></div><div class="pv-msg">${msg}</div></div>
+        <div class="pv-temps" ${d || sansMinuteur() ? "hidden" : ""}><i style="transform:scaleX(${phase==="ferme" ? 0 : 1})"></i></div><div class="pv-msg">${msg}</div></div>
       ${c.tel ? `<div class="pv-compte"><b>${h.size}</b><small>${h.size>1 ? "pavillons hissés" : "pavillon hissé"}</small></div>` : ""}`;
     if (phase==="calc") anime();
+    dessineBas();
   }
   const sec = ms => (ms/1000).toFixed(1).replace(".", ",")+" s";
   const noms = (l, nom) => l.length<=5 ? liste(l.map(nom)) : l.slice(0,4).map(nom).join(", ")+" et "+(l.length-4)+" autres";
@@ -5456,7 +5708,7 @@ const Pavillons = (() => {
       + (o.op==="fois" ? groupe("tables", "Quelles tables ?", Array.from({length:10},(_,i)=>[i+1, i+1]), v=>o.tables.includes(+v), "tables")
                        : groupe("max", "Nombres jusqu'à", [[10,"10"],[20,"20"],[100,"100"]], v=>o.max===+v))
       + groupe("nb", "Combien de calculs ?", [[5,"5"],[10,"10"],[15,"15"],[20,"20"]], v=>o.nb===+v)
-      + groupe("vitesse", "Temps pour décider", Object.entries(VITESSES).map(([k,x])=>[k, x.nom+" · "+Math.round(x.calc/1000)+" s"]), v=>o.vitesse===v); };
+      + groupe("vitesse", "Temps pour décider", Object.entries(VITESSES).map(([k,x])=>[k, x.calc ? x.nom+" · "+Math.round(x.calc/1000)+" s" : x.nom]), v=>o.vitesse===v); };
     rend();
     z.onclick = e=>{ const b = e.target.closest("[data-v]"); if (!b) return; const k = b.parentElement.dataset.k, v = b.dataset.v;
       if (k==="tables"){ const n = +v, i = o.tables.indexOf(n); if (i>=0){ if (o.tables.length>1) o.tables.splice(i,1); } else o.tables.push(n); o.tables.sort((a,b)=>a-b); }
@@ -5580,7 +5832,8 @@ const Pavillons = (() => {
       <div class="pv-t-calc">${E.phase==="compte" ? "3, 2, 1…" : calcul}</div>
       ${filme ? `<div class="pv-t-compte"><b id="pv-nb">${n}</b><span>${n>1 ? " pavillons hissés" : " pavillon hissé"}</span></div>` : `<p class="aut-note" style="margin:0">La caméra est éteinte : les cartes ne sont pas comptées.</p>`}
       ${verdict}
-      <div class="aa-actions deux"><button class="btn" data-c="${E.pause ? "reprend" : "pause"}">${E.pause ? "Reprendre" : "Pause"}</button><button class="btn" data-c="stop">Arrêter</button></div></div>`;
+      ${E.phase==="calc" ? `<button class="btn prim" data-c="ferme">Voir la réponse</button>${E.r && E.r.vitesse==="signal" ? `<p class="aut-note" style="margin:0">Touche « Voir la réponse » quand toutes les cartes levées sont comptées.</p>` : ""}` : ""}
+      <div class="aa-actions deux">${E.phase==="calc" && E.r && E.r.vitesse==="signal" ? "" : `<button class="btn" data-c="${E.pause ? "reprend" : "pause"}">${E.pause ? "Reprendre" : "Pause"}</button>`}<button class="btn" data-c="stop">Arrêter</button></div></div>`;
   }
   function palmaresTel(pm){
     if (!pm || !pm.podium || !pm.podium.length) return "";
