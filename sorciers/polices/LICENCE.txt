@@ -1,0 +1,3 @@
+Polices embarquées dans la version autonome (sous-ensemble latin, woff2, copiées depuis les paquets @fontsource).
+Baloo 2 : Copyright 2019 The Baloo 2 Project Authors. Atkinson Hyperlegible : Copyright 2020 Braille Institute of America.
+Toutes deux sous licence SIL Open Font License 1.1 : https://openfontlicense.org
