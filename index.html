@@ -120,6 +120,25 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .mots{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:clamp(.95rem,1.5vw,1.2rem)}
 .mots b{font-family:var(--display);color:#A0521D}
 .mots span{background:rgba(255,252,244,.9);border:2px solid #E3CFA2;border-radius:999px;padding:3px 12px}
+.connecteurs{margin-top:14px;padding:12px 16px;background:#E9F2EE;border:2px solid #6A9F89;border-radius:14px;color:#204D3A}
+.connecteurs h3{margin:0;font-family:var(--display);font-size:1.3rem}.connecteurs p{margin:0 0 8px}
+.connecteurs-groupes{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px 24px}.connecteurs-groupes>div{display:flex;flex-wrap:wrap;gap:5px;align-items:center;align-content:start}
+.ecriture-carte .timbre-cadre{height:min(28vh,260px)}
+.connecteurs-groupes b{flex-basis:100%;font-size:.95rem}.connecteurs-groupes span{background:#fff;border-radius:7px;padding:3px 9px;font-weight:700}.connecteurs-groupes small{flex-basis:100%}
+.correction-exemple{display:grid;grid-template-columns:minmax(160px,1fr) 2fr;gap:22px;align-items:center;margin-top:16px}
+.correction-exemple>img{width:100%;border-radius:16px}.carte-modele{background:#FFFCF4;border:2px solid #D8B878;border-radius:12px;padding:18px 22px;font-size:clamp(1.05rem,1.7vw,1.4rem);line-height:1.45}
+.carte-modele p{margin:0 0 9px}.carte-modele strong{color:#216344;background:#E9F2EE;border-radius:4px;padding:0 3px}.carte-modele .modele-signature{text-align:right;font-style:italic;margin-bottom:0}
+.correction-reperes{margin-top:14px;line-height:1.5;color:#6B4524}
+.arrivee-geo{max-width:1150px}.arrivee-geo>h2:not(.fermer){margin-right:20px}.geo-statut{margin-top:4px;font-weight:700;color:var(--mer)}
+.arrivee-geo h2,.correction-carte h2{font-family:var(--display);font-size:clamp(1.5rem,2.5vw,2rem);line-height:1.15;margin-top:0;margin-bottom:12px;color:#4A2C10}
+.arrivee-geo h2 small,.correction-carte h2 small{display:block;font-size:.6em;text-transform:uppercase;letter-spacing:.06em;color:var(--corail);margin-bottom:6px}
+.geo-cartes{position:relative}.geo-cartes .terre{stroke-width:.7px;vector-effect:non-scaling-stroke}.geo-cartes .route polyline,.geo-cartes .faite polyline{stroke-width:2px;vector-effect:non-scaling-stroke}
+.geo-continents text{font-size:3.2px;fill:#71502B}.geo-nord{position:absolute;right:12px;top:10px;background:#FFF9EA;padding:3px 7px;border-radius:6px;font-weight:800}
+.geo-repere{position:absolute;left:12px;bottom:12px;width:24%;max-width:245px;padding:5px;background:#FFF9EA;border:1px solid #D8B878;border-radius:8px;box-shadow:0 2px 8px #0B274030}
+.geo-repere b{display:block;text-align:center;font-size:clamp(.6rem,1.1vw,.9rem);margin-bottom:3px}.geo-repere .monde{border-width:1px;border-radius:3px}
+.geo-infos{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}.geo-infos span{flex:1;min-width:120px;background:#FFF9EA;border-radius:10px;padding:8px 14px;font-size:1.15rem}.geo-infos b{display:block;font-size:.8rem;color:#71502B;text-transform:uppercase;letter-spacing:.04em}
+.geo-question{margin-top:10px}.arrivee-geo .centre{margin-top:12px}
+@media(max-width:700px){.correction-exemple{grid-template-columns:1fr}.correction-exemple>img{display:none}.geo-repere{position:static;width:48%;margin:8px auto 0}.geo-cartes>#geo-carte{min-height:190px}.geo-infos{gap:6px}.geo-infos span{font-size:1rem;min-width:95px}.postale dl{grid-template-columns:1fr!important;gap:3px!important}.postale dd{margin-bottom:8px}.connecteurs-groupes{grid-template-columns:1fr;gap:12px}}
 .coup-de-pouce{margin-top:12px;padding:10px 14px;border-radius:14px;background:rgba(255,252,244,.92);font-size:clamp(1.05rem,1.8vw,1.35rem);line-height:1.5}
 @media (max-width:760px){.passeport{grid-template-columns:repeat(4,1fr)}}
 .carte-monde{background:linear-gradient(rgba(255,249,234,.9),rgba(255,249,234,.9)) content-box,#F7E9C8 url(img/parchemin.webp) center/cover border-box;border-color:#D8B878;padding:clamp(18px,3.2vw,38px)}
@@ -3361,9 +3380,42 @@ const ESCALES = [
  {v:"Canal de Suez",p:"Égypte",la:31.30,lo:32.35,an:"🐊",anN:"le crocodile du Nil",mg:"le foul (purée de fèves)",dit:"Ahlan !",voix:"أهلا",lang:"ar",fait:"Le canal de Suez relie la mer Rouge à la Méditerranée : grâce à lui, les bateaux évitent de faire le tour de l'Afrique."},
  {v:"Athènes",p:"Grèce",la:37.90,lo:23.60,an:"🦉",anN:"la chouette, symbole de la ville",mg:"la salade grecque à la feta",dit:"Yassou !",voix:"Γειά σου",lang:"el-GR",fait:"Les tout premiers Jeux olympiques ont eu lieu en Grèce, il y a presque 2 800 ans."},
  {v:"Naples",p:"Italie",la:40.80,lo:14.20,an:"🐺",anN:"la louve, symbole de l'Italie depuis la légende de Rome",mg:"la pizza, inventée ici !",dit:"Buongiorno !",voix:"Buongiorno",lang:"it-IT",fait:"Le Vésuve, le volcan qui domine la ville, a enseveli la cité de Pompéi il y a presque 2 000 ans."},
- {v:"Ajaccio",p:"Corse, France",la:41.90,lo:8.70,an:"🐗",anN:"le sanglier",mg:"les canistrelli (biscuits corses)",dit:"Bonghjornu ! (en corse)",voix:"",lang:"",fait:"Napoléon Bonaparte est né à Ajaccio, en 1769."},
+ {v:"Ajaccio",p:"France",la:41.90,lo:8.70,an:"🐗",anN:"le sanglier",mg:"les canistrelli (biscuits corses)",dit:"Bonghjornu ! (en corse)",voix:"",lang:"",fait:"Napoléon Bonaparte est né à Ajaccio, en 1769."},
  {v:"Marseille",p:"France",la:43.28,lo:5.35,an:"🏆",anN:"l'équipage de la classe !",mg:"un grand goûter de fin de voyage",dit:"Bon retour au port !",voix:"Bon retour au port",lang:"fr-FR",fait:"Vous avez fait le tour du monde en bateau-école. Bravo, moussaillons !"}
 ];
+
+// Repères géographiques et découvertes pour les exemples d'écriture.
+// Les langues citées sont des exemples parlés sur place, pas une liste exhaustive.
+const GEOGRAPHIE = {
+ "Marseille":{continent:"Europe",langues:"Français",decouverte:"les bateaux du Vieux-Port"},
+ "Barcelone":{continent:"Europe",langues:"Catalan et espagnol",decouverte:"la grande église de la Sagrada Família"},
+ "Tanger":{continent:"Afrique",langues:"Arabe marocain (darija)",decouverte:"le détroit de Gibraltar entre l’Europe et l’Afrique"},
+ "Lisbonne":{continent:"Europe",langues:"Portugais",decouverte:"les tramways jaunes dans les rues en pente"},
+ "Îles Canaries":{continent:"Afrique (au large de ses côtes)",langues:"Espagnol",repere:"Des îles de l’océan Atlantique, près de l’Afrique, qui appartiennent à l’Espagne.",decouverte:"le volcan du Teide"},
+ "Dakar":{continent:"Afrique",langues:"Wolof et français",decouverte:"la côte de l’océan Atlantique"},
+ "Rio de Janeiro":{continent:"Amérique du Sud",langues:"Portugais",decouverte:"les grandes plages au bord de la ville"},
+ "Buenos Aires":{continent:"Amérique du Sud",langues:"Espagnol",decouverte:"la musique du tango"},
+ "Ushuaïa":{continent:"Amérique du Sud",langues:"Espagnol",decouverte:"les montagnes autour du port"},
+ "Île de Pâques":{continent:"Océanie",langues:"Espagnol et rapanui",repere:"Une île de Polynésie, dans l’océan Pacifique, qui appartient au Chili.",decouverte:"les moaïs, de grandes statues de pierre"},
+ "Galápagos":{continent:"Amérique du Sud (au large de ses côtes)",langues:"Espagnol",repere:"Un archipel de l’océan Pacifique, à l’ouest de l’Équateur.",decouverte:"des îles volcaniques au milieu de l’océan"},
+ "Acapulco":{continent:"Amérique du Nord",langues:"Espagnol",decouverte:"les falaises au bord de la mer"},
+ "San Francisco":{continent:"Amérique du Nord",langues:"Anglais",decouverte:"le grand pont rouge du Golden Gate"},
+ "Hawaï":{continent:"Océanie",langues:"Anglais et hawaïen",repere:"Un archipel de Polynésie, dans l’océan Pacifique, qui appartient aux États-Unis.",decouverte:"les volcans de l’archipel"},
+ "Tokyo":{continent:"Asie",langues:"Japonais",decouverte:"les grands immeubles de la ville"},
+ "Shanghai":{continent:"Asie",langues:"Mandarin et shanghaïen",decouverte:"les porte-conteneurs dans le port"},
+ "Baie d'Along":{continent:"Asie",langues:"Vietnamien",decouverte:"les îles rocheuses qui sortent de la mer"},
+ "Singapour":{continent:"Asie",langues:"Anglais, mandarin, malais et tamoul",decouverte:"une ville qui est aussi un pays"},
+ "Bali":{continent:"Asie",langues:"Indonésien et balinais",decouverte:"les rizières en escaliers sur les collines"},
+ "Sydney":{continent:"Océanie",langues:"Anglais",decouverte:"l’opéra dont le toit ressemble à des voiles"},
+ "La Réunion":{continent:"Afrique (au large de ses côtes)",langues:"Français et créole réunionnais",repere:"Une île française de l’océan Indien, à l’est de Madagascar.",decouverte:"le volcan du piton de la Fournaise"},
+ "Madagascar":{continent:"Afrique",langues:"Malgache et français",decouverte:"les paysages de cette grande île"},
+ "Zanzibar":{continent:"Afrique",langues:"Swahili et anglais",decouverte:"les parfums des épices"},
+ "Bombay":{continent:"Asie",langues:"Marathi, hindi et anglais",decouverte:"le cinéma de Bollywood"},
+ "Canal de Suez":{continent:"Afrique et Asie",langues:"Arabe",repere:"Le canal marque la limite entre l’Afrique et l’Asie. Nous arrivons à son entrée en Méditerranée.",decouverte:"le canal qui relie la mer Rouge à la Méditerranée"},
+ "Athènes":{continent:"Europe",langues:"Grec",decouverte:"les monuments de la Grèce antique"},
+ "Naples":{continent:"Europe",langues:"Italien et napolitain",decouverte:"le volcan du Vésuve au-dessus de la ville"},
+ "Ajaccio":{continent:"Europe",langues:"Français et corse",repere:"Une ville de Corse, une île française de la mer Méditerranée.",decouverte:"les montagnes de la Corse"}
+};
 
 const MATIERES = {fr:{nom:"Français",c:"#C2415D"},ma:{nom:"Maths",c:"#2466B3"},sc:{nom:"Sciences",c:"#2F7A57"},hi:{nom:"Histoire",c:"#8A5A2B"},ar:{nom:"Arts",c:"#7A4DB3"},an:{nom:"Anglais",c:"#B86E0A"}};
 
@@ -4333,7 +4385,7 @@ function reserveEscaleVendredi(){
   if(DEMO ? !escaleDemo : !escaleVendredi()) return;
   const r=rythmeVoyage(S), k=escaleDemo || Math.max(...S.escalesVues)+1;
   S.milles=CUM[k]; S.escalesVues.push(k); S.carteAEcrire=k;
-  r.derniereSemaine=semaineJeu(); r.arrivee={k,etape:"carte"};
+  r.derniereSemaine=semaineJeu(); r.arrivee={k,etape:"trajet"};
 }
 function position(m){ // {i: escale atteinte, p: progression 0-1 vers i+1}
   m = Math.max(0,Math.min(TOTAL,m));
@@ -4871,9 +4923,15 @@ async function verifArrivee(){
   enJeu=true; rituelEnCours=false; chrono(false); document.body.classList.remove("rituel-en-cours");
   majBarre(); majMer();
   const k=a.k, generation=GEN;
+  if(a.etape==="trajet"){
+    await situeEscale(k);
+    if(generation!==GEN) return true;
+    a.etape="carte"; sauve();
+  }
   if(a.etape==="carte"){
     Mer.vers(1,ESCALES[k-1].v,ESCALES[k].v);
     await cartePostale(k,true);
+    if(generation!==GEN) return true;
     a.etape="passeport"; sauve();
   }
   if(a.etape==="passeport"){
@@ -4886,6 +4944,7 @@ async function verifArrivee(){
 }
 function cartePostale(k, arrivee){
   const e = ESCALES[k];
+  const geo = GEOGRAPHIE[e.v];
   const fin = k===ESCALES.length-1;
   const im = `img/escale${String(k===ESCALES.length-1?0:k).padStart(2,"0")}.webp`;
   layer.innerHTML = `<div class="carte postale-carte" style="max-width:1000px">
@@ -4894,7 +4953,10 @@ function cartePostale(k, arrivee){
       <div>
         <h2><small>${arrivee?(fin?"Retour au port !":"Terre en vue !"):"Souvenir d'escale"}</small>${esc(e.v)}, ${esc(e.p)}</h2>
         <dl>
-          <dt>Animal</dt><dd>${esc(e.anN)}</dd>
+          <dt>Continent</dt><dd>${esc(geo.continent)}</dd>
+          <dt>Pays</dt><dd>${esc(e.p)}</dd>
+          <dt>Langue(s) parlée(s)</dt><dd>${esc(geo.langues)}</dd>
+          ${geo.repere?`<dt>Pour se repérer</dt><dd>${esc(geo.repere)}</dd>`:""}
           <dt>À goûter</dt><dd>${esc(e.mg)}</dd>
           <dt>Dire bonjour</dt><dd><b>${esc(e.dit)}</b></dd>
           <dt>Le savais-tu ?</dt><dd>${esc(e.fait)}</dd>
@@ -5284,6 +5346,102 @@ function traits(r){ // lignes brisées sur la carte, coupées au bord (x = 0 ou 
     out[out.length-1].push([x,y]); prec=[x,y]; }
   return out.filter(l=>l.length>1).map(l=>`<polyline points="${l.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")}"/>`).join("");
 }
+// Même projection et mêmes routes maritimes que la carte du voyage.
+function cadreGeographique(x,y,largeur){
+  const w=Math.min(360,largeur),h=w*143/360;
+  return [Math.max(0,Math.min(360-w,x-w/2)),Math.max(0,Math.min(143-h,y-h/2)),w,h];
+}
+function cadresEscale(k){
+  const r=routeEtape(k-1),xs=r.map(p=>X(p[0])),ys=r.map(p=>Y(p[1]));
+  const gauche=Math.min(...xs),droite=Math.max(...xs),haut=Math.min(...ys),bas=Math.max(...ys);
+  // Une traversée du bord du planisphère garde la vue du monde entier.
+  const trajet=droite-gauche>180 ? [0,0,360,143] : cadreGeographique((gauche+droite)/2,(haut+bas)/2,Math.max(44,(droite-gauche)*1.5,(bas-haut)*360/143*1.5));
+  const e=ESCALES[k];
+  return {trajet,arrivee:cadreGeographique(X(e.lo),Y(e.la),24)};
+}
+async function situeEscale(k){
+  const e=ESCALES[k],depart=ESCALES[k-1],geo=GEOGRAPHIE[e.v],r=routeEtape(k-1),cadres=cadresEscale(k);
+  const monde=[0,0,360,143],generation=GEN;
+  const continents=[[75,38,"Amérique du Nord"],[113,104,"Amérique du Sud"],[180,29,"Europe"],[190,79,"Afrique"],[255,38,"Asie"],[309,117,"Océanie"]];
+  const bateau=`<circle r="3.5" fill="#FFC94A" stroke="#0B2740" stroke-width=".5"/><path d="M-2 .6 L2 .6 L1.2 1.8 L-1.2 1.8Z M0 .6 L0 -2.4 L1.8 .2Z" fill="#0B2740"/>`;
+  layer.innerHTML=`<div class="carte carte-monde arrivee-geo">
+    <h2><small>Notre escale de la semaine</small>${esc(depart.v)} → ${esc(e.v)}</h2>
+    <p class="geo-statut" aria-live="polite">Suivons le bateau sur la carte.</p>
+    <div class="geo-cartes">
+      <svg id="geo-carte" class="monde" viewBox="0 0 360 143" role="img" aria-label="Trajet du bateau de ${esc(depart.v)} à ${esc(e.v)}, puis zoom sur l’escale">
+        <path class="terre" d="${LAND}"/>
+        <g class="geo-continents">${continents.map(([x,y,t])=>`<text x="${x}" y="${y}" text-anchor="middle">${t}</text>`).join("")}</g>
+        <g class="route">${traits(r)}</g><g class="faite" id="geo-trace"></g>
+        ${[depart,e].map((p,i)=>`<g class="geo-port" transform="translate(${X(p.lo)},${Y(p.la)})"><circle class="esc ${i?"ok":""}" r="1.3"/><text x="2" y="${i?5:-3}">${esc(p.v)}</text></g>`).join("")}
+        <g id="geo-bateau">${bateau}</g>
+      </svg>
+      <span class="geo-nord" aria-label="Le nord est en haut">↑ N</span>
+      <div class="geo-repere"><b>Repère dans le monde</b>
+        <svg class="monde" viewBox="0 0 360 143" role="img" aria-label="Situation de ${esc(e.v)} dans le monde">
+          <path class="terre" d="${LAND}"/><rect id="geo-cadre" fill="#FFC94A" fill-opacity=".2" stroke="#B34725" stroke-width="2"/>
+          <circle cx="${X(e.lo)}" cy="${Y(e.la)}" r="4" fill="#C2415D" stroke="white" stroke-width="1"/>
+        </svg>
+      </div>
+    </div>
+    <div class="geo-infos"><span><b>Continent</b>${esc(geo.continent)}</span><span><b>Pays</b>${esc(e.p)}</span><span><b>Escale</b>${esc(e.v)}</span></div>
+    <p class="note geo-question">Repérez le départ et l’arrivée. Sur quel continent arrivons-nous ?${geo.repere?` ${esc(geo.repere)}`:""}</p>
+    <div class="centre"><button class="btn" data-go="rejouer">Revoir le trajet</button><button class="btn" data-go="monde">Vue du monde</button><button class="btn mer" data-go="zoom">Zoom sur l’escale</button><button class="btn prim" data-go="decouvrir">Découvrir l’escale</button></div>
+  </div>`;
+  const svg=$("#geo-carte"),navire=$("#geo-bateau"),trace=$("#geo-trace"),rectangle=$("#geo-cadre"),statut=layer.querySelector(".geo-statut");
+  let frame=0,vue=monde.slice(),progression=0;
+  const stop=()=>{cancelAnimationFrame(frame);redimension.disconnect();enAttente.delete(stop);};
+  enAttente.add(stop);
+  function affiche(cadre,p){
+    vue=cadre;progression=p;
+    svg.setAttribute("viewBox",cadre.join(" "));
+    ["x","y","width","height"].forEach((a,i)=>rectangle.setAttribute(a,cadre[i]));
+    const pos=surRoute(r,p),taille=cadre[2]*3/Math.max(240,svg.clientWidth);
+    navire.setAttribute("transform",`translate(${X(pos.m[0])},${Y(pos.m[1])}) scale(${taille})`);
+    trace.innerHTML=traits(pos.avant);
+    svg.querySelectorAll(".geo-port").forEach((g,i)=>{
+      g.querySelector("circle").setAttribute("r",1.3*taille);
+      const t=g.querySelector("text");t.style.fontSize=`${5.5*taille}px`;t.style.strokeWidth=`${.7*taille}px`;
+      t.setAttribute("x",2*taille);t.setAttribute("y",(i?7:-4)*taille);
+      t.setAttribute("text-anchor",X((i?e:depart).lo)>cadre[0]+cadre[2]*.78?"end":"start");
+    });
+    svg.querySelector(".geo-continents").style.opacity=cadre[2]>200?1:0;
+  }
+  const melange=(a,b,t)=>a.map((n,i)=>n+(b[i]-n)*t);
+  function anime(revoir,cible){
+    cancelAnimationFrame(frame);
+    const debut=performance.now(),origine=vue.slice(),p0=progression;
+    const reduit=matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduit){affiche(revoir?cadres.arrivee:cible,1);statut.textContent=`Nous sommes arrivés ${aLieu(e.v)} !`;return;}
+    if(revoir)statut.textContent="Suivons le bateau sur la carte.";
+    function avance(t){
+      if(generation!==GEN || !svg.isConnected){stop();return;}
+      const d=t-debut;
+      if(revoir){
+        if(d<1000)affiche(monde,0);
+        else if(d<2000)affiche(melange(monde,cadres.trajet,(d-1000)/1000),0);
+        else if(d<7500)affiche(cadres.trajet,(d-2000)/5500);
+        else if(d<8800)affiche(melange(cadres.trajet,cadres.arrivee,(d-7500)/1300),1);
+        else{affiche(cadres.arrivee,1);statut.textContent=`Nous sommes arrivés ${aLieu(e.v)} !`;return;}
+      }else{
+        affiche(melange(origine,cible,Math.min(1,d/900)),p0);
+        if(d>=900)return;
+      }
+      frame=requestAnimationFrame(avance);
+    }
+    frame=requestAnimationFrame(avance);
+  }
+  const redimension=new ResizeObserver(()=>affiche(vue,progression));redimension.observe(svg);
+  affiche(monde,0);anime(true);
+  for(;;){const go=await attendre();
+    if(go==="rejouer"){anime(true);continue;}
+    if(go==="monde" || go==="zoom"){
+      // Les commandes de repérage peuvent aussi terminer le trajet immédiatement.
+      affiche(vue,1);statut.textContent=`Nous sommes arrivés ${aLieu(e.v)} !`;
+      anime(false,go==="monde"?monde:cadres.arrivee);continue;
+    }
+    if(go==="decouvrir"){stop();return;}
+  }
+}
 function ouvreCarte(){
   const p=position(S.milles); const vues=new Set(S.escalesVues);
   let route="", faite="";
@@ -5617,44 +5775,81 @@ const deLieu = v => LIEUX[v] ? LIEUX[v][0] : (/^[aeiouyhéèêâîôûàÎÉ]/i.
 const aLieu = v => LIEUX[v] ? LIEUX[v][1] : "à "+v;
 const leLieu = v => LIEUX[v] ? LIEUX[v][2] : v;
 /* ---------- rituel d'écriture : la carte postale (à la place de la copie, une fois par semaine) ---------- */
+function modeleCarte(k){
+  const e=ESCALES[k],geo=GEOGRAPHIE[e.v];
+  const plat=e.v==="Zanzibar"?"un plat parfumé aux épices":e.mg.split(" (")[0].split(",")[0];
+  const lignes=[
+    ["D’abord",`nous sommes arrivés ${aLieu(e.v)} avec notre bateau.`],
+    ["Ensuite",`j’ai découvert ${geo.decouverte}.`],
+    ["Puis",`j’ai goûté ${plat}.`],
+    ["Enfin","je vous envoie de gros bisous !"]
+  ];
+  const salut="Chère famille,",signature="Un moussaillon en voyage";
+  return {salut,lignes,signature,txt:[salut,...lignes.map(([c,t])=>`${c}, ${t}`),signature].join("\n")};
+}
 async function ecrireCarte(k){
   if (enJeu) return; enJeu = true; Son.init();
-  const e = ESCALES[k];
-  const mots = [`Chère maman,`,`Cher papa,`,`Chère mamie,`,`Bonjour depuis ${leLieu(e.v)} !`,`Nous sommes arrivés ${aLieu(e.v)}.`,`Ici, je vois…`,`Il fait chaud / froid.`,`J'ai vu ${e.anN.split(",")[0]}.`,`Nous avons goûté ${e.mg.split(" (")[0]}.`,`Les habitants disent « ${e.dit.split(" (")[0]} ».`,`C'est magnifique !`,`Je pense à vous.`,`À bientôt,`,`Gros bisous,`,`Ton moussaillon,`,`Ta matelote,`];
-  layer.innerHTML = `<div class="carte postale-carte" style="max-width:1100px">
-    <div class="postale">
-      <div class="timbre-cadre"><img class="cadre" src="img/timbre.webp" alt=""><img class="photo" src="${imgEscale(k)}" alt=""></div>
-      <div>
-        <h2><small>Le travail d’écriture du vendredi</small>Une carte postale ${esc(deLieu(e.v))}</h2>
-        <ol class="consigne">
-          <li>Écris à quelqu'un de ta famille : dis-lui où tu es et ce que tu vois.</li>
-          <li>Raconte une chose que tu as goûtée ou un animal que tu as vu.</li>
-          <li>Termine par une formule pour dire au revoir, et signe.</li>
-        </ol>
-        <p class="note" style="color:#6B4524;margin:6px 0 0">3 à 5 lignes, dans le cahier du jour. Relis-toi : majuscules, points, accords.</p>
+  const e=ESCALES[k],a=rythmeVoyage(S).arrivee,generation=GEN;
+  const modele=modeleCarte(k);
+  if(a?.k!==k || a.etape!=="correction"){
+    const mots=["Chère famille,",`Nous sommes arrivés ${aLieu(e.v)}.`,"Ici, je vois…",`J’ai découvert ${GEOGRAPHIE[e.v].decouverte}.`,"J’ai goûté…","J’ai aimé…","À bientôt !","Gros bisous,"];
+    layer.innerHTML = `<div class="carte postale-carte ecriture-carte" style="max-width:1100px">
+      <div class="postale">
+        <div class="timbre-cadre"><img class="cadre" src="img/timbre.webp" alt=""><img class="photo" src="${imgEscale(k)}" alt="${esc(e.v)}"></div>
+        <div>
+          <h2><small>Le travail d’écriture du vendredi</small>Une carte postale ${esc(deLieu(e.v))}</h2>
+          <ol class="consigne">
+            <li>Écris à quelqu’un de ta famille : dis-lui où tu es et ce que tu découvres.</li>
+            <li>Raconte une chose que tu as goûtée ou aimée. Relie tes idées avec des connecteurs.</li>
+            <li>Termine par une formule pour dire au revoir, et signe.</li>
+          </ol>
+          <p class="note" style="color:#6B4524;margin:6px 0 0">3 à 5 lignes, dans le cahier du jour. Relis-toi : majuscules, points, accords.</p>
+        </div>
       </div>
+      <div class="mots"><b>Boîte à mots :</b> ${mots.map(m=>`<span>${esc(m)}</span>`).join("")}</div>
+      <section class="connecteurs" aria-labelledby="connecteurs-titre">
+        <h3 id="connecteurs-titre">Utilise des connecteurs</h3>
+        <p>Choisis deux ou trois mots pour guider ton lecteur.</p>
+        <div class="connecteurs-groupes">
+          <div><b>Dans quel ordre ?</b><span>D’abord</span><span>Ensuite</span><span>Puis</span><span>Enfin</span></div>
+          <div><b>Pour ajouter une idée</b><span>aussi</span><span>en plus</span></div>
+          <div><b>Pour expliquer</b><span>parce que</span><small>J’ai aimé… parce que…</small></div>
+        </div>
+      </section>
+      <div class="coup-de-pouce" id="cdp" hidden><b>Coup de pouce :</b> Chère famille, d’abord, nous sommes arrivés ______. Ensuite, j’ai découvert ______. Puis, j’ai goûté ______. Gros bisous, ______.</div>
+      <div class="centre"><button class="btn" data-go="cdp">Coup de pouce</button><button class="btn mer" data-go="chrono">Lancer 10 minutes</button><button class="btn prim big" data-go="fini">Voir une correction</button><button class="btn" data-go="non">Plus tard</button></div></div>`;
+    let t=null;
+    const stop=()=>{clearInterval(t);enAttente.delete(stop);};
+    enAttente.add(stop);
+    for(;;){const go=await attendre();
+      if(go==="cdp"){$("#cdp").hidden=!$("#cdp").hidden;continue;}
+      if(go==="chrono"){
+        clearInterval(t);let s=600;const b=layer.querySelector('[data-go="chrono"]');b.textContent="10:00";
+        t=setInterval(()=>{s--;b.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;if(s<=0){clearInterval(t);Son.cloche();b.textContent="Temps écoulé !";}},1000);continue;
+      }
+      if(go!=="fini" && go!=="non")continue;
+      stop();
+      if(go==="non"){enJeu=false;return accueil();}
+      if(a?.k===k){a.etape="correction";sauve();}
+      break;
+    }
+  }
+  layer.innerHTML=`<div class="carte postale-carte correction-carte" style="max-width:1000px">
+    <h2><small>Une proposition de correction</small>Une carte postale ${esc(deLieu(e.v))}</h2>
+    <p class="note">Voici un exemple pour comprendre le travail demandé. D’autres idées et d’autres phrases conviennent aussi.</p>
+    <div class="correction-exemple">
+      <img src="${imgEscale(k)}" alt="Illustration de ${esc(e.v)}">
+      <div class="carte-modele"><p>${esc(modele.salut)}</p>${modele.lignes.map(([c,t])=>`<p><strong>${esc(c)}</strong>, ${esc(t)}</p>`).join("")}<p class="modele-signature">${esc(modele.signature)}</p></div>
     </div>
-    <div class="mots"><b>Boîte à mots :</b> ${mots.map(m=>`<span>${esc(m)}</span>`).join("")}</div>
-    <div class="coup-de-pouce" id="cdp" hidden><b>Coup de pouce :</b> Bonjour depuis ______ ! Ici, je vois ______. J'ai goûté ______ et j'ai vu ______. Gros bisous, ______.</div>
-    <div class="centre"><button class="btn" data-go="cdp">Coup de pouce</button><button class="btn mer" data-go="chrono">Lancer 10 minutes</button><button class="btn prim big" data-go="fini">On a fini !</button><button class="btn" data-go="non">Plus tard</button></div></div>`;
-  let t=null;
-  for(;;){ const go = await attendre();
-    if (go==="cdp"){ $("#cdp").hidden = !$("#cdp").hidden; continue; }
-    if (go==="chrono"){ clearInterval(t); let s=600; const b=layer.querySelector('[data-go="chrono"]'); t=setInterval(()=>{ s--; if(b) b.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`; if(s<=0){ clearInterval(t); Son.cloche(); if(b) b.textContent="Temps écoulé !"; } },1000); continue; }
-    clearInterval(t);
-    if (go==="non"){ enJeu=false; return accueil(); }
-    break; }
-  layer.innerHTML = avecPerro("bravo",900,`<div class="msg-big">Lecture des cartes postales</div>
-    <p class="sous">Deux ou trois élèves lisent leur carte. Recopie ici la plus belle phrase pour le journal de bord.</p>
-    <label for="cp-txt" class="sr" style="position:absolute;left:-9999px">Plus belle phrase</label>
-    <textarea id="cp-txt" rows="3" maxlength="300" style="width:100%;box-sizing:border-box;font-size:1.15rem" placeholder="Ex. : Bonjour depuis ${esc(leLieu(e.v))} ! J'ai vu ${esc(e.anN.split(",")[0])}…"></textarea>
-    <div class="centre"><button class="btn prim big" data-go="ok">Terminer</button></div>`);
+    <div class="correction-reperes"><b>Observons ensemble :</b> à qui écrit-on ? Où est-on ? Que raconte-t-on ? Comment termine-t-on ? Les mots en couleur donnent l’ordre du récit.</div>
+    <div class="centre"><button class="btn prim big" data-go="ok">Terminer l’escale</button></div>
+  </div>`;
   await attendre();
-  const txt = ($("#cp-txt")?.value||"").trim();
-  noteJournal({type:"carte", titre:`Carte postale ${deLieu(e.v)}`, esc:e.v, m:0, det:["Rituel d'écriture à la place de la copie"], txt});
-  S.carteAEcrire = null;
-  if(rythmeVoyage(S).arrivee?.k===k) S.rythme.arrivee=null;
-  sauve(); enJeu=false; accueil();
+  if(generation!==GEN)return;
+  noteJournal({type:"carte",titre:`Carte postale ${deLieu(e.v)} — correction`,esc:e.v,m:0,det:["Proposition de correction pour le travail d’écriture"],txt:modele.txt});
+  S.carteAEcrire=null;
+  if(rythmeVoyage(S).arrivee?.k===k)S.rythme.arrivee=null;
+  sauve();enJeu=false;accueil();
 }
 
 /* ---------- l'île au trésor (avant les vacances) : 3 coffres ---------- */
