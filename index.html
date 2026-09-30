@@ -53,7 +53,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .bar .route{flex:1;min-width:0;display:grid;gap:4px}
 .bar .route .lbl{font-size:.9rem;color:#cfe3ea;display:flex;justify-content:space-between;gap:10px;min-width:0}
 .bar .route .lbl > span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.bar .route .lbl > span:last-child{flex:none}
+.bar .route .lbl > span:not(#b-de){flex:none}
 .bar .route .lbl b{color:#fff}
 .jauge{height:12px;border-radius:8px;background:rgba(255,255,255,.14);overflow:hidden}
 .jauge i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lagon),var(--soleil));border-radius:8px;transition:width 1.2s ease}
@@ -372,7 +372,7 @@ img{max-width:100%}
   <div class="bar">
     <div class="nom" id="b-nom">La Vaillante</div>
     <div class="route">
-      <div class="lbl"><span id="b-de">Marseille</span><span class="num"><b id="b-reste">0</b> milles avant <b id="b-vers">Barcelone</b></span></div>
+      <div class="lbl"><span id="b-de">Marseille</span><span class="num" id="b-distance"><b id="b-reste">0</b> milles avant <b id="b-vers">Barcelone</b></span><span id="b-port" hidden>À bon port !</span></div>
       <div class="jauge"><i id="b-jauge"></i></div>
     </div>
     <span class="pastille" id="b-demo" hidden style="background:var(--soleil);color:var(--nuit);font-weight:700">MODE DÉMO</span>
@@ -4607,11 +4607,26 @@ const actifs = () => S.eleves.filter(e=>e.actif && !(window.absentAujourdhui && 
 
 function toast(t){ const d=document.createElement("div"); d.className="toast"; d.textContent=t; ((window.Accueil && (Accueil.conteneur() || document.getElementById(Accueil.courant()))) || $("#stage")).appendChild(d); setTimeout(()=>d.remove(),3200); }
 
+// Dès le bilan, montrer le port atteint ; l'escale reste enregistrée à sa validation.
+function escaleAuPort(){
+  const r=rythmeVoyage(S), k=Math.max(0,...S.escalesVues);
+  if(r.arrivee) return r.arrivee.k;
+  if(S.seance && S.seance.index>=S.seance.qs.length){
+    const destination=DEMO ? S.seance.escaleDemo : escaleVendredi() ? k+1 : null;
+    if(destination) return destination;
+  }
+  return k>0 && S.milles===CUM[k] && r.derniereSemaine>=semaineJeu() ? k : null;
+}
 function majBarre(){
-  const p = position(S.milles);
+  const p = position(S.milles), port=escaleAuPort(), fin=p.fin || port===ESCALES.length-1;
   $("#b-nom").textContent = S.nom;
   Mer.st.bateau = S.nom;
-  if (p.fin){ $("#b-de").textContent="Tour du monde terminé !"; $("#b-reste").textContent="0"; $("#b-vers").textContent="Marseille"; $("#b-jauge").style.width="100%"; }
+  $("#b-distance").hidden=!!port || fin;
+  $("#b-port").hidden=!port && !fin;
+  if (port || fin){
+    $("#b-de").textContent=fin ? "Tour du monde terminé !" : `Escale ${port}/${ESCALES.length-1} · ${ESCALES[port].v}`;
+    $("#b-reste").textContent="0"; $("#b-vers").textContent=ESCALES[port || ESCALES.length-1].v; $("#b-jauge").style.width="100%";
+  }
   else {
     $("#b-de").textContent = `Escale ${p.i+1}/${ESCALES.length-1} · ${ESCALES[p.i].v} → ${ESCALES[p.i+1].v}`;
     $("#b-reste").textContent = Math.ceil(p.reste);
@@ -4619,7 +4634,12 @@ function majBarre(){
     $("#b-jauge").style.width = (p.p*100).toFixed(1)+"%";
   }
 }
-function majMer(){ const p=position(S.milles); if(p.fin) Mer.vers(1,ESCALES[ESCALES.length-2].v,"Marseille"); else Mer.vers(p.p,ESCALES[p.i].v,ESCALES[p.i+1].v); }
+function majMer(){
+  const p=position(S.milles), port=escaleAuPort();
+  if(port) Mer.vers(1,ESCALES[port-1].v,ESCALES[port].v);
+  else if(p.fin) Mer.vers(1,ESCALES[ESCALES.length-2].v,"Marseille");
+  else Mer.vers(p.p,ESCALES[p.i].v,ESCALES[p.i+1].v);
+}
 function setTel(on){ const b=$("#b-tel"); b.textContent = on ? "Téléphone relié" : (window.BATEAU_AUTONOME ? "Relier le téléphone" : "Téléphone non relié"); b.classList.toggle("on",on); b.classList.toggle("appel", !on && !!window.BATEAU_AUTONOME); }
 function chrono(on){ const b=$("#b-chrono"); clearInterval(chronoT); b.hidden=!on; if(!on) return; const t0=Date.now();
   const f=()=>{ const s=Math.floor((Date.now()-t0)/1000); b.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); b.style.background = s>720 ? "rgba(232,93,63,.35)" : ""; }; f(); chronoT=setInterval(f,1000); }
@@ -4652,7 +4672,7 @@ function accueil(){
   scoresRituel=null; podiumRituel=[]; reussitesRituel=null; document.body.classList.remove("rituel-en-cours");
   enJeu=false; QCUR=null; emitQ(); chrono(false); Mer.orage(0); Son.pluie(false);
   majBarre(); majMer();
-  const p = position(S.milles);
+  const p = position(S.milles), port=escaleAuPort();
   const vendredi = escaleVendredi();
   const sansPrenoms = S.eleves.every(e=>!e.prenom.trim());
   const nbVues = new Set(S.questions.filter(q=>questionActive(q)).map(q=>q.n)).size;
@@ -4683,7 +4703,7 @@ function accueil(){
   layer.innerHTML = p.fin ? `
     ${enseigne("Tour du monde terminé",`Bravo, l'équipage de ${esc(S.nom)} !`,"Le bateau est rentré à Marseille.","bravo")}
     <div class="home-cta"><button class="btn prim big" data-go="carte">Revoir la carte</button></div>` : `
-    ${enseigne(`Escale ${p.i+1} sur ${ESCALES.length-1} · ${esc(ESCALES[p.i].v)} → ${esc(ESCALES[p.i+1].v)}`,`Cap sur ${esc(ESCALES[p.i+1].v)} !`,`Encore <b class="num">${Math.ceil(p.reste)}</b> milles. Kiko vous accompagne : une escale chaque vendredi, puis la carte postale à écrire.`)}
+    ${port ? enseigne(`Escale ${port} sur ${ESCALES.length-1}`,`Bienvenue ${esc(aLieu(ESCALES[port].v))} !`,"Le bateau est à bon port. Profitons de notre escale avec Kiko.","bravo") : enseigne(`Escale ${p.i+1} sur ${ESCALES.length-1} · ${esc(ESCALES[p.i].v)} → ${esc(ESCALES[p.i+1].v)}`,`Cap sur ${esc(ESCALES[p.i+1].v)} !`,`Encore <b class="num">${Math.ceil(p.reste)}</b> milles. Kiko vous accompagne : une escale chaque vendredi, puis la carte postale à écrire.`)}
     ${!S.nomChoisi?`<div class="carte" style="max-width:760px;text-align:center;padding:16px 22px"><div class="msg-big" style="font-size:clamp(1.4rem,2.6vw,2.1rem)">Avant de partir : le baptême du bateau !</div><p class="sous" style="font-size:1rem">Les élèves votent avec leurs cartes-réponses parmi 4 noms.</p><div class="centre" style="margin-top:10px"><button class="btn prim big" data-go="bapteme">Choisir le nom du bateau</button></div>
       <div class="centre" style="margin-top:12px"><button class="btn petit" data-go="matin">Rituel du matin</button><button class="btn petit" data-go="tempete">La tempête</button><button class="btn petit" data-go="demo">Mode démo</button></div></div>`:""}
     ${S.nomChoisi?`<div class="home-cta">
@@ -4849,6 +4869,7 @@ async function verifArrivee(){
   const a=rythmeVoyage(S).arrivee;
   if(!a) return false;
   enJeu=true; rituelEnCours=false; chrono(false); document.body.classList.remove("rituel-en-cours");
+  majBarre(); majMer();
   const k=a.k, generation=GEN;
   if(a.etape==="carte"){
     Mer.vers(1,ESCALES[k-1].v,ESCALES[k].v);
@@ -4998,8 +5019,9 @@ async function rituel(mode, reprise=false){
       seance.gainTempete=g;seance.bonusTempete=true;checkpointRituel();
     }
     Mer.orage(0); Son.pluie(false); if(passe) Son.fanfare(); majBarre(); majMer(); Mer.rafale(1);
-    layer.innerHTML = avecPerro(passe?"bravo":"tempete",820,`<div class="msg-big">${passe?"Tempête traversée !":"Le bateau s'est mis à l'abri"}</div>
-      <p class="sous">${passe?`Bravo l'équipage ! Le vent de la tempête pousse le bateau : +${g} milles.`:`La tempête était trop forte cette fois, mais le bateau avance quand même un peu : +${g} milles.`}</p>
+    const port=escaleAuPort();
+    layer.innerHTML = avecPerro(passe?"bravo":"tempete",820,`<div class="msg-big">${port ? "La terre se dessine à l’horizon !" : passe?"Tempête traversée !":"Le bateau s'est mis à l'abri"}</div>
+      <p class="sous">${port ? `La mer se calme. Kiko aperçoit ${esc(ESCALES[port].v)} : l’équipage arrive à bon port !` : passe?`Bravo l'équipage ! Le vent de la tempête pousse le bateau : +${g} milles.`:`La tempête était trop forte cette fois, mais le bateau avance quand même un peu : +${g} milles.`}</p>
       <div class="centre"><button class="btn prim big" data-go="ok">Continuer</button></div>`);
     await attendre();
   }
@@ -5020,10 +5042,11 @@ async function bilan(res, gagne, mode){
   const par = {}; res.forEach(r=>{ (par[r.q.n]=par[r.q.n]||[]).push(r.pct); });
   const lignes = Object.entries(par).map(([id,arr])=>{ const {n,m}=matiere(id); const moy=arr.reduce((a,b)=>a+b,0)/arr.length;
     return `<li style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #E3ECF0"><span class="chip" style="background:${m.c}">${esc(m.nom)}</span><span style="flex:1">${esc(n.t)}</span><b class="num" style="color:${moy>=.7?"var(--ok)":moy>=.4?"#B86E0A":"var(--ko)"}">${Math.round(moy*100)} %</b></li>`; }).join("");
-  const p = position(S.milles);
+  const p = position(S.milles), port=escaleAuPort();
+  majBarre(); majMer();
   layer.innerHTML = `<div class="be-bilan${podiumRituel.length?" avec-podium":""}"><div class="carte${podiumRituel.length?"":" avec-perro"}">${podiumRituel.length?"":perro("bravo","coin")}<div>
-    <div class="msg-big">Fin du rituel : +${gagne} milles</div>
-    <p class="sous">${p.fin?"Le tour du monde est terminé !":`Encore ${Math.ceil(p.reste)} milles avant ${esc(ESCALES[p.i+1].v)}.`}</p>
+    <div class="msg-big">${port ? `Terre en vue : ${esc(ESCALES[port].v)} !` : `Fin du rituel : +${gagne} milles`}</div>
+    <p class="sous">${p.fin || port===ESCALES.length-1 ? "Le tour du monde est terminé !" : port ? "Bravo l’équipage, nous voilà à bon port ! Découvrons notre escale." : `Encore ${Math.ceil(p.reste)} milles avant ${esc(ESCALES[p.i+1].v)}.`}</p>
     <ul style="list-style:none;padding:0;margin:14px 0">${lignes}</ul>${htmlRecompenses(reussitesRituel)}
     <label for="j-txt" style="font-family:var(--display);font-weight:700;color:var(--mer);font-size:1.15rem">Le journal de bord se remplit tout seul. Un mot de l'équipage à ajouter ? (facultatif)</label>
     <div class="ligne"><input type="text" id="j-txt" value="${esc(S.seance?.note||'')}" style="flex:1;font-size:1.15rem" maxlength="200" placeholder="Ex. : On a revu les types de phrases et les tables de 4."></div>
