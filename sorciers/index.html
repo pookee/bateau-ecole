@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#29203e">
-<title>Les secrets de Poudlard · Essai</title><link rel="stylesheet" href="style.css">
+<title>Les secrets de Poudlard · Essai</title><link rel="stylesheet" href="style.css?v=ec10f815e165">
 </head>
 <body>
 <div id="sorciers" class="academy castle">
@@ -14,10 +14,10 @@
 <section id="camera-holder" hidden aria-label="Lecture des cartes"></section>
 <footer class="trial-footer">Essai web · Données conservées sur tes appareils · Les sauvegardes du Bateau-école restent indépendantes.</footer>
 </div>
-<audio id="music" preload="none" src="assets/musique.m4a" loop></audio>
+<audio id="music" preload="none" src="assets/musique.m4a?v=bb6b01a25919" loop></audio>
 <input type="file" id="import-file" accept=".json,application/json" hidden>
-<script src="vendor/nostr-lite.js"></script><script src="vendor/mqtt.min.js"></script><script src="vendor/qrcode.js"></script>
-<script src="plateforme.js"></script><script src="aruco.js"></script>
+<script src="vendor/nostr-lite.js?v=23d5f553e01b"></script><script src="vendor/mqtt.min.js?v=f3cbeae580d3"></script><script src="vendor/qrcode.js?v=5fc89d7acfbf"></script>
+<script src="plateforme.js?v=3ef19bf1b671"></script><script src="aruco.js?v=8320da660194"></script>
 <script id="cam-detection" type="text/plain">/* js-aruco2 (MIT/BSD) - cv.js + aruco.js + 40 codes ARUCO_4X4 */
 /*
 Copyright (c) 2011 Juan Mellado
@@ -1238,6 +1238,6 @@ self.onmessage = e => {
   } catch(err){ self.postMessage({erreur:true}); }
 };
 </script>
-<script src="core.js"></script><script src="banque.js"></script><script src="app.js"></script><script src="camera.js"></script>
+<script src="core.js?v=681b6db702b4"></script><script src="banque.js?v=f04b9efd1818"></script><script src="app.js?v=c3e472d3422b"></script><script src="camera.js?v=7391e422d439"></script>
 <script>Sorciers.boot();</script>
 </body></html>

@@ -1,6 +1,6 @@
-@font-face{font-family:Atkinson;src:url('polices/atkinson-hyperlegible-latin-400-normal.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Atkinson;src:url('polices/atkinson-hyperlegible-latin-400-normal.woff2?v=d64ba838ef54') format('woff2');font-weight:400;font-display:swap}
 
-@font-face{font-family:Atkinson;src:url('polices/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Atkinson;src:url('polices/atkinson-hyperlegible-latin-700-normal.woff2?v=140e2bd25a73') format('woff2');font-weight:700;font-display:swap}
 
 :root{color-scheme:light;--paper:#f8f5ee;--panel:#fffdf8;--ink:#332b40;--soft:#71697b;--line:#e1dbd0;--accent:#5a3f70;--wash:#ece7f0}
 
@@ -42,7 +42,7 @@ small,.muted{color:var(--soft)}
 #link-status.linked:before{color:#357766}
 .a-content{max-width:1400px;margin:auto;padding:28px 4% 40px}
 .eyebrow{text-transform:uppercase;letter-spacing:2px;font-size:12px;font-weight:700;color:var(--accent)}
-.hero{border-radius:20px;background:linear-gradient(90deg,rgba(36,23,59,.88),rgba(36,23,59,.16) 70%),url('assets/chateau.webp') center 52%/cover;min-height:420px;display:flex;align-items:center;padding:45px;color:#fff8ea}
+.hero{border-radius:20px;background:linear-gradient(90deg,rgba(36,23,59,.88),rgba(36,23,59,.16) 70%),url('assets/chateau.webp?v=bb840f9d3d93') center 52%/cover;min-height:420px;display:flex;align-items:center;padding:45px;color:#fff8ea}
 .hero-copy{max-width:510px}
 .hero h1{font-size:54px;margin:17px 0 18px;line-height:1.05}
 .hero p{font-size:18px;max-width:380px;color:#eee3f4}
@@ -59,7 +59,7 @@ small,.muted{color:var(--soft)}
 .house small{display:block;font-size:12px}
 .house>strong{margin-left:auto;font:29px/1 Georgia,serif;text-align:center;color:var(--house)}
 .house>strong small{font:11px/1.5 Atkinson,sans-serif;margin-top:4px}
-.crest{display:block;flex:none;width:48px;height:64px;background:url('assets/maisons.webp') no-repeat;background-size:400% 100%;background-position:calc(var(--h)*100%/3) 0}
+.crest{display:block;flex:none;width:48px;height:64px;background:url('assets/maisons.webp?v=4ebc69a74c45') no-repeat;background-size:400% 100%;background-position:calc(var(--h)*100%/3) 0}
 .chapter{display:grid;grid-template-columns:32% 1fr;gap:30px;align-items:center;margin-top:28px;padding:24px;background:#eee8de;border-radius:16px}
 .chapter img{width:100%;aspect-ratio:1.6;object-fit:cover;border-radius:11px}
 .chapter h2{margin-top:8px}
@@ -186,7 +186,7 @@ small,.muted{color:var(--soft)}
 .utility>div{gap:12px}
 .utility .volume{font-size:12px}
 .a-content{padding:20px 17px 25px}
-.hero{min-height:400px;padding:30px 24px;background-position:60% 50%;background-image:linear-gradient(90deg,rgba(36,23,59,.87),rgba(36,23,59,.40)),url('assets/chateau.webp')}
+.hero{min-height:400px;padding:30px 24px;background-position:60% 50%;background-image:linear-gradient(90deg,rgba(36,23,59,.87),rgba(36,23,59,.40)),url('assets/chateau.webp?v=bb840f9d3d93')}
 .hero h1{font-size:40px}
 .hero p{font-size:17px}
 .eyebrow{font-size:10px;letter-spacing:1.5px}
@@ -262,9 +262,9 @@ h1{font-size:34px}
 .phone-ritual .quiz-top{font-size:14px}
 
 /* Même famille visuelle que le Bateau-école : Baloo, cartes arrondies, boutons en relief. */
-@font-face{font-family:Baloo;src:url('polices/baloo-2-latin-700-normal.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Baloo;src:url('polices/baloo-2-latin-700-normal.woff2?v=8e7ffc9b993a') format('woff2');font-weight:700;font-display:swap}
 
-@font-face{font-family:Baloo;src:url('polices/baloo-2-latin-800-normal.woff2') format('woff2');font-weight:800;font-display:swap}
+@font-face{font-family:Baloo;src:url('polices/baloo-2-latin-800-normal.woff2?v=3e36c57e37bd') format('woff2');font-weight:800;font-display:swap}
 
 :root{--paper:#eef7f4;--panel:#fffdf5;--ink:#293952;--soft:#566d7f;--line:#d4e3de;--accent:#68509c;--wash:#eae4f8;--display:Baloo,'Trebuchet MS',sans-serif}
 
@@ -285,7 +285,7 @@ button,.action,.btn{font-family:var(--display);font-weight:800}
 .utility #music-toggle{background:#fff8df;border:1px solid #dccb91;border-radius:99px;padding:3px 12px}
 .utility input{background:none}
 .eyebrow{text-transform:none;letter-spacing:.2px;font:800 17px/1.3 var(--display);color:#716093}
-.hero{position:relative;overflow:hidden;min-height:435px;padding:30px;border:4px solid #c2c1e8;border-radius:32px;box-shadow:0 7px 0 #a7add3;background-image:url('assets/chateau.webp');background-position:center 53%;color:var(--ink)}
+.hero{position:relative;overflow:hidden;min-height:435px;padding:30px;border:4px solid #c2c1e8;border-radius:32px;box-shadow:0 7px 0 #a7add3;background-image:url('assets/chateau.webp?v=bb840f9d3d93');background-position:center 53%;color:var(--ink)}
 .hero-copy{position:relative;max-width:450px;background:#fffdf3f5;border:3px solid #eed49b;border-radius:28px 35px 27px 33px;padding:27px 30px 25px;box-shadow:0 6px 0 #69598638;transform:rotate(-1deg)}
 .hero .eyebrow{display:inline-block;background:#ece2fa;color:#7350a0;border-radius:99px;padding:5px 12px;font-size:15px}
 .hero h1{font:800 52px/1.03 var(--display);color:#54417e;margin:17px 0}
@@ -397,7 +397,7 @@ input,select,textarea{border:2px solid #c6b9d9;border-radius:13px}
 .a-seal{width:41px;height:46px;font-size:33px;flex:none}
 .a-nav{gap:4px}
 .a-nav button{font-size:14px;padding:7px 10px}
-.hero{min-height:490px;padding:165px 17px 20px;border-radius:25px;align-items:flex-end;background-image:url('assets/chateau.webp');background-position:74% 30%;background-size:auto 100%}
+.hero{min-height:490px;padding:165px 17px 20px;border-radius:25px;align-items:flex-end;background-image:url('assets/chateau.webp?v=bb840f9d3d93');background-position:74% 30%;background-size:auto 100%}
 .hero-copy{padding:20px 21px;transform:none;border-radius:24px;max-width:none;width:100%}
 .hero h1{font-size:40px;margin:12px 0}
 .hero .eyebrow{font-size:14px}
@@ -457,3 +457,32 @@ input,select,textarea{border:2px solid #c6b9d9;border-radius:13px}
 .phone-mode .volume{display:none}
 .phone-mode .a-nav{gap:2px}
 }
+/* Illustrations chibi : contours prune et fonds pastel inspirés de la référence fournie. */
+:root{--paper:#f8f3f7;--panel:#fffaf4;--ink:#624b68;--soft:#7b687f;--accent:#865987;--wash:#eee1f0;--line:#e5d6e3}
+body{background:radial-gradient(circle at 12px 12px,#e8dce8 1.5px,transparent 2px) 0 0/28px 28px,var(--paper)}
+.a-top{background:#fffaf4;border-color:#ead3df}
+.a-name{color:#714b75}
+.a-seal{background:#f9ddb1;border-color:#dcaec3;color:#865575;box-shadow:0 3px 0 #c797af}
+.a-caption{color:#8b7189}
+.a-nav button[aria-current=page]{background:#eedfeb;color:#7c507f;box-shadow:0 3px 0 #ceb4cc}
+.utility,.trial-footer{background:#efe3ee;border-color:#deccdf}
+.hero{background:linear-gradient(120deg,#f8e7ef,#fff5ed);min-height:455px;padding:32px;border-color:#dcbfdc;box-shadow:0 7px 0 #bea5c5;isolation:isolate}
+.hero-art{position:absolute;right:1%;bottom:12px;width:62%;height:95%;object-fit:contain;object-position:right bottom;z-index:-1}
+.hero-copy{width:43%;max-width:520px;background:#fffaf4f5;border-color:#e6c8d7;border-radius:30px;box-shadow:0 6px 0 #c4abc13b;transform:none;padding:26px}
+.hero h1{font-size:48px;color:#785080;line-height:1.08}
+.hero p{color:#826986;font-size:18px}
+.hero .eyebrow{background:#f0dce8;color:#91678e}
+.hero .action{background:#f7d3ab;border-color:#dcb18e;color:#775361;box-shadow:0 5px 0 #b9878c}
+.hero-note{color:#927079}
+.section-heading h2{color:#775b7d}
+.chapter{background:#fff2e6;border-color:#e8c9b9;box-shadow:0 5px 0 #d1b1a9}
+.chapter h2{color:#90606d}
+.chapter img{border-color:#d8bac5}
+.chapter .eyebrow{color:#b08086}
+.chapter p{color:#876c77}
+.help-strip{background:#eeebf7;border-color:#d0c4df;color:#80658b}
+.podium-title h1{color:#855a86}
+@media(max-width:1050px){.hero-copy{width:47%;padding:23px}.hero-art{right:0;width:58%}.hero h1{font-size:40px}.hero p{font-size:17px}}
+@media(max-width:650px){.hero{padding:240px 15px 18px;min-height:0;background:linear-gradient(#f8e7ef,#fff5ed)}.hero-art{width:100%;height:240px;top:4px;right:0;bottom:auto;object-position:center}.hero-copy{width:100%;padding:21px;max-width:none}.hero h1{font-size:36px}.hero p{font-size:16px}.hero .action{font-size:21px}.hero-note{font-size:12px}}
+
+@media(max-width:650px){.house{flex-direction:column;flex-wrap:nowrap;gap:6px}.house>div{flex:none}.house>strong{margin-top:auto}.house .crest{margin-bottom:2px}}
