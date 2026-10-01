@@ -358,7 +358,7 @@ table.bilan td.nm{text-align:left;font-weight:700;white-space:nowrap}
 .be-reussites{background:#EAF5EE;color:var(--nuit);border-radius:14px;padding:12px;margin:12px 0;font-size:1rem}.be-reussites h3{margin:0;font:800 1.2rem var(--display)}.be-reussites p{margin:6px 0;line-height:1.4}.be-reussites li{margin-bottom:8px}
 .hi-besoin{border-top:1px solid #CFE4E8;padding:10px 0}.hi-besoin p{line-height:1.6}.hi-onglets{flex-wrap:wrap}
 [data-q-ligne][hidden],.banque-matiere[hidden],.banque-sous-matiere[hidden],.notion[hidden]{display:none!important}
-@media(max-width:560px){.panneau{padding:10px}.panneau>.carte{padding:18px}.prep-champs{display:grid;grid-template-columns:1fr 1fr}.prep-champs label:nth-child(2){grid-column:1/-1;grid-row:2}.prep-champs label:nth-child(4){grid-column:1/-1;grid-row:3}.banque-filtres>*{flex-basis:100%}.prep-champs label{min-width:120px}.panneau h2{font-size:1.4rem}.be-podium{grid-template-columns:1fr}.be-exaequo{grid-template-columns:repeat(2,minmax(0,1fr))}.be-bilan .be-palmares{grid-row:auto}.be-bilan{width:100%;min-width:0}}
+@media(max-width:560px){.panneau{padding:10px}.panneau>.carte{padding:18px}.prep-champs{display:grid;grid-template-columns:1fr 1fr}.prep-champs label:nth-child(1){grid-column:1/-1;grid-row:1}.prep-champs label:nth-child(2){grid-column:1;grid-row:2}.prep-champs label:nth-child(3){grid-column:1/-1;grid-row:3}.prep-champs label:nth-child(4){grid-column:2;grid-row:2}.prep-champs label:nth-child(5){grid-column:1/-1;grid-row:4}.banque-filtres>*{flex-basis:100%}.prep-champs label{min-width:120px}.panneau h2{font-size:1.4rem}.be-podium{grid-template-columns:1fr}.be-exaequo{grid-template-columns:repeat(2,minmax(0,1fr))}.be-bilan .be-palmares{grid-row:auto}.be-bilan{width:100%;min-width:0}}
 </style>
 
 <style>
@@ -3448,7 +3448,10 @@ const NOTIONS = [
  {"id":"moyenage","m":"hi","s":"Le Moyen Âge","t":"H1 · Le château fort","vue":true},
  {"id":"seigneurie","m":"hi","s":"Le Moyen Âge","t":"H1 · La seigneurie","vue":true},
  {"id":"chauvet","m":"ar","s":"Histoire des arts","t":"Rencontre 01 · Les chevaux de la grotte Chauvet","vue":true},
- {"id":"anglais","m":"an","s":"Se présenter et se décrire","t":"Describing myself · Hair and eyes","vue":true}
+ {"id":"anglais","m":"an","s":"Se présenter et se décrire","t":"Describing myself · Hair and eyes","vue":true},
+ {"id":"champions","m":"fr","s":"Orthographe","t":"Le code CHAMPIONS","vue":true},
+ {"id":"perpendiculaires","m":"ma","s":"Géométrie","t":"GEOM 2 · Les droites perpendiculaires","vue":true},
+ {"id":"chorale","m":"ar","s":"Éducation musicale","t":"La chorale · Voix et écoute","vue":true}
 ];
 const NOTIONS_TITRES_PRECEDENTS = {"types":"Les types de phrases","invar":"Les mots invariables","verbe":"Le verbe et son infinitif","formes":"Phrase affirmative ou négative","presER":"Le présent des verbes en -er","alpha":"L'ordre alphabétique","kayabu":"Lecture : Kayabu","dictee1":"Dictée 1 : la rentrée des classes","nombres":"Lire et écrire les nombres","decomp":"Décomposer les nombres","addition":"L'addition","tables":"Les tables de 1 à 5","probleme":"Problèmes : le tout et les parties","soustr":"La soustraction","fractions":"Les fractions","classer":"Classer les êtres vivants","moyenage":"Le Moyen Âge","chauvet":"La grotte Chauvet","anglais":"Describing myself"};
 
@@ -3710,7 +3713,52 @@ const Q_RAW = [
 ["chauvet","À quelle période appartiennent les dessins de la grotte Chauvet ?",["la Préhistoire","le Moyen Âge","les Temps modernes","l’époque contemporaine"],0,"2026-09-21"],
 ["dictee1","Dans la dictée du 29 septembre, les enfants … dans la classe.",["entrent","entre","entres","entrez"],0,"2026-09-29"],
 ["dictee1","Les enfants … leur cartable.",["ouvrent","ouvre","ouvres","ouvrez"],0,"2026-09-29"],
-["dictee1","Sur la table, ils trouvent un joli … tout neuf.",["cahier","cayer","cailler","cahiez"],0,"2026-09-29"]
+["dictee1","Sur la table, ils trouvent un joli … tout neuf.",["cahier","cayer","cailler","cahiez"],0,"2026-09-29"],
+// Leçons du jeudi 1er octobre 2026 (diaporama et mémos).
+["perpendiculaires","Deux droites perpendiculaires forment combien d’angles droits ?",["1","2","4","0"],2,"2026-10-01"],
+["perpendiculaires","Pour vérifier deux droites avec l’équerre, où place-t-on son angle droit ?",["au bout de la plus longue droite","au point où les droites se coupent","n’importe où sur la feuille"],1,"2026-10-01"],
+["perpendiculaires","Sur une figure, comment code-t-on un angle droit ?",["avec un petit carré","avec une flèche","avec un cercle","avec une croix"],0,"2026-10-01"],
+["perpendiculaires","Deux droites penchées peuvent-elles être perpendiculaires ?",["Non, elles doivent suivre les bords de la feuille.","Oui, si elles se coupent à angle droit."],1,"2026-10-01"],
+["perpendiculaires","Que signifie la notation (a) ⊥ (b) ?",["Les droites sont parallèles.","Les droites ont la même longueur.","Les droites sont perpendiculaires."],2,"2026-10-01"],
+["perpendiculaires","Deux droites se coupent. Sont-elles forcément perpendiculaires ?",["Oui, dès qu’elles se croisent.","Non, il faut vérifier qu’elles forment un angle droit."],1,"2026-10-01"],
+["connecteurs","Dans Kayabu, « Ce jour-là » indique…",["un lieu","une cause","un moment"],2,"2026-10-01"],
+["connecteurs","Dans Kayabu, « C’est ici que » donne une indication de…",["lieu","temps","cause"],0,"2026-10-01"],
+["connecteurs","« Lorsque » permet de préciser…",["pourquoi une action a lieu","quand une action a lieu","où une action a lieu"],1,"2026-10-01"],
+["connecteurs","Quel connecteur permet d’ajouter une information ?",["parce que","bien avant que","et"],2,"2026-10-01"],
+["connecteurs","Les connecteurs aident le lecteur à…",["comprendre les liens entre les idées","compter les lettres","trouver seulement les noms propres"],0,"2026-10-01"],
+["formes","Comment mettre « Kayabu connaît le chemin. » à la forme négative ?",["Kayabu connaît pas le chemin.","Kayabu ne connaît pas le chemin.","Kayabu connaît ne pas le chemin."],1,"2026-10-01"],
+["formes","« Nous n’avons plus peur. » Quels mots marquent la négation ?",["nous … peur","avons … peur","n’ … plus"],2,"2026-10-01"],
+["formes","« Les singes ne sont jamais calmes. » est une phrase…",["négative","affirmative"],0,"2026-10-01"],
+["formes","« Mes parents sont en colère ! » est à la fois…",["négative et exclamative","affirmative et exclamative","interrogative et négative"],1,"2026-10-01"],
+["presER","Transforme « j’aime » avec « nous », au présent.",["nous aimez","nous aimons","nous aiment","nous aimes"],1,"2026-10-01"],
+["presER","Au présent, « vous (cuisiner) » devient…",["vous cuisinez","vous cuisinons","vous cuisines","vous cuisinent"],0,"2026-10-01"],
+["presER","Les enfants du village … le château. (observer au présent)",["observe","observes","observez","observent"],3,"2026-10-01"],
+["presER","Pour conjuguer un verbe régulier en -er au présent, on…",["garde toujours l’infinitif","ajoute toujours un s","enlève -er et ajoute la terminaison du sujet"],2,"2026-10-01"],
+["champions","À quoi sert une lettre du code CHAMPIONS dans la marge ?",["à donner directement la bonne réponse","à indiquer le genre d’erreur à chercher","à compter les phrases"],1,"2026-10-01"],
+["champions","Dans le code CHAMPIONS, C signifie…",["conjugaison","copie","couleur"],0,"2026-10-01"],
+["champions","« La maîtresse et gentille. » Quelle lettre aide à corriger « et » ?",["A : accord","M : majuscule","H : homophones"],2,"2026-10-01"],
+["champions","« Leurs cartables neuf » : quelle correction correspond au code A ?",["leurs cartable neuf","leurs cartables neufs","leur cartables neuf"],1,"2026-10-01"],
+["champions","Une phrase commence par « les élèves » avec une minuscule. Quel code convient ?",["M : majuscule","I : illisible","N : non présent"],0,"2026-10-01"],
+["champions","J’ai oublié le point à la fin d’une phrase. Quel code convient ?",["O : orthographe","C : conjugaison","P : ponctuation"],2,"2026-10-01"],
+["champions","Le code I signale un mot illisible. Que dois-je faire ?",["le supprimer","le recopier lisiblement","ajouter une virgule"],1,"2026-10-01"],
+["champions","« Un joli cayer » : quelle lettre signale l’erreur dans « cayer » ?",["O : orthographe","N : non présent","M : majuscule"],0,"2026-10-01"],
+["champions","« Les enfants écoutent consignes. » Quel code indique le mot manquant ?",["S : son","P : ponctuation","N : non présent"],2,"2026-10-01"],
+["champions","Dans le code CHAMPIONS, S invite à chercher…",["un mot trop petit","une lettre qui change le son du mot","une majuscule oubliée"],1,"2026-10-01"],
+["dictee1","Dans la cour, les élèves … leurs vacances.",["raconte","racontes","racontent","racontez"],2,"2026-10-01"],
+["dictee1","La maîtresse … la journée.",["explique","expliquent","expliques","expliquez"],0,"2026-10-01"],
+["dictee1","Quel groupe est correctement accordé ?",["leurs ami","leur amis","leur amies","leurs amis"],3,"2026-10-01"],
+["dictee1","Complète : « La maîtresse présente la classe … explique la journée. »",["est","et","es"],1,"2026-10-01"],
+["anglais","Pour présenter un avatar, « Here is… » signifie…",["Voici…","Au revoir…","Merci…"],0,"2026-10-01"],
+["anglais","Comment dire « Elle a les yeux verts » ?",["She is green eyes.","She has green eyes.","He has green eyes."],1,"2026-10-01"],
+["anglais","« She has long brown hair. » signifie…",["Elle a les cheveux courts et blonds.","Elle a les yeux marron.","Elle a les cheveux longs et bruns."],2,"2026-10-01"],
+["anglais","Pour parler d’un avatar garçon, on peut commencer par…",["He has…","She has…","I has…"],0,"2026-10-01"],
+["chorale","Un chœur, c’est…",["un groupe qui chante ensemble","un instrument à cordes","une personne qui joue seule"],0,"2026-10-01"],
+["chorale","Comment appelle-t-on la partie d’une chanson qui revient et que l’on reconnaît ?",["le titre","le refrain","le silence"],1,"2026-10-01"],
+["chorale","Pour bien se préparer à chanter, on se tient…",["avec les épaules crispées","allongé sous la table","debout, pieds à plat, épaules détendues"],2,"2026-10-01"],
+["probleme","Trois personnes dépensent 3,50 €, 2,10 € et 5,20 €. Pour chercher la dépense totale, on cherche…",["le tout","une seule partie","la plus petite dépense"],0,"2026-10-01"],
+["probleme","Trois collections contiennent 199, 127 et 331 billes. Quel calcul donne le total ?",["331 − 199 − 127","199 + 127 + 331","199 + 127 − 331"],1,"2026-10-01"],
+["probleme","Trois collections totalisent 450 cartes. Deux contiennent 132 et 156 cartes. Quel calcul trouve la troisième ?",["450 + 132 + 156","132 + 156","450 − (132 + 156)"],2,"2026-10-01"],
+["probleme","Au bowling, trois joueurs totalisent 558 points. Deux ont marqué 148 et 224 points. Les 558 points représentent…",["le tout","la partie manquante","les points d’un seul joueur"],0,"2026-10-01"]
 ];
 
 // questions réécrites : [ancienne question, anciennes réponses, ancienne bonne réponse] ; remplacées dans les voyages en cours si la maîtresse ne les a pas modifiées
@@ -4009,7 +4057,51 @@ const TRUCS = [
 "Les dessins de Chauvet datent de la Préhistoire, il y a environ 36 000 ans.",
 "Le sujet « les enfants » est au pluriel : le verbe se termine par -ent.",
 "Avec « les enfants », on écrit « ouvrent ».",
-"On écrit « cahier » : c-a-h-i-e-r."
+"On écrit « cahier » : c-a-h-i-e-r.",
+"Deux droites perpendiculaires se coupent en formant quatre angles droits.",
+"Le coin de l’angle droit se place au point d’intersection. Un côté de l’équerre suit une droite ; on vérifie l’autre côté.",
+"Le petit carré dans l’angle indique qu’il est droit.",
+"La position sur la feuille ne compte pas : on vérifie l’angle avec l’équerre.",
+"Le symbole ⊥ se lit « est perpendiculaire à ».",
+"Des droites qui se coupent sont sécantes. Pour être perpendiculaires, elles doivent se couper à angle droit.",
+"« Ce jour-là » répond à « Quand ? » : c’est une indication de temps.",
+"« Ici » indique l’endroit où se passe l’action.",
+"« Lorsque » signifie « quand » et relie les actions dans le temps.",
+"« Et » permet d’ajouter un élément à ce qui vient d’être dit.",
+"Ils relient les phrases ou les parties d’une phrase et organisent les idées.",
+"Les deux mots « ne » et « pas » encadrent le verbe « connaît ».",
+"« Ne » devient « n’ » devant une voyelle : « n’avons plus ».",
+"La négation « ne … jamais » encadre le verbe « sont ».",
+"Elle ne contient pas de négation et exprime une émotion : elle est affirmative et exclamative.",
+"Avec « nous », le verbe aimer prend la terminaison -ons.",
+"Avec « vous », on ajoute -ez au radical cuisin-.",
+"« Les enfants » peut être remplacé par « ils » : la terminaison est -ent.",
+"On garde le radical et on ajoute -e, -es, -e, -ons, -ez ou -ent selon le sujet.",
+"La lettre t’aide à chercher l’erreur sur la ligne et à la corriger toi-même.",
+"C invite à vérifier l’accord du verbe avec son sujet.",
+"« Et » et « est » se prononcent de la même façon ici. On écrit « est gentille ».",
+"L’adjectif « neufs » s’accorde avec le nom pluriel « cartables ».",
+"Il faut une majuscule au début de la phrase : « Les élèves ».",
+"Le code P invite à vérifier les signes de ponctuation, comme le point.",
+"On doit pouvoir lire le mot : je le réécris avec soin.",
+"Le mot est mal orthographié. On écrit « cahier ».",
+"Il manque « les » avant « consignes ». N signale un mot non présent.",
+"S signifie « son » : on vérifie les lettres qui permettent d’écrire le son entendu.",
+"Le sujet « les élèves » est au pluriel : ils racontent.",
+"Le sujet « la maîtresse » est au singulier : elle explique.",
+"« Leurs » accompagne ici le nom pluriel « amis ».",
+"« Et » relie les deux actions : présenter et expliquer.",
+"« Here is… » sert à présenter quelqu’un ou quelque chose.",
+"Pour dire « elle a », on utilise « she has ». « Green eyes » signifie « les yeux verts ».",
+"Long = longs, brown = bruns, hair = cheveux.",
+"« He » signifie « il » et « he has » signifie « il a ».",
+"Dans un chœur, plusieurs personnes unissent leurs voix pour chanter.",
+"Le refrain revient dans la chanson. On peut le repérer à l’écoute.",
+"Une posture stable et détendue aide à respirer et à chanter.",
+"Les trois dépenses sont les parties. Leur somme forme le tout.",
+"Pour trouver le tout, on additionne les trois parties : on obtient 657 billes.",
+"On retire du tout les deux parties connues. Il reste 162 cartes.",
+"558 est le score total des trois joueurs. Chaque score individuel est une partie."
 ];
 
 // Sources vérifiées dans les PowerPoint de Claude, y compris les leçons intégrées en images.
@@ -4038,7 +4130,8 @@ const COURS = {
   "sept29": {
     "date": "2026-09-29",
     "fichier": "Diaporama - mardi 29 septembre 2026.pptx"
-  }
+  },
+  "oct01": {"date":"2026-10-01","fichier":"Diaporama - jeudi 1er octobre 2026.pptx"}
 };
 const Q_SOURCES = {
  "d0":{"cours":"sept28","diapos":[34,35,36]},
@@ -4296,7 +4389,51 @@ const Q_SOURCES = {
  "d252":{"cours":"sept21","diapos":[123,124]},
  "d253":{"cours":"sept29","diapos":[26]},
  "d254":{"cours":"sept29","diapos":[26]},
- "d255":{"cours":"sept29","diapos":[26]}
+ "d255":{"cours":"sept29","diapos":[26]},
+ "d256":{"cours":"oct01","diapos":[12,13]},
+ "d257":{"cours":"oct01","diapos":[14]},
+ "d258":{"cours":"oct01","diapos":[14,15]},
+ "d259":{"cours":"oct01","diapos":[15,16]},
+ "d260":{"cours":"oct01","diapos":[13]},
+ "d261":{"cours":"oct01","diapos":[12,13,14]},
+ "d262":{"cours":"oct01","diapos":[20,21]},
+ "d263":{"cours":"oct01","diapos":[20,21]},
+ "d264":{"cours":"oct01","diapos":[20,21]},
+ "d265":{"cours":"oct01","diapos":[21]},
+ "d266":{"cours":"oct01","diapos":[18]},
+ "d267":{"cours":"oct01","diapos":[27]},
+ "d268":{"cours":"oct01","diapos":[27,28]},
+ "d269":{"cours":"oct01","diapos":[27]},
+ "d270":{"cours":"oct01","diapos":[31]},
+ "d271":{"cours":"oct01","diapos":[33,37]},
+ "d272":{"cours":"oct01","diapos":[37]},
+ "d273":{"cours":"oct01","diapos":[37]},
+ "d274":{"cours":"oct01","diapos":[33,34]},
+ "d275":{"cours":"oct01","diapos":[43]},
+ "d276":{"cours":"oct01","diapos":[44]},
+ "d277":{"cours":"oct01","diapos":[44,47]},
+ "d278":{"cours":"oct01","diapos":[44,47]},
+ "d279":{"cours":"oct01","diapos":[44,47]},
+ "d280":{"cours":"oct01","diapos":[45]},
+ "d281":{"cours":"oct01","diapos":[45]},
+ "d282":{"cours":"oct01","diapos":[45,47]},
+ "d283":{"cours":"oct01","diapos":[45,47]},
+ "d284":{"cours":"oct01","diapos":[45]},
+ "d285":{"cours":"oct01","diapos":[56]},
+ "d286":{"cours":"oct01","diapos":[56]},
+ "d287":{"cours":"oct01","diapos":[55,56]},
+ "d288":{"cours":"oct01","diapos":[56]},
+ "d289":{"cours":"oct01","diapos":[60,61]},
+ "d290":{"cours":"oct01","diapos":[61]},
+ "d291":{"cours":"oct01","diapos":[61]},
+ "d292":{"cours":"oct01","diapos":[60]},
+ "d293":{"cours":"oct01","diapos":[63]},
+ "d294":{"cours":"oct01","diapos":[67]},
+ "d295":{"cours":"oct01","diapos":[68]},
+ "d296":{"cours":"oct01","diapos":[70,71]},
+ "d297":{"cours":"oct01","diapos":[70,71]},
+ "d298":{"cours":"oct01","diapos":[70,71]},
+ "d299":{"cours":"oct01","diapos":[70,71]}
 };
 
 // Routes du bateau par la mer pour la carte du voyage (une par étape, [longitude, latitude]) : généré par outils/routes_mer.mjs, ne pas modifier à la main.
@@ -4771,7 +4908,7 @@ function accueil(){
     const k=arrivee?.k||S.carteAEcrire;
     layer.insertAdjacentHTML("beforeend",`<div class="carte rappel"><img src="${imgEscale(k)}" alt=""><div><b>La carte postale ${esc(deLieu(ESCALES[k].v))}</b><span>Le travail d'écriture du vendredi, à la place de la copie.</span></div><button class="btn prim" data-go="${arrivee?"escale-semaine":"carte-postale"}">${arrivee && arrivee.etape!=="ecriture"?"Reprendre l'escale":"Écrire la carte"}</button></div>`);
   }
-  layer.insertAdjacentHTML("beforeend", `<div class="home-preparation">${S.seance ? `<button class="btn prim" data-go="reprendre">${S.seance.index<S.seance.qs.length ? `Reprendre le rituel — question ${S.seance.index+1} sur ${S.seance.qs.length}` : "Reprendre le bilan du rituel"}</button>` : ""}${Preparation.get()?`<button class="btn mer" data-go="preparee">Séance préparée · ${Preparation.get().questions.length} questions · ${esc(Preparation.get().date.split("-").reverse().join("/"))}</button>`:""}<button class="btn" id="preparer-rituel">Préparer une séance</button></div>`);
+  layer.insertAdjacentHTML("beforeend", `<div class="home-preparation">${S.seance ? `<button class="btn prim" data-go="reprendre">${S.seance.index<S.seance.qs.length ? `Reprendre le rituel — question ${S.seance.index+1} sur ${S.seance.qs.length}` : "Reprendre le bilan du rituel"}</button>` : ""}${Preparation.get()?`<button class="btn mer" data-go="preparee">${Preparation.titre()} · ${Preparation.get().questions.length} questions · ${esc(Preparation.get().date.split("-").reverse().join("/"))}</button>`:""}<button class="btn" id="preparer-rituel">Préparer une séance</button></div>`);
   $("#preparer-rituel").onclick=()=>Preparation.ouvre();
   attendre().then(go=>{ if(go==="escale-semaine") verifArrivee(); else if(go==="reprendre") rituel(S.seance.mode,true); else if(go==="preparee") rituel("preparee"); else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete"); else if(go==="carte") ouvreCarte(); else if(go==="demo") modeDemo(true); else if(go==="bapteme") bapteme(); else if(go==="tresor") rituel("tresor"); else if(go==="carte-postale") ecrireCarte(S.carteAEcrire); });
 }
@@ -5019,7 +5156,7 @@ async function rituel(mode, reprise=false){
   if(preparee?.groupe?.length && !S.eleves.some(e=>e.actif&&preparee.groupe.includes(e.n)&&!(window.absentAujourdhui&&absentAujourdhui(e.n)))){
     enJeu=false;accueil();toast("Aucun élève du groupe n'est présent aujourd'hui. Modifie la préparation ou l'appel.");return;
   }
-  if(preparee) mode="matin";
+  if(preparee) mode=preparee.mode;
   Son.init(); Son.mer(true);
   const n = mode==="tempete" ? S.reglages.stormQ : mode==="tresor" ? 12 : S.reglages.nbQ;
   const qs = reprise ? S.seance.qs : preparee ? preparee.questions : choisirQuestions(n);
@@ -6142,11 +6279,13 @@ const Preparation = (()=>{
   let doc={maj:0,seance:null}, db=null, pret=null;
   try { doc=JSON.parse(lsGet(CLE))||doc; } catch(e){}
   function valide(s){ return s && typeof s.id==="string" && typeof s.date==="string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date) && (!s.groupe || Array.isArray(s.groupe) && s.groupe.every(n=>Number.isInteger(n)&&n>=1&&n<=NB_CARTES)) && Array.isArray(s.questions) && s.questions.length>0 && s.questions.length<=15 && s.questions.every(q=>q && typeof q.q==="string" && Array.isArray(q.c) && q.c.length>=2 && q.c.length<=4 && Number.isInteger(q.ok) && q.ok>=0 && q.ok<q.c.length); }
-  const get=()=>valide(doc.seance) ? {notions:[],groupe:[],...copieJeu(doc.seance)} : null;
+  // Les anciennes préparations, sans mode, restent des rituels classiques.
+  const get=()=>valide(doc.seance) ? {notions:[],groupe:[],...copieJeu(doc.seance),mode:doc.seance.mode==="tempete"?"tempete":"matin"} : null;
+  const titre=(s=get())=>s?.mode==="tempete" ? "Tempête préparée" : "Rituel préparé";
   function annonce(){
     lsSet(CLE,JSON.stringify(doc));
     const b=document.getElementById("aa-preparation-detail"), s=get();
-    if(b) b.textContent=s ? `${s.questions.length} questions · ${s.date.split("-").reverse().join("/")}` : "Choisir les questions et leur ordre";
+    if(b) b.textContent=s ? `${titre(s)} · ${s.questions.length} questions · ${s.date.split("-").reverse().join("/")}` : "Choisir les questions et leur ordre";
     if(window.AutoSauve) AutoSauve.bientot();
     if(window.Accueil && Accueil.estEcran() && Accueil.courant()==="scr-tbi" && !enJeu) { GEN++; enAttente.forEach(f=>f()); enAttente.clear(); accueil(); }
   }
@@ -6189,7 +6328,7 @@ const Preparation = (()=>{
   async function ouvre(opt={}){
     await init(); const etat=await banque();
     const ancien=opt.notions ? null : get();
-    let s=ancien || {id:idVoyage(),date:jourJeu(new Date(Date.now()+864e5)),objectif:opt.notions?"revoir":"varie",notions:opt.notions||[],groupe:[],recompense:etat.reglages.recompense||"podium",questions:[]};
+    let s=ancien || {id:idVoyage(),mode:"matin",date:jourJeu(new Date(Date.now()+864e5)),objectif:opt.notions?"revoir":"varie",notions:opt.notions||[],groupe:[],recompense:etat.reglages.recompense||"podium",questions:[]};
     s.filtres ||= {matiere:"",sous:"",chapitre:"",texte:""};
     let nombre=s.questions.length||(opt.notions?3:etat.reglages.nbQ);
     if(!s.questions.length) s.questions=tire(etat,s.objectif,opt.notions?3:etat.reglages.nbQ,s.notions);
@@ -6218,6 +6357,7 @@ const Preparation = (()=>{
     }
     function noticeVendredi(){
       z.querySelector("#prep-vendredi").hidden=new Date(s.date+"T12:00:00").getDay()!==5;
+      z.querySelector("#prep-vendredi").textContent=`Vendredi matin : ${s.mode==="tempete"?"la tempête":"le rituel"} avec Kiko, puis l’escale et la carte postale à écrire, quel que soit le score. Termine la séance et son bilan pour rejoindre l’escale.`;
     }
     function remplacement(i){
       z.querySelector(".prep-remplacement")?.remove();
@@ -6241,7 +6381,7 @@ const Preparation = (()=>{
       rendChoix();box.querySelector("select").focus();
     }
     function rend(){
-      z.innerHTML=`<div class="prep-champs"><label>Date de la séance<input type="date" id="prep-date" value="${esc(s.date)}"></label><label>Objectif<select id="prep-objectif">${Object.entries(OBJECTIFS).map(([k,t])=>`<option value="${k}" ${s.objectif===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Questions<input id="prep-nb" type="number" min="1" max="15" value="${nombre}"></label><label>Fin de séance<select id="prep-recompense"><option value="podium" ${s.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${s.recompense==="collectif"?"selected":""}>Défi collectif</option></select></label></div>
+      z.innerHTML=`<div class="prep-champs"><label>Type de séance<select id="prep-mode"><option value="matin" ${s.mode!=="tempete"?"selected":""}>Rituel classique</option><option value="tempete" ${s.mode==="tempete"?"selected":""}>Tempête</option></select></label><label>Date de la séance<input type="date" id="prep-date" value="${esc(s.date)}"></label><label>Objectif<select id="prep-objectif">${Object.entries(OBJECTIFS).map(([k,t])=>`<option value="${k}" ${s.objectif===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Questions<input id="prep-nb" type="number" min="1" max="15" value="${nombre}"></label><label>Fin de séance<select id="prep-recompense"><option value="podium" ${s.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${s.recompense==="collectif"?"selected":""}>Défi collectif</option></select></label></div>
         <p id="prep-vendredi" class="prep-info">Vendredi matin : le rituel avec Kiko, la découverte de l’escale, puis la carte postale comme travail d’écriture du jour.</p>
         ${s.notions?.length?`<p>Révision ciblée : ${s.notions.map(n=>esc(etat.notions.find(x=>x.id===n)?.t||n)).join(", ")}. <button class="btn petit" data-prep="toutes">Toutes les notions</button></p>`:""}
         ${opt.eleves?.length?`<p>Élèves à accompagner : ${opt.eleves.map(n=>esc(etat.eleves.find(e=>e.n===n)?.prenom||"Carte "+n)).join(", ")}</p><label><input type="checkbox" id="prep-groupe" ${s.groupe.length?"checked":""}> Faire jouer seulement ce groupe</label>`:s.groupe?.length?`<p>Groupe de ${s.groupe.length} élèves. <button class="btn petit" data-prep="classe">Toute la classe</button></p>`:""}
@@ -6258,6 +6398,7 @@ const Preparation = (()=>{
     z.onchange=e=>{
       if(e.target.dataset.filtre){const champ=e.target.dataset.filtre;changeFiltre(s.filtres,champ,e.target.value);if(champ!=="texte"){z.querySelector("#prep-filtres").innerHTML=filtresHTML(s.filtres,"prep");z.querySelector(`#prep-${champ}`).focus();}majCompte();}
       if(e.target.id==="prep-recompense") s.recompense=e.target.value;
+      if(e.target.id==="prep-mode"){s.mode=e.target.value;noticeVendredi();}
       if(e.target.id==="prep-date"){s.date=e.target.value;noticeVendredi();}
       if(e.target.id==="prep-groupe") s.groupe=e.target.checked ? opt.eleves.slice() : [];
       if(e.target.id==="prep-objectif" || e.target.id==="prep-nb"){
@@ -6283,7 +6424,7 @@ const Preparation = (()=>{
       }
     };rend();
   }
-  return {init,get,ouvre,tire,banque,enregistre,exporte:()=>copieJeu(doc),
+  return {init,get,titre,ouvre,tire,banque,enregistre,exporte:()=>copieJeu(doc),
     importe:async o=>{if(o && (o.seance===null||valide(o.seance))) await enregistre(o.seance);},
     consomme:async id=>{if(get()?.id===id)await enregistre(null);} };
 })();
@@ -7362,7 +7503,7 @@ const Accueil = (() => {
         ${ACTIVITES.map(a=>`<button class="aa-act ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}>
           <img src="${imgAct(a)}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span>
           <span class="bas"><em data-etat="${a.id}">${a.bientot?"":"…"}</em><i class="go">${a.bientot?"Bientôt":"Jouer"}</i></span></button>`).join("")}
-        <div class="aa-liste"><button id="aa-preparer">${IC.cartes}<span>Préparer la prochaine séance<small id="aa-preparation-detail">${Preparation.get() ? Preparation.get().questions.length+" questions enregistrées" : "Choisir les questions et leur ordre"}</small></span>${IC.suite}</button></div>
+        <div class="aa-liste"><button id="aa-preparer">${IC.cartes}<span>Préparer la prochaine séance<small id="aa-preparation-detail">${Preparation.get() ? Preparation.titre()+" · "+Preparation.get().questions.length+" questions" : "Choisir les questions et leur ordre"}</small></span>${IC.suite}</button></div>
         <h2 class="aa-h2">Ma classe</h2>
         <div class="aa-liste">
           <button data-v="appel">${IC.appel}<span>Faire l'appel<small id="aa-presents">${n ? `${pres} présent${pres>1?"s":""} sur ${n} aujourd'hui` : "Ajoute d'abord tes élèves"}</small></span>${IC.suite}</button>
