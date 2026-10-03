@@ -85,6 +85,7 @@ function nouvelleCamera(opt){
   opt = Object.assign({bouton:"Lire les cartes en direct", note:"Pose le téléphone face à la classe : les cartes levées sont lues toutes seules.", attente:" · en attente d'une question", presence:false}, opt||{});
   let flux=null, video=null, marques=null, travaux=[], lecteur=null, actif=false, voulu=false, raf=0, dernier=0, tour=0, rapide=false, duree=40;
   let ouverture=false, session=0, revision=0, enAnalyse=false, imageVue=0, effaceApres=0, ecouteVisibilite=false;
+  let rappelImage=0, imageDisponible=0, imageAnalysee=0;
   let surLus=()=>{}, surVue=null, etatEl=null, choixEl=null, boutonEl=null, badgeEl=null, perimees=new Map();
   const vus = new Map(); // carte → {r:lettre, k:lectures, t:vue la dernière fois, c:coins}
   const orientation=orientationCamera(); let repere=null, stableApres=0;
@@ -126,7 +127,7 @@ function nouvelleCamera(opt){
     if (!opt.presence) await orientation.demarre();
     if (s!==session) return;
     repere=null;
-    const id = lsG(CLE), taille = {width:{ideal:1920}, height:{ideal:1080}};
+    const id = lsG(CLE), taille = {width:{ideal:1920}, height:{ideal:1080}, frameRate:{ideal:30}};
     let nouveau=null;
     try {
       try { nouveau=await navigator.mediaDevices.getUserMedia({audio:false, video:id ? Object.assign({deviceId:{exact:id}},taille) : Object.assign({facingMode:{ideal:"environment"}},taille)}); }
@@ -144,11 +145,20 @@ function nouvelleCamera(opt){
     if (s!==session) return;
     lecteur=lecteurCamera(); ouverture=false; choixEl.disabled=false;
     actif = true; enAnalyse=false; dernier=0; tour=0; duree=40; vus.clear(); perimees.clear();
+    imageDisponible=0; imageAnalysee=0;
+    if (video.requestVideoFrameCallback){
+      const imageSuivante=()=>{ rappelImage=video.requestVideoFrameCallback(()=>{
+        if (!actif || s!==session) return;
+        imageDisponible++; imageSuivante();
+      }); };
+      imageSuivante();
+    }
     video.parentElement.hidden = false; boutonEl.textContent = "Arrêter la caméra"; boutonEl.classList.remove("prim"); boutonEl.classList.add("petit");
     Autonome.eveille(true); objectifs(); boucle(); if (opt.surEtat) opt.surEtat(true);
   }
   function arrete(pause){
     session++; revision++; ouverture=false; actif = false; enAnalyse=false; cancelAnimationFrame(raf); orientation.arrete(); repere=null;
+    if (rappelImage && video) video.cancelVideoFrameCallback(rappelImage); rappelImage=0;
     if (lecteur) lecteur.ferme(); lecteur=null;
     if (flux) flux.getTracks().forEach(t=>t.stop()); flux = null;
     if (video){ video.srcObject = null; video.parentElement.hidden = true; }
@@ -172,11 +182,16 @@ function nouvelleCamera(opt){
   function boucle(){
     if (!actif) return;
     raf = requestAnimationFrame(boucle);
-    const now = performance.now(), periode = rapide ? Math.max(140, duree*2.5) : 900;
+    // Même pour essayer les cartes, échantillonner assez souvent pour saisir les brefs instants nets.
+    // Le calcul reste unique, avec une marge pour laisser le téléphone afficher la vidéo.
+    const now = performance.now(), periode = Math.max(rapide ? 100 : 140, duree*(lecteur.asynchrone() ? 1.4 : 2.5));
     if (effaceApres && now>effaceApres) effaceMarques();
     if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
     const sens=synchroniseRepere();
     if (enAnalyse || now-dernier < periode || now<stableApres) return;
+    const image=video.requestVideoFrameCallback ? imageDisponible : video.currentTime;
+    if (image===imageAnalysee) return; // une même image figée ne peut pas confirmer une carte deux fois
+    imageAnalysee=image;
     dernier = now; analyse(periode,sens);
   }
   function synchroniseRepere(){
@@ -201,14 +216,15 @@ function nouvelleCamera(opt){
       if (!actif || s!==session || rev!==revision || !resultat) return;
       // Une réponse calculée avant un arrêt, une nouvelle question ou une rotation est périmée.
       if (synchroniseRepere().cle!==sens.cle || performance.now()<stableApres || Date.now()-t>1600) return;
-      duree=duree*.8+resultat.duree*.2;
+      duree=duree*.8+Math.max(resultat.duree,Date.now()-t)*.2;
       recoit(resultat.marques,k,t,vw,vh,periode,sens.rotation);
     } catch(e){} finally { if (s===session) enAnalyse=false; }
   }
   function recoit(ms,k,t,vw,vh,periode,rotation){
     const trouve = {}; imageVue=t;
     ms.forEach(m=>{ const n = m.id+1; if (n>NB_CARTES) return; const r = reponseCarte(m, rotation);
-      const v = vus.get(n) || {k:0}; if (v.r===r || opt.presence) v.k++; else v.k = 1; v.r = r; v.t = t; v.c = m.corners.map(p=>({x:p.x/k, y:p.y/k})); vus.set(n, v); });
+      const ancien = vus.get(n), v = ancien && t-ancien.t<=1600 ? ancien : {k:0};
+      if (v.r===r || opt.presence) v.k++; else v.k = 1; v.r = r; v.t = t; v.c = m.corners.map(p=>({x:p.x/k, y:p.y/k})); vus.set(n, v); });
     vus.forEach((v,n)=>{ if (t-v.t > 1600){ vus.delete(n); perimees.delete(n); return; }
       const p = perimees.get(n); // carte encore levée depuis la question d'avant : on attend qu'elle bouge
       if (p && (p.r!==v.r || t-p.t > 4500)) perimees.delete(n);
