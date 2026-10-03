@@ -7008,8 +7008,13 @@ details.lier summary{cursor:pointer;color:var(--gris);font-weight:700}
 @media (orientation:landscape) and (max-height:560px){
   #scr-tel{display:grid;max-width:none;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:start;grid-auto-flow:row dense}
   #scr-tel > header,#t-auto,#t-rappel,#t-tele,#t-pied{grid-column:1/-1}
+  #t-auto:empty,#t-rappel:empty{display:none}
   #t-cam{grid-column:1;grid-row:span 4}
   #scr-tel .tel-q,#scr-tel .tel-res,#scr-tel .tel-actions,#scr-tel .photo-btn{grid-column:2}
+  #scr-tel .tel-res{order:6;min-width:0}
+  #scr-tel .tel-actions{order:7}
+  /* Garder la liste à côté de la caméra, avec de la place pour la question et le compteur. */
+  #t-grid{max-height:max(100px,calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 260px));overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable;padding:3px;box-sizing:border-box}
 }
 .aut-reussi{justify-items:center;text-align:center;padding:26px 18px 20px}
 .aut-reussi h2{font-size:1.7rem}
@@ -9119,9 +9124,11 @@ const Tel = (() => {
     $("#t-podium").innerHTML=podiumBateauHTML(podium)+htmlRecompenses(TQ?.reussites,true);
     const cs=cartes(); const lus=cs.filter(([n])=>rep[n]).length;
     $("#t-cpt").textContent = lus+" / "+cs.length;
-    $("#t-grid").innerHTML = cs.map(([n,p])=>{ let cl=rep[n]?"v":""; if(TQ&&TQ.bonne&&rep[n]) cl = rep[n]===TQ.bonne?"ok":"ko";
+    const grille=$("#t-grid"), defilement=grille.scrollTop;
+    grille.innerHTML = cs.map(([n,p])=>{ let cl=rep[n]?"v":""; if(TQ&&TQ.bonne&&rep[n]) cl = rep[n]===TQ.bonne?"ok":"ko";
       const etat=TQ?.bonne?etatReponse(rep[n],TQ.bonne):rep[n]?"lue":"non lu";
       return `<button type="button" data-carte="${n}" class="${cl}" ${TQ?.open?"":"disabled"} aria-label="${esc(p||"Carte "+n)} : ${esc(rep[n]||"non lu")}${TQ?.open?", corriger":""}"><b>${n}</b>${esc(p||"")}<small>${rep[n]?esc(rep[n])+" · ":""}${etat}${fixes[n]!==undefined?" · corrigée":""}</small></button>`; }).join("");
+    grille.scrollTop=defilement;
     if (!TQ||!TQ.qid){ $("#t-qk").textContent="Pas de question en cours"; $("#t-qt").textContent= tbiVu ? "Lance le rituel sur le TBI." : (window.BATEAU_AUTONOME ? "Affiche le jeu sur l'ordinateur de la classe." : "Ouvre le jeu sur l'ordinateur du TBI (même lien, même compte)."); }
     else { $("#t-qk").textContent = TQ.open ? "Question en cours : levez les cartes !" : (TQ.bonne ? "Réponse : "+TQ.bonne : "Question fermée"); $("#t-qt").textContent = TQ.txt||""; }
     $("#t-rev").disabled = !(TQ&&TQ.open); $("#t-next").disabled = !(TQ&&TQ.qid&&!TQ.open);
