@@ -344,6 +344,8 @@ table.bilan td.nm{text-align:left;font-weight:700;white-space:nowrap}
 .prep-remplacement h3{margin:0}.prep-choix{max-height:360px;overflow:auto;overscroll-behavior:contain;display:grid;gap:8px;margin-bottom:12px}
 .prep-question{display:grid;gap:6px;width:100%;text-align:left;white-space:normal;overflow-wrap:anywhere;box-sizing:border-box;border:2px solid #CFDFE4;border-radius:10px;background:white;padding:12px;font:1rem var(--texte);color:var(--nuit);cursor:pointer}
 .prep-question:hover{border-color:var(--mer)}.prep-question:focus-visible{outline:3px solid var(--mer);outline-offset:-3px}
+.chapitres-matiere{border-bottom:1px solid #CFDFE4;padding:12px 0}.chapitres-matiere>summary{cursor:pointer;font:700 1.3rem var(--display);color:var(--mer);padding:8px 0}.chapitres-matiere h3{font-size:1rem;margin:14px 0 4px}
+.chapitre-choix{display:flex;align-items:flex-start;gap:12px;padding:12px 0;cursor:pointer;border-bottom:1px solid #E7EEF1}.chapitre-choix input{width:22px;height:22px;flex:0 0 22px;margin:2px 0;accent-color:var(--mer)}.chapitre-choix span{min-width:0;overflow-wrap:anywhere}.chapitre-choix b,.chapitre-choix small{display:block}.chapitre-choix small{margin-top:4px;color:#527084}.chapitre-choix:focus-within{outline:2px solid var(--mer);outline-offset:2px}
 @media(max-width:560px){.prep-filtres{grid-template-columns:minmax(0,1fr)}.prep-remplacement{padding:10px}.prep-liste{padding-left:20px}}
 #scr-tel .panneau,.aa-page .panneau{position:fixed;z-index:60;padding:12px}
 #scr-tel .panneau>.carte,.aa-page .panneau>.carte{width:100%;box-sizing:border-box;min-width:0;padding:18px}
@@ -664,6 +666,7 @@ const Autonome = (() => {
     const REGLES = {
       "jeu/etat": {resume:voyage, prefere:prefereVoyage, delai:6000},
       "jeu/preparation": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
+      "jeu/chapitres": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
       "classe/actuelle": {resume:d=>d ? {id:d.id||null, maj:d.maj||0} : null, prefere:(a,b)=>!!b && b.maj>0 && (!a || b.maj>a.maj), delai:700}
     };
     const DOCS = Object.keys(REGLES);
@@ -4651,12 +4654,21 @@ function escaleVendredi(d=new Date(), etat=S){
   const r=rythmeVoyage(etat);
   return d.getDay()===5 && !r.arrivee && (!r.derniereSemaine || r.derniereSemaine<semaineJeu(d)) && Math.max(...etat.escalesVues)<ESCALES.length-1;
 }
-function reserveEscaleVendredi(){
+function dateFinSeance(s=S.seance){ return new Date(s?.termineeLe || s?.historique?.d || Date.now()); }
+function marqueEscale(etat,k,d){
+  etat.milles=CUM[k];etat.escalesVues.push(k);etat.carteAEcrire=k;
+  const r=rythmeVoyage(etat);r.derniereSemaine=semaineJeu(d);r.arrivee={k,etape:"trajet"};
+}
+function escaleSeanceTerminee(etat){
+  const s=etat.seance;
+  if(!s || s.index<s.qs.length || (!s.termineeLe && !s.historique?.d) || (s.mode==="tempete"&&!s.bonusTempete))return false;
+  const d=dateFinSeance(s);if(!escaleVendredi(d,etat))return false;
+  marqueEscale(etat,Math.max(...etat.escalesVues)+1,d);return true;
+}
+function reserveEscaleVendredi(d=new Date()){
   const escaleDemo=DEMO && S.seance?.escaleDemo;
-  if(DEMO ? !escaleDemo : !escaleVendredi()) return;
-  const r=rythmeVoyage(S), k=escaleDemo || Math.max(...S.escalesVues)+1;
-  S.milles=CUM[k]; S.escalesVues.push(k); S.carteAEcrire=k;
-  r.derniereSemaine=semaineJeu(); r.arrivee={k,etape:"trajet"};
+  if(DEMO ? !escaleDemo : !escaleVendredi(d)) return;
+  marqueEscale(S,escaleDemo || Math.max(...S.escalesVues)+1,d);
 }
 function position(m){ // {i: escale atteinte, p: progression 0-1 vers i+1}
   m = Math.max(0,Math.min(TOTAL,m));
@@ -4718,6 +4730,8 @@ function charge(obj){
   // Enrichit les questions d'origine sans toucher aux dates et aux choix de l'enseignante.
   o.questions.forEach(q=>{ if(!q.le && sourceQuestion(q)) q.le=Q_RAW[+q.id.slice(1)][4]; });
   if(o.seance && (!Array.isArray(o.seance.qs) || !o.seance.qs.length || !Array.isArray(o.seance.res) || !Number.isInteger(o.seance.index) || o.seance.index<0 || o.seance.index>o.seance.qs.length)) o.seance=null;
+  // Anciens bilans laissés ouverts le vendredi : l'arrivée reste acquise après le week-end.
+  if(escaleSeanceTerminee(o))o.maj=Math.max(Date.now(),(o.maj||0)+1);
   return o;
 }
 const localBrut = lsGet("bateau-ecole-etat");
@@ -4749,13 +4763,14 @@ async function brancheDB(){
       if ((distant.maj||0) > (S.maj||0)) { S = charge(JSON.parse(JSON.stringify(distant))); lsSet("bateau-ecole-etat", JSON.stringify(S)); if (window.onEtatRecharge) onEtatRecharge(); }
       else if ((S.maj||0) > (distant.maj||0)) sauve();
     } else if (S.maj) sauve();
+    if(Preparation.appliqueChapitres(S))sauve();
   } catch(e) { console.warn("lecture", e && e.code); }
 }
 /* version autonome : le téléphone relié garde une copie du voyage et la propose au TBI.
    Même voyage : on prend la version la plus récente. Autre voyage (ordinateur remis à zéro, autre classe) : la maîtresse choisit. */
 function recupereEtat(distant){
   if (DEMO || !distant || typeof distant!=="object") return;
-  const applique = ()=>{ S = charge(JSON.parse(JSON.stringify(distant))); if (window.Classe) Classe.versJeu(); sauve(); if (window.onEtatRecharge) onEtatRecharge(); };
+  const applique = ()=>{ S = charge(JSON.parse(JSON.stringify(distant))); Preparation.appliqueChapitres(S); if (window.Classe) Classe.versJeu(); sauve(); if (window.onEtatRecharge) onEtatRecharge(); };
   if ((S.voyage && distant.voyage===S.voyage) || (distant.remplace && distant.remplace===S.voyage)){ applique(); return; }
   const neuf = !S.maj || (!S.milles && !(S.journal||[]).length && !Object.keys((S.stats&&S.stats.q)||{}).length);
   if (neuf){ applique(); if ($("#stage")) toast("Voyage repris depuis le téléphone."); return; } // cet appareil n'a pas encore navigué
@@ -4930,12 +4945,12 @@ const actifs = () => S.eleves.filter(e=>e.actif && !(window.absentAujourdhui && 
 
 function toast(t){ const d=document.createElement("div"); d.className="toast"; d.textContent=t; ((window.Accueil && (Accueil.conteneur() || document.getElementById(Accueil.courant()))) || $("#stage")).appendChild(d); setTimeout(()=>d.remove(),3200); }
 
-// Dès le bilan, montrer le port atteint ; l'escale reste enregistrée à sa validation.
+// L'arrivée acquise à la fin des questions reste visible pendant le bilan et après une reprise.
 function escaleAuPort(){
   const r=rythmeVoyage(S), k=Math.max(0,...S.escalesVues);
   if(r.arrivee) return r.arrivee.k;
   if(S.seance && S.seance.index>=S.seance.qs.length){
-    const destination=DEMO ? S.seance.escaleDemo : escaleVendredi() ? k+1 : null;
+    const destination=DEMO ? S.seance.escaleDemo : escaleVendredi(dateFinSeance()) ? k+1 : null;
     if(destination) return destination;
   }
   return k>0 && S.milles===CUM[k] && r.derniereSemaine>=semaineJeu() ? k : null;
@@ -5334,7 +5349,9 @@ async function rituel(mode, reprise=false){
   const depart=seance.depart,res=seance.res;
   for(let i=seance.index;i<qs.length;i++){
     const pct=await poserQuestion(qs[i],i,qs.length,mode);
-    res[i]={q:qs[i],pct};seance.index=i+1;seance.question=null;checkpointRituel();
+    res[i]={q:qs[i],pct};seance.index=i+1;seance.question=null;
+    if(seance.index===qs.length)seance.termineeLe=new Date().toISOString();
+    checkpointRituel();
     if(mode==="tempete") Mer.orage(Math.max(.25,orageForce/100));
     else {
       // Chaque coffre est compté une fois, même après une reprise.
@@ -5351,6 +5368,7 @@ async function rituel(mode, reprise=false){
       ritExtra.push(passe?`Tempête traversée : +${g} milles de bonus`:`Tempête trop forte, abri au port : +${g} milles`);
       seance.gainTempete=g;seance.bonusTempete=true;checkpointRituel();
     }
+    if(!DEMO && escaleSeanceTerminee(S))checkpointRituel();
     Mer.orage(0); Son.pluie(false); if(passe) Son.fanfare(); majBarre(); majMer(); Mer.rafale(1);
     const port=escaleAuPort();
     layer.innerHTML = avecPerro(passe?"bravo":"tempete",820,`<div class="msg-big">${port ? "La terre se dessine à l’horizon !" : passe?"Tempête traversée !":"Le bateau s'est mis à l'abri"}</div>
@@ -5358,6 +5376,7 @@ async function rituel(mode, reprise=false){
       <div class="centre"><button class="btn prim big" data-go="ok">Continuer</button></div>`);
     await attendre();
   }
+  if(!DEMO && escaleSeanceTerminee(S))checkpointRituel();
   await bilan(res, S.milles-depart, mode);
   if(await verifArrivee()) return;
   enJeu=false; accueil();
@@ -5383,7 +5402,7 @@ async function bilan(res, gagne, mode){
     <ul style="list-style:none;padding:0;margin:14px 0">${lignes}</ul>${htmlRecompenses(reussitesRituel)}
     <label for="j-txt" style="font-family:var(--display);font-weight:700;color:var(--mer);font-size:1.15rem">Le journal de bord se remplit tout seul. Un mot de l'équipage à ajouter ? (facultatif)</label>
     <div class="ligne"><input type="text" id="j-txt" value="${esc(S.seance?.note||'')}" style="flex:1;font-size:1.15rem" maxlength="200" placeholder="Ex. : On a revu les types de phrases et les tables de 4."></div>
-    <div class="centre"><button class="btn prim big" data-go="ok">${(DEMO?S.seance?.escaleDemo:escaleVendredi())?"Découvrir l’escale et écrire la carte":"Terminer"}</button></div></div></div>${podiumRituel.length?`<section class="carte be-palmares">${podiumBateauHTML(podiumRituel)}</section>`:""}</div>`;
+    <div class="centre"><button class="btn prim big" data-go="ok">${(DEMO?S.seance?.escaleDemo:rythmeVoyage(S).arrivee||escaleVendredi(dateFinSeance()))?"Découvrir l’escale et écrire la carte":"Terminer"}</button></div></div></div>${podiumRituel.length?`<section class="carte be-palmares">${podiumBateauHTML(podiumRituel)}</section>`:""}</div>`;
   $("#j-txt").oninput=()=>{if(S.seance){S.seance.note=$("#j-txt").value;sauve();}};
   await attendre();
   const t = ($("#j-txt")?.value||"").trim();
@@ -5400,7 +5419,7 @@ async function bilan(res, gagne, mode){
     resume:`${res.length} question${res.length>1?"s":""} · ${Math.round(moyG*100)} % de bonnes réponses`, det:det.concat(ritExtra), txt:t});
   ritExtra = [];
   (S.stats.derniersRituels ||= {})[reussitesRituel.cle]=reussitesRituel.scores;
-  reserveEscaleVendredi();
+  reserveEscaleVendredi(dateFinSeance());
   S.seance=null;sauve();
 }
 
@@ -6408,9 +6427,9 @@ function htmlRecompenses(r, personnel=false){
 }
 
 const Preparation = (()=>{
-  const DOC="jeu/preparation", CLE="bateau-ecole-preparation";
+  const DOC="jeu/preparation", CHAPITRES="jeu/chapitres", CLE="bateau-ecole-preparation";
   const OBJECTIFS={varie:"Révisions variées",recent:"Leçons récentes",revoir:"Notions à reprendre"};
-  let doc={maj:0,seance:null}, db=null, pret=null;
+  let doc={maj:0,seance:null}, choixChapitres={maj:0}, db=null, pret=null;
   try { doc=JSON.parse(lsGet(CLE))||doc; } catch(e){}
   function valide(s){ return s && typeof s.id==="string" && typeof s.date==="string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date) && (!s.groupe || Array.isArray(s.groupe) && s.groupe.every(n=>Number.isInteger(n)&&n>=1&&n<=NB_CARTES)) && Array.isArray(s.questions) && s.questions.length>0 && s.questions.length<=15 && s.questions.every(q=>q && typeof q.q==="string" && Array.isArray(q.c) && q.c.length>=2 && q.c.length<=4 && Number.isInteger(q.ok) && q.ok>=0 && q.ok<q.c.length); }
   // Les anciennes préparations, sans mode, restent des rituels classiques.
@@ -6429,6 +6448,13 @@ const Preparation = (()=>{
       const s=await db.doc(DOC).get(); if(s.exists && (s.data().maj||0)>doc.maj) doc=s.data();
       else if(doc.maj && (!s.exists || doc.maj>(s.data().maj||0))) await db.doc(DOC).set(doc);
       db.doc(DOC).onSnapshot(s=>{ if(s.exists && (s.data().maj||0)>doc.maj){doc=s.data();annonce();} });
+      const ch=await db.doc(CHAPITRES).get();if(ch.exists)choixChapitres=ch.data();
+      db.doc(CHAPITRES).onSnapshot(s=>{
+        if(!s.exists)return;choixChapitres=s.data();
+        if((!window.Accueil||Accueil.estEcran()) && !DEMO && appliqueChapitres(S)){
+          sauve();if(window.onEtatRecharge)onEtatRecharge();
+        }
+      });
       annonce();
     })().catch(e=>{console.warn("préparation",e);pret=null;}); return pret;
   }
@@ -6439,7 +6465,67 @@ const Preparation = (()=>{
   async function banque(){
     if(!window.Accueil || Accueil.estEcran()) return S;
     const d=await useCap("db"), s=d && await d.doc("jeu/etat").get();
-    return s?.exists ? charge(copieJeu(s.data())) : S;
+    const etat=s?.exists ? charge(copieJeu(s.data())) : copieJeu(S);
+    appliqueChapitres(etat);return etat;
+  }
+  function appliqueChapitres(etat){
+    if(!etat || choixChapitres.voyage!==etat.voyage)return false;
+    let change=false;
+    for(const [id,ch] of Object.entries(choixChapitres.chapitres||{})){
+      const n=etat.notions.find(n=>n.id===id);
+      if(!n || typeof ch.active!=="boolean" || !Number.isFinite(ch.maj) || ch.maj<=(etat.chapitresAppliques?.[id]||0))continue;
+      n.vue=ch.active;etat.questions.filter(q=>q.n===id).forEach(q=>q.active=ch.active);
+      (etat.chapitresAppliques ||= {})[id]=ch.maj;change=true;
+    }
+    return change;
+  }
+  async function activeChapitre(id, active, voyage){
+    await init();
+    // Envoyer uniquement les choix : la copie du voyage sur le téléphone peut être ancienne.
+    const etat=copieJeu(await banque());
+    if(etat.voyage!==voyage) throw new Error("Le voyage a changé. Ferme puis rouvre les chapitres.");
+    const n=etat.notions.find(n=>n.id===id);
+    if(!n) throw new Error("Ce chapitre n'existe plus. Ferme puis rouvre les chapitres.");
+    if(!db) throw new Error("L'enregistrement est indisponible. Réessaie.");
+    if(window.Accueil && !Accueil.estEcran() && !(await db.doc("jeu/etat").get()).exists){
+      etat.maj=Date.now();await db.doc("jeu/etat").set(etat);
+    }
+    const courant=await db.doc(CHAPITRES).get(),ancien=courant.exists?courant.data():{maj:0};
+    const maj=Math.max(Date.now(),(ancien.maj||0)+1,(etat.chapitresAppliques?.[id]||0)+1);
+    const suivant={voyage,maj,chapitres:{...(ancien.voyage===voyage?ancien.chapitres:{}),[id]:{active,maj}}};
+    await db.doc(CHAPITRES).set(suivant);choixChapitres=suivant;appliqueChapitres(etat);
+    if(window.AutoSauve) AutoSauve.bientot();
+    return etat;
+  }
+  async function editeChapitres(c, retour){
+    c.innerHTML='<p class="note">Chargement des chapitres…</p>';
+    let etat;
+    try {etat=await banque();} catch(e){c.innerHTML='<p>Impossible de lire les chapitres. Ferme puis réessaie.</p>';return;}
+    if(!c.isConnected)return;
+    c.innerHTML=`<p class="note">Cocher un chapitre sélectionne toutes ses questions pour les prochaines révisions. Les choix sont enregistrés automatiquement et partagés avec l’écran de la classe.</p>
+      <div class="chapitres-liste">${Object.entries(MATIERES).map(([id,m],i)=>{
+        const ns=etat.notions.filter(n=>n.m===id);if(!ns.length)return "";
+        return `<details class="chapitres-matiere" ${i===0?"open":""}><summary>${esc(m.nom)}</summary>${[...new Set(ns.map(n=>n.s||"Autres"))].map(s=>`<h3>${esc(s)}</h3>${ns.filter(n=>(n.s||"Autres")===s).map(n=>`<label class="chapitre-choix"><input type="checkbox" data-chapitre="${esc(n.id)}"><span><b>${esc(n.t)}</b><small data-chapitre-compte="${esc(n.id)}"></small></span></label>`).join("")}`).join("")}</details>`;
+      }).join("")}</div><p class="note" role="status" data-chapitres-message></p><button class="btn prim" data-chapitres-retour>Terminé</button>`;
+    const compteurs=()=>c.querySelectorAll('[data-chapitre]').forEach(b=>{
+      const qs=etat.questions.filter(q=>q.n===b.dataset.chapitre),nb=qs.filter(q=>questionActive(q,etat)).length;
+      b.checked=qs.length>0 && nb===qs.length;b.indeterminate=nb>0 && nb<qs.length;b.disabled=!qs.length;
+      c.querySelector(`[data-chapitre-compte="${CSS.escape(b.dataset.chapitre)}"]`).textContent=`${nb} / ${qs.length} questions sélectionnées`;
+    });
+    compteurs();
+    c.onchange=async e=>{
+      const b=e.target.closest('[data-chapitre]');if(!b)return;
+      const id=b.dataset.chapitre,active=b.checked,msg=c.querySelector('[data-chapitres-message]');
+      c.querySelectorAll('input,button').forEach(x=>x.disabled=true);msg.textContent="Enregistrement…";
+      try {etat=await activeChapitre(id,active,etat.voyage);msg.textContent="Choix enregistré.";}
+      catch(err){msg.textContent=err.message||"Le choix n'a pas pu être enregistré. Réessaie.";}
+      finally {compteurs();c.querySelector('[data-chapitres-retour]').disabled=false;}
+    };
+    c.querySelector('[data-chapitres-retour]').onclick=retour;
+  }
+  async function chapitres(){
+    const d=panneau('<h2>Chapitres à réviser</h2><div class="chapitres-corps"></div>',"preparation");
+    await editeChapitres(d.querySelector('.chapitres-corps'),()=>d.remove());
   }
   const normal=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
   function correspond(q,etat,f={}){
@@ -6460,7 +6546,7 @@ const Preparation = (()=>{
     return pris;
   }
   async function ouvre(opt={}){
-    await init(); const etat=await banque();
+    await init(); let etat=await banque();
     const ancien=opt.notions ? null : get();
     let s=ancien || {id:idVoyage(),mode:"matin",date:jourJeu(new Date(Date.now()+864e5)),objectif:opt.notions?"revoir":"varie",notions:opt.notions||[],groupe:[],recompense:etat.reglages.recompense||"podium",questions:[]};
     s.filtres ||= {matiere:"",sous:"",chapitre:"",texte:""};
@@ -6520,6 +6606,7 @@ const Preparation = (()=>{
         ${s.notions?.length?`<p>Révision ciblée : ${s.notions.map(n=>esc(etat.notions.find(x=>x.id===n)?.t||n)).join(", ")}. <button class="btn petit" data-prep="toutes">Toutes les notions</button></p>`:""}
         ${opt.eleves?.length?`<p>Élèves à accompagner : ${opt.eleves.map(n=>esc(etat.eleves.find(e=>e.n===n)?.prenom||"Carte "+n)).join(", ")}</p><label><input type="checkbox" id="prep-groupe" ${s.groupe.length?"checked":""}> Faire jouer seulement ce groupe</label>`:s.groupe?.length?`<p>Groupe de ${s.groupe.length} élèves. <button class="btn petit" data-prep="classe">Toute la classe</button></p>`:""}
         <h3>Choisir les questions par matière</h3><p class="note">Filtre les propositions, puis choisis « Proposer d’autres questions ». Tu peux aussi remplacer une seule question pour composer une séance avec plusieurs matières.</p>
+        <button class="btn" data-prep="chapitres">Activer ou désactiver des chapitres</button>
         <div id="prep-filtres">${filtresHTML(s.filtres,"prep")}</div><p id="prep-disponibles" class="note" role="status"></p>
         <div class="ligne"><button class="btn" data-prep="tirer">Proposer d'autres questions</button><button class="btn petit" data-prep="filtres-effacer">Effacer les filtres</button></div>
         <h3>Les ${s.questions.length} questions de la séance</h3>
@@ -6550,6 +6637,19 @@ const Preparation = (()=>{
       if(a==="tirer"){s.questions=tire(etat,s.objectif,nombre,s.notions,s.filtres);rend();}
       if(a==="filtres-effacer"){s.filtres={matiere:"",sous:"",chapitre:"",texte:""};rend();}
       if(a==="remplacer") remplacement(i);
+      if(a==="chapitres"){
+        const ed=document.createElement('div');ed.className='chapitres-corps';z.after(ed);z.hidden=true;
+        d.querySelector('h2').textContent='Chapitres à réviser';
+        await editeChapitres(ed,async()=>{
+          etat=await banque();
+          const ns=etat.notions.filter(n=>disponibles().some(q=>q.n===n.id));
+          if(!ns.some(n=>n.m===s.filtres.matiere))s.filtres.matiere='';
+          if(!ns.some(n=>(!s.filtres.matiere||n.m===s.filtres.matiere)&&n.s===s.filtres.sous))s.filtres.sous='';
+          if(!ns.some(n=>n.id===s.filtres.chapitre))s.filtres.chapitre='';
+          ed.remove();z.hidden=false;d.querySelector('h2').textContent='Préparer la prochaine séance';rend();
+          z.querySelector('[data-prep="chapitres"]').focus();
+        });
+      }
       if(a==="sauver"||a==="effacer"){
         if(a==="sauver"&&!/^\d{4}-\d{2}-\d{2}$/.test(s.date)){z.querySelector("#prep-message").textContent="Choisis une date pour la séance.";return;}
         b.disabled=true;
@@ -6558,7 +6658,7 @@ const Preparation = (()=>{
       }
     };rend();
   }
-  return {init,get,titre,ouvre,tire,banque,enregistre,exporte:()=>copieJeu(doc),
+  return {init,get,titre,ouvre,chapitres,appliqueChapitres,tire,banque,enregistre,exporte:()=>copieJeu(doc),
     importe:async o=>{if(o && (o.seance===null||valide(o.seance))) await enregistre(o.seance);},
     consomme:async id=>{if(get()?.id===id)await enregistre(null);} };
 })();
@@ -7295,7 +7395,7 @@ const Classe = (() => {
   /* tout ce qu'il faut garder : la classe, le voyage du Bateau-école et l'historique des séances */
   async function contenu(){
     const v = await (await useCap("db")).doc("jeu/etat").get();
-    const bateau = window.Accueil && Accueil.estEcran() && typeof S!=="undefined" && S.maj ? JSON.parse(DEMO && avantDemo ? avantDemo : JSON.stringify(S)) : (v.exists ? v.data() : null);
+    const bateau = window.Accueil && Accueil.estEcran() && typeof S!=="undefined" && S.maj ? JSON.parse(DEMO && avantDemo ? avantDemo : JSON.stringify(S)) : (v.exists ? await Preparation.banque() : null);
     if (window.Historique) await Historique.init();
     return {format:"bateau-ecole/sauvegarde", version:3, preparation:Preparation.exporte(), date:new Date().toISOString(), classe:c, bateau, historique:window.Historique ? Historique.tout() : []};
   }
@@ -7637,7 +7737,8 @@ const Accueil = (() => {
         ${ACTIVITES.map(a=>`<button class="aa-act ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}>
           <img src="${imgAct(a)}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span>
           <span class="bas"><em data-etat="${a.id}">${a.bientot?"":"…"}</em><i class="go">${a.bientot?"Bientôt":"Jouer"}</i></span></button>`).join("")}
-        <div class="aa-liste"><button id="aa-preparer">${IC.cartes}<span>Préparer la prochaine séance<small id="aa-preparation-detail">${Preparation.get() ? Preparation.titre()+" · "+Preparation.get().questions.length+" questions" : "Choisir les questions et leur ordre"}</small></span>${IC.suite}</button></div>
+        <div class="aa-liste"><button id="aa-preparer">${IC.cartes}<span>Préparer la prochaine séance<small id="aa-preparation-detail">${Preparation.get() ? Preparation.titre()+" · "+Preparation.get().questions.length+" questions" : "Choisir les questions et leur ordre"}</small></span>${IC.suite}</button>
+          <button id="aa-chapitres">${IC.cartes}<span>Chapitres à réviser<small>Activer ou désactiver les chapitres du Bateau-école</small></span>${IC.suite}</button></div>
         <h2 class="aa-h2">Ma classe</h2>
         <div class="aa-liste">
           <button data-v="appel">${IC.appel}<span>Faire l'appel<small id="aa-presents">${n ? `${pres} présent${pres>1?"s":""} sur ${n} aujourd'hui` : "Ajoute d'abord tes élèves"}</small></span>${IC.suite}</button>
@@ -7656,6 +7757,7 @@ const Accueil = (() => {
       if (v.dataset.v==="cartes") imprime(v);
     };
     s.querySelector("#aa-preparer").onclick = ()=>Preparation.ouvre();
+    s.querySelector("#aa-chapitres").onclick = ()=>Preparation.chapitres();
     s.querySelector("#aa-lire").onclick = ()=>ouvreActivite("bateau");
     etatBateau().then(t=>{ const e = s.querySelector('[data-etat="bateau"]'); if (e) e.textContent = t; });
     dessineEcran(); if (window.Pavillons) Pavillons.bandeau();

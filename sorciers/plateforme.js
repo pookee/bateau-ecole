@@ -227,6 +227,7 @@ const Autonome = (() => {
     const REGLES = {
       "jeu/etat": {resume:voyage, prefere:prefereVoyage, delai:6000},
       "jeu/preparation": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
+      "jeu/chapitres": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
       "classe/actuelle": {resume:d=>d ? {id:d.id||null, maj:d.maj||0} : null, prefere:(a,b)=>!!b && b.maj>0 && (!a || b.maj>a.maj), delai:700}
     };
     const DOCS = Object.keys(REGLES);
