@@ -206,10 +206,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .hud{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(11,39,64,.8);color:#fff;border-radius:14px;padding:8px 18px;font-family:var(--display);font-size:1.4rem;font-weight:700;pointer-events:none;white-space:nowrap}
 
 /* panneaux (carte, journal, réglages) */
-.panneau{position:fixed;inset:0;background:rgba(6,24,40,.72);display:flex;align-items:flex-start;justify-content:center;padding:16px;box-sizing:border-box;overflow:auto;z-index:60}
+.panneau{position:fixed;inset:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);background:rgba(6,24,40,.72);display:flex;align-items:flex-start;justify-content:center;padding:16px;box-sizing:border-box;overflow:auto;overscroll-behavior:contain;z-index:60}
 .panneau .carte{position:relative}
 .fermer{position:absolute;top:12px;right:12px}
 .panneau h2{padding-right:105px;font-family:var(--display);margin:0 0 10px;font-size:1.8rem;color:var(--nuit)}
+.panneau-entete{position:sticky;top:8px;z-index:4;display:flex;align-items:flex-start;gap:12px;background:var(--papier);padding:8px 0 12px;margin-top:-8px}
+.panneau .panneau-entete h2{padding-right:0;margin:0;flex:1;min-width:0}
+.panneau-entete .fermer{position:static;flex:none;min-height:44px}
 .panneau h3{font-family:var(--display);margin:18px 0 8px;font-size:1.3rem;color:var(--mer)}
 .monde{width:100%;height:auto;display:block;border-radius:14px;background:rgba(90,170,200,.3);border:3px solid rgba(160,110,50,.35)}
 .monde .terre{fill:#E6C27E;stroke:#A87838;stroke-width:.3}
@@ -5610,6 +5613,10 @@ const MiniJeu = (() => {
 function panneau(html,cls){
   document.querySelector(".panneau")?.remove();
   const d=document.createElement("div"); d.className="panneau"; d.innerHTML=`<div class="carte ${cls||""}" style="max-width:1150px">${html}<button class="btn fermer" data-x="1">Fermer</button></div>`;
+  const carte=d.firstElementChild,entete=document.createElement("div"),titre=carte.querySelector(':scope > h2');
+  entete.className="panneau-entete";
+  if(titre)entete.appendChild(titre);
+  entete.appendChild(carte.querySelector('[data-x]'));carte.prepend(entete);
   d.addEventListener("click",e=>{ if(e.target===d||e.target.closest("[data-x]")) d.remove(); });
   document.body.appendChild(d); return d;
 }
