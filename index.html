@@ -736,9 +736,12 @@ img{max-width:100%}
 .coffre-panneau .coffre-collection-titre{display:flex;align-items:center;justify-content:space-between;color:#344F55;margin:16px 0 14px;padding-top:17px;border-top:1px solid #E2D7BE}
 .coffre-collection-titre span{font:700 .9rem var(--texte);color:#697875}
 .coffre-collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.coffre-collection>.coffre-objet:only-child{grid-column:1/-1}.coffre-grand-compteur{text-wrap:balance}
+@media(min-width:601px){.coffre-objet:only-child .coffre-objet-visuel{height:150px}.coffre-objet:only-child .coffre-objet-image{width:220px}}
 .coffre-objet{min-width:0;border:1px solid #DDCCAD;border-radius:16px;background:#FFFFFF;padding:12px 14px 16px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.coffre-objet-visuel{display:grid;place-items:center;height:100px;width:100%;background:radial-gradient(ellipse at center,#FFF5D7,transparent 72%);border-radius:12px}
-.coffre-objet-image{display:block;width:150px;max-width:100%;height:100%;overflow:visible}
+.coffre-objet-visuel{display:grid;grid-template-rows:minmax(0,1fr);place-items:center;height:100px;width:100%;background:radial-gradient(ellipse at center,#FFF5D7,transparent 72%);border-radius:12px}
+.coffre-objet-image{display:block;width:150px;max-width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 3px #59402220)}
+.coffre-categories{display:grid;gap:10px}.coffre-categorie{border:1px solid #DDCCAD;border-radius:16px;background:#FFFDF8;overflow:hidden}.coffre-categorie>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:60px}.coffre-categorie>summary::-webkit-details-marker{display:none}.coffre-categorie>summary:focus-visible{outline:3px solid var(--soleil);outline-offset:-4px}.coffre-categorie-apercu{display:grid;grid-template-rows:minmax(0,1fr);place-items:center;width:65px;height:55px;flex:none}.coffre-categorie-apercu>.coffre-objet-image,.coffre-categorie-apercu>.coffre-kiko-apercu{width:100%;height:100%;object-fit:contain}.coffre-emplacement-vide{font:600 2rem var(--display);color:#AAA48F}.coffre-categorie-nom{min-width:0;flex:1;display:grid;gap:4px}.coffre-categorie-nom strong{font:800 1.2rem/1.15 var(--display);color:#2E4950}.coffre-categorie-nom small{font-size:.85rem;line-height:1.2;color:#737568}.coffre-categorie-compteur{display:grid;gap:6px;justify-items:center;font-size:.8rem;white-space:nowrap;color:#66766F}.coffre-categorie-compteur>span{font-size:1.15rem;line-height:.8}.coffre-categorie[open] .coffre-categorie-compteur>span{transform:rotate(180deg)}.coffre-categorie>.coffre-collection{padding:0 14px 14px}.coffre-objet-saison{color:#84683C;font:800 .7rem var(--display);letter-spacing:.045em;text-transform:uppercase;margin-top:7px}.coffre-objet-visuel>.coffre-kiko-apercu{width:100%;height:100%;object-fit:contain}.coffre-kiko-recompense{display:flex;align-items:center;justify-content:center;gap:14px;max-width:100%;height:100%}.coffre-kiko-recompense>.coffre-kiko-apercu{display:block;width:65%;height:95%;object-fit:contain;max-width:230px}.coffre-broche-detail{width:31%;align-self:center;display:grid;justify-items:center;gap:7px}.coffre-broche-detail .coffre-objet-image{width:100%;height:100px}.coffre-broche-detail span{font-size:.8rem;line-height:1.25;color:#7D683E;text-align:center}
 .coffre-objet h4{font:800 1.16rem/1.15 var(--display);margin:9px 0 3px;color:#27444B}
 .coffre-objet p{font-size:.88rem;line-height:1.3;margin:3px 0 14px;color:#68716C;flex:1}
 .coffre-objet .btn{min-height:44px;max-width:100%;font-size:.9rem}
@@ -5787,27 +5790,110 @@ window.Matelots=Matelots;
    Chaque reçu contient le maximum de bonnes réponses constaté pour une question.
    Les accessoires acquis et leurs paliers ne sont jamais recalculés à la baisse. */
 const Coffre = (() => {
-  const CATALOGUE = Object.freeze([
-    {id:"pavillon",nom:"Le pavillon doré",description:"Un pavillon doré flotte sur notre bateau."},
-    {id:"dauphin",nom:"La figure de proue dauphin",description:"Un dauphin décore la proue de notre bateau."},
-    {id:"constellation",nom:"La voile constellation",description:"Des étoiles dessinent une constellation sur notre voile."},
-    {id:"lanternes",nom:"Les lanternes lumineuses",description:"Des lanternes colorées illuminent notre bateau."}
+  const CATEGORIES = Object.freeze([
+    {id:"pavillon",nom:"Pavillons",cible:"bateau"},
+    {id:"proue",nom:"Figures de proue",cible:"bateau"},
+    {id:"voile",nom:"Voiles",cible:"bateau"},
+    {id:"guirlande",nom:"Guirlandes",cible:"bateau"},
+    {id:"broche",nom:"Accessoires de Kiko",cible:"kiko"}
   ].map(Object.freeze));
-  const ids=CATALOGUE.map(a=>a.id), objet=o=>!!o&&typeof o==="object"&&!Array.isArray(o);
+  const SAISONS = Object.freeze([
+    {id:"hiver",nom:"Hiver",kiko:"La broche flocon",bateau:"La guirlande de flocons"},
+    {id:"carnaval",nom:"Carnaval",kiko:"La broche de plumes",bateau:"La guirlande de fanions"},
+    {id:"printemps",nom:"Printemps",kiko:"La broche fleur",bateau:"La guirlande de fleurs"},
+    {id:"oeufs",nom:"Chasse aux œufs",kiko:"La broche œuf pastel",bateau:"La guirlande d’œufs colorés"},
+    {id:"ete",nom:"Été",kiko:"Le médaillon soleil",bateau:"La guirlande de coquillages"},
+    {id:"automne",nom:"Automne",kiko:"La broche feuille",bateau:"La guirlande de feuilles"},
+    {id:"halloween",nom:"Halloween",kiko:"La broche citrouille",bateau:"La guirlande de citrouilles"},
+    {id:"noel",nom:"Noël",kiko:"Le grelot de Noël",bateau:"La guirlande de Noël"}
+  ].map(Object.freeze));
+  const CALENDRIER = Object.freeze([
+    {id:"hiver",du:"01-01",au:"01-31"},{id:"carnaval",du:"02-01",au:"02-29"},
+    {id:"printemps",du:"03-01",au:"03-31"},{id:"oeufs",du:"04-01",au:"04-30"},
+    {id:"printemps",du:"05-01",au:"05-31"},{id:"ete",du:"06-01",au:"08-31"},
+    {id:"automne",du:"09-01",au:"09-30"},{id:"halloween",du:"10-01",au:"11-02"},
+    {id:"automne",du:"11-03",au:"11-30"},{id:"noel",du:"12-01",au:"12-31"}
+  ].map(Object.freeze));
+  const bases = [
+    {id:"pavillon",nom:"Le pavillon doré",description:"Un pavillon doré flotte sur notre bateau.",emplacement:"pavillon"},
+    {id:"dauphin",nom:"La figure de proue dauphin",description:"Un dauphin décore la proue de notre bateau.",emplacement:"proue"},
+    {id:"constellation",nom:"La voile constellation",description:"Des étoiles dessinent une constellation sur notre voile.",emplacement:"voile"},
+    {id:"lanternes",nom:"Les lanternes lumineuses",description:"Des lanternes dorées illuminent notre bateau.",emplacement:"guirlande"}
+  ].map(o=>({...o,saison:"base",cible:"bateau"}));
+  const variantes = [
+    {id:"voile-automne",nom:"La voile feuille cuivrée",description:"Une feuille cuivrée décore notre voile d’automne.",saison:"automne",emplacement:"voile"},
+    {id:"voile-noel",nom:"La voile de Noël",description:"Un sapin brodé d’or et de rouge illumine notre voile ivoire.",saison:"noel",emplacement:"voile"},
+    {id:"voile-ete",nom:"La voile soleil",description:"Un soleil brodé rayonne sur notre voile turquoise.",saison:"ete",emplacement:"voile"},
+    {id:"proue-hippocampe",nom:"La figure de proue hippocampe",description:"Un hippocampe doré veille à l’avant du bateau.",saison:"base",emplacement:"proue"},
+    {id:"proue-dragon",nom:"La figure de proue dragon",description:"Un petit dragon violet et amical accompagne notre aventure.",saison:"halloween",emplacement:"proue"},
+    {id:"proue-phoque",nom:"La figure de proue phoque",description:"Un phoque ivoire et doré nous accompagne en hiver.",saison:"hiver",emplacement:"proue"}
+  ].map(o=>({...o,cible:"bateau"}));
+  const CATALOGUE = Object.freeze([...bases,...SAISONS.flatMap(s=>[
+    {id:"kiko-"+s.id,nom:s.kiko,description:"Un accessoire de "+s.nom.toLocaleLowerCase("fr-FR")+" à installer sur la sangle de Kiko.",saison:s.id,cible:"kiko",emplacement:"broche"},
+    {id:"bateau-"+s.id,nom:s.bateau,description:"Une décoration de "+s.nom.toLocaleLowerCase("fr-FR")+" pour notre bateau.",saison:s.id,cible:"bateau",emplacement:"guirlande"}
+  ]),...variantes].map(o=>Object.freeze({...o,categorie:o.emplacement,image:"img/recompense-"+o.id+".png"})));
+  const ids=CATALOGUE.map(a=>a.id), parId=new Map(CATALOGUE.map(a=>[a.id,a])), saisons=new Map(SAISONS.map(s=>[s.id,s]));
+  const objet=o=>!!o&&typeof o==="object"&&!Array.isArray(o);
   const copie=o=>JSON.parse(JSON.stringify(o));
   const entier=(n,d=0)=>Number.isSafeInteger(n)&&n>=0?n:d;
   const seuil=n=>Number.isSafeInteger(Number(n))&&Number(n)>=1&&Number(n)<=1000000?Number(n):300;
   const courant=()=>{try{return typeof S!=="undefined"?S:null;}catch(_){return null;}};
   const parDefaut=()=>courant()||{};
-  const liste=a=>ids.filter(id=>Array.isArray(a)&&a.includes(id));
+  const valideId=id=>typeof id==="string"&&/^[a-z][a-z0-9-]{0,79}$/.test(id)&&id!=="constructor"&&id!=="prototype";
+  // Préserver les acquisitions d’une version plus récente, même sans savoir les afficher.
+  const liste=a=>[...new Set((Array.isArray(a)?a:[]).filter(valideId))];
   const valideCle=k=>typeof k==="string"&&k.length>0&&k.length<=240&&!['__proto__','prototype','constructor'].includes(k);
-  const acquis=c=>ids.filter(id=>Object.hasOwn(c.recompenses,id));
+  const rang=id=>ids.includes(id)?ids.indexOf(id):ids.length;
+  const acquis=c=>Object.keys(c.recompenses).sort((a,b)=>c.recompenses[a].palier-c.recompenses[b].palier||rang(a)-rang(b)||a.localeCompare(b));
   const depense=c=>Math.max(0,...Object.values(c.recompenses).map(r=>r.palier));
+  const emplacement=id=>parId.get(id)?.emplacement||id;
+  const contexteValide=o=>objet(o)&&saisons.has(o.saison)&&/^\d{4}-\d{2}-\d{2}$/.test(o.jour||"")
+    ? {saison:o.saison,jour:o.jour,maj:entier(o.maj),cle:valideCle(o.cle)?o.cle:""}:null;
+  const compareTexte=(a,b)=>a===b?0:a>b?1:-1;
+  const compareContexte=(a,b)=>a.maj-b.maj||compareTexte(a.jour,b.jour)||compareTexte(a.cle,b.cle)||compareTexte(a.saison,b.saison);
+  function periode(date=new Date(),theme){
+    const d=new Date(date);if(!Number.isFinite(d.getTime()))return periode(new Date(),theme);
+    const morceaux=new Intl.DateTimeFormat("fr-FR",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);
+    const part=type=>morceaux.find(p=>p.type===type).value;
+    const jour=part("year")+"-"+part("month")+"-"+part("day"),md=jour.slice(5);
+    let choix=theme;
+    if(choix===undefined&&typeof window!=="undefined")choix=window.Themes?.choix?.();
+    const choisi=typeof choix==="string"?choix:choix?.explicite?choix.id:null;
+    // Le thème de base ne force pas une saison : les surprises suivent la date.
+    const id=saisons.has(choisi)?choisi:CALENDRIER.find(p=>md>=p.du&&md<=p.au).id;
+    return {id,nom:saisons.get(id).nom,jour,source:saisons.has(choisi)?"theme":"calendrier"};
+  }
+  function ordre(saison){
+    const premier=Math.max(0,SAISONS.findIndex(s=>s.id===saison));
+    const proches=[...SAISONS.slice(premier),...SAISONS.slice(0,premier)];
+    const periodeIds=id=>CATALOGUE.filter(o=>o.saison===id).map(o=>o.id);
+    return [...new Set(["pavillon","kiko-"+saison,"bateau-"+saison,
+      ...periodeIds(saison),...periodeIds("base"),...proches.flatMap(s=>periodeIds(s.id)),...ids])].filter(id=>parId.has(id));
+  }
+  // Chaque emplacement est un registre daté : deux installations simultanées
+  // convergent sans masquer tous les accessoires ni en superposer plusieurs.
+  const compareEmplacement=(a,b)=>a.maj-b.maj||compareTexte(a.id??(a.maj?"~":""),b.id??(b.maj?"~":""));
+  function equipementUnique(c){
+    const anciens=objet(c.emplacements)?c.emplacements:{}, emplacements={};
+    for(const slot of [...new Set(c.debloques.map(emplacement))].sort()){
+      const membres=c.debloques.filter(id=>emplacement(id)===slot), ancien=anciens[slot];
+      if(objet(ancien)&&Number.isSafeInteger(ancien.maj)&&ancien.maj>=0&&(ancien.id===null||membres.includes(ancien.id))){
+        emplacements[slot]={id:ancien.id,maj:ancien.maj};
+      }else{
+        const maj=Math.max(0,...membres.map(id=>c.equipement[id].maj));
+        const actifs=membres.filter(id=>c.equipement[id].actif&&c.equipement[id].maj===maj).sort();
+        emplacements[slot]={id:actifs.at(-1)||null,maj};
+      }
+      for(const id of membres)c.equipement[id]={actif:emplacements[slot].id===id,maj:emplacements[slot].maj};
+    }
+    c.emplacements=emplacements;
+    c.equipes=c.debloques.filter(id=>c.equipement[id].actif);
+  }
 
   // Pure : utilisable lors du chargement, avant l'initialisation de DEMO.
   function nettoie(source,voyage){
     const c=objet(source)?copie(source):{};
-    c.v=1;c.voyage=typeof voyage==="string"?voyage:typeof c.voyage==="string"?c.voyage:"";
+    c.v=2;c.voyage=typeof voyage==="string"?voyage:typeof c.voyage==="string"?c.voyage:"";
     c.objectif=seuil(c.objectif);
     c.objectifMaj=entier(c.objectifMaj);
     c.recus=Object.fromEntries(Object.entries(objet(c.recus)?c.recus:{})
@@ -5817,18 +5903,21 @@ const Coffre = (() => {
     c.base=entier(c.base,Math.max(0,entier(c.total,entier(c.perles))-comptes));
     c.total=c.base+comptes;
     const anciennes=liste(c.debloques), recompenses=objet(c.recompenses)?c.recompenses:{};
-    c.recompenses=Object.fromEntries(ids.flatMap((id,i)=>{
+    const connus=liste([...Object.keys(recompenses),...anciennes]).sort((a,b)=>rang(a)-rang(b)||a.localeCompare(b));
+    c.recompenses=Object.fromEntries(connus.flatMap((id,i)=>{
       const r=recompenses[id];
       if(!objet(r)&&!anciennes.includes(id))return [];
+      const position=anciennes.includes(id)?anciennes.indexOf(id):i;
       return [[id,{...(objet(r)?r:{}),cout:seuil(r?.cout??c.objectif),
-        palier:entier(r?.palier,Math.min(c.total,(i+1)*c.objectif))}]];
+        palier:entier(r?.palier,Math.min(c.total,(position+1)*c.objectif))}]];
     }));
     c.debloques=acquis(c);
     const etatEquipement=objet(c.equipement)?c.equipement:{};
     c.equipement=Object.fromEntries(c.debloques.map(id=>{
       const x=etatEquipement[id];return [id,{actif:objet(x)?x.actif!==false:liste(c.equipes).includes(id),maj:entier(x?.maj)}];
     }));
-    c.equipes=c.debloques.filter(id=>c.equipement[id].actif);
+    equipementUnique(c);
+    c.contexte=contexteValide(c.contexte);
     c.vus=liste(c.vus).filter(id=>c.debloques.includes(id));
     c.perles=Math.max(0,c.total-depense(c));
     return c;
@@ -5837,15 +5926,25 @@ const Coffre = (() => {
   function resume(etat=parDefaut()){
     const c=instantane(etat);
     return {perles:c.perles,objectif:c.objectif,total:c.total,debloques:c.debloques.slice(),
-      equipes:c.equipes.slice(),complet:c.debloques.length===ids.length,
+      equipes:c.equipes.slice(),complet:ids.every(id=>c.debloques.includes(id)),
       nouveaux:c.debloques.filter(id=>!c.vus.includes(id))};
+  }
+  function memoriseLocal(etat=parDefaut()){
+    if(!objet(etat)||typeof lsSet!=="function"||typeof DEMO!=="undefined"&&DEMO)return;
+    let garde=null;
+    try{if(typeof lsGet==="function")garde=JSON.parse(lsGet("bateau-ecole-etat")||"null");}catch(_){}
+    // Deux rôles ouverts dans le même navigateur partagent localStorage. Une
+    // installation depuis le téléphone ne doit pas remplacer la séance du TBI.
+    const base=objet(garde)&&garde.voyage===etat.voyage&&(garde.maj||0)>=(etat.maj||0)?garde:etat;
+    const valeur={...base,coffre:base===etat?etat.coffre:fusion(base.coffre,etat.coffre)};
+    lsSet("bateau-ecole-etat",JSON.stringify(valeur));
   }
   function annonce(etat){
     if(etat!==courant())return;
     const telephone=typeof window!=="undefined"&&window.Accueil&&!window.Accueil.estEcran();
     // Le téléphone possède une copie parfois ancienne de la séance du tableau.
     // Son choix d'accessoire ne doit publier que le coffre, jamais cette séance.
-    if(telephone){if((typeof DEMO==="undefined"||!DEMO)&&typeof lsSet==="function")lsSet("bateau-ecole-etat",JSON.stringify(etat));}
+    if(telephone)memoriseLocal(etat);
     else if(typeof sauve==="function")sauve();
     if(typeof window!=="undefined"&&typeof window.dispatchEvent==="function"&&typeof CustomEvent!=="undefined")
       window.dispatchEvent(new CustomEvent("coffrechange",{detail:resume(etat)}));
@@ -5864,7 +5963,10 @@ const Coffre = (() => {
   }
   function debloque(c){
     let utilise=depense(c);
-    for(const id of ids){
+    // Une fusion de sauvegardes historiques sans contexte garde l'ancien ordre
+    // des quatre trésors. Tout nouveau gain mémorise sa propre période.
+    const suite=c.contexte?ordre(c.contexte.saison):ids;
+    for(const id of suite){
       if(Object.hasOwn(c.recompenses,id))continue;
       if(c.total-utilise<c.objectif)break;
       utilise+=c.objectif;
@@ -5879,7 +5981,9 @@ const Coffre = (() => {
     if(!valideCle(cle)||!Number.isSafeInteger(nb)||nb<=0)return resume(etat);
     return modifie(etat,c=>{
       const avant=c.recus[cle]||0;if(nb<=avant)return;
-      c.recus[cle]=nb;c.total+=nb-avant;debloque(c);
+      c.recus[cle]=nb;c.total+=nb-avant;
+      const p=periode();c.contexte={saison:p.id,jour:p.jour,maj:Math.max(Date.now(),(c.contexte?.maj||0)+1),cle};
+      debloque(c);
     });
   }
   function objectif(n,etat=parDefaut()){
@@ -5894,7 +5998,8 @@ const Coffre = (() => {
     if(!ids.includes(id))return resume(etat);
     return modifie(etat,c=>{
       if(!Object.hasOwn(c.recompenses,id)||c.equipement[id].actif===!!actif)return;
-      c.equipement[id]={actif:!!actif,maj:Date.now()};
+      const maj=Math.max(Date.now(),...Object.values(c.emplacements).map(e=>e.maj+1));
+      c.emplacements[emplacement(id)]={id:actif?id:null,maj};
     });
   }
   function vu(id,etat=parDefaut()){
@@ -5907,25 +6012,31 @@ const Coffre = (() => {
     if(!objet(b))return nettoie(a);
     const A=nettoie(a),B=nettoie(b);
     if(A.voyage!==B.voyage)return B;
-    const c={...A,...B,base:Math.max(A.base,B.base),recus:{...A.recus},recompenses:{...A.recompenses},equipement:{...A.equipement}};
+    const c={...A,...B,base:Math.max(A.base,B.base),recus:{...A.recus},recompenses:{...A.recompenses},equipement:{...A.equipement},emplacements:{...A.emplacements}};
     for(const [cle,n] of Object.entries(B.recus))c.recus[cle]=Math.max(n,c.recus[cle]||0);
     // Le dernier réglage explicite prime ; le seuil sert de départage déterministe.
     if(A.objectifMaj>B.objectifMaj||A.objectifMaj===B.objectifMaj&&A.objectif>B.objectif){c.objectif=A.objectif;c.objectifMaj=A.objectifMaj;}
-    for(const id of ids){
+    const contextes=[A.contexte,B.contexte].filter(Boolean).sort(compareContexte);
+    c.contexte=contextes.at(-1)||null;
+    for(const id of liste([...A.debloques,...B.debloques])){
       const ar=A.recompenses[id],br=B.recompenses[id];
       if(br&&(!ar||br.palier>ar.palier||br.palier===ar.palier&&br.cout>ar.cout))c.recompenses[id]=br;
       const ae=A.equipement[id],be=B.equipement[id];
       if(be&&(!ae||be.maj>ae.maj||be.maj===ae.maj&&!be.actif))c.equipement[id]=be;
     }
-    c.debloques=ids.filter(id=>Object.hasOwn(c.recompenses,id));
-    c.vus=liste([...A.vus,...B.vus]);
+    for(const [slot,bx] of Object.entries(B.emplacements)){
+      const ax=A.emplacements[slot];
+      if(!ax||compareEmplacement(bx,ax)>0)c.emplacements[slot]=bx;
+    }
+    c.debloques=acquis(c);
+    c.vus=liste([...A.vus,...B.vus]).sort();
     const propre=nettoie(c);
     // Une simple synchronisation du réglage ne doit pas ouvrir un coffre.
     // Seules des réponses supplémentaires réunies depuis deux appareils le peuvent.
     if(propre.total>Math.max(A.total,B.total))debloque(propre);
     return nettoie(propre);
   }
-  return {CATALOGUE,normalise,ajoute,resume,objectif,equipe,vu,fusion};
+  return {CATALOGUE,CATEGORIES,SAISONS,CALENDRIER,periode,normalise,ajoute,resume,objectif,equipe,vu,fusion,memoriseLocal};
 })();
 if(typeof window!=="undefined")window.Coffre=Coffre;
 if(typeof module!=="undefined"&&module.exports)module.exports=Coffre;
@@ -6036,7 +6147,7 @@ window.Themes = (() => {
   });
   async function choisir(id){
     if(!valide(id))return false;
-    if(id===etat.id && chargee)return true;
+    if(id===etat.id && chargee && etat.maj>1)return true;
     if(!chargee)choixEnAttente=true;
     etat={v:1,id,maj:Math.max(Date.now(),etat.maj+1)};memorise();applique();
     file=file.then(async()=>{await pret;if(db)await db.doc(DOC).set({...etat});}).catch(e=>console.warn("sauvegarde de la thématique",e && e.message));
@@ -6071,6 +6182,11 @@ window.Themes = (() => {
       if(e.target.matches('[data-ambiance-actif]')){regleMusique({actif:e.target.checked});return;}
       const input=e.target.closest('input[type="radio"]');if(input && valide(input.value))choisir(input.value);
     };
+    // Cliquer le thème déjà affiché constitue aussi un choix explicite de période.
+    conteneur.onclick=e=>{
+      const input=e.target.closest('input[type="radio"]');
+      if(input&&input.value===etat.id&&etat.maj<=1)choisir(input.value);
+    };
     selection();
   }
   function ouvre(){
@@ -6099,7 +6215,7 @@ window.Themes = (() => {
   // Deux vues du même navigateur se mettent aussi à jour, même sans liaison active.
   window.addEventListener("storage",e=>{if(e.key===CLE){try{recoit(JSON.parse(e.newValue));}catch(err){}}});
   window.addEventListener("ambiancechange",selectionMusique);
-  return {liste,actuel:()=>etat.id,get,image,valide,choisir,rendSelecteur,ouvre,pret};
+  return {liste,actuel:()=>etat.id,choix:()=>({id:etat.id,explicite:etat.maj>1}),get,image,valide,choisir,rendSelecteur,ouvre,pret};
 })();
 
 /* Une coque pour toute la classe. Les réponses individuelles ne sont jamais
@@ -6977,6 +7093,7 @@ function accueil(){
       <button class="btn big" data-go="matin">Rituel (essai)</button>
       <button class="btn jaune big" data-go="kraken-demo">Essayer le Kraken collectif</button>
       <button class="btn jaune big" data-go="coffre-demo">Essayer le coffre et ses trésors</button>
+      <button class="btn jaune big" data-go="accessoires-demo">Essayer tous les accessoires</button>
       <button class="btn big" data-go="bapteme">Essayer le baptême</button>
       <button class="btn big" data-go="tresor">L'île au trésor (essai)</button>
       <button class="btn big" data-go="mini">Essayer un mini-jeu</button>
@@ -6991,6 +7108,13 @@ function accueil(){
       else if(go==="mini"){ enJeu=true; Son.init(); Son.mer(true); await pilote(Math.floor(Math.random()*2)); enJeu=false; accueil(); }
       else if(go==="quitter") modeDemo(false);
       else if(go==="coffre-demo"){delete S.coffre;Coffre.ajoute("essai-coffre",300);accueil();CoffreUI.ouvre();}
+      else if(go==="accessoires-demo"){
+        delete S.coffre;Coffre.ajoute("essai-accessoires",Coffre.CATALOGUE.length*300);
+        Coffre.CATALOGUE.forEach(o=>Coffre.vu(o.id));
+        const saison=Coffre.periode().id;
+        ["pavillon","dauphin","constellation","bateau-"+saison,"kiko-"+saison].forEach(id=>Coffre.equipe(id));
+        accueil();CoffreUI.ouvre();
+      }
       else if(go==="bapteme") bapteme();
     });
     return;
@@ -9347,12 +9471,11 @@ window.Competition=Competition;
 
 /* Un coffre commun : la même progression sur le téléphone et le bateau de la classe. */
 window.CoffreUI = (() => {
-  const objets = [
-    {id:"pavillon",nom:"Pavillon doré",texte:"Notre premier trésor flotte tout en haut du mât."},
-    {id:"dauphin",nom:"Dauphin de proue",texte:"Un dauphin turquoise accompagne nos traversées."},
-    {id:"constellation",nom:"Voile des constellations",texte:"Des étoiles brillent sur notre petite voile."},
-    {id:"lanternes",nom:"Lanternes lumineuses",texte:"Une guirlande dorée éclaire notre bateau."}
-  ];
+  // Une seule source de vérité pour la collection, le coffre et les accessoires portés.
+  const objets = window.Coffre.CATALOGUE;
+  const cible=o=>o?.cible==="kiko"?"kiko":"bateau";
+  const imageObjet=o=>o?.image||`img/recompense-${o.id}.png`;
+  const destination=o=>cible(o)==="kiko"?"Kiko":"notre bateau";
   const connu=id=>objets.find(o=>o.id===id);
   const html=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const nombre=n=>Math.max(0,Math.round(Number(n)||0));
@@ -9361,14 +9484,15 @@ window.CoffreUI = (() => {
     return {...r,perles:nombre(r.perles),objectif:Math.max(1,nombre(r.objectif)||300),total:nombre(r.total),
       debloques:(r.debloques||[]).filter(connu),equipes:(r.equipes||[]).filter(connu),nouveaux:(r.nouveaux||[]).filter(connu)};
   }
-  const etoile=(x,y,r=7)=>`M${x} ${y-r}l${r*.25} ${r*.72} ${r*.75} ${r*.28}-${r*.75} ${r*.28}-${r*.25} ${r*.72}-${r*.25}-${r*.72}-${r*.75}-${r*.28} ${r*.75}-${r*.28}Z`;
-  const dessins={
-    pavillon:`<path d="M136 15V110" stroke="#765020" stroke-width="8" stroke-linecap="round"/><path d="M132 24C99 11 65 41 21 23L36 53 18 74C64 96 102 60 132 76Z" fill="#F8C64D" stroke="#7B501A" stroke-width="4" stroke-linejoin="round"/><path d="M31 34C66 46 106 24 123 30M32 69C76 83 102 56 124 63" fill="none" stroke="#FFEBA7" stroke-width="4"/><path d="${etoile(83,53,19)}" fill="#173B51"/><circle cx="136" cy="13" r="7" fill="#FFDF79" stroke="#7B501A" stroke-width="3"/>`,
-    dauphin:`<path d="M58 98H104M76 95V79" fill="none" stroke="#BB873C" stroke-width="9" stroke-linecap="round"/><path d="M23 70C31 39 66 29 98 43L105 34 115 45 136 52 125 59C112 66 98 60 89 59 84 81 76 89 68 86L70 67C54 69 45 69 37 80L40 98 25 89 12 91 23 76Z" fill="#45BAC0" stroke="#17465B" stroke-width="4" stroke-linejoin="round"/><path d="M41 66C61 49 84 51 106 57 92 58 86 67 81 73L78 61C65 58 53 65 41 71Z" fill="#D6F5EC"/><path d="M56 41L52 24 78 38" fill="#45BAC0" stroke="#17465B" stroke-width="4" stroke-linejoin="round"/><circle cx="110" cy="48" r="2.8" fill="#14354A"/>`,
-    constellation:`<path d="M119 12C101 44 68 84 24 101L125 106Z" fill="#25476D" stroke="#BC9044" stroke-width="4" stroke-linejoin="round"/><path d="M91 54L81 73 101 87 65 93" fill="none" stroke="#A8D4EA" stroke-width="2"/>${[[91,54],[81,73],[101,87],[65,93]].map(([x,y])=>`<path d="${etoile(x,y,6)}" fill="#FFE8A5"/>`).join("")}<circle cx="108" cy="69" r="2" fill="#D6F0FF"/><circle cx="96" cy="99" r="2" fill="#D6F0FF"/>`,
-    lanternes:`<path d="M13 26Q78 59 147 26" fill="none" stroke="#755323" stroke-width="4" stroke-linecap="round"/>${[[34,37],[80,44],[126,37]].map(([x,y])=>`<g transform="translate(${x} ${y})"><path d="M0 0V12" stroke="#765323" stroke-width="3"/><circle cx="0" cy="35" r="27" fill="#F8D77B" opacity=".24"/><rect x="-13" y="15" width="26" height="33" rx="8" fill="#FFDB71" stroke="#88591F" stroke-width="3"/><path d="M-13 19H13M-13 43H13M0 20V43" stroke="#BB7B29" stroke-width="2"/><rect x="-10" y="10" width="20" height="7" rx="3" fill="#735327"/><path d="M-6 28V36" stroke="#FFF9DC" stroke-width="4" stroke-linecap="round"/></g>`).join("")}`
-  };
-  function miniature(id){return `<svg class="coffre-objet-image" viewBox="0 0 160 120" aria-hidden="true" focusable="false">${dessins[id]||""}</svg>`;}
+  function miniature(id){
+    const o=connu(id);return o?`<img class="coffre-objet-image" src="${html(imageObjet(o))}" alt="" loading="lazy" decoding="async">`:"";
+  }
+  function porteKiko(id,pose="salut"){
+    return `<img class="coffre-kiko-apercu" data-coffre-kiko-apercu="${html(id)}" data-coffre-kiko-pose="${pose}" src="${html(Themes.image("perroquet-"+pose))}" alt="Kiko portant ${html(connu(id)?.nom||"sa broche")}" decoding="async">`;
+  }
+  function recompense(id){
+    const o=connu(id);return cible(o)==="kiko"?`<div class="coffre-kiko-recompense">${porteKiko(id)}<div class="coffre-broche-detail">${miniature(id)}<span>Sa nouvelle broche</span></div></div>`:miniature(id);
+  }
   function coffre(ouvert=false){
     return `<span class="coffre-dessin${ouvert?" coffre-dessin-ouvert":""}" aria-hidden="true"><img class="coffre-image-fermee" src="img/coffre-ferme.png" alt="" width="1254" height="1254" decoding="async"><img class="coffre-image-ouverte" src="img/coffre-ouvert.png" alt="" width="1254" height="1254" decoding="async"></span>`;
   }
@@ -9383,7 +9507,7 @@ window.CoffreUI = (() => {
   }
   function bilan(valeur){
     const r=resume(valeur),p=progression(r);
-    return `<section class="coffre-bilan" data-coffre-zone="bilan">${coffre(p.pret)}<div class="coffre-bilan-corps"><h3>${p.pret?"Un trésor nous attend !":p.fini?"Notre bateau a tous ses trésors !":"Notre coffre de classe"}</h3><p>${p.pret?"Ensemble, nous avons rempli le coffre.":p.fini?"Tous les accessoires sont dans notre collection.":"Chaque bonne réponse ajoute une perle."}</p><div class="coffre-bilan-progression"><strong>${p.texte}</strong><span class="coffre-jauge" role="progressbar" aria-label="Perles du coffre" aria-valuemin="0" aria-valuemax="${r.objectif}" aria-valuenow="${p.valeur}"><i style="width:${p.ratio}%"></i></span></div><button class="btn ${p.pret?"jaune":"petit"}" data-coffre-ouvrir>${p.pret?"Découvrir notre trésor":"Voir notre coffre"}</button></div></section>`;
+    return `<section class="coffre-bilan" data-coffre-zone="bilan">${coffre(p.pret)}<div class="coffre-bilan-corps"><h3>${p.pret?"Un trésor nous attend !":p.fini?"Notre collection est complète !":"Notre coffre de classe"}</h3><p>${p.pret?"Ensemble, nous avons rempli le coffre.":p.fini?"Tous les accessoires du bateau et de Kiko sont dans notre collection.":"Chaque bonne réponse ajoute une perle."}</p><div class="coffre-bilan-progression"><strong>${p.texte}</strong><span class="coffre-jauge" role="progressbar" aria-label="Perles du coffre" aria-valuemin="0" aria-valuemax="${r.objectif}" aria-valuenow="${p.valeur}"><i style="width:${p.ratio}%"></i></span></div><button class="btn ${p.pret?"jaune":"petit"}" data-coffre-ouvrir>${p.pret?"Découvrir notre trésor":"Voir notre coffre"}</button></div></section>`;
   }
   let dialogue=null,revele=null,mutation=false,precedent=null,avecReglages=false;
   function ferme(){const d=dialogue;dialogue=null;revele=null;d?.remove();if(precedent?.isConnected)precedent.focus();else document.querySelector('[data-coffre-ouvrir]')?.focus();}
@@ -9391,20 +9515,35 @@ window.CoffreUI = (() => {
     if(!avecReglages)return "";
     return `<form class="coffre-reglages"><h3>Réglage du coffre</h3><label for="coffre-objectif">Nombre de perles pour un trésor</label><div class="coffre-reglages-ligne"><input id="coffre-objectif" name="objectif" type="number" inputmode="numeric" min="50" max="5000" step="1" required value="${r.objectif}"><button type="submit" class="btn petit">Enregistrer</button></div><p class="coffre-note">300 perles au départ. Ce réglage s’applique au coffre en cours. Les trésors gagnés restent dans la collection.</p><p class="coffre-reglages-retour" role="status"></p></form>`;
   }
+  const categories=window.Coffre.CATEGORIES||[
+    {id:"pavillon",nom:"Pavillons"},{id:"proue",nom:"Figures de proue"},{id:"voile",nom:"Voiles"},{id:"guirlande",nom:"Guirlandes"},{id:"broche",nom:"Accessoires de Kiko"}
+  ];
+  const categorie=o=>o?.categorie||o?.emplacement||({pavillon:"pavillon",dauphin:"proue",constellation:"voile",lanternes:"guirlande"}[o?.id]);
+  const saison=o=>o.saison&&o.saison!=="base"?(Themes.get(o.saison)?.nom||o.saison):"Toute l’année";
+  function actionObjet(o,r){return r.equipes.includes(o.id)?"Retirer":r.equipes.some(id=>categorie(connu(id))===categorie(o))?"Remplacer":"Installer";}
+  function collection(r){
+    return categories.map((cat,i)=>{
+      const liste=objets.filter(o=>categorie(o)===cat.id),actuel=liste.find(o=>r.equipes.includes(o.id)),gagnes=liste.filter(o=>r.debloques.includes(o.id)).length;
+      return `<details class="coffre-categorie" data-coffre-categorie="${cat.id}" ${i===0?"open":""}><summary><span class="coffre-categorie-apercu">${actuel?(cible(actuel)==="kiko"?porteKiko(actuel.id):miniature(actuel.id)):'<span class="coffre-emplacement-vide" aria-hidden="true">＋</span>'}</span><span class="coffre-categorie-nom"><strong>${html(cat.nom)}</strong><small>${actuel?html(actuel.nom):"Aucun accessoire installé"}</small></span><span class="coffre-categorie-compteur">${gagnes} / ${liste.length}<span aria-hidden="true">⌄</span></span></summary><div class="coffre-collection">${liste.map(o=>{
+        const gagne=r.debloques.includes(o.id),equipe=r.equipes.includes(o.id),kiko=cible(o)==="kiko",action=actionObjet(o,r);
+        return `<article class="coffre-objet${gagne?" est-gagne":" est-secret"}" data-coffre-objet="${o.id}"><div class="coffre-objet-visuel">${gagne?(kiko?porteKiko(o.id):miniature(o.id)):'<span class="coffre-mystere" aria-hidden="true">?</span>'}</div><span class="coffre-objet-saison">${html(saison(o))}</span><h4>${gagne?html(o.nom):"Trésor à découvrir"}</h4><p>${gagne?(equipe?(kiko?"Portée par Kiko":"À bord de notre bateau"):"Dans notre collection"):"Dans un prochain coffre"}</p>${gagne?`<button class="btn petit" data-coffre-equiper="${o.id}" aria-pressed="${equipe}" aria-label="${action} : ${html(o.nom)}">${action}</button>`:'<span class="coffre-secret-note">Surprise à gagner</span>'}</article>`;
+      }).join("")}</div></details>`;
+    }).join("");
+  }
   function corps(r){
     const p=progression(r),nouveau=connu(r.nouveaux[0]);
     if(nouveau){
       const ouvert=revele===nouveau.id;
-      return `<div class="coffre-decouverte${ouvert?" est-revele":""}"><p class="coffre-surtitre">Bravo à toute la classe</p><h3>${ouvert?html(nouveau.nom):"Notre coffre est plein !"}</h3><div class="coffre-surprise">${ouvert?miniature(nouveau.id):coffre(false)}</div><p>${ouvert?nouveau.texte:"Nous avons gagné une surprise pour notre bateau."}</p>${ouvert?`<button class="btn jaune" data-coffre-installer="${nouveau.id}">Installer sur notre bateau</button><button class="coffre-lien" data-coffre-garder="${nouveau.id}">Garder dans notre collection</button>`:`<button class="btn jaune" data-coffre-reveler="${nouveau.id}">Ouvrir notre trésor</button>`}<p class="coffre-note">Nos perles en plus sont gardées pour le prochain coffre.</p></div>`;
+      return `<div class="coffre-decouverte${ouvert?" est-revele":""}"><p class="coffre-surtitre">Bravo à toute la classe</p><h3>${ouvert?html(nouveau.nom):"Notre coffre est plein !"}</h3><div class="coffre-surprise">${ouvert?recompense(nouveau.id):coffre(false)}</div><p>${ouvert?html(nouveau.description):"Nous avons gagné une surprise pour notre aventure."}</p>${ouvert?`<button class="btn jaune" data-coffre-installer="${nouveau.id}">${cible(nouveau)==="kiko"?"Habiller Kiko":"Installer sur notre bateau"}</button><button class="coffre-lien" data-coffre-garder="${nouveau.id}">Garder dans notre collection</button>`:`<button class="btn jaune" data-coffre-reveler="${nouveau.id}">Ouvrir notre trésor</button>`}<p class="coffre-note">${p.fini?"Tous nos trésors restent dans la collection.":"Nos perles en plus sont gardées pour le prochain coffre."}</p></div>`;
     }
-    return `<div class="coffre-vue"><div class="coffre-reserve">${coffre(p.fini)}<div><p class="coffre-surtitre">Ensemble, perle après perle</p><p class="coffre-grand-compteur">${p.texte}</p><span class="coffre-jauge" role="progressbar" aria-label="Perles du coffre" aria-valuemin="0" aria-valuemax="${r.objectif}" aria-valuenow="${p.valeur}"><i style="width:${p.ratio}%"></i></span><p class="coffre-regle">${p.fini?"Nous avons gagné les quatre trésors ! Choisissons les accessoires à installer sur notre bateau.":"Chaque bonne réponse ajoute une perle. Quand le coffre est plein, nous découvrons un trésor pour notre bateau !"}</p><p class="coffre-note">Le Kraken ne prend jamais nos perles.</p></div></div><h3 class="coffre-collection-titre">Notre collection <span>${r.debloques.length} / ${objets.length}</span></h3><div class="coffre-collection">${objets.map((o,i)=>{
-      const gagne=r.debloques.includes(o.id),equipe=r.equipes.includes(o.id);
-      return `<article class="coffre-objet${gagne?" est-gagne":" est-secret"}"><div class="coffre-objet-visuel">${gagne?miniature(o.id):`<span class="coffre-mystere" aria-hidden="true">?</span>`}</div><h4>${gagne?o.nom:`Surprise ${i+1}`}</h4><p>${gagne?(equipe?"À bord de notre bateau":"Dans notre collection"):"À découvrir dans un prochain coffre"}</p>${gagne?`<button class="btn petit" data-coffre-equiper="${o.id}" aria-pressed="${equipe}">${equipe?"Retirer du bateau":"Installer sur le bateau"}</button>`:`<span class="coffre-secret-note">Trésor à découvrir</span>`}</article>`;
-    }).join("")}</div></div>`;
+    return `<div class="coffre-vue"><div class="coffre-reserve">${coffre(p.fini)}<div><p class="coffre-surtitre">Ensemble, perle après perle</p><p class="coffre-grand-compteur">${p.texte}</p><span class="coffre-jauge" role="progressbar" aria-label="Perles du coffre" aria-valuemin="0" aria-valuemax="${r.objectif}" aria-valuenow="${p.valeur}"><i style="width:${p.ratio}%"></i></span><p class="coffre-regle">${p.fini?"Nous avons gagné tous les trésors ! Choisissons les accessoires du bateau et de Kiko.":"Chaque bonne réponse ajoute une perle. Quand le coffre est plein, nous découvrons un trésor pour le bateau ou pour Kiko !"}</p><p class="coffre-note">Le Kraken ne prend jamais nos perles.</p></div></div><h3 class="coffre-collection-titre">Notre collection <span>${r.debloques.length} / ${objets.length}</span></h3><div class="coffre-categories">${collection(r)}</div></div>`;
   }
   function rafraichitDialogue(focus){
     if(!dialogue?.isConnected){dialogue=null;return;}
-    const zone=dialogue.querySelector(".coffre-contenu"),r=resume();zone.innerHTML=corps(r)+reglages(r);
+    const zone=dialogue.querySelector(".coffre-contenu"),r=resume(),ouvertes=[...zone.querySelectorAll(".coffre-categorie[open]")].map(d=>d.dataset.coffreCategorie);
+    zone.innerHTML=corps(r)+reglages(r);
+    if(ouvertes.length)zone.querySelectorAll(".coffre-categorie").forEach(d=>{d.open=ouvertes.includes(d.dataset.coffreCategorie);});
+    actualiseKiko(zone);
     if(focus)zone.querySelector(focus)?.focus();
   }
   function ouvre(options={}){
@@ -9423,7 +9562,7 @@ window.CoffreUI = (() => {
     d.addEventListener("keydown",e=>{
       if(e.key==="Escape"){e.preventDefault();ferme();return;}
       if(e.key!=="Tab")return;
-      const liste=[...d.querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),[tabindex="0"]')].filter(el=>el.getClientRects().length),premier=liste[0],dernier=liste.at(-1);
+      const liste=[...d.querySelectorAll('button:not(:disabled),summary,a[href],input:not(:disabled),select:not(:disabled),[tabindex="0"]')].filter(el=>el.getClientRects().length),premier=liste[0],dernier=liste.at(-1);
       if(e.shiftKey&&document.activeElement===premier){e.preventDefault();dernier?.focus();}
       else if(!e.shiftKey&&document.activeElement===dernier){e.preventDefault();premier?.focus();}
     });
@@ -9450,10 +9589,11 @@ window.CoffreUI = (() => {
     actualise();
     if(bouton.dataset.coffreEquiper)rafraichitDialogue(`[data-coffre-equiper="${id}"]`);
     else if(resume().nouveaux.length)rafraichitDialogue("[data-coffre-reveler]");
-    else{ferme();if(typeof toast==="function")toast(bouton.dataset.coffreInstaller?`${connu(id).nom} installé sur notre bateau !`:"Notre trésor est gardé dans la collection.");}
+    else{ferme();if(typeof toast==="function")toast(bouton.dataset.coffreInstaller?(cible(connu(id))==="kiko"?"Accessoire installé sur Kiko !":"Accessoire installé sur notre bateau !"):"Notre trésor est gardé dans la collection.");}
   });
   function actualise(){
     equipesCache=null;
+    actualiseKiko();
     const actif=document.activeElement,focusCompact=actif?.matches?.('[data-coffre-zone="compact"]');
     document.querySelectorAll('[data-coffre-zone="compact"]').forEach(el=>{el.outerHTML=compact();});
     document.querySelectorAll('[data-coffre-zone="bilan"]').forEach(el=>{el.outerHTML=bilan();});
@@ -9461,52 +9601,83 @@ window.CoffreUI = (() => {
     if(!mutation)rafraichitDialogue();
   }
   window.addEventListener("coffrechange",()=>{if(!mutation)actualise();});
-  /* Les décorations sont des tracés natifs, attachés au même repère que le bateau. */
-  let equipesCache=null;
-  function equipes(){return equipesCache||(equipesCache=resume().equipes);}
-  const traces=new Map();
-  function trace(g,d,fill,stroke,width=2){let p=traces.get(d);if(!p){p=new Path2D(d);traces.set(d,p);}if(fill){g.fillStyle=fill;g.fill(p);}if(stroke){g.strokeStyle=stroke;g.lineWidth=width;g.stroke(p);}}
-  function dessineBateau(g,{w,h}){
-    const selection=equipes();if(!selection.length||typeof Path2D==="undefined")return;
-    g.save();g.lineJoin="round";g.lineCap="round";
-    // Le pavillon est posé exactement devant le pavillon saisonnier, sur la gauche du mât.
-    if(selection.includes("pavillon")){
-      g.save();g.translate(-w*.285,-h*.96);g.scale(w*.257/160,h*.126/120);
-      trace(g,"M158 8C115-5 76 32 7 20L28 54 7 84C61 116 113 65 158 80Z","#F7C349","#775020",7);
-      trace(g,"M23 34C74 51 113 11 148 20M24 79C74 100 121 62 148 70",null,"#FFECAA",5);
-      trace(g,etoile(91,53,22),"#163A52");g.restore();
-    }
-    // Une petite voile de nuit laisse les motifs de la grande voile saisonnière visibles.
-    if(selection.includes("constellation")){
-      g.save();g.scale(w,h);
-      trace(g,"M-.052-.797Q-.16-.56-.331-.392Q-.20-.387-.052-.378Z","#25476D","#E4BB6A",.006);
-      trace(g,"M-.098-.57L-.14-.476-.102-.416-.23-.418",null,"#BBDDEA",.004);
-      [[-.098,-.57],[-.14,-.476],[-.102,-.416],[-.23,-.418]].forEach(([x,y])=>trace(g,etoile(x,y,.014),"#FFE5A0"));
-      g.restore();
-    }
-    if(selection.includes("dauphin")){
-      g.save();g.translate(w*.355,-h*.416);g.scale(w*.167/160,h*.17/120);
-      trace(g,"M52 110L71 78 94 107",null,"#C89441",11);
-      trace(g,"M17 64C33 25 76 21 106 40L137 49 120 61C108 65 98 54 85 55L70 83 61 82 64 64Q43 61 31 77L33 96 18 86 4 87 17 72Z","#4EC7C8","#163F55",5);
-      trace(g,"M51 34L47 15 77 31","#4EC7C8","#163F55",5);
-      trace(g,"M34 61Q67 36 109 53Q78 50 67 68L64 56Q47 57 34 67Z","#DCFAE9");
-      g.fillStyle="#163F55";g.beginPath();g.arc(111,44,3,0,Math.PI*2);g.fill();g.restore();
-    }
-    if(selection.includes("lanternes")){
-      g.save();g.scale(w,h);
-      trace(g,"M-.4-.284Q0-.214.39-.315",null,"#6D4C25",.005);
-      [-.32,-.17,-.02,.13,.28].forEach(x=>{
-        const y=-.249-.13*x*x-.045*x;
-        g.save();g.translate(x,y);const halo=g.createRadialGradient(0,.025,.001,0,.025,.043);halo.addColorStop(0,"#FFD35499");halo.addColorStop(1,"#FFD35400");g.fillStyle=halo;g.fillRect(-.045,-.02,.09,.095);
-        trace(g,"M0-.012V.009",null,"#5F4628",.004);
-        trace(g,"M-.016.006Q0 0 .016.006L.02.043Q0 .055-.02.043Z","#FFE58D","#946329",.004);
-        trace(g,"M-.016.01H.016M-.019.04H.019M0 .012V.041",null,"#BD8131",.003);
-        trace(g,"M-.008.018V.032",null,"#FFF9E6",.004);g.restore();
-      });g.restore();
-    }
-    g.restore();
+  /* Chaque dessin affiché dans le coffre est la même image PNG portée dans le jeu. */
+  let equipesCache=null,coffreCache=null;
+  function equipes(){
+    const etat=typeof S!=="undefined"?S.coffre:null;
+    // Quitter la démo ou importer une classe remplace S sans forcément émettre coffrechange.
+    if(!equipesCache||coffreCache!==etat){coffreCache=etat;equipesCache=resume().equipes;}
+    return equipesCache;
   }
-  return {compact,bilan,ouvre,miniature,coffre,actualise,dessineBateau,objets};
+  const images=new Map(),compositesKiko=new Map();
+  function chargeImage(src){
+    if(images.has(src))return images.get(src);
+    const im=new Image(),entree={image:im,zone:null,pret:null};im.decoding="async";
+    entree.pret=new Promise(resolve=>{im.onload=()=>{entree.zone=zoneOpaque(im);resolve(entree);};im.onerror=()=>resolve(null);});
+    images.set(src,entree);im.src=src;return entree;
+  }
+  function zoneOpaque(im){
+    // Retirer uniquement les marges transparentes permet un ancrage précis sans redessiner l'objet.
+    const w=im.naturalWidth,h=im.naturalHeight,c=document.createElement("canvas");c.width=w;c.height=h;
+    const g=c.getContext("2d",{willReadFrequently:true});g.drawImage(im,0,0);
+    try{
+      const pixels=g.getImageData(0,0,w,h).data;let x0=w,y0=h,x1=0,y1=0;
+      for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(pixels[(y*w+x)*4+3]>12){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+      return x1>=x0&&y1>=y0?[x0,y0,x1-x0+1,y1-y0+1]:[0,0,w,h];
+    }catch(_){return [0,0,w,h];}
+  }
+  function imageDans(g,entree,x,y,w,h,ancre="centre"){
+    if(!entree?.zone)return false;
+    const [sx,sy,sw,sh]=entree.zone,k=Math.min(w/sw,h/sh),dw=sw*k,dh=sh*k;
+    const dx=ancre==="droite"?x+w-dw:x+(w-dw)/2;
+    g.drawImage(entree.image,sx,sy,sw,sh,dx,y+(h-dh)/2,dw,dh);return true;
+  }
+  function dessineBateau(g,{w,h}){
+    const places={pavillon:[-.295,-.968,.275,.16,"droite"],proue:[.345,-.424,.19,.19],voile:[-.355,-.8,.31,.44,"droite"],guirlande:[-.42,-.33,.84,.29]};
+    // Le Père Noël et Kiko sont devant la voile basse de cette illustration.
+    if(Themes.actuel()==="noel")places.voile=[-.188,-.767,.16,.19,"droite"];
+    for(const id of equipes()){
+      const o=connu(id);if(!o||cible(o)!=="bateau")continue;
+      const slot=o.emplacement||({pavillon:"pavillon",dauphin:"proue",constellation:"voile",lanternes:"guirlande"}[id]),p=places[slot];if(!p)continue;
+      imageDans(g,chargeImage(imageObjet(o)),p[0]*w,p[1]*h,p[2]*w,p[3]*h,p[4]);
+    }
+  }
+  const posesKiko={
+    base:{salut:{x:.52,y:.54,taille:.145},bravo:{x:.60,y:.61,taille:.13},tempete:{x:.60,y:.55,taille:.145}},
+    halloween:{salut:{x:.56,y:.585,taille:.13},bravo:{x:.60,y:.595,taille:.13},tempete:{x:.595,y:.54,taille:.13}},
+    noel:{salut:{x:.535,y:.53,taille:.13},bravo:{x:.60,y:.58,taille:.12},tempete:{x:.60,y:.525,taille:.13}}
+  };
+  function brocheEquipee(){return equipes().map(connu).find(o=>cible(o)==="kiko")?.id||null;}
+  function kikoPorte(id,pose="salut"){
+    const o=connu(id),theme=Themes.actuel(),source=Themes.image("perroquet-"+pose),cle=`${theme}|${pose}|${id}`;
+    if(!o||cible(o)!=="kiko")return Promise.resolve(source);
+    if(compositesKiko.has(cle))return compositesKiko.get(cle);
+    const promise=Promise.all([chargeImage(source).pret,chargeImage(imageObjet(o)).pret]).then(([base,broche])=>{
+      if(!base||!broche)return source;
+      const c=document.createElement("canvas"),im=base.image;c.width=im.naturalWidth;c.height=im.naturalHeight;
+      const g=c.getContext("2d");g.drawImage(im,0,0);
+      const p=(posesKiko[theme]||posesKiko.base)[pose]||posesKiko.base.salut,taille=c.height*p.taille;
+      imageDans(g,broche,c.width*p.x-taille/2,c.height*p.y-taille/2,taille,taille);
+      return c.toDataURL("image/png");
+    });compositesKiko.set(cle,promise);
+    if(compositesKiko.size>12)compositesKiko.delete(compositesKiko.keys().next().value);
+    return promise;
+  }
+  function actualiseKiko(racine=document){
+    const candidats=[...(racine.matches?.("img")?[racine]:[]),...racine.querySelectorAll?.('img[data-theme-image^="perroquet-"],img[data-coffre-kiko-pose],img[src*="perroquet-"]')||[]];
+    for(const im of candidats){
+      const pose=im.dataset.coffreKikoPose||/^perroquet-(salut|bravo|tempete)$/.exec(im.dataset.themeImage||"")?.[1]||/perroquet-(salut|bravo|tempete)\./.exec(im.getAttribute("src")||"")?.[1];if(!pose)continue;
+      // Le gestionnaire de thèmes laisse ce composite conserver exactement les dimensions de Kiko.
+      im.dataset.coffreKikoPose=pose;im.setAttribute("data-theme-preview","");
+      const id=im.dataset.coffreKikoApercu||brocheEquipee(),cle=`${Themes.actuel()}|${pose}|${id||""}`;
+      if(im.dataset.coffreKikoRendu===cle)continue;im.dataset.coffreKikoRendu=cle;
+      kikoPorte(id,pose).then(src=>{if(im.isConnected&&im.dataset.coffreKikoRendu===cle&&im.getAttribute("src")!==src)im.src=src;});
+    }
+  }
+  window.addEventListener("themechange",()=>actualiseKiko());
+  new MutationObserver(changements=>{for(const m of changements)for(const n of m.addedNodes)if(n.nodeType===1)actualiseKiko(n);}).observe(document.documentElement,{subtree:true,childList:true});
+  actualiseKiko();
+  return {compact,bilan,ouvre,miniature,coffre,actualise,dessineBateau,objets,kikoPorte,actualiseKiko,imageRecompense:id=>imageObjet(connu(id))};
 })();
 
 /* Le coffre voyage entre le téléphone et le tableau sans remplacer une séance
@@ -9523,7 +9694,7 @@ window.CoffreLiaison=(()=>{
     if(signature(fusion)===signature(S.coffre))return false;
     S.coffre=fusion;
     if(!telephone())sauve();
-    else lsSet("bateau-ecole-etat",JSON.stringify(S));
+    else Coffre.memoriseLocal(S);
     signale();return true;
   }
   function publie(){
