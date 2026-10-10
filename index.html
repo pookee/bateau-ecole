@@ -459,6 +459,63 @@ input[type=text],input[type=number],textarea,select{border-color:#D8C9E1}
 @keyframes eq-entree{from{opacity:0;transform:translateY(25px) scale(.95)}to{opacity:1;transform:none}}
 @media(max-width:650px){.eq-coffre{flex-direction:column;text-align:center}.eq-coffre img{width:100px}.eq-fete .be-podium{gap:7px}.eq-fete .be-place b{font-size:1.1rem}.eq-fete .eq-pavillon{width:44px;height:54px}.eq-fete .eq-pavillon>.eq-icon{width:28px;height:28px;margin-bottom:8px}.eq-etapes{gap:4px}.eq-etapes span{font-size:.8rem;padding:5px 8px}.eq-presentation,.eq-fete{padding:18px 12px!important}.eq-flotte{grid-template-columns:1fr}.eq-fete .be-marche span{font-size:1rem;padding:8px;min-width:0}.be-place:only-child .be-exaequo{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}.eq-reussites{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.eq-fete .be-place{animation:none!important}.eq-confettis{display:none}}
+/* Les portraits sont fixes : aucun état de lecture n'est représenté au tableau. */
+.matelot{display:block;width:90px;height:120px;max-width:100%;flex:none;overflow:hidden}
+.eq-presentation>.eq-carte{max-width:1040px}
+.eq-presentation>.eq-carte>.eq-pavillon{width:56px;height:65px}
+.eq-presentation>.eq-carte>.eq-pavillon .eq-icon{width:36px;height:36px;margin-bottom:9px}
+.eq-membres{gap:8px;margin:18px 0}
+.eq-membres li{display:flex;flex-direction:column;align-items:center;justify-content:end;gap:8px;width:calc((100% - 40px)/6);padding:0;background:none;font-size:clamp(1rem,1.6vw,1.4rem)}
+.eq-membres li>span{display:block;max-width:100%;padding:4px 8px;border-radius:10px;background:color-mix(in srgb,var(--eq) 10%,white)}
+.eq-membres .matelot{width:115px;height:128px}
+.eq-flotte .eq-membres li{width:calc((100% - 30px)/6);padding:0;font-size:clamp(.8rem,1.2vw,1.05rem)}
+.eq-flotte .eq-membres li>span{padding:4px 3px}
+.eq-flotte .matelot{width:90px;height:90px}
+.eq-flotte .eq-carte p:not(.eq-effectif){margin-bottom:8px}
+.eq-identite{display:flex;align-items:center;gap:10px;min-width:0;overflow-wrap:anywhere}
+.eq-identite .matelot{width:42px;height:58px}
+.eq-galerie{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 3px;list-style:none;width:100%;padding:0;margin:8px 0 0}
+.eq-galerie li{display:flex;flex-direction:column;align-items:center;gap:3px;width:calc((100% - 15px)/6);min-width:0}
+.eq-galerie .matelot{width:56px;height:68px}
+.eq-galerie li>span{font:700 clamp(.7rem,1vw,.9rem)/1.15 var(--display);color:var(--nuit);overflow-wrap:anywhere}
+.be-exaequo>div>.matelot{height:120px}
+.eq-fete .be-podium:has(.eq-galerie){max-width:1050px}
+.eq-fete .be-podium:has(.eq-galerie) .eq-pavillon{width:48px;height:56px}
+.eq-fete .be-podium:has(.eq-galerie) .eq-pavillon>.eq-icon{width:30px;height:30px;margin-bottom:8px}
+.eq-fete .be-podium:has(.eq-galerie) .be-place-1 .be-marche{height:110px!important}
+.eq-fete .be-podium:has(.eq-galerie) .be-place-2 .be-marche{height:80px!important}
+@media(min-width:850px) and (max-height:950px){
+  .eq-presentation,.eq-fete{padding:20px 28px!important}
+  .eq-presentation>h1,.eq-fete>h2{font-size:2.4rem;margin:10px 0}
+  .eq-presentation .centre,.eq-fete .centre{margin-top:14px}
+  .eq-carte{padding:14px 18px}.eq-carte h2{margin:8px 0;font-size:2rem}
+  .eq-carte p,.eq-carte .eq-effectif{margin:4px auto 8px}
+  .eq-num{margin:8px 0}.eq-membres{margin:12px 0;gap:8px}
+  .eq-membres .matelot{height:105px}.eq-membres li{gap:4px}
+  .eq-presentation>.eq-carte>.eq-pavillon{width:42px;height:48px}
+  .eq-presentation>.eq-carte>.eq-pavillon .eq-icon{width:28px;height:28px;margin-bottom:7px}
+  .eq-flotte .eq-pavillon{width:36px;height:43px}.eq-flotte .eq-pavillon>.eq-icon{width:25px;height:25px;margin-bottom:6px}
+  .eq-flotte h2{font-size:1.45rem}.eq-flotte .matelot{height:76px}
+  .eq-ensemble{margin:12px 0;font-size:1.3rem}.eq-etapes{margin-bottom:12px}
+  .eq-fete .be-podium{margin-top:12px}.be-podium-legende{margin-bottom:12px}
+  .eq-fete .eq-galerie .matelot{height:58px}
+}
+@media(min-width:850px) and (max-height:800px){
+  .eq-presentation{padding:16px 24px!important}
+  .eq-presentation>.eq-carte .matelot{height:90px}
+  .eq-presentation .eq-num{margin:4px 0}
+  .eq-presentation .centre{margin-top:12px}
+}
+@media(max-width:650px){
+  .eq-membres li{width:calc((100% - 16px)/3);font-size:1.1rem}
+  .eq-membres .matelot{height:100px}
+  .eq-flotte .eq-membres li{width:calc((100% - 18px)/4);font-size:.95rem}
+  .eq-flotte .matelot{height:82px}
+  .eq-galerie li{width:calc((100% - 6px)/3)}
+  .eq-galerie .matelot{height:52px;width:44px}
+  .eq-identite{gap:5px}.eq-identite .matelot{width:32px;height:48px}
+  .eq-gestion label{grid-template-columns:minmax(100px,1fr) minmax(0,1.3fr);gap:6px}
+}
 </style>
 
 <style>
@@ -5504,6 +5561,40 @@ const Ports = (() => {
 })();
 
 
+/* Personnages en papier découpé. L'atlas ne contient ni prénom ni donnée de classe.
+   L'identifiant est conservé avec l'élève, indépendamment des équipes et des résultats. */
+const Matelots = (() => {
+  const ZONES = [
+    [31,32,161,272],[273,29,146,275],[460,39,207,265],[738,28,153,276],
+    [945,28,210,276],[1219,29,148,275],[36,330,165,272],[244,329,215,273],
+    [509,323,149,278],[749,327,160,274],[970,323,162,278],[1206,326,161,276],
+    [38,618,162,262],[254,624,165,256],[503,621,154,259],[722,619,187,261],
+    [978,625,153,256],[1212,629,154,252],[44,889,152,229],[254,891,214,227],
+    [478,891,219,227],[738,887,185,231]
+  ];
+  // Ordre initial des 22 portraits ; aucune déduction à partir du prénom.
+  const ORDRE = [0,1,11,2,3,12,13,4,14,15,16,5,17,6,18,7,19,8,9,20,10,21];
+  const valide = id => typeof id==="string" && /^papier-(0[1-9]|1[0-9]|2[0-2])$/.test(id);
+  const defaut = n => "papier-"+String((ORDRE[((+n||1)-1+22)%22]??0)+1).padStart(2,"0");
+  const identifiant = e => valide(e?.avatar) ? e.avatar : defaut(e?.n);
+  const eleve = n => (window.Classe ? Classe.get()?.eleves : typeof S!=="undefined" ? S.eleves : [])?.find(e=>e.n===+n) || {n};
+  function portrait(e){
+    if(typeof e!=="object")e=eleve(e);
+    const zone=ZONES[+identifiant(e).slice(-2)-1];
+    const [x,y,w,h]=zone;
+    // Le SVG intérieur coupe aussi les voisins dans les marges de letterboxing.
+    return `<svg class="matelot" viewBox="0 0 ${w} ${h}" aria-hidden="true" focusable="false"><svg width="${w}" height="${h}" viewBox="${x} ${y} ${w} ${h}" overflow="hidden"><image href="img/matelots-papier.webp" width="1402" height="1122" /></svg></svg>`;
+  }
+  function assure(){
+    const l=window.Classe ? Classe.actifs() : [];
+    if(!l.some(e=>!valide(e.avatar)))return false;
+    Classe.modifie(c=>c.eleves.filter(e=>e.actif).forEach(e=>{e.avatar=identifiant(e);}));
+    return true;
+  }
+  return {valide,identifiant,portrait,assure};
+})();
+window.Matelots=Matelots;
+
 "use strict";
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -5606,7 +5697,7 @@ function banqueDefaut(){
 const idVoyage = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function etatDefaut(){
   return {v:1,rv:RESET_V,migPilote:1,maj:0,voyage:idVoyage(),nom:"La Vaillante",nomChoisi:false,nomsProposes:["La Vaillante","L'Étoile des Mers","Le Grand Plouf","La Perle Bleue"],milles:0,
-    eleves:Array.from({length:NB_CARTES},(_,i)=>({n:i+1,prenom:CLASSE[i]||"",actif:i<(CLASSE.length||25)})),
+    eleves:Array.from({length:NB_CARTES},(_,i)=>({n:i+1,prenom:CLASSE[i]||"",actif:i<(CLASSE.length||25),...(i<(CLASSE.length||25)?{avatar:Matelots.identifiant({n:i+1})}:{})})),
     reglages:{nbQ:6,piloteTous:0,vitesse:1,son:true,stormQ:6,recompense:"podium"},
     notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),banque:Q_RAW.length,
     stats:{q:{},el:{}},journal:[],pilotes:[],escalesVues:[0]};
@@ -5619,6 +5710,7 @@ function charge(obj){
   const o = Object.assign(d,obj);
   o.reglages = Object.assign(etatDefaut().reglages,obj.reglages||{});
   if (!Array.isArray(o.eleves)||o.eleves.length!==NB_CARTES||(CLASSE.length&&o.eleves.every(e=>!String(e.prenom||"").trim()))||o.eleves.slice(0,22).map(e=>e.prenom).join("|")===CLASSE_V1) o.eleves = d.eleves;
+  o.eleves=o.eleves.map(e=>e.actif?{...e,avatar:Matelots.identifiant(e)}:e);
   // ajoute les nouvelles notions par défaut éventuelles
   NOTIONS.forEach(n=>{ const ancien=o.notions.find(x=>x.id===n.id); if(!ancien) o.notions.push({...n}); else {
     if(!ancien.s) ancien.s=n.s;
@@ -6337,7 +6429,7 @@ async function rituel(mode, reprise=false){
 function podiumBateauHTML(podium, personnel=false){
   if(!podium.length)return "";
   const equipes=podium.some(e=>e.equipe),rangs=[...new Set(podium.map(e=>e.rang||1))];
-  return `<h2>${equipes?"Le podium des équipages":"Le podium du jour"}</h2><p class="be-podium-legende">${equipes?"Des perles, des défis et une aventure partagée !":"Bravo pour vos réussites !"} Les ex æquo partagent la même marche.</p><ol class="be-podium">${rangs.map(r=>{const groupe=podium.filter(e=>(e.rang||1)===r);return `<li class="be-place be-place-${r}" style="--revelation:${Math.max(0,3-r)*.65}s"><div class="be-exaequo">${groupe.map(e=>`<div>${e.equipe?Competition.drapeau(e.id):'<span class="eq-medaille" aria-hidden="true">'+iconeLucide('medal')+'</span>'}<b>${esc(e.prenom)}</b>${e.equipe?`<span>${String(e.points).replace(".",",")} points</span>`:personnel?`<span>${e.ok} sur ${e.faits}${e.nonLus?` · ${e.nonLus} non lu${e.nonLus>1?"s":""}`:""}</span>`:""}</div>`).join("")}</div><div class="be-marche"><span>${r}${r===1?"er":"e"}${groupe.length>1?" ex æquo":""}</span></div></li>`;}).join("")}</ol>`;
+  return `<h2>${equipes?"Le podium des équipages":"Le podium du jour"}</h2><p class="be-podium-legende">${equipes?"Des perles, des défis et une aventure partagée !":"Bravo pour vos réussites !"} Les ex æquo partagent la même marche.</p><ol class="be-podium">${rangs.map(r=>{const groupe=podium.filter(e=>(e.rang||1)===r);return `<li class="be-place be-place-${r}" style="--revelation:${Math.max(0,3-r)*.65}s"><div class="be-exaequo">${groupe.map(e=>`<div>${e.equipe?Competition.drapeau(e.id):Matelots.portrait(e.n)}<b>${esc(e.prenom)}</b>${e.equipe?`<span>${String(e.points).replace(".",",")} points</span>${Competition.galerie(e)}`:personnel?`<span>${e.ok} sur ${e.faits}${e.nonLus?` · ${e.nonLus} non lu${e.nonLus>1?"s":""}`:""}</span>`:""}</div>`).join("")}</div><div class="be-marche"><span>${r}${r===1?"er":"e"}${groupe.length>1?" ex æquo":""}</span></div></li>`;}).join("")}</ol>`;
 }
 async function bilan(res, gagne, mode){
   const generation=GEN;
@@ -7809,7 +7901,13 @@ const Competition = (() => {
   function drapeau(id){const r=role(id);return `<span class="eq-pavillon" style="--eq:${r.couleur}" aria-hidden="true">${iconeLucide(r.icone)}</span>`;}
   function carte(g,detail=false){
     const r=role(g.id),actifs=new Set(liste().map(e=>e.n)),membres=g.membres.filter(n=>actifs.has(n));
-    return `<article class="eq-carte" style="--eq:${r.couleur}">${drapeau(g.id)}<h2>${esc(r.nom)}</h2><p class="eq-effectif">${membres.length} matelot${membres.length>1?"s":""}</p><p>${esc(r.mission)}</p><ul class="eq-membres">${membres.map(n=>`<li>${esc(nom(n))}</li>`).join("")}</ul>${detail?`<p class="eq-devise">${esc(r.devise)}</p>`:""}</article>`;
+    return `<article class="eq-carte" style="--eq:${r.couleur}">${drapeau(g.id)}<h2>${esc(r.nom)}</h2><p class="eq-effectif">${membres.length} matelot${membres.length>1?"s":""}</p><p>${esc(r.mission)}</p><ul class="eq-membres">${membres.map(n=>`<li>${Matelots.portrait(n)}<span>${esc(nom(n))}</span></li>`).join("")}</ul>${detail?`<p class="eq-devise">${esc(r.devise)}</p>`:""}</article>`;
+  }
+  // Tous les membres du plan figé sont célébrés, même absents ou sans réponse lue.
+  // La galerie ne révèle jamais qui a répondu à une question.
+  function galerie(g){
+    const membres=g.membres || plan()?.groupes.find(x=>x.id===g.id)?.membres || [];
+    return `<ul class="eq-galerie" aria-label="Les matelots de ${esc(role(g.id).nom)}">${membres.map(n=>`<li>${Matelots.portrait(n)}<span>${esc(nom(n))}</span></li>`).join("")}</ul>`;
   }
   // Préparer avant la première réponse : les objectifs ne changent jamais en cours de séance.
   function prepare(qs,presents,mode){
@@ -7838,7 +7936,7 @@ const Competition = (() => {
       const defi=defis.filter(d=>g.membres.includes(d.n)&&d.reussi).length;
       // Chaque participant pèse autant, quelle que soit la taille de son équipage.
       const points=participants.length?Math.round(1000*(.9*participants.reduce((s,e)=>s+e.ok/e.faits,0)+.1*defi)/participants.length)/10:0;
-      return {equipe:true,id:g.id,prenom:role(g.id).nom,points,defis:defi,participants:participants.length};
+      return {equipe:true,id:g.id,prenom:role(g.id).nom,points,defis:defi,participants:participants.length,membres:g.membres.slice()};
     }).filter(g=>g.participants);
     equipe.sort((a,b)=>b.points-a.points||ROLES.findIndex(r=>r.id===a.id)-ROLES.findIndex(r=>r.id===b.id));
     equipe.forEach((g,i)=>{g.rang=i&&g.points===equipe[i-1].points?equipe[i-1].rang:i+1;});
@@ -7889,7 +7987,7 @@ const Competition = (() => {
     const rend=()=>{
       const p=brouillon||plan(),l=liste(),prof=profils(l,historique());
       const connus=Object.values(prof).filter(e=>e.faits>=8).length;
-      s.innerHTML=`<div class="aa-barre"><button class="aa-retour" id="eq-retour">${Accueil.IC.retour}Accueil</button><h1>Les équipages</h1></div><div class="aa-bloc"><p>Des équipes de force comparable, avec des niveaux mélangés. Leur composition reste stable jusqu’à ce que tu la modifies.</p><p class="aut-note">Résultats des 35 derniers jours, séances terminées : ${connus} élève${connus>1?"s":""} avec au moins 8 réponses lues. Les absences et les cartes non lues ne comptent pas comme des erreurs.</p>${connus<l.length?"<p class=\"aut-note\">Pour les élèves ayant peu de résultats, la répartition est provisoire : ajuste les groupes selon ce que tu observes en classe.</p>":""}${p?`<div class="eq-gestion">${p.groupes.map(g=>`<article style="--eq:${role(g.id).couleur}"><h2>${drapeau(g.id)}${esc(role(g.id).nom)}</h2>${g.membres.filter(n=>l.some(e=>e.n===n)).map(n=>`<label>${esc(nom(n))}<select data-equipe-eleve="${n}" aria-label="Équipage de ${esc(nom(n))}">${p.groupes.map(x=>`<option value="${x.id}" ${g.id===x.id?"selected":""}>${esc(role(x.id).nom)}</option>`).join("")}</select></label>`).join("")}</article>`).join("")}</div>${l.some(e=>!p.groupes.some(g=>g.membres.includes(e.n)))?`<p>Des élèves n’ont pas encore d’équipage. Utilise « Rééquilibrer » pour les intégrer.</p>`:""}`:"<p>Les équipages ne sont pas encore formés.</p>"}<div class="aa-actions">${brouillon?`<button class="btn prim" id="eq-appliquer">Utiliser cette répartition</button><button class="btn" id="eq-annuler">Annuler</button>`:`<button class="btn" id="eq-repartir" ${l.length<2?"disabled":""}>${p?"Rééquilibrer les équipages":"Former les équipages"}</button>${p?'<button class="btn prim" id="eq-presenter">Présenter les équipages au tableau</button>':""}`}</div><p class="aut-note">La cérémonie affiche les prénoms et les missions, sans résultats individuels. Le score d’équipe compte pour 90 points de réussite et 10 points de défis ; chaque participant pèse autant. Le score repart à zéro à chaque partie.</p></div>`;
+      s.innerHTML=`<div class="aa-barre"><button class="aa-retour" id="eq-retour">${Accueil.IC.retour}Accueil</button><h1>Les équipages</h1></div><div class="aa-bloc"><p>Des équipes de force comparable, avec des niveaux mélangés. Leur composition reste stable jusqu’à ce que tu la modifies.</p><p class="aut-note">Résultats des 35 derniers jours, séances terminées : ${connus} élève${connus>1?"s":""} avec au moins 8 réponses lues. Les absences et les cartes non lues ne comptent pas comme des erreurs.</p>${connus<l.length?"<p class=\"aut-note\">Pour les élèves ayant peu de résultats, la répartition est provisoire : ajuste les groupes selon ce que tu observes en classe.</p>":""}${p?`<div class="eq-gestion">${p.groupes.map(g=>`<article style="--eq:${role(g.id).couleur}"><h2>${drapeau(g.id)}${esc(role(g.id).nom)}</h2>${g.membres.filter(n=>l.some(e=>e.n===n)).map(n=>`<label><span class="eq-identite">${Matelots.portrait(n)}<span>${esc(nom(n))}</span></span><select data-equipe-eleve="${n}" aria-label="Équipage de ${esc(nom(n))}">${p.groupes.map(x=>`<option value="${x.id}" ${g.id===x.id?"selected":""}>${esc(role(x.id).nom)}</option>`).join("")}</select></label>`).join("")}</article>`).join("")}</div>${l.some(e=>!p.groupes.some(g=>g.membres.includes(e.n)))?`<p>Des élèves n’ont pas encore d’équipage. Utilise « Rééquilibrer » pour les intégrer.</p>`:""}`:"<p>Les équipages ne sont pas encore formés.</p>"}<div class="aa-actions">${brouillon?`<button class="btn prim" id="eq-appliquer">Utiliser cette répartition</button><button class="btn" id="eq-annuler">Annuler</button>`:`<button class="btn" id="eq-repartir" ${l.length<2?"disabled":""}>${p?"Rééquilibrer les équipages":"Former les équipages"}</button>${p?'<button class="btn prim" id="eq-presenter">Présenter les équipages au tableau</button>':""}`}</div><p class="aut-note">La cérémonie présente les personnages, les prénoms et les missions, sans résultats individuels. Le score d’équipe compte pour 90 points de réussite et 10 points de défis ; chaque participant pèse autant. Le score repart à zéro à chaque partie.</p></div>`;
       s.querySelector("#eq-retour").onclick=()=>Accueil.accueilTel();
       s.querySelector("#eq-repartir")?.addEventListener("click",()=>{brouillon=propose(l,historique());rend();});
       s.querySelector("#eq-annuler")?.addEventListener("click",()=>{brouillon=null;rend();});
@@ -7898,7 +7996,7 @@ const Competition = (() => {
       s.querySelector("#eq-presenter")?.addEventListener("click",async()=>{Accueil.ouvreActivite("bateau");const r=await useCap("room");if(r)r.emit("cmd",{a:"equipages"}).catch(()=>{});});
     };rend();
   }
-  return {ROLES,role,propre,plan,profils,propose,enregistre,assure,prepare,resultats,podium,coffreHTML,reussitesHTML,priveHTML,ceremonie,presentation,ouvre,drapeau};
+  return {ROLES,role,propre,plan,profils,propose,enregistre,assure,prepare,resultats,podium,coffreHTML,reussitesHTML,priveHTML,ceremonie,presentation,ouvre,drapeau,galerie};
 })();
 window.Competition=Competition;
 
@@ -8544,7 +8642,7 @@ const Classe = (() => {
     const d = vide(); if (!o || typeof o!=="object") return d;
     const r = {v:1, id:typeof o.id==="string" && o.id ? o.id : d.id, nom:String(o.nom||"").slice(0,60), niveau:NIVEAUX.includes(o.niveau) ? o.niveau : "",
       maj:+o.maj||0, eleves:d.eleves, absents:{jour:"", n:[]}};
-    (Array.isArray(o.eleves) ? o.eleves : []).forEach(e=>{ const n = +(e && e.n); if (n>=1 && n<=MAX) r.eleves[n-1] = {n, prenom:String(e.prenom||"").trim().slice(0,24), actif:!!e.actif}; });
+    (Array.isArray(o.eleves) ? o.eleves : []).forEach(e=>{ const n = +(e && e.n); if (n>=1 && n<=MAX) r.eleves[n-1] = {n, prenom:String(e.prenom||"").trim().slice(0,24), actif:!!e.actif,...(Matelots.valide(e.avatar)?{avatar:e.avatar}:{})}; });
     if (o.absents && typeof o.absents.jour==="string") r.absents = {jour:o.absents.jour, n:(Array.isArray(o.absents.n) ? o.absents.n : []).map(Number).filter(n=>n>=1 && n<=MAX)};
     r.equipages=Competition.propre(o.equipages);
     return r;
@@ -8566,9 +8664,9 @@ const Classe = (() => {
     clearTimeout(tEcrit); tEcrit = setTimeout(()=>{ if (db) db.doc(DOC).set(copie).catch(e=>console.warn("classe", e)); }, 300);
     annonce("local");
   }
-  function modifie(fn){ if (!c) c = vide(); fn(c); enregistre(); }
+  function modifie(fn){ if (!c) c = vide(); fn(c); c.eleves.filter(e=>e.actif).forEach(e=>{e.avatar=Matelots.identifiant(e);}); enregistre(); }
   /* la classe d'un voyage du Bateau-école (copie de sauvegarde, ou premier lancement de l'écran de la classe) */
-  function depuisEtat(S, maj){ const k = vide(); (S && Array.isArray(S.eleves) ? S.eleves : []).forEach(e=>{ const n = +e.n; if (n>=1 && n<=MAX) k.eleves[n-1] = {n, prenom:String(e.prenom||"").trim(), actif:!!e.actif}; });
+  function depuisEtat(S, maj){ const k = vide(); (S && Array.isArray(S.eleves) ? S.eleves : []).forEach(e=>{ const n = +e.n; if (n>=1 && n<=MAX) k.eleves[n-1] = {n, prenom:String(e.prenom||"").trim(), actif:!!e.actif,...(Matelots.valide(e.avatar)?{avatar:e.avatar}:{})}; });
     k.maj = maj || 0; return k; }
 
   /* ---------- listes collées (un prénom par ligne, tableur, ONDE…) ---------- */
@@ -8695,7 +8793,7 @@ const Classe = (() => {
   /* ---------- l'écran de la classe suit la classe : le Bateau-école y prend ses élèves ---------- */
   function versJeu(){
     if (!c || typeof S==="undefined") return false;
-    const avant = JSON.stringify(S.eleves), apres = JSON.stringify(c.eleves);
+    const avant = JSON.stringify(S.eleves), apres = JSON.stringify(c.eleves.map(e=>e.actif?{...e,avatar:Matelots.identifiant(e)}:e));
     if (avant===apres) return false;
     S.eleves = JSON.parse(apres); sauve(); return true;
   }
@@ -9230,10 +9328,11 @@ const Accueil = (() => {
     await Preparation.init();
     if (window.Historique) Historique.init().then(()=>{
       const equipagesMisAJour=mode!=="tbi"&&Competition.assure();
+      const matelotsMisAJour=mode!=="tbi"&&Matelots.assure();
       const majSuivi = ()=>{ const x = document.getElementById("aa-suivi"); if (x) x.textContent = Historique.resumeCourt(); };
       Historique.surChange(majSuivi); majSuivi();
       if (mode!=="tbi" && window.AutoSauve && AutoSauve.possible()){ // téléphone : une sauvegarde par jour, et après chaque changement
-        const a = AutoSauve.derniere(); if (equipagesMisAJour || !a || new Date(a).toDateString()!==new Date().toDateString()) AutoSauve.bientot();
+        const a = AutoSauve.derniere(); if (equipagesMisAJour || matelotsMisAJour || !a || new Date(a).toDateString()!==new Date().toDateString()) AutoSauve.bientot();
         Classe.surChange(()=>AutoSauve.bientot());
         useCap("db").then(db=>db.doc("jeu/etat").onSnapshot(sn=>{ if (sn.distant) AutoSauve.bientot(); })); } });
     Classe.surChange((k, origine)=>{
