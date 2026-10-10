@@ -20,7 +20,7 @@
   --theme-text-shadow:color-mix(in srgb,var(--nuit) 78%,black);
   --theme-on-dark:color-mix(in srgb,var(--ecume) 70%,white);
   --theme-overlay:color-mix(in srgb,var(--nuit) 82%,transparent);
-  --theme-wave-filter:none; --theme-decoration-left:none; --theme-decoration-right:none;
+  --theme-wave-filter:none;
   --ok:#2F9E5B; --ko:#C8433A;
   --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
   --texte:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -414,20 +414,9 @@ input[type=text],input[type=number],textarea,select{border-color:var(--theme-bor
 [data-theme="hiver"]{--theme-wave-filter:saturate(.6) brightness(1.1)}
 [data-theme="printemps"],[data-theme="oeufs"]{--theme-wave-filter:hue-rotate(-22deg) saturate(.8)}
 
-/* Petits décors de saison, tenus à l'écart des consignes et sans interaction. */
-[data-theme="automne"]{--theme-decoration-left:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Cg%20stroke%3D%22%23875020%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M18%2037Q75%206%20100%2044Q102%2086%2049%20104Q56%2065%2018%2037Z%22%20fill%3D%22%23D87831%22%2F%3E%3Cpath%20d%3D%22M40%2051L94%2093M51%2062L58%2038M67%2075L91%2064%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M116%2098Q147%2069%20166%2093Q169%20128%20132%20152Q128%20122%20116%2098Z%22%20fill%3D%22%23E5B54E%22%2F%3E%3Cpath%20d%3D%22M130%20100L145%20142M137%20119L157%20110%22%20fill%3D%22none%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M59%20139l5%205m37-126%203%206M22%20120l7-2%22%20stroke%3D%22%23F6DB88%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E");--theme-decoration-right:var(--theme-decoration-left)}
-[data-theme="noel"]{--theme-decoration-left:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Cpath%20d%3D%22M10%2028Q65%2070%20168%2030%22%20fill%3D%22none%22%20stroke%3D%22%231F5949%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23377F5D%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M25%2035L17%2017m17%2024L29%2022m13%2023%204-22M63%2048L61%2025m12%2025%209-22m12%2018%2010-25m11%2020%2015-25m6%2020%2016-19%22%2F%3E%3Cpath%20d%3D%22M24%2035%2017%2054m25-10-4%2022m20-18-2%2021m21-19%201%2021m22-28%208%2023m14-28%208%2018m14-26%2012%2018%22%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%22%23E0B44D%22%20stroke-width%3D%222.5%22%3E%3Cpath%20d%3D%22M51%2053v40m74-51v51%22%2F%3E%3Ccircle%20cx%3D%2251%22%20cy%3D%22105%22%20r%3D%2218%22%20fill%3D%22%23C64D49%22%2F%3E%3Ccircle%20cx%3D%22125%22%20cy%3D%22106%22%20r%3D%2213%22%20fill%3D%22%23E8BD52%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M43%2099q8-7%2015%200m60%203q6-5%2011%200%22%20fill%3D%22none%22%20stroke%3D%22%23FFEBD0%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22m87%20113%204%2010%2011%201-8%207%203%2011-10-6-9%206%202-11-8-7%2011-1Z%22%20fill%3D%22%23F5D875%22%2F%3E%3C%2Fsvg%3E");--theme-decoration-right:var(--theme-decoration-left)}
-[data-theme="hiver"]{--theme-decoration-left:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23EAF9FF%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M87%2024v112M38%2052l98%2056M38%20108l98-56M73%2034l14%2014%2014-14M73%20126l14-14%2014%2014M42%2069l19-5-5-19M119%20115l-5-19%2019-5M56%20115l5-19-19-5M133%2069l-19-5%205-19%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23EAF9FF%22%3E%3Ccircle%20cx%3D%22145%22%20cy%3D%2233%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%22136%22%20r%3D%223%22%2F%3E%3Cpath%20d%3D%22m140%20126%203%209%2010%203-10%203-3%2010-3-10-10-3%2010-3Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");--theme-decoration-right:var(--theme-decoration-left)}
-[data-theme="carnaval"]{--theme-decoration-left:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-width%3D%224%22%3E%3Cpath%20d%3D%22M22%2023q-12%2012%204%2016t-2%2021%22%20stroke%3D%22%23F2BF50%22%2F%3E%3Cpath%20d%3D%22M152%20114q-14%2012%201%2020t-2%2024%22%20stroke%3D%22%23E178A5%22%2F%3E%3Cpath%20d%3D%22m106%2017%207%2010m45%2028-9%207M33%20139l-5%209%22%20stroke%3D%22%2376D2C0%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M23%2073Q49%2050%2085%2078Q119%2052%20151%2075L144%20108Q115%20131%2087%20102Q57%20135%2028%20111Z%22%20fill%3D%22%237956B0%22%20stroke%3D%22%23E4B853%22%20stroke-width%3D%224%22%2F%3E%3Cpath%20d%3D%22M39%2085q15-6%2029%206-15%2010-27%203Zm64%206q16-12%2029-6l-2%209q-15%205-27-3Z%22%20fill%3D%22%23FBECD0%22%2F%3E%3Cpath%20d%3D%22m88%2050%207%2013-8%2011-8-11Z%22%20fill%3D%22%23EEA54D%22%2F%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%2294%22%20r%3D%223%22%20fill%3D%22%23F3CF7D%22%2F%3E%3Ccircle%20cx%3D%22147%22%20cy%3D%2291%22%20r%3D%223%22%20fill%3D%22%23F3CF7D%22%2F%3E%3Cpath%20d%3D%22m68%20147%204%207m-4%200%204-7%22%20stroke%3D%22%23E5BC57%22%20stroke-width%3D%224%22%2F%3E%3C%2Fsvg%3E");--theme-decoration-right:var(--theme-decoration-left)}
-[data-theme="printemps"]{--theme-decoration-left:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Cpath%20d%3D%22M31%20160Q81%20127%2091%2078M72%20115q44%2019%2076-21M48%20145q-15-35-29-47%22%20fill%3D%22none%22%20stroke%3D%22%234A8552%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M61%20131Q23%20129%2023%20109q37-2%2038%2022M103%20119q5-28%2031-25%200%2028-31%2025%22%20fill%3D%22%2378AC66%22%2F%3E%3Cg%20transform%3D%22translate%2888%2070%29%22%3E%3Cg%20fill%3D%22%23F2ABC0%22%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%2F%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%20transform%3D%22rotate%2872%29%22%2F%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%20transform%3D%22rotate%28144%29%22%2F%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%20transform%3D%22rotate%28216%29%22%2F%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%20transform%3D%22rotate%28288%29%22%2F%3E%3C%2Fg%3E%3Ccircle%20r%3D%2212%22%20fill%3D%22%23F5D45D%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28143%2076%29%20scale%28.53%29%22%3E%3Cg%20fill%3D%22%23FFFEF4%22%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%2F%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%20transform%3D%22rotate%2872%29%22%2F%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%20transform%3D%22rotate%28144%29%22%2F%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%20transform%3D%22rotate%28216%29%22%2F%3E%3Cellipse%20cy%3D%22-19%22%20rx%3D%2212%22%20ry%3D%2222%22%20transform%3D%22rotate%28288%29%22%2F%3E%3C%2Fg%3E%3Ccircle%20r%3D%2212%22%20fill%3D%22%23F5D45D%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");--theme-decoration-right:var(--theme-decoration-left)}
-[data-theme="oeufs"]{--theme-decoration-left:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Cg%20transform%3D%22rotate%28-14%2055%20110%29%22%3E%3Cpath%20d%3D%22M26%20115c0-25%2014-54%2029-54s29%2029%2029%2054c0%2038-58%2038-58%200%22%20fill%3D%22%23EFA6B8%22%20stroke%3D%22%23C6718B%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22m28%20104%2013%208%2014-8%2014%208%2013-8M29%20124l13%206%2013-6%2013%206%2013-6%22%20fill%3D%22none%22%20stroke%3D%22%23FFEFBD%22%20stroke-width%3D%226%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%2816%20122%2096%29%22%3E%3Cpath%20d%3D%22M93%20103c0-25%2014-54%2029-54s29%2029%2029%2054c0%2038-58%2038-58%200%22%20fill%3D%22%238DCBC1%22%20stroke%3D%22%235BABA1%22%20stroke-width%3D%222%22%2F%3E%3Cg%20fill%3D%22%23FFF4CF%22%3E%3Ccircle%20cx%3D%22114%22%20cy%3D%2275%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%22134%22%20cy%3D%2293%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%22106%22%20cy%3D%22105%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%22121%22%20cy%3D%22121%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cpath%20d%3D%22M11%20151q17-18%2034-1m17%209q17-18%2034-1m16-14q17-18%2034-1%22%20fill%3D%22none%22%20stroke%3D%22%2369A65E%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22m70%2028%204%2010%2010%204-10%204-4%2010-4-10-10-4%2010-4Z%22%20fill%3D%22%23F4D361%22%2F%3E%3C%2Fsvg%3E");--theme-decoration-right:var(--theme-decoration-left)}
-[data-theme="ete"]{--theme-decoration-left:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Cg%20stroke%3D%22%23EDB644%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M81%2013v15m0%2097v15M17%2077h15m98%200h15M35%2032l11%2011m70%2070%2011%2011M35%20123l11-11m70-70%2011-11%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%2281%22%20cy%3D%2277%22%20r%3D%2236%22%20fill%3D%22%23F6CB5C%22%2F%3E%3Ccircle%20cx%3D%2269%22%20cy%3D%2275%22%20r%3D%223%22%20fill%3D%22%23AC773B%22%2F%3E%3Ccircle%20cx%3D%2293%22%20cy%3D%2275%22%20r%3D%223%22%20fill%3D%22%23AC773B%22%2F%3E%3Cpath%20d%3D%22M72%2089q9%207%2018%200%22%20fill%3D%22none%22%20stroke%3D%22%23AC773B%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M128%20146q5-23%2023-20%2018%203%209%2026l-16%2013Z%22%20fill%3D%22%23F2CFAC%22%20stroke%3D%22%23B7916E%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22m142%20162-7-26m9%2026%204-29m-3%2027%2011-22%22%20stroke%3D%22%23B7916E%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E");--theme-decoration-right:var(--theme-decoration-left)}
-#aa-ecran::before,#aa-ecran::after,#pv-ecran::before,#pv-ecran::after,#stage:has(.accueil)::before,#stage:has(.accueil)::after{content:"";position:absolute;pointer-events:none;width:clamp(84px,12vw,166px);aspect-ratio:1;z-index:0;background:var(--theme-decoration-left) center/contain no-repeat;filter:drop-shadow(0 3px 7px rgba(8,25,35,.12));opacity:.88}
-#aa-ecran::before,#pv-ecran::before,#stage:has(.accueil)::before{left:1.2vw;top:22%;transform:rotate(-8deg)}
-#aa-ecran::after,#pv-ecran::after,#stage:has(.accueil)::after{right:1.2vw;top:35%;background-image:var(--theme-decoration-right);transform:rotate(12deg) scale(.8)}
-#pv-ecran::before{top:36%}#pv-ecran::after{top:52%}
 #stage>.layer{z-index:1}
-.aa-tete::after{content:"";position:absolute;right:4px;top:0;width:86px;aspect-ratio:1;pointer-events:none;background:var(--theme-decoration-right) center/contain no-repeat;opacity:.75;transform:rotate(8deg)}
+/* À Noël, les personnages sont à bord du bateau, sans silhouettes flottantes. */
+[data-theme="noel"] .accueil>.perro{display:none}
 /* Une grille lisible à l'écran comme sur le téléphone, avec de vrais boutons radio. */
 .panneau .carte.theme-panneau{width:min(940px,100%)}
 .theme-selecteur>.note{margin:0 0 18px;font-size:1rem;line-height:1.5;max-width:76ch}
@@ -5949,7 +5938,7 @@ window.Themes = (() => {
     {id:"base",nom:"Thématique de base",icone:"⚓",description:"Le bateau, la mer et l’aventure.",palette:palette("#0B2740","#1D5C7A","#3FA7B5","#E6F3F2","#F0DCA8","#E85D3F","#FFCA45","#347956","#FFFCF4","#13263A","#5B7285")},
     {id:"automne",nom:"Automne",icone:"🍂",description:"Feuilles dorées et couleurs chaleureuses.",palette:palette("#402719","#91512E","#BA783A","#FCF0DB","#E9CAA0","#AD431C","#F4BB42","#647445","#FFFAEF","#3C2A1D","#776044")},
     {id:"halloween",nom:"Halloween",icone:"🎃",description:"Citrouilles, petits fantômes et magie.",palette:palette("#26163F","#654080","#8860AD","#F6EEDF","#F3D9A4","#C64C0D","#FFC83E","#2F7A57","#FFFCF4","#2F243B","#62506D")},
-    {id:"noel",nom:"Noël",icone:"🎄",description:"Guirlandes, cadeaux et sapins illuminés.",palette:palette("#16382F","#246B58","#50927A","#EDF6ED","#E6D4A4","#B7353A","#F2C95B","#33724C","#FFFCF2","#243C32","#576D62")},
+    {id:"noel",nom:"Noël",icone:"🎄",description:"Le Père Noël et Kiko déguisé en lutin.",palette:palette("#16382F","#246B58","#50927A","#EDF6ED","#E6D4A4","#B7353A","#F2C95B","#33724C","#FFFCF2","#243C32","#576D62")},
     {id:"hiver",nom:"Hiver",icone:"❄️",description:"Flocons, cristaux et douceur polaire.",palette:palette("#17334C","#3D7899","#78AECA","#EDF7FD","#C9DDED","#8A4B81","#EACB65","#426E68","#FAFDFF","#253D50","#526B7D")},
     {id:"carnaval",nom:"Carnaval",icone:"🎭",description:"Masques, confettis et couleurs en fête.",palette:palette("#342158","#76509B","#A77BD0","#FAEFFB","#F2D4A4","#B12C68","#FFD15A","#268170","#FFFAFD","#3E2A51","#725577")},
     {id:"printemps",nom:"Printemps",icone:"🌸",description:"Fleurs, papillons et nature qui s’éveille.",palette:palette("#224638","#3F816A","#83B899","#F0F8E8","#E4DFB3","#AF456B","#F5CF5A","#3A7950","#FFFFF5","#2B4333","#60745B")},
@@ -5988,6 +5977,8 @@ window.Themes = (() => {
   const get = id => parId.get(id===undefined ? etat.id : id);
   function image(nom,id=etat.id){
     if(!valide(id))id=etat.id;
+    if(id==="noel" && nom==="bateau")return "img/theme-noel-bateau-equipage.png";
+    if(id==="noel" && /^perroquet-(salut|bravo|tempete)$/.test(nom))return `img/theme-noel-${nom}.png`;
     if(id!=="base" && id!=="halloween" && (nom==="ciel" || nom==="bateau"))return `img/theme-${id}-${nom}.webp`;
     return `img/${id==="halloween" && imagesHalloween.has(nom) ? "halloween-"+nom+".png" : nom+".webp"}`;
   }
@@ -6978,9 +6969,9 @@ function accueil(){
   if (DEMO){
     layer.innerHTML = `
     ${enseigne("Mode démo","On s'entraîne !","Rien n'est enregistré : en quittant, tout revient comme avant.")}
-    <p class="sous" style="text-align:center">Le vendredi complet : tempête, arrivée à l’escale, passeport et carte postale à écrire.</p>
+    <p class="sous" style="text-align:center">Le vendredi complet : affrontez la tempête et échappez au Kraken pour arriver à l’escale, tamponner le passeport et écrire la carte postale.</p>
     <div class="home-cta">
-      ${S.seance?.krakenActif?`<button class="btn prim big" data-go="reprendre-kraken">Reprendre l’essai du Kraken</button>`:""}
+      ${S.seance?.krakenActif&&!S.seance.escaleDemo?`<button class="btn prim big" data-go="reprendre-kraken">Reprendre l’essai du Kraken</button>`:""}
       ${S.seance?.escaleDemo || S.rythme?.arrivee ? `<button class="btn mer big" data-go="reprendre-vendredi">Reprendre la démo du vendredi</button>` : ""}
       <button class="btn prim big" data-go="tempete">Tempête du vendredi · parcours complet</button>
       <button class="btn big" data-go="matin">Rituel (essai)</button>
@@ -7010,7 +7001,6 @@ function accueil(){
     ${port ? enseigne(`Escale ${port} sur ${ESCALES.length-1}`,`Bienvenue ${esc(aLieu(ESCALES[port].v))} !`,"Le bateau est à bon port. Profitons de notre escale avec Kiko.","bravo") : enseigne(`Escale ${p.i+1} sur ${ESCALES.length-1} · ${esc(ESCALES[p.i].v)} → ${esc(ESCALES[p.i+1].v)}`,`Cap sur ${esc(ESCALES[p.i+1].v)} !`,`Encore <b class="num">${Math.ceil(p.reste)}</b> milles. Atteignons le prochain port ensemble pour découvrir son escale et écrire notre carte postale.`)}
     ${!S.nomChoisi?`<div class="carte" style="max-width:760px;text-align:center;padding:16px 22px"><div class="msg-big" style="font-size:clamp(1.4rem,2.6vw,2.1rem)">Avant de partir : le baptême du bateau !</div><p class="sous" style="font-size:1rem">Les élèves votent avec leurs cartes-réponses parmi 4 noms.</p><div class="centre" style="margin-top:10px"><button class="btn prim big" data-go="bapteme">Choisir le nom du bateau</button></div>
       </div>`:""}
-    ${S.reglages.kraken!==false&&!port?KrakenJeu.jauge():""}
     <div class="home-cta">${S.kraken?.phase==="naufrage"?`<button class="btn prim big" data-go="revanche">Préparer notre revanche</button>`:boutons()}</div>
     ${sansPrenoms||nbVues===0?`<div class="carte" style="max-width:640px;padding:12px 18px"><p class="note" style="margin:0">${nbVues===0?"Aucune notion n'est cochée comme « déjà vue » : ouvre Réglages › Questions.":"Astuce : entre les prénoms des élèves dans Réglages › Élèves (numéro de carte = élève)."}</p></div>`:""}`;
   layer.insertAdjacentHTML("beforeend",CoffreUI.compact());
@@ -7287,8 +7277,9 @@ function majOrage(){ const j=$("#o-j"), p=$("#o-pct"); if(j) j.style.width=Math.
 async function rituel(mode, reprise=false){
   if (enJeu) return;
   Kraken.normalise(S);
-  if(!reprise && S.seance?.krakenActif && S.kraken?.phase==="naufrage")return rituel(S.seance.mode,true);
-  if(!reprise && S.kraken?.phase==="naufrage"){accueil();toast("La traversée est perdue. Lancez une revanche pour repartir ensemble.");return;}
+  const nouvelEssaiVendredi=DEMO && mode==="tempete" && !reprise;
+  if(!reprise && !nouvelEssaiVendredi && S.seance?.krakenActif && S.kraken?.phase==="naufrage")return rituel(S.seance.mode,true);
+  if(!reprise && !nouvelEssaiVendredi && S.kraken?.phase==="naufrage"){accueil();toast("La traversée est perdue. Lancez une revanche pour repartir ensemble.");return;}
   if(S.seance && !reprise && !DEMO){
     const d=panneau(`<h2>Un rituel est en cours</h2><p>Tu peux le reprendre ou commencer une nouvelle séance. Les réponses et les milles déjà enregistrés sont conservés.</p><div class="ligne"><button class="btn prim" id="rit-reprendre">Reprendre</button><button class="btn" id="rit-nouveau">Commencer une nouvelle séance</button></div>`);
     d.querySelector("#rit-reprendre").onclick=()=>{d.remove();rituel(S.seance.mode,true);};
@@ -7311,12 +7302,13 @@ async function rituel(mode, reprise=false){
   if (!qs.length){ toast("Aucune question sélectionnée : coche des questions dans Réglages › Questions."); enJeu=false; return accueil(); }
   const p = position(S.milles);
   const escaleDemo=DEMO && mode==="tempete" ? (reprise ? S.seance.escaleDemo : nbEscales()<ESCALES.length-1 ? nbEscales()+1 : 1) : null;
+  const krakenPrevu=escaleDemo ? S.reglages.kraken!==false : Kraken.actif(S);
   if(!reprise){
   if (mode==="tempete"){
     Mer.orage(1); Son.pluie(true); setTimeout(()=>{Mer.eclair();Son.tonnerre();},600);
     layer.innerHTML = avecPerro("tempete",860,`<div class="msg-big">${escaleDemo?"La tempête du vendredi — démo":"Une tempête approche !"}</div>
-      <p class="sous">${qs.length} questions pour la traverser. Plus il y a de bonnes réponses, plus la tempête faiblit. Si elle tombe sous 30 %, le bateau passe et gagne un gros bonus.</p>
-      ${escaleDemo?`<p class="sous">Puis Kiko vous emmène ${esc(aLieu(ESCALES[escaleDemo].v))} : découverte de l’escale, passeport et carte postale à écrire. Tu peux essayer ce vendredi complet n’importe quel jour, quel que soit le score.</p>`:""}
+      <p class="sous">${qs.length} questions pour la traverser. ${krakenPrevu?"Comme pendant le rituel, les bonnes réponses nous protègent du Kraken. S’il nous attrape et que la coque tombe à zéro, le bateau coule : pas d’arrivée à l’escale. S’il reste au moins un point de coque à la fin, nous lui échappons !":"Plus il y a de bonnes réponses, plus la tempête faiblit. Si elle tombe sous 30 %, le bateau passe et gagne un gros bonus."}</p>
+      ${escaleDemo?`<p class="sous">${krakenPrevu?"Si le bateau reste à flot, Kiko vous emmène":"Puis Kiko vous emmène"} ${esc(aLieu(ESCALES[escaleDemo].v))} : découverte de l’escale, passeport et carte postale à écrire. Tu peux essayer ce vendredi complet n’importe quel jour.</p>`:""}
       <div class="centre"><button class="btn prim big" data-go="go">Affronter la tempête</button><button class="btn" data-go="non">Pas aujourd'hui</button></div>`);
   } else if (mode==="tresor"){
     layer.innerHTML = `<div class="carte avec-perro" style="max-width:880px"><img class="perro coin" src="img/tresor.webp" alt=""><div><div class="msg-big">Cap sur l'île au trésor !</div>
@@ -7327,17 +7319,19 @@ async function rituel(mode, reprise=false){
       <p class="sous">${escaleVendredi()?"Ce matin, on commence avec Kiko : le rituel, puis la découverte de l’escale et la carte postale à écrire.":"Sortez vos cartes-réponses, Kiko vous attend !"}<br>Aujourd'hui : ${qs.length} questions, cap sur ${esc(ESCALES[Math.min(p.i+1,ESCALES.length-1)].v)}.</p>
       <div class="centre"><button class="btn prim big" data-go="go">Larguer les amarres !</button><button class="btn" data-go="non">Retour</button></div>`);
   }
-  if(Kraken.actif(S)&&!escaleDemo){const boutonsIntro=layer.querySelector(".centre");if(boutonsIntro)boutonsIntro.insertAdjacentHTML("beforebegin",KrakenJeu.regle()+(DEMO&&S.krakenEssai?`<p class="kraken-regle"><b>Essai sans modifier le voyage de la classe.</b> La coque commence à 3 points. Après « Voir la réponse », choisis « Peu » à chaque question pour voir les trois attaques sur le bateau. À la troisième erreur, le bateau coule et la traversée est perdue. Choisis « Presque tous » pour garder la coque intacte et avancer.</p>`:""));}
+  if(krakenPrevu){const boutonsIntro=layer.querySelector(".centre");if(boutonsIntro)boutonsIntro.insertAdjacentHTML("beforebegin",KrakenJeu.regle()+(DEMO&&S.krakenEssai&&!escaleDemo?`<p class="kraken-regle"><b>Essai sans modifier le voyage de la classe.</b> La coque commence à 3 points. Après « Voir la réponse », choisis « Peu » à chaque question pour voir les trois attaques sur le bateau. À la troisième erreur, le bateau coule et la traversée est perdue. Choisis « Presque tous » pour garder la coque intacte et avancer.</p>`:""));}
   if ((await attendre())==="non"){ enJeu=false; return accueil(); }
   if(escaleDemo){
     S.escalesVues=S.escalesVues.filter(k=>k<escaleDemo);
     S.milles=Math.max(CUM[escaleDemo-1],Math.min(S.milles,CUM[escaleDemo]-1));
     S.rythme={derniereSemaine:null,arrivee:null}; S.carteAEcrire=null;
     if(S.tampons) delete S.tampons[escaleDemo];
+    // Chaque nouvel essai commence à neuf ; une reprise conserve tous les dégâts.
+    S.seance=null;delete S.kraken;delete S.krakenEssai;Kraken.debut(S);KrakenMer.reset();
     majBarre(); majMer(); Mer.snap();
   }
   Kraken.debut(S);
-  S.seance={krakenActif:Kraken.actif(S)&&!escaleDemo,id:idVoyage(),mode,qs:copieJeu(qs),index:0,depart:S.milles,res:[],scores:{},force:100,extra:[],question:null,
+  S.seance={krakenActif:Kraken.actif(S),id:idVoyage(),mode,qs:copieJeu(qs),index:0,depart:S.milles,res:[],scores:{},force:100,extra:[],question:null,
     recompense:preparee?.recompense||S.reglages.recompense, groupe:preparee?.groupe||[], preparation:preparee?.id||null,escaleDemo};
   }
   const seance=S.seance;
@@ -7384,10 +7378,11 @@ async function rituel(mode, reprise=false){
       seance.gainTempete=g;seance.bonusTempete=true;checkpointRituel();
     }
     if(!DEMO && escaleSeanceTerminee(S))checkpointRituel();
-    Mer.orage(0); Son.pluie(false); if(passe) Son.fanfare(); majBarre(); majMer(); Mer.rafale(1);
+    Mer.orage(0); Son.pluie(false); majBarre(); majMer(); Mer.rafale(1);
     const port=escaleAuPort();
-    layer.innerHTML = avecPerro(passe?"bravo":"tempete",820,`<div class="msg-big">${port ? "La terre se dessine à l’horizon !" : passe?"Tempête traversée !":"Le bateau s'est mis à l'abri"}</div>
-      <p class="sous">${port ? `La mer se calme. Kiko aperçoit ${esc(ESCALES[port].v)} : l’équipage arrive à bon port !` : passe?`Bravo l'équipage ! Le vent de la tempête pousse le bateau : +${g} milles.`:`La tempête était trop forte cette fois, mais le bateau avance quand même un peu : +${g} milles.`}</p>
+    if(passe || port)Son.fanfare();
+    layer.innerHTML = avecPerro(passe||port?"bravo":"tempete",820,`<div class="msg-big">${port ? "La terre se dessine à l’horizon !" : passe?"Tempête traversée !":"Le bateau s'est mis à l'abri"}</div>
+      <p class="sous">${port ? `${seance.krakenActif?"Nous avons échappé au Kraken ! ":""}La mer se calme. Kiko aperçoit ${esc(ESCALES[port].v)} : l’équipage arrive à bon port !` : passe?`Bravo l'équipage ! Le vent de la tempête pousse le bateau : +${g} milles.`:`La tempête était trop forte cette fois, mais le bateau avance quand même un peu : +${g} milles.`}</p>
       <div class="centre"><button class="btn prim big" data-go="ok">Continuer</button></div>`);
     await attendre();
   }
