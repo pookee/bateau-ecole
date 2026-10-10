@@ -168,6 +168,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .manuel .lab{font-weight:700;color:var(--gris)}
 .gain{font-family:var(--display);font-weight:800;font-size:1.6rem;color:var(--mer)}
 /* écran des questions (TBI) : --qf est choisie par ajusteQ() pour que le texte soit le plus grand possible en laissant la mer et le bateau visibles */
+.fraction{display:inline-flex;flex-direction:column;align-items:stretch;vertical-align:middle;text-align:center;line-height:1;font-size:.9em;white-space:nowrap;word-break:normal;margin:.08em .1em;font-variant-numeric:tabular-nums}
+.fraction-num{display:block;padding:0 .18em .12em}
+.fraction-den{display:block;border-top:.07em solid currentColor;padding:.12em .18em 0}
+.fq-apercu{margin:12px 0;padding:12px;background:var(--sable);border-radius:12px}.fq-apercu summary{cursor:pointer;font-weight:700}.fq-rendu p{white-space:pre-line}.fq-rendu ul{padding-left:1.5em}.fq-rendu li{margin:.4em 0}
 .carte.qc{width:min(1600px,100%);font-size:var(--qf,28px);padding:clamp(12px,1.8vh,22px) clamp(16px,1.8vw,30px)}
 .qc .chip{font-size:max(1rem,.4em)}
 .qc .q-num{font-size:max(1.1rem,.4em)}
@@ -3456,6 +3460,15 @@ const GEOGRAPHIE = {
 
 const MATIERES = {fr:{nom:"Français",c:"#C2415D"},ma:{nom:"Maths",c:"#2466B3"},sc:{nom:"Sciences",c:"#2F7A57"},hi:{nom:"Histoire",c:"#8A5A2B"},ar:{nom:"Arts",c:"#7A4DB3"},an:{nom:"Anglais",c:"#B86E0A"},ge:{nom:"Géographie",c:"#157A82"}};
 
+// Chapitres retirés des prochaines révisions. Les intitulés et les lignes de
+// Q_RAW restent disponibles pour lire les anciens résultats sans déplacer les IDs.
+const NOTIONS_LECTURES_RETIREES = {
+ echiquier:{id:"echiquier",m:"fr",s:"Lecture",t:"La petite reine de l’échiquier"},
+ kayabu:{id:"kayabu",m:"fr",s:"Lecture",t:"Kayabu"},
+ pageecriture:{id:"pageecriture",m:"fr",s:"Lecture",t:"Page d’écriture · Jacques Prévert"}
+};
+const questionLectureRetiree = q => !!NOTIONS_LECTURES_RETIREES[q?.n];
+
 const NOTIONS = [
  {"id":"types","m":"fr","s":"Grammaire","t":"GRAM 1 · Les types de phrases","vue":true},
  {"id":"formes","m":"fr","s":"Grammaire","t":"GRAM 1 · Les formes de phrases","vue":true},
@@ -3466,8 +3479,6 @@ const NOTIONS = [
  {"id":"alpha","m":"fr","s":"Vocabulaire","t":"VOC 1 · Le dictionnaire et l’ordre alphabétique","vue":true},
  {"id":"textes","m":"fr","s":"Lecture","t":"LECT 1 · Les types de textes","vue":true},
  {"id":"connecteurs","m":"fr","s":"Lecture","t":"LECT 2 · Les connecteurs","vue":true},
- {"id":"echiquier","m":"fr","s":"Lecture","t":"La petite reine de l’échiquier","vue":true},
- {"id":"kayabu","m":"fr","s":"Lecture","t":"Kayabu","vue":true},
  {"id":"coherence","m":"fr","s":"Production d’écrit","t":"P1 · Un texte cohérent","vue":true},
  {"id":"nombres","m":"ma","s":"Numération","t":"NUM 1–2 · Les nombres jusqu’à 9 999","vue":true},
  {"id":"decomp","m":"ma","s":"Numération","t":"NUM 2 · Décomposer les nombres jusqu’à 9 999","vue":true},
@@ -3490,7 +3501,6 @@ const NOTIONS = [
  {"id":"perpendiculaires","m":"ma","s":"Géométrie","t":"GEOM 2 · Les droites perpendiculaires","vue":true},
  {"id":"chorale","m":"ar","s":"Éducation musicale","t":"La chorale · Voix et écoute","vue":true},
  {"id":"graduees","m":"ma","s":"Numération","t":"Les droites graduées","vue":true},
- {"id":"pageecriture","m":"fr","s":"Lecture","t":"Page d’écriture · Jacques Prévert","vue":true},
  {"id":"dictee2","m":"fr","s":"Orthographe","t":"Dictée 2 · La vie des Gaulois","vue":true},
  {"id":"sonj","m":"fr","s":"Orthographe","t":"O3 · Le son [j]","vue":true},
  {"id":"animalmilieu","m":"ar","s":"Arts plastiques","t":"Un animal habillé de son milieu","vue":true},
@@ -5135,6 +5145,23 @@ const ROUTES = [
 "use strict";
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+// Les données et les champs de saisie restent en texte ; seul le contenu pédagogique est mis en forme.
+// Les dates complètes, adresses et chemins ne sont jamais interprétés comme des fractions.
+function texteMath(texte){
+  const s=String(texte??""); let fin=0, html="";
+  const motifs=/(?:https?:\/\/|www\.)[^\s<>"']+|\b\d{1,4}\/\d{1,2}\/\d{1,4}\b|(\d+)[ \t]*\/[ \t]*(\d+)/g;
+  for(const m of s.matchAll(motifs)){
+    html+=esc(s.slice(fin,m.index));
+    const avant=s.slice(0,m.index), apres=s.slice(m.index+m[0].length);
+    const isole=!/[\p{L}\p{N}_/.:]$/u.test(avant)&&!/^[/\p{L}\p{N}_]/u.test(apres);
+    const score=/(?:score|note|résultat)\s*(?::|de)?\s*$/i.test(avant);
+    html+=m[1]&&isole&&!score
+      ? `<span class="fraction" role="math" aria-label="${m[1]} sur ${m[2]}"><span class="fraction-num" aria-hidden="true">${m[1]}</span><span class="fraction-den" aria-hidden="true">${m[2]}</span></span>`
+      : esc(m[0]);
+    fin=m.index+m[0].length;
+  }
+  return html+esc(s.slice(fin));
+}
 const LET = ["A","B","C","D"];
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const lsGet = k => { try { return localStorage.getItem(k); } catch(e) { return null; } };
@@ -5206,13 +5233,13 @@ function position(m){ // {i: escale atteinte, p: progression 0-1 vers i+1}
 
 /* ---------- état du jeu ---------- */
 function questionDefaut(k){ const q=Q_RAW[k]; const o={id:"d"+k,n:q[0],q:q[1],c:q[2].slice(),ok:q[3],active:true}; if(q[4]) o.le=q[4]; return o; } // le : date de la leçon
-function questionActive(q, etat=S){ return q.active!==false && !!etat.notions.find(n=>n.id===q.n)?.vue; }
+function questionActive(q, etat=S){ return !questionLectureRetiree(q) && q.active!==false && !!etat.notions.find(n=>n.id===q.n)?.vue; }
 function sourceQuestion(q){
   const k=/^d(\d+)$/.exec(q.id||""); const r=k && Q_RAW[+k[1]];
   return r && q.n===r[0] && q.q===r[1] && q.ok===r[3] && JSON.stringify(q.c)===JSON.stringify(r[2]) ? Q_SOURCES[q.id] : null;
 }
 function banqueDefaut(){
-  return Q_RAW.map((_,k)=>questionDefaut(k));
+  return Q_RAW.map((_,k)=>questionDefaut(k)).filter(q=>!questionLectureRetiree(q));
 }
 const idVoyage = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function etatDefaut(){
@@ -5253,10 +5280,25 @@ function charge(obj){
   o.questions = o.questions.map(q=>{ const r=typeof QREVUES!=="undefined" && QREVUES[q.id]; if(r && (Array.isArray(r[0])?r:[r]).some(v=>ancienne(q,v))){ delete o.stats.q[q.id]; return {...questionDefaut(+q.id.slice(1)),active:questionActive(q,o)}; } return q; });
   const ont = new Set(o.questions.map(q=>q.id));
   for (let k=(obj.banque||128); k<Q_RAW.length; k++) if(!ont.has("d"+k)) o.questions.push(questionDefaut(k)); // 128 : la banque avant le 28/09 ; une question supprimée ne revient pas
+  // Retire les lectures étudiées sans effacer les statistiques ni les anciens bilans.
+  o.questions = o.questions.filter(q=>!questionLectureRetiree(q));
+  o.notions = o.notions.filter(n=>!NOTIONS_LECTURES_RETIREES[n.id]);
   o.banque = Math.max(obj.banque||128, Q_RAW.length);
   // Enrichit les questions d'origine sans toucher aux dates et aux choix de l'enseignante.
   o.questions.forEach(q=>{ if(!q.le && sourceQuestion(q)) q.le=Q_RAW[+q.id.slice(1)][4]; });
   if(o.seance && (!Array.isArray(o.seance.qs) || !o.seance.qs.length || !Array.isArray(o.seance.res) || !Number.isInteger(o.seance.index) || o.seance.index<0 || o.seance.index>o.seance.qs.length)) o.seance=null;
+  if(o.seance && o.seance.qs.slice(o.seance.index).some(questionLectureRetiree)){
+    const s=o.seance, index=s.index, res=s.res;
+    // Les réponses déjà validées gardent leur place dans le bilan et l'historique.
+    // Une question retirée, ouverte mais pas encore répondue, est simplement sautée.
+    const gardes=s.qs.map((q,i)=>({q,i})).filter(({q,i})=>i<index || !!s.res[i] || !questionLectureRetiree(q));
+    const couranteRetiree=questionLectureRetiree(s.qs[index]);
+    s.qs=gardes.map(({q})=>q);
+    s.res=gardes.filter(({i})=>i<res.length).map(({i})=>res[i]);
+    s.index=gardes.filter(({i})=>i<index || i===index && couranteRetiree && !!res[i]).length;
+    if(couranteRetiree)s.question=null;
+    if(!s.qs.length)o.seance=null;
+  }
   // Anciens bilans laissés ouverts le vendredi : l'arrivée reste acquise après le week-end.
   if(escaleSeanceTerminee(o))o.maj=Math.max(Date.now(),(o.maj||0)+1);
   return o;
@@ -5669,8 +5711,8 @@ async function poserQuestion(q, i, n, mode){
       ${mode==="tempete"?`<div class="orage-jauge"><div style="color:#fff;font-family:var(--display);font-weight:700;display:flex;justify-content:space-between"><span>Force de la tempête</span><span class="num" id="o-pct"></span></div><div class="jauge"><i id="o-j"></i></div></div>`:""}
       <div class="carte qc" style="margin-top:${mode==="tempete"?"10px":"0"}">
         <div class="q-head"><span class="chip" style="background:${m.c}">${esc(m.nom)} · ${esc(no.t)}</span><span class="q-num num">Question ${i+1} / ${n}</span></div>
-        <div class="q-txt">${insec(esc(qv.q))}</div>
-        <div class="choixq">${qv.c.map((c,k)=>`<div class="opt" id="opt${k}"><span class="bar-r"></span><span class="l L${k}">${LET[k]}</span><span class="tx">${insec(esc(c))}</span><span class="cpt num"></span></div>`).join("")}</div>
+        <div class="q-txt">${texteMath(insec(qv.q))}</div>
+        <div class="choixq">${qv.c.map((c,k)=>`<div class="opt" id="opt${k}"><span class="bar-r"></span><span class="l L${k}">${LET[k]}</span><span class="tx">${texteMath(insec(c))}</span><span class="cpt num"></span></div>`).join("")}</div>
         <div class="q-bas"><div class="q-pied" id="q-pied">
           <div class="lus"><div><div class="num"><b id="q-lus">0 / 0</b></div><div style="font-size:.85rem">cartes lues</div></div><div class="dots" id="q-dots"></div></div>
           ${telOn?"":`<span class="note" style="max-width:24ch">Levez vos cartes (ou vos ardoises), puis on regarde la réponse.</span>`}
@@ -5720,7 +5762,7 @@ async function poserQuestion(q, i, n, mode){
 
 function trucDe(q){ if(q.truc) return q.truc; const m=/^d(\d+)$/.exec(q.id||""); if(m){ const r=Q_RAW[+m[1]]; if(r && r[1]===q.q && typeof TRUCS!=="undefined") return TRUCS[+m[1]]; } return ""; }
 function afficheTruc(q){ const t=trucDe(q); if(!t) return; const p=$("#q-pied"); if(!p) return;
-  p.insertAdjacentHTML("beforebegin",`<div class="truc"><img src="img/halloween-perroquet-salut.png" alt=""><div><b>Le truc de Kiko</b><span>${insec(esc(t))}</span></div></div>`); }
+  p.insertAdjacentHTML("beforebegin",`<div class="truc"><img src="img/halloween-perroquet-salut.png" alt=""><div><b>Le truc de Kiko</b><span>${texteMath(insec(t))}</span></div></div>`); }
 function gainPour(pct){ return Math.max(1,Math.round((1+4*pct)*S.reglages.vitesse)); }
 async function afficheScore(pct, texte, mode, dejaCompte=false){
   let html = texte ? `<span class="gain">${esc(texte)}</span>` : "";
@@ -6370,7 +6412,7 @@ function rendR(){
     const nots = S.notions.filter(n=>n.vue); const act=S.eleves.filter(e=>e.actif);
     const cell = a => { if(!a||!a[1]) return `<td>–</td>`; const p=a[0]/a[1]; return `<td class="${p>=.7?"p2":p>=.4?"p1":"p0"} num" title="${a[0]} sur ${a[1]}">${Math.round(p*100)} %</td>`; };
     const rat = Object.entries(S.stats.q).filter(([id,s])=>s.n).sort((a,b)=>a[1].last-b[1].last).slice(0,8)
-      .map(([id,s])=>{ const q=S.questions.find(x=>x.id===id); return q?`<li><b class="num">${Math.round(s.last*100)} %</b> · ${esc(q.q.replace(/\n/g," "))}</li>`:""; }).join("");
+      .map(([id,s])=>{ const q=S.questions.find(x=>x.id===id); return q?`<li><b class="num">${Math.round(s.last*100)} %</b> · ${texteMath(q.q.replace(/\n/g," "))}</li>`:""; }).join("");
     c.innerHTML = `<p class="note">Pourcentage de bonnes réponses de chaque élève, par notion (seulement quand les cartes ont été photographiées).</p>
       <div class="tbl-wrap"><table class="bilan"><tr><th>Élève</th>${nots.map(n=>`<th>${esc(n.t)}</th>`).join("")}</tr>
       ${act.map(e=>`<tr><td class="nm">${e.n}. ${esc(e.prenom||"")}</td>${nots.map(n=>cell((S.stats.el[e.n]||{})[n.id])).join("")}</tr>`).join("")}</table></div>
@@ -6430,7 +6472,7 @@ function rendQuestions(c){
       <summary><span class="banque-chevron" aria-hidden="true">›</span><span>${esc(n.t)}</span><span class="note" data-compte="${esc(n.id)}">${compte(qs)}</span></summary>
       <div class="ligne"><label><input type="checkbox" data-vue="${esc(n.id)}" aria-label="Toutes les questions : ${esc(n.t)}"> Tout cocher / décocher dans ce chapitre</label></div>
       <ul class="qliste">${qs.map(q=>{ const source=sourceQuestion(q); const cours=source&&COURS[source.cours];
-        return `<li data-q-ligne="${esc(q.id)}"><label class="q-selection"><input type="checkbox" data-question="${esc(q.id)}" ${questionActive(q)?"checked":""}><span class="q">${esc(q.q)}<br><span class="rep">${esc(q.c[q.ok])}</span> <span class="note">· ${q.c.filter((_,k)=>k!==q.ok).map(esc).join(" · ")}</span>${cours?`<small class="q-source" title="${esc(cours.fichier)}">${esc(cours.date.split("-").reverse().join("/"))} · diapo ${esc(source.diapos.join(", "))}</small>`:""}</span></label><span class="q-actions"><button class="ed" data-ed="${esc(q.id)}">Modifier</button><button data-dup="${esc(q.id)}">Dupliquer</button><button data-del="${esc(q.id)}">Supprimer</button></span></li>`; }).join("")}</ul>
+        return `<li data-q-ligne="${esc(q.id)}"><label class="q-selection"><input type="checkbox" data-question="${esc(q.id)}" ${questionActive(q)?"checked":""}><span class="q">${texteMath(q.q)}<br><span class="rep">${texteMath(q.c[q.ok])}</span> <span class="note">· ${q.c.filter((_,k)=>k!==q.ok).map(texteMath).join(" · ")}</span>${cours?`<small class="q-source" title="${esc(cours.fichier)}">${esc(cours.date.split("-").reverse().join("/"))} · diapo ${esc(source.diapos.join(", "))}</small>`:""}</span></label><span class="q-actions"><button class="ed" data-ed="${esc(q.id)}">Modifier</button><button data-dup="${esc(q.id)}">Dupliquer</button><button data-del="${esc(q.id)}">Supprimer</button></span></li>`; }).join("")}</ul>
       <button class="btn mer" data-add="${esc(n.id)}">Ajouter une question</button><div data-form="${esc(n.id)}"></div></details>`;
   };
   const dateBanque = new Date(Object.values(COURS).map(c=>c.date).sort().pop()+"T12:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"});
@@ -6486,8 +6528,14 @@ function rendQuestions(c){
         <span class="note">Coche le rond de la bonne réponse.</span>
         <label for="fq-date">Date de la leçon</label><input type="date" id="fq-date" value="${esc(q.le||"")}">
         <label for="fq-truc">Le truc de Kiko (explication affichée après la réponse, facultatif)</label><textarea id="fq-truc" rows="2" maxlength="220">${esc(q.truc||(typeof trucDe==="function"?trucDe(q):""))}</textarea>
+        <details class="fq-apercu"><summary>Aperçu de la question</summary><div class="fq-rendu"></div></details>
         <div class="ligne"><button class="btn prim" data-save="${q.id}">Enregistrer</button><button class="btn" data-annule="1">Annuler</button></div></div>`;
-      zone._q = q; }
+      const apercu=()=>{
+        const question=zone.querySelector("#fq-t").value, choix=[0,1,2,3].map(k=>zone.querySelector("#fq-c"+k).value), truc=zone.querySelector("#fq-truc").value;
+        zone.querySelector(".fq-rendu").innerHTML=`<p><b>${texteMath(question)}</b></p><ul>${choix.map((v,k)=>v?`<li><b>${LET[k]}.</b> ${texteMath(v)}</li>`:"").join("")}</ul>${truc?`<p>Le truc de Kiko : ${texteMath(truc)}</p>`:""}`;
+      };
+      apercu();zone.querySelector(".fq-apercu").open=!!zone.querySelector(".fq-rendu .fraction");
+      zone.oninput=apercu;zone._q = q; }
     if (t.dataset.annule){ t.closest("[data-form]").innerHTML=""; }
     if (t.dataset.save){ const zone=t.closest("[data-form]"), q=zone._q;
       const txt=zone.querySelector("#fq-t").value.trim(); const ch=[0,1,2,3].map(k=>zone.querySelector("#fq-c"+k).value.trim());
@@ -6971,8 +7019,23 @@ const Preparation = (()=>{
   let doc={maj:0,seance:null}, choixChapitres={maj:0}, db=null, pret=null;
   try { doc=JSON.parse(lsGet(CLE))||doc; } catch(e){}
   function valide(s){ return s && typeof s.id==="string" && typeof s.date==="string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date) && (!s.groupe || Array.isArray(s.groupe) && s.groupe.every(n=>Number.isInteger(n)&&n>=1&&n<=NB_CARTES)) && Array.isArray(s.questions) && s.questions.length>0 && s.questions.length<=15 && s.questions.every(q=>q && typeof q.q==="string" && Array.isArray(q.c) && q.c.length>=2 && q.c.length<=4 && Number.isInteger(q.ok) && q.ok>=0 && q.ok<q.c.length); }
+  function sansLectures(s){
+    if(!s || !Array.isArray(s.questions))return s;
+    const propre=copieJeu(s);
+    propre.questions=propre.questions.filter(q=>!questionLectureRetiree(q));
+    if(!propre.questions.length)return null;
+    if(Array.isArray(propre.notions))propre.notions=propre.notions.filter(n=>!NOTIONS_LECTURES_RETIREES[n]);
+    if(NOTIONS_LECTURES_RETIREES[propre.filtres?.chapitre])propre.filtres.chapitre="";
+    return propre;
+  }
+  function nettoie(){
+    const seance=sansLectures(doc.seance);
+    if(JSON.stringify(seance)===JSON.stringify(doc.seance))return false;
+    doc={...doc,seance,maj:Math.max(Date.now(),(doc.maj||0)+1)};return true;
+  }
   // Les anciennes préparations, sans mode, restent des rituels classiques.
-  const get=()=>valide(doc.seance) ? {notions:[],groupe:[],...copieJeu(doc.seance),mode:doc.seance.mode==="tempete"?"tempete":"matin"} : null;
+  // Filtrer aussi ici protège une préparation locale avant la connexion à la base.
+  const get=()=>{const s=sansLectures(doc.seance);return valide(s) ? {notions:[],groupe:[],...s,mode:s.mode==="tempete"?"tempete":"matin"} : null;};
   const titre=(s=get())=>s?.mode==="tempete" ? "Tempête préparée" : "Rituel préparé";
   function annonce(){
     lsSet(CLE,JSON.stringify(doc));
@@ -6983,10 +7046,15 @@ const Preparation = (()=>{
   }
   async function init(){
     if(pret) return pret;
-    pret=(async()=>{ db=await useCap("db"); if(!db) return;
+    pret=(async()=>{ db=await useCap("db"); if(!db){if(nettoie())annonce();return;}
       const s=await db.doc(DOC).get(); if(s.exists && (s.data().maj||0)>doc.maj) doc=s.data();
-      else if(doc.maj && (!s.exists || doc.maj>(s.data().maj||0))) await db.doc(DOC).set(doc);
-      db.doc(DOC).onSnapshot(s=>{ if(s.exists && (s.data().maj||0)>doc.maj){doc=s.data();annonce();} });
+      // Choisir d'abord la version la plus récente, puis migrer sa préparation.
+      const modifie=nettoie();
+      if(modifie || doc.maj && (!s.exists || doc.maj>(s.data().maj||0))) await db.doc(DOC).set(doc);
+      db.doc(DOC).onSnapshot(s=>{ if(s.exists && (s.data().maj||0)>doc.maj){
+        doc=s.data();const modifie=nettoie();annonce();
+        if(modifie)db.doc(DOC).set(doc).catch(e=>console.warn("préparation",e));
+      } });
       const ch=await db.doc(CHAPITRES).get();if(ch.exists)choixChapitres=ch.data();
       db.doc(CHAPITRES).onSnapshot(s=>{
         if(!s.exists)return;choixChapitres=s.data();
@@ -6998,7 +7066,7 @@ const Preparation = (()=>{
     })().catch(e=>{console.warn("préparation",e);pret=null;}); return pret;
   }
   async function enregistre(seance){
-    await init(); const suivant={maj:Math.max(Date.now(),(doc.maj||0)+1),seance:seance ? copieJeu(seance) : null};
+    await init(); const suivant={maj:Math.max(Date.now(),(doc.maj||0)+1),seance:seance ? sansLectures(seance) : null};
     if(db) await db.doc(DOC).set(suivant); doc=suivant; annonce();
   }
   async function banque(){
@@ -7130,7 +7198,7 @@ const Preparation = (()=>{
         box.querySelector(".prep-compte").textContent=`${choix.length} question${choix.length>1?"s":""} au choix`;
         box.querySelector(".prep-choix").innerHTML=choix.length ? choix.map(q=>{
           const no=etat.notions.find(n=>n.id===q.n);
-          return `<button type="button" class="prep-question" data-question="${esc(q.id)}"><span class="note">${esc(MATIERES[no?.m]?.nom||"")} · ${esc(no?.t||q.n)}</span><b>${esc(q.q)}</b><span>Réponse : ${esc(q.c[q.ok])}</span></button>`;
+          return `<button type="button" class="prep-question" data-question="${esc(q.id)}"><span class="note">${esc(MATIERES[no?.m]?.nom||"")} · ${esc(no?.t||q.n)}</span><b>${texteMath(q.q)}</b><span>Réponse : ${texteMath(q.c[q.ok])}</span></button>`;
         }).join("") : `<p>Aucune autre question. Élargis les filtres ou modifie la recherche.</p>`;
       };
       const rendChoix=()=>{box.innerHTML=`<h3>Remplacer la question ${i+1}</h3>${filtresHTML(f,"remplace")}<p class="prep-compte note" role="status"></p><div class="prep-choix"></div><button class="btn petit" data-fermer-choix>Fermer le choix</button>`;resultats();};
@@ -7149,7 +7217,7 @@ const Preparation = (()=>{
         <div id="prep-filtres">${filtresHTML(s.filtres,"prep")}</div><p id="prep-disponibles" class="note" role="status"></p>
         <div class="ligne"><button class="btn" data-prep="tirer">Proposer d'autres questions</button><button class="btn petit" data-prep="filtres-effacer">Effacer les filtres</button></div>
         <h3>Les ${s.questions.length} questions de la séance</h3>
-        <ol class="prep-liste">${s.questions.map((q,i)=>`<li><span class="note">${esc(etat.notions.find(n=>n.id===q.n)?.t||q.n)}</span><b>${esc(q.q)}</b><span>Réponse : ${esc(q.c[q.ok])}</span><div class="prep-actions"><button class="btn petit" data-prep="haut" data-i="${i}" aria-label="Monter la question ${i+1}" ${i===0?"disabled":""}>↑</button><button class="btn petit" data-prep="bas" data-i="${i}" aria-label="Descendre la question ${i+1}" ${i===s.questions.length-1?"disabled":""}>↓</button><button class="btn petit" data-prep="remplacer" data-i="${i}">Remplacer</button></div></li>`).join("")}</ol>
+        <ol class="prep-liste">${s.questions.map((q,i)=>`<li><span class="note">${esc(etat.notions.find(n=>n.id===q.n)?.t||q.n)}</span><b>${texteMath(q.q)}</b><span>Réponse : ${texteMath(q.c[q.ok])}</span><div class="prep-actions"><button class="btn petit" data-prep="haut" data-i="${i}" aria-label="Monter la question ${i+1}" ${i===0?"disabled":""}>↑</button><button class="btn petit" data-prep="bas" data-i="${i}" aria-label="Descendre la question ${i+1}" ${i===s.questions.length-1?"disabled":""}>↓</button><button class="btn petit" data-prep="remplacer" data-i="${i}">Remplacer</button></div></li>`).join("")}</ol>
         ${!s.questions.length?`<p>Aucune question sélectionnée pour cet objectif. Active des questions dans la banque ou choisis toutes les notions.</p>`:""}
         <p id="prep-message" role="status"></p><div class="ligne"><button class="btn prim" data-prep="sauver" ${!s.questions.length?"disabled":""}>Enregistrer la séance</button>${ancien?`<button class="btn" data-prep="effacer">Retirer la séance préparée</button>`:""}</div>`;
       majCompte();noticeVendredi();
@@ -7197,7 +7265,7 @@ const Preparation = (()=>{
       }
     };rend();
   }
-  return {init,get,titre,ouvre,chapitres,appliqueChapitres,tire,banque,enregistre,exporte:()=>copieJeu(doc),
+  return {init,get,titre,ouvre,chapitres,appliqueChapitres,tire,banque,enregistre,exporte:()=>copieJeu({...doc,seance:sansLectures(doc.seance)}),
     importe:async o=>{if(o && (o.seance===null||valide(o.seance))) await enregistre(o.seance);},
     consomme:async id=>{if(get()?.id===id)await enregistre(null);} };
 })();
@@ -9380,7 +9448,7 @@ const Historique = (() => {
     let ok = 0, t = 0, la = false; (s.q||[]).forEach(q=>{ if (!(q.p||[]).includes(n)) return; la = true; const r = (q.r||{})[n]; if (!r) return; t++; if (r===q.ok) ok++; });
     return la && t ? {ok, n:t} : la ? {ok:0, n:0} : null;
   }
-  const nomNotion = id => { const x = (typeof S!=="undefined" && S.notions || []).find(n=>n.id===id) || (typeof NOTIONS!=="undefined" ? NOTIONS.find(n=>n.id===id) : null); return x ? x.t : id; };
+  const nomNotion = id => { const x = (typeof S!=="undefined" && S.notions || []).find(n=>n.id===id) || (typeof NOTIONS!=="undefined" ? NOTIONS.find(n=>n.id===id) : null) || (typeof NOTIONS_LECTURES_RETIREES!=="undefined" ? NOTIONS_LECTURES_RETIREES[id] : null); return x ? x.t : id; };
   function titre(s){
     if (s.a==="pavillons") return "Hissez les pavillons";
     return s.mode==="tempete" ? "La tempête" : s.mode==="tresor" ? "L'île au trésor" : "Rituel du matin";
@@ -9558,7 +9626,7 @@ const Historique = (() => {
           <p class="aut-note" style="margin:0">✓ bonne réponse · ✗ erreur (pavillon oublié sur un calcul juste, ou hissé sur un faux)</p></div>`;
     } else {
       const q = s.q||[];
-      corps = `<div class="aa-bloc"><h3>Les questions</h3><table class="hi-table"><tr><th>Question</th><th></th><th>Réussite</th></tr>${q.map(x=>`<tr><td>${esc2(x.t.length>70 ? x.t.slice(0,68)+"…" : x.t)}<small style="display:block;color:var(--gris)">${esc2(nomNotion(x.n))} · réponse ${esc2(x.ok)}</small></td><td><div class="hi-barre"><i style="width:${Math.round((x.pct||0)*100)}%;background:${couleur(x.pct)}"></i></div></td><td style="color:${couleur(x.pct)}">${pc(x.pct)}</td></tr>`).join("")}</table></div>
+      corps = `<div class="aa-bloc"><h3>Les questions</h3><table class="hi-table"><tr><th>Question</th><th></th><th>Réussite</th></tr>${q.map(x=>`<tr><td>${texteMath(x.t.length>70 ? x.t.slice(0,68)+"…" : x.t)}<small style="display:block;color:var(--gris)">${esc2(nomNotion(x.n))} · réponse ${esc2(x.ok)}</small></td><td><div class="hi-barre"><i style="width:${Math.round((x.pct||0)*100)}%;background:${couleur(x.pct)}"></i></div></td><td style="color:${couleur(x.pct)}">${pc(x.pct)}</td></tr>`).join("")}</table></div>
         ${q.some(x=>Object.keys(x.r||{}).length) ? `<div class="aa-bloc"><h3>Élève par élève</h3><div class="hi-grille"><table><tr><th></th>${q.map((x,i)=>`<th title="${esc2(x.t)}">${i+1}</th>`).join("")}<th>Total</th></tr>
           ${presents.map(n=>{ const e = eleveSeance(s, n); return `<tr><td>${esc2(nomEl(n, s))}</td>${q.map(x=>{ const a = (x.r||{})[n]; return `<td class="${!a ? "v" : a===x.ok ? "o" : "x"}">${!a ? "Non lu" : a===x.ok ? "✓ Juste" : "✗ "+esc2(a)}</td>`; }).join("")}<td><b>${e && e.n ? e.ok+"/"+e.n : "–"}</b></td></tr>`; }).join("")}</table></div>
           <p class="aut-note" style="margin:0">✓ bonne réponse · la lettre : la réponse choisie quand elle était fausse · « Non lu » : carte non lue, exclue du score</p></div>` : `<div class="aa-bloc"><p class="hi-vide">Réussite estimée à main levée : pas de réponse par élève pour cette séance.</p></div>`}`;
@@ -9668,7 +9736,7 @@ const Tel = (() => {
       return `<button type="button" data-carte="${n}" class="${cl}" ${TQ?.open?"":"disabled"} aria-label="${esc(p||"Carte "+n)} : ${esc(rep[n]||"non lu")}${TQ?.open?", corriger":""}"><b>${n}</b>${esc(p||"")}<small>${rep[n]?esc(rep[n])+" · ":""}${etat}${fixes[n]!==undefined?" · corrigée":""}</small></button>`; }).join("");
     grille.scrollTop=defilement;
     if (!TQ||!TQ.qid){ $("#t-qk").textContent="Pas de question en cours"; $("#t-qt").textContent= tbiVu ? "Lance le rituel sur le TBI." : (window.BATEAU_AUTONOME ? "Affiche le jeu sur l'ordinateur de la classe." : "Ouvre le jeu sur l'ordinateur du TBI (même lien, même compte)."); }
-    else { $("#t-qk").textContent = TQ.open ? "Question en cours : levez les cartes !" : (TQ.bonne ? "Réponse : "+TQ.bonne : "Question fermée"); $("#t-qt").textContent = TQ.txt||""; }
+    else { $("#t-qk").textContent = TQ.open ? "Question en cours : levez les cartes !" : (TQ.bonne ? "Réponse : "+TQ.bonne : "Question fermée"); $("#t-qt").innerHTML = texteMath(TQ.txt); }
     $("#t-rev").disabled = !(TQ&&TQ.open); $("#t-next").disabled = !(TQ&&TQ.qid&&!TQ.open);
     if (window.EcransAutonome && EcransAutonome.scan) EcransAutonome.scan(cs, rep, TQ);
   }
@@ -9709,7 +9777,7 @@ const Tel = (() => {
     $("#t-grid").onclick=e=>{
       const b=e.target.closest("[data-carte]");if(!b||!TQ?.open)return;
       const n=+b.dataset.carte,qid=TQ.qid,nom=cartes().find(x=>x[0]===n)?.[1]||"Carte "+n;
-      const d=panneau(`<h2>Corriger la réponse de ${esc(nom)}</h2><p>La correction reste prioritaire sur la caméra pour cette question.</p><div class="correction-choix">${(TQ.choix||LET.slice(0,TQ.nb)).map((c,i)=>`<button class="btn" data-reponse="${LET[i]}">${LET[i]} · ${esc(c)}</button>`).join("")}<button class="btn" data-reponse="">Non lu</button><button class="btn" data-reponse="auto">Revenir à la caméra</button></div>`);
+      const d=panneau(`<h2>Corriger la réponse de ${esc(nom)}</h2><p>La correction reste prioritaire sur la caméra pour cette question.</p><div class="correction-choix">${(TQ.choix||LET.slice(0,TQ.nb)).map((c,i)=>`<button class="btn" data-reponse="${LET[i]}">${LET[i]} · ${texteMath(c)}</button>`).join("")}<button class="btn" data-reponse="">Non lu</button><button class="btn" data-reponse="auto">Revenir à la caméra</button></div>`);
       d.onclick=e=>{const c=e.target.closest("[data-reponse]");if(!c)return;
         if(!TQ?.open||TQ.qid!==qid){d.remove();return;}
         const v=c.dataset.reponse;if(v==="auto")delete fixes[n];else{fixes[n]=v;if(v)rep[n]=v;else delete rep[n];}
