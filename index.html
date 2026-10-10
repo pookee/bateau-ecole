@@ -399,6 +399,64 @@ input[type=text],input[type=number],textarea,select{border-color:#D8C9E1}
   #scr-tbi .accueil{width:min(680px,100%,55vh)}
   #scr-tbi .home-cta .btn.big{font-size:1.4rem;padding:.45em 1.15em}
 }
+
+/* Les cérémonies : grandes cartes lisibles au TBI, sans détails individuels de lecture. */
+.eq-consigne{max-width:42ch;font-size:clamp(1rem,1.5vw,1.4rem)}
+.eq-perles{font:700 clamp(1rem,1.4vw,1.3rem) var(--display);color:#735324;background:#FFF2C9;border-radius:99px;padding:5px 14px;margin-bottom:12px;width:fit-content}
+.eq-fete,.eq-presentation{width:min(1240px,100%);text-align:center;padding:clamp(20px,3vw,42px)!important;position:relative;isolation:isolate}
+.eq-fete>h2,.eq-presentation>h1{font:800 clamp(2rem,4vw,3.5rem)/1.1 var(--display);color:var(--nuit);margin:18px 0}
+.eq-fete .centre,.eq-presentation .centre{margin-top:26px;gap:12px;flex-wrap:wrap}
+.eq-surtitre{font:800 clamp(.95rem,1.4vw,1.2rem) var(--display);text-transform:uppercase;letter-spacing:.09em;color:#865D2C}
+.eq-etapes{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.eq-etapes span{font:700 1rem var(--display);padding:6px 14px;border-radius:99px;background:#F1EADC;color:#76695E}
+.eq-etapes [aria-current]{color:#fff;background:#65418B}
+.eq-coffre{display:flex;align-items:center;justify-content:center;gap:clamp(15px,4vw,45px);text-align:left;margin:14px 0 24px}
+.eq-coffre img{width:clamp(100px,21vw,255px);height:auto;object-fit:contain;filter:drop-shadow(0 8px 12px #855E3330)}
+.eq-coffre h2{font:800 clamp(1.5rem,3.2vw,3rem)/1.1 var(--display);margin:12px 0;color:var(--nuit)}
+.eq-grand{font:800 clamp(1.6rem,3vw,2.8rem)/1.2 var(--display);color:#7A4D16;margin:12px 0}.eq-grand span{display:block;font-size:.55em;color:#67418B;margin-top:8px}
+.eq-jauge{height:18px;border-radius:99px;background:#E9DDC7;overflow:hidden;max-width:580px;border:2px solid #D5BB7F;margin:18px 0}
+.eq-jauge i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#DF9C33,#FFDA62)}
+.eq-fete .be-podium{grid-template-columns:repeat(3,minmax(0,1fr));margin:25px auto 5px;gap:clamp(10px,2vw,24px);max-width:1000px}
+.eq-fete .be-place{animation:eq-entree .65s both;animation-delay:var(--revelation)}
+.eq-fete .be-place b{font-size:clamp(1.2rem,2.4vw,2.3rem);line-height:1.1}
+.eq-fete .be-marche{background:repeating-linear-gradient(0deg,#B9783C 0px,#B9783C 31px,#A3612C 32px,#D29B5D 35px);border:4px solid #8F592B;border-radius:14px 14px 6px 6px;box-shadow:inset 0 0 0 4px #E7BC7D,inset 0 -9px 0 #75411F36}
+.eq-fete .be-marche span{background:#FFF8E6;border:3px solid #D9A131;border-radius:999px;min-width:64px;padding:12px 16px;font:800 clamp(1.2rem,2.7vw,2.5rem)/1 var(--display)}
+.eq-fete .be-place-1 .be-marche{height:160px!important}.eq-fete .be-place-2 .be-marche{height:115px!important}.eq-fete .be-place-3 .be-marche{height:85px!important}
+.eq-fete .be-place-2 .be-marche span{border-color:#9EAFBB}.eq-fete .be-place-3 .be-marche span{border-color:#A96536}
+.be-exaequo>div{display:flex;flex-direction:column;align-items:center;gap:7px;margin:10px 0}
+.be-exaequo>div>span:not(.eq-pavillon):not(.eq-medaille){font:700 1rem var(--display);color:#635050}
+.eq-fete .be-podium:has(>.be-place:only-child),.be-podium:has(>.be-place:only-child){grid-template-columns:1fr;max-width:1000px}
+.be-place:only-child{grid-column:1}
+.be-place:only-child .be-exaequo{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.eq-medaille{font-size:2.5rem;color:#BC831C;text-shadow:0 2px #F4DF8B}
+.eq-pavillon{--eq:#247B96;display:inline-grid;place-items:center;flex:none;width:76px;height:88px;color:white;background:var(--eq);clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%);filter:drop-shadow(0 3px 0 #0002);vertical-align:middle}
+.eq-icon{display:inline-block;vertical-align:middle;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}.eq-pavillon>.eq-icon{color:#fff;width:48px;height:48px;margin-bottom:12px;stroke-width:1.8}.eq-perles .eq-icon{width:20px;height:20px;margin-right:4px}.eq-medaille .eq-icon{width:42px;height:42px}.eq-distinction>.eq-icon{color:#B98415;width:44px;height:44px}
+.eq-kiko{width:140px;height:150px;object-fit:contain;float:none!important;position:static!important;display:block;margin:0 auto}
+.eq-intro{font:700 clamp(1.2rem,2vw,1.8rem)/1.5 var(--display);color:#4A355C}
+.eq-num{display:block;font:700 1rem var(--display);color:var(--gris);margin:18px 0 4px}
+.eq-carte{border:3px solid color-mix(in srgb,var(--eq) 40%,#E9D7BC);border-radius:22px;background:#FFFCF4;padding:22px;min-width:0;text-align:center}
+.eq-carte h2{font:800 clamp(1.4rem,2.8vw,2.7rem)/1.1 var(--display);color:var(--eq);margin:14px 0 8px}
+.eq-carte p{line-height:1.4;margin:8px auto 16px;max-width:48ch}
+.eq-presentation>.eq-carte{max-width:820px;margin:0 auto}
+.eq-presentation>.eq-carte>.eq-pavillon{width:94px;height:108px}
+.eq-membres{list-style:none;padding:0;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0}
+.eq-membres li{border-radius:13px;padding:8px 17px;background:color-mix(in srgb,var(--eq) 10%,white);font:800 clamp(1.3rem,2.4vw,2.2rem)/1.2 var(--display);color:#30213E;overflow-wrap:anywhere;max-width:100%}
+.eq-devise{font:800 clamp(1.2rem,1.8vw,1.6rem) var(--display);color:var(--eq)}
+.eq-flotte{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;align-items:stretch}
+.eq-flotte .eq-carte{padding:15px 10px}.eq-flotte h2{font-size:1.45rem}.eq-flotte p{font-size:.95rem}.eq-flotte .eq-membres{gap:6px;margin:12px 0}.eq-flotte .eq-membres li{font-size:1.35rem;padding:5px 8px}.eq-flotte .eq-pavillon{width:52px;height:61px}.eq-flotte .eq-pavillon>.eq-icon{width:32px;height:32px;margin-bottom:8px}
+.eq-reussites{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin:28px 0}
+.eq-distinction{padding:24px 16px;border-radius:22px;background:#F5EEF9;border:2px solid #D8C7E9}
+.eq-distinction h3{font:800 clamp(1.2rem,1.7vw,1.6rem) var(--display);color:#513170;margin:12px 0}.eq-distinction>span:not(.eq-pavillon){font-size:3rem;color:#B98415}
+.eq-ensemble{font:700 clamp(1.2rem,1.9vw,1.8rem)/1.4 var(--display);color:#634E77;margin:22px 0}
+.eq-gestion{display:grid;gap:15px;margin:20px 0}.eq-gestion article{border:2px solid var(--eq);border-radius:18px;padding:12px}.eq-gestion h2{display:flex;align-items:center;gap:12px;margin:0 0 16px;font-size:1.4rem}.eq-gestion .eq-pavillon{width:32px;height:40px}.eq-gestion .eq-pavillon>.eq-icon{width:21px;height:21px;margin-bottom:4px}
+.eq-gestion label{display:grid;grid-template-columns:minmax(80px,1fr) minmax(0,1.7fr);align-items:center;gap:10px;margin:10px 0;font-weight:700}.eq-gestion select{min-width:0;width:100%;font-size:1rem}
+.eq-defis-prives{padding-left:20px}.eq-defis-prives li{margin:10px 0}.eq-defis-prives small{display:block;color:var(--gris)}
+.eq-objectifs{background:#FFF9E9;border-radius:12px;padding:12px;font-size:.9rem}.eq-objectifs summary{font-weight:700;cursor:pointer}.eq-objectifs ul{padding-left:20px;line-height:1.6}
+.eq-confettis{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:24px;z-index:-1}.eq-confettis i{position:absolute;left:calc(var(--k)*7%);top:-20px;width:10px;height:17px;background:var(--eq);animation:eq-confetti 3s ease-in both;animation-delay:calc(var(--k)*70ms)}
+@keyframes eq-confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(700px) rotate(500deg);opacity:0}}
+@keyframes eq-entree{from{opacity:0;transform:translateY(25px) scale(.95)}to{opacity:1;transform:none}}
+@media(max-width:650px){.eq-coffre{flex-direction:column;text-align:center}.eq-coffre img{width:100px}.eq-fete .be-podium{gap:7px}.eq-fete .be-place b{font-size:1.1rem}.eq-fete .eq-pavillon{width:44px;height:54px}.eq-fete .eq-pavillon>.eq-icon{width:28px;height:28px;margin-bottom:8px}.eq-etapes{gap:4px}.eq-etapes span{font-size:.8rem;padding:5px 8px}.eq-presentation,.eq-fete{padding:18px 12px!important}.eq-flotte{grid-template-columns:1fr}.eq-fete .be-marche span{font-size:1rem;padding:8px;min-width:0}.be-place:only-child .be-exaequo{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}.eq-reussites{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.eq-fete .be-place{animation:none!important}.eq-confettis{display:none}}
 </style>
 
 <style>
@@ -5635,7 +5693,10 @@ function accueil(){
   }
   layer.insertAdjacentHTML("beforeend", `<div class="home-preparation">${S.seance ? `<button class="btn prim" data-go="reprendre">${S.seance.index<S.seance.qs.length ? `Reprendre le rituel — question ${S.seance.index+1} sur ${S.seance.qs.length}` : "Reprendre le bilan du rituel"}</button>` : ""}${Preparation.get()?`<button class="btn mer" data-go="preparee">${Preparation.titre()} · ${Preparation.get().questions.length} questions · ${esc(Preparation.get().date.split("-").reverse().join("/"))}</button>`:""}<button class="btn" id="preparer-rituel">Préparer une séance</button></div>`);
   $("#preparer-rituel").onclick=()=>Preparation.ouvre();
-  attendre().then(go=>{ if(go==="escale-semaine") verifArrivee(); else if(go==="reprendre") rituel(S.seance.mode,true); else if(go==="preparee") rituel("preparee"); else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete"); else if(go==="carte") ouvreCarte(); else if(go==="demo") modeDemo(true); else if(go==="bapteme") bapteme(); else if(go==="tresor") rituel("tresor"); else if(go==="carte-postale") ecrireCarte(S.carteAEcrire); });
+  if(window.Competition&&Competition.plan()){
+    layer.insertAdjacentHTML("beforeend",'<button class="btn mer" data-go="equipages">La cérémonie des équipages</button>');
+  }
+  attendre().then(async go=>{ if(go==="equipages"){await Competition.presentation();accueil();}else if(go==="escale-semaine") verifArrivee(); else if(go==="reprendre") rituel(S.seance.mode,true); else if(go==="preparee") rituel("preparee"); else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete"); else if(go==="carte") ouvreCarte(); else if(go==="demo") modeDemo(true); else if(go==="bapteme") bapteme(); else if(go==="tresor") rituel("tresor"); else if(go==="carte-postale") ecrireCarte(S.carteAEcrire); });
 }
 function modeDemo(on){
   if (on){
@@ -5683,14 +5744,13 @@ function emitQ(){
   if(!ROOM) return;
   const d = QCUR ? {qid:QCUR.qid, open:QCUR.open, txt:QCUR.q.q.slice(0,280), nb:QCUR.q.c.length,
       bonne: QCUR.revele ? LET[QCUR.bonne] : null, answers:QCUR.rep, fixes:QCUR.fixes||{}, choix:QCUR.q.c,
+      defis:S.seance?.competition?.defis||null,
       cartes: actifs().map(e=>[e.n,(e.prenom||"").slice(0,14)])} : {qid:null, podium:podiumRituel, reussites:reussitesRituel};
   ROOM.emit("q", d).catch(()=>{});
 }
 function majLus(){
-  if(!QCUR) return;
-  const act = actifs(); const lus = act.filter(e=>QCUR.rep[e.n]).length;
-  const c=$("#q-lus"); if(c) c.textContent = lus+" / "+act.length;
-  const d=$("#q-dots"); if(d) d.innerHTML = act.map(e=>`<span class="${QCUR.rep[e.n]?"v":""}">${e.n}</span>`).join("");
+  // La lecture des cartes est contrôlée uniquement sur le téléphone.
+  // Aucun emplacement, numéro ou changement visuel individuel sur le tableau.
 }
 
 /* ---------- une question ---------- */
@@ -5710,12 +5770,12 @@ async function poserQuestion(q, i, n, mode){
     layer.innerHTML = `
       ${mode==="tempete"?`<div class="orage-jauge"><div style="color:#fff;font-family:var(--display);font-weight:700;display:flex;justify-content:space-between"><span>Force de la tempête</span><span class="num" id="o-pct"></span></div><div class="jauge"><i id="o-j"></i></div></div>`:""}
       <div class="carte qc" style="margin-top:${mode==="tempete"?"10px":"0"}">
+        ${S.seance?.competition?`<div class="eq-perles" aria-label="Trésor collectif">${iconeLucide("gem")} ${Object.values(scoresRituel||{}).reduce((s,e)=>s+e.ok,0)} perles dans le coffre de la classe</div>`:""}
         <div class="q-head"><span class="chip" style="background:${m.c}">${esc(m.nom)} · ${esc(no.t)}</span><span class="q-num num">Question ${i+1} / ${n}</span></div>
         <div class="q-txt">${texteMath(insec(qv.q))}</div>
         <div class="choixq">${qv.c.map((c,k)=>`<div class="opt" id="opt${k}"><span class="bar-r"></span><span class="l L${k}">${LET[k]}</span><span class="tx">${texteMath(insec(c))}</span><span class="cpt num"></span></div>`).join("")}</div>
         <div class="q-bas"><div class="q-pied" id="q-pied">
-          <div class="lus"><div><div class="num"><b id="q-lus">0 / 0</b></div><div style="font-size:.85rem">cartes lues</div></div><div class="dots" id="q-dots"></div></div>
-          ${telOn?"":`<span class="note" style="max-width:24ch">Levez vos cartes (ou vos ardoises), puis on regarde la réponse.</span>`}
+          <span class="note eq-consigne">Prenez le temps de réfléchir, puis levez votre carte.</span>
           <button class="btn prim big" data-go="reveal">Voir la réponse</button>
         </div></div>
       </div>`;
@@ -5746,7 +5806,8 @@ async function poserQuestion(q, i, n, mode){
     const stat=S.stats.q[q.id]||{n:0};S.stats.q[q.id]={n:stat.n+1,last:pct,t:Date.now()};
     if(mode==="matin"||mode==="tresor") QCUR.gain=avanceBateau(gainPour(pct));
     if(mode==="tempete") orageForce-=pct*(100/n)*1.35;
-    if(S.seance) {S.seance.res[i]={q:copieJeu(q),pct};S.seance.force=orageForce;}
+    if(S.seance) {S.seance.res[i]={q:copieJeu(q),pct};S.seance.force=orageForce;
+      (S.seance.reponses ||= [])[i]={ok:LET[qv.ok],r:copieJeu(Object.fromEntries(act.filter(e=>rep[e.n]).map(e=>[e.n,rep[e.n]])))};}
     if(window.Historique) Historique.question(q,qv,rep,act,pct,i);
     gardeQuestion();checkpointRituel();
   }
@@ -5920,7 +5981,9 @@ async function rituel(mode, reprise=false){
   ritExtra=seance.extra||[];orageForce=seance.force;
   rituelEnCours=true;document.body.classList.add("rituel-en-cours");chrono(true);
   if(window.Historique){await Historique.init();seance.historique=Historique.debutRituel(mode,actifs(),seance.historique);}
+  if(!seance.competition && seance.index===0)seance.competition=Competition.prepare(qs,actifs(),seance.recompense);
   checkpointRituel();
+  if(!reprise&&seance.competition?.plan&&S.equipagesPresentes!==seance.competition.plan.id){await Competition.presentation();}
   if(seance.preparation&&!DEMO) Preparation.consomme(seance.preparation).catch(()=>{});
   const depart=seance.depart,res=seance.res;
   for(let i=seance.index;i<qs.length;i++){
@@ -5957,25 +6020,31 @@ async function rituel(mode, reprise=false){
   if(await verifArrivee()) return;
   enJeu=false; accueil();
 }
-function podiumBateauHTML(podium){
+function podiumBateauHTML(podium, personnel=false){
   if(!podium.length)return "";
-  const rangs=[...new Set(podium.map(e=>e.rang||1))];
-  return `<h2>Le podium</h2><p class="be-podium-legende">Réussite sur les réponses lues · cartes non lues exclues</p><ol class="be-podium">${rangs.map(r=>{const groupe=podium.filter(e=>(e.rang||1)===r);return `<li class="be-place be-place-${r}"><div class="be-exaequo">${groupe.map(e=>`<div><b>${esc(e.prenom)}</b><span>${e.ok}/${e.faits}${e.nonLus?` · ${e.nonLus} non lu${e.nonLus>1?"s":""}`:""}</span></div>`).join("")}</div><div class="be-marche">${r}${r===1?"er":"e"}${groupe.length>1?" ex æquo":""}</div></li>`;}).join("")}</ol>`;
+  const equipes=podium.some(e=>e.equipe),rangs=[...new Set(podium.map(e=>e.rang||1))];
+  return `<h2>${equipes?"Le podium des équipages":"Le podium du jour"}</h2><p class="be-podium-legende">${equipes?"Des perles, des défis et une aventure partagée !":"Bravo pour vos réussites !"} Les ex æquo partagent la même marche.</p><ol class="be-podium">${rangs.map(r=>{const groupe=podium.filter(e=>(e.rang||1)===r);return `<li class="be-place be-place-${r}" style="--revelation:${Math.max(0,3-r)*.65}s"><div class="be-exaequo">${groupe.map(e=>`<div>${e.equipe?Competition.drapeau(e.id):'<span class="eq-medaille" aria-hidden="true">'+iconeLucide('medal')+'</span>'}<b>${esc(e.prenom)}</b>${e.equipe?`<span>${String(e.points).replace(".",",")} points</span>`:personnel?`<span>${e.ok} sur ${e.faits}${e.nonLus?` · ${e.nonLus} non lu${e.nonLus>1?"s":""}`:""}</span>`:""}</div>`).join("")}</div><div class="be-marche"><span>${r}${r===1?"er":"e"}${groupe.length>1?" ex æquo":""}</span></div></li>`;}).join("")}</ol>`;
 }
 async function bilan(res, gagne, mode){
   const generation=GEN;
   reussitesRituel=recompensesRituel(res,scoresRituel,mode);
-  podiumRituel=reussitesRituel.collectif ? [] : classementRituel(scoresRituel);
+  const competition=Competition.resultats(S.seance?.competition,scoresRituel,S.seance?.reponses||S.seance?.historique?.q||[]);
+  reussitesRituel.competition=competition;
+  podiumRituel=reussitesRituel.collectif ? [] : Competition.podium(competition,scoresRituel);
   emitQ();
   const par = {}; res.forEach(r=>{ (par[r.q.n]=par[r.q.n]||[]).push(r.pct); });
   const lignes = Object.entries(par).map(([id,arr])=>{ const {n,m}=matiere(id); const moy=arr.reduce((a,b)=>a+b,0)/arr.length;
     return `<li style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #E3ECF0"><span class="chip" style="background:${m.c}">${esc(m.nom)}</span><span style="flex:1">${esc(n.t)}</span><b class="num" style="color:${moy>=.7?"var(--ok)":moy>=.4?"#B86E0A":"var(--ko)"}">${Math.round(moy*100)} %</b></li>`; }).join("");
+  reussitesRituel.notions=Object.entries(par).map(([id,arr])=>({titre:matiere(id).n.t,pct:Math.round(arr.reduce((a,b)=>a+b,0)/arr.length*100)}));
+  emitQ();
+  if(competition && Object.values(scoresRituel||{}).some(e=>e.faits))await Competition.ceremonie(competition,podiumRituel);
+  if(generation!==GEN)return new Promise(()=>{});
   const p = position(S.milles), port=escaleAuPort();
   majBarre(); majMer();
   layer.innerHTML = `<div class="be-bilan${podiumRituel.length?" avec-podium":""}"><div class="carte${podiumRituel.length?"":" avec-perro"}">${podiumRituel.length?"":perro("bravo","coin")}<div>
     <div class="msg-big">${port ? `Terre en vue : ${esc(ESCALES[port].v)} !` : `Fin du rituel : +${gagne} milles`}</div>
     <p class="sous">${p.fin || port===ESCALES.length-1 ? "Le tour du monde est terminé !" : port ? "Bravo l’équipage, nous voilà à bon port ! Découvrons notre escale." : `Encore ${Math.ceil(p.reste)} milles avant ${esc(ESCALES[p.i+1].v)}.`}</p>
-    <ul style="list-style:none;padding:0;margin:14px 0">${lignes}</ul>${htmlRecompenses(reussitesRituel)}
+    ${competition?Competition.coffreHTML(competition):"<p>Une nouvelle étape parcourue ensemble !</p>"}
     <label for="j-txt" style="font-family:var(--display);font-weight:700;color:var(--mer);font-size:1.15rem">Le journal de bord se remplit tout seul. Un mot de l'équipage à ajouter ? (facultatif)</label>
     <div class="ligne"><input type="text" id="j-txt" value="${esc(S.seance?.note||'')}" style="flex:1;font-size:1.15rem" maxlength="200" placeholder="Ex. : On a revu les types de phrases et les tables de 4."></div>
     <div class="centre"><button class="btn prim big" data-go="ok">${(DEMO?S.seance?.escaleDemo:rythmeVoyage(S).arrivee||escaleVendredi(dateFinSeance()))?"Découvrir l’escale et écrire la carte":"Terminer"}</button></div></div></div>${podiumRituel.length?`<section class="carte be-palmares">${podiumBateauHTML(podiumRituel)}</section>`:""}</div>`;
@@ -6022,7 +6091,7 @@ async function bapteme(){
     <div class="q-txt">Quel nom pour notre bateau ?<br><span style="font-size:.6em;color:var(--gris)">Lève ta carte avec la lettre de ton nom préféré.</span></div>
     <div class="choixq">${props.map((c,k)=>`<div class="opt" id="opt${k}" data-pick="${k}"><span class="bar-r"></span><span class="l L${k}">${LET[k]}</span><span class="tx">${esc(c)}</span><span class="cpt num"></span></div>`).join("")}</div>
     <div class="q-pied" id="q-pied">
-      <div class="lus"><div><div class="num"><b id="q-lus">0 / 0</b></div><div style="font-size:.85rem">cartes lues</div></div><div class="dots" id="q-dots"></div></div>
+      <span class="note eq-consigne">Chacun choisit son nom préféré.</span>
       <span class="espace"></span>
       ${telOn?"":`<span class="note" style="max-width:28ch">Sans téléphone : comptez les mains levées, puis touchez le nom gagnant.</span>`}
       <button class="btn prim big" data-go="reveal">Voir les résultats</button>
@@ -7010,7 +7079,7 @@ function recompensesRituel(res, scores, mode){
 }
 function htmlRecompenses(r, personnel=false){
   if (!r) return "";
-  return `<section class="be-reussites"><h3>${r.collectif ? "Le défi de l'équipage" : "Nos réussites"}</h3><p>${esc(r.texte)}</p>${r.collectif&&r.objectif?`<p><b>${esc(r.objectif)}</b></p>`:""}${personnel&&r.progres.length?`<h3>Des progrès à encourager</h3><ul>${r.progres.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}</section>`;
+  return `<section class="be-reussites"><h3>${r.collectif ? "Le défi de l'équipage" : "Nos réussites"}</h3><p>${esc(r.texte)}</p>${r.collectif&&r.objectif?`<p><b>${esc(r.objectif)}</b></p>`:""}${personnel&&r.progres.length?`<h3>Des progrès à encourager</h3><ul>${r.progres.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}${personnel&&r.notions?.length?`<h3>Notions de la séance</h3><ul>${r.notions.map(n=>`<li>${esc(n.titre)} : ${n.pct} %</li>`).join("")}</ul>`:""}</section>`;
 }
 
 const Preparation = (()=>{
@@ -7270,6 +7339,250 @@ const Preparation = (()=>{
     consomme:async id=>{if(get()?.id===id)await enregistre(null);} };
 })();
 window.Preparation=Preparation;
+
+/* Lucide Icons — https://lucide.dev — ISC / MIT.
+ISC License
+
+Copyright (c) 2026 Lucide Icons and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+---
+
+The following Lucide icons are derived from the Feather project:
+
+airplay, alert-circle, alert-octagon, alert-triangle, aperture, arrow-down-circle, arrow-down-left, arrow-down-right, arrow-down, arrow-left-circle, arrow-left, arrow-right-circle, arrow-right, arrow-up-circle, arrow-up-left, arrow-up-right, arrow-up, at-sign, calendar, cast, check, chevron-down, chevron-left, chevron-right, chevron-up, chevrons-down, chevrons-left, chevrons-right, chevrons-up, circle, clipboard, clock, code, columns, command, compass, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, crosshair, database, divide-circle, divide-square, dollar-sign, download, external-link, feather, frown, hash, headphones, help-circle, info, italic, key, layout, life-buoy, link-2, link, loader, lock, log-in, log-out, maximize, meh, minimize, minimize-2, minus-circle, minus-square, minus, monitor, moon, more-horizontal, more-vertical, move, music, navigation-2, navigation, octagon, pause-circle, percent, plus-circle, plus-square, plus, power, radio, rss, search, server, share, shopping-bag, sidebar, smartphone, smile, square, table-2, tablet, target, terminal, trash-2, trash, triangle, tv, type, upload, x-circle, x-octagon, x-square, x, zoom-in, zoom-out
+
+The MIT License (MIT) (for the icons listed above)
+
+Copyright (c) 2013-present Cole Bemis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+const ICONES_LUCIDE = {
+  "telescope": "<svg class=\"eq-icon\" data-lucide=\"telescope\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"m10.065 12.493-6.18 1.318a.934.934 0 0 1-1.108-.702l-.537-2.15a1.07 1.07 0 0 1 .691-1.265l13.504-4.44\" />\n  <path d=\"m13.56 11.747 4.332-.924\" />\n  <path d=\"m16 21-3.105-6.21\" />\n  <path d=\"M16.485 5.94a2 2 0 0 1 1.455-2.425l1.09-.272a1 1 0 0 1 1.212.727l1.515 6.06a1 1 0 0 1-.727 1.213l-1.09.272a2 2 0 0 1-2.425-1.455z\" />\n  <path d=\"m6.158 8.633 1.114 4.456\" />\n  <path d=\"m8 21 3.105-6.21\" />\n  <circle cx=\"12\" cy=\"13\" r=\"2\" />\n</svg>\n",
+  "map": "<svg class=\"eq-icon\" data-lucide=\"map\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z\" />\n  <path d=\"M15 5.764v15\" />\n  <path d=\"M9 3.236v15\" />\n</svg>\n",
+  "compass": "<svg class=\"eq-icon\" data-lucide=\"compass\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <circle cx=\"12\" cy=\"12\" r=\"10\" />\n  <path d=\"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z\" />\n</svg>\n",
+  "sailboat": "<svg class=\"eq-icon\" data-lucide=\"sailboat\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"M10 2v15\" />\n  <path d=\"M7 22a4 4 0 0 1-4-4 1 1 0 0 1 1-1h16a1 1 0 0 1 1 1 4 4 0 0 1-4 4z\" />\n  <path d=\"M9.159 2.46a1 1 0 0 1 1.521-.193l9.977 8.98A1 1 0 0 1 20 13H4a1 1 0 0 1-.824-1.567z\" />\n</svg>\n",
+  "hammer": "<svg class=\"eq-icon\" data-lucide=\"hammer\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"m15 12-9.373 9.373a1 1 0 0 1-3.001-3L12 9\" />\n  <path d=\"m18 15 4-4\" />\n  <path d=\"m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172v-.344a2 2 0 0 0-.586-1.414l-1.657-1.657A6 6 0 0 0 12.516 3H9l1.243 1.243A6 6 0 0 1 12 8.485V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5\" />\n</svg>\n",
+  "mail": "<svg class=\"eq-icon\" data-lucide=\"mail\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7\" />\n  <rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\" />\n</svg>\n",
+  "package-open": "<svg class=\"eq-icon\" data-lucide=\"package-open\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"M12 22v-9\" />\n  <path d=\"M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z\" />\n  <path d=\"M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13\" />\n  <path d=\"M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z\" />\n</svg>\n",
+  "medal": "<svg class=\"eq-icon\" data-lucide=\"medal\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15\" />\n  <path d=\"M11 12 5.12 2.2\" />\n  <path d=\"m13 12 5.88-9.8\" />\n  <path d=\"M8 7h8\" />\n  <circle cx=\"12\" cy=\"17\" r=\"5\" />\n  <path d=\"M12 18v-2h-.5\" />\n</svg>\n",
+  "gem": "<svg class=\"eq-icon\" data-lucide=\"gem\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"M10.5 3 8 9l4 13 4-13-2.5-6\" />\n  <path d=\"M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z\" />\n  <path d=\"M2 9h20\" />\n</svg>\n",
+  "star": "<svg class=\"eq-icon\" data-lucide=\"star\" aria-hidden=\"true\" focusable=\"false\"\n  xmlns=\"http://www.w3.org/2000/svg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  <path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\" />\n</svg>\n"
+};
+const iconeLucide = nom => ICONES_LUCIDE[nom] || ICONES_LUCIDE.star;
+
+/* Équipages et défis : les résultats détaillés restent sur le téléphone.
+   La composition est enregistrée dans classe/actuelle, jamais dans le code publié. */
+const Competition = (() => {
+  const ROLES = [
+    {id:"vigies", nom:"Les Vigies", mission:"Observer l’horizon et repérer les nouvelles terres.", devise:"Ensemble, nous voyons plus loin !", couleur:"#247B96", icone:"telescope"},
+    {id:"cartographes", nom:"Les Cartographes", mission:"Tracer les cartes et garder la mémoire du voyage.", devise:"Chaque découverte nous fait grandir !", couleur:"#8B4CA5", icone:"map"},
+    {id:"navigateurs", nom:"Les Navigateurs", mission:"Lire les étoiles et trouver le chemin vers la prochaine escale.", devise:"Ensemble, nous trouvons le cap !", couleur:"#B46B17", icone:"compass"},
+    {id:"voiles", nom:"Les Maîtres des voiles", mission:"Apprivoiser le vent pour faire avancer notre bateau.", devise:"Chaque effort nous porte plus loin !", couleur:"#287B60", icone:"sailboat"},
+    {id:"charpentiers", nom:"Les Charpentiers", mission:"Prendre soin du bateau et construire des solutions ensemble.", devise:"Ensemble, nous sommes solides !", couleur:"#B4513D", icone:"hammer"},
+    {id:"messagers", nom:"Les Messagers", mission:"Transmettre les découvertes et relier les équipages.", devise:"Les idées se partagent !", couleur:"#565C9C", icone:"mail"},
+    {id:"vivres", nom:"Les Gardiens des vivres", mission:"Préparer les réserves pour que toute la classe poursuive le voyage.", devise:"Nous prenons soin de tout l’équipage !", couleur:"#96633E", icone:"package-open"}
+  ];
+  const role = id => ROLES.find(r=>r.id===id) || ROLES[0];
+  const copie = o => JSON.parse(JSON.stringify(o));
+  function propre(o){
+    if(!o || !Array.isArray(o.groupes) || typeof o.id!=="string")return null;
+    const vus=new Set(), ids=new Set(), groupes=[];
+    for(const g of o.groupes){
+      if(!ROLES.some(r=>r.id===g.id)||ids.has(g.id))continue;
+      ids.add(g.id);
+      const membres=(Array.isArray(g.membres)?g.membres:[]).map(Number).filter(n=>{
+        if(!Number.isInteger(n)||n<1||n>32||vus.has(n))return false;vus.add(n);return true;
+      });
+      groupes.push({id:g.id,membres});
+    }
+    return groupes.length?{v:1,id:o.id.slice(0,80),cree:+o.cree||0,groupes}:null;
+  }
+  const plan = () => propre(window.Classe ? Classe.get()?.equipages : S.equipages);
+  const liste = () => window.Classe ? Classe.actifs() : S.eleves.filter(e=>e.actif);
+  const nom = n => liste().find(e=>e.n===n)?.prenom || nomEleve(n);
+  const historique = () => window.Historique ? Historique.tout() : [];
+  const retiree = n => typeof NOTIONS_LECTURES_RETIREES!=="undefined" && !!NOTIONS_LECTURES_RETIREES[n];
+  // Au plus 30 réponses récentes par notion. Une carte non lue ne devient jamais une erreur.
+  function profils(eleves, seances, maintenant=Date.now()){
+    const p=Object.fromEntries(eleves.map(e=>[e.n,{n:e.n,notions:{},faits:0,ok:0,indice:.5}]));
+    const ajoute=(n,k,ok)=>{if(!p[n])return;const a=p[n].notions[k] ||= [];if(a.length<30)a.push(ok?1:0);};
+    seances.filter(s=>s.fini && s.d<=maintenant && s.d>=maintenant-35*864e5).slice().sort((a,b)=>b.d-a.d).forEach(s=>{
+      if(s.a==="bateau") (s.q||[]).slice().reverse().forEach(q=>{
+        if(retiree(q.n))return;
+        (q.p||[]).forEach(n=>{const r=q.r?.[n];if(r && /^[ABCD]$/.test(r))ajoute(n,q.n,r===q.ok);});
+      });
+      if(s.a==="pavillons") (s.c||[]).forEach((c,i)=>{
+        const k="pv:"+c.op+":"+(c.op==="fois"?(s.r?.tables||[]).slice().sort((a,b)=>a-b).join(","):s.r?.max||20);
+        Object.entries(s.res||{}).forEach(([n,r])=>{if(r[i]==="1"||r[i]==="0")ajoute(+n,k,r[i]==="1");});
+      });
+    });
+    Object.values(p).forEach(e=>{
+      const notions=Object.values(e.notions);
+      e.faits=notions.reduce((s,a)=>s+a.length,0);e.ok=notions.reduce((s,a)=>s+a.reduce((x,y)=>x+y,0),0);
+      // Chaque notion pèse autant ; quatre réponses neutres limitent les effets des petits échantillons.
+      if(notions.length)e.indice=notions.reduce((s,a)=>s+(a.reduce((x,y)=>x+y,0)+2)/(a.length+4),0)/notions.length;
+    });
+    return p;
+  }
+  function propose(eleves,seances,maintenant=Date.now()){
+    if(eleves.length<2)return null;
+    const p=profils(eleves,seances,maintenant), nb=Math.min(7,Math.max(2,Math.ceil(eleves.length/5)));
+    const ord=eleves.slice().sort((a,b)=>p[b.n].indice-p[a.n].indice||a.n-b.n);
+    const groupes=ROLES.slice(0,nb).map(r=>({id:r.id,membres:[]}));
+    ord.forEach((e,i)=>{const tour=Math.floor(i/nb),j=i%nb;groupes[tour%2?nb-1-j:j].membres.push(e.n);});
+    const moyenne=g=>g.membres.reduce((s,n)=>s+p[n].indice,0)/g.membres.length;
+    const cible=eleves.reduce((s,e)=>s+p[e.n].indice,0)/eleves.length;
+    const cout=()=>groupes.reduce((s,g)=>s+(moyenne(g)-cible)**2,0);
+    // Échanges uniquement entre strates voisines : garder des niveaux mélangés dans chaque équipe.
+    const strate=Object.fromEntries(ord.map((e,i)=>[e.n,Math.floor(i/nb)]));
+    for(let tour=0;tour<100;tour++){
+      let meilleur=cout(), choix=null;
+      for(let a=0;a<nb;a++)for(let b=a+1;b<nb;b++)for(let i=0;i<groupes[a].membres.length;i++)for(let j=0;j<groupes[b].membres.length;j++){
+        const A=groupes[a].membres,B=groupes[b].membres;if(strate[A[i]]!==strate[B[j]])continue;
+        [A[i],B[j]]=[B[j],A[i]];const c=cout();[A[i],B[j]]=[B[j],A[i]];
+        if(c<meilleur-1e-10){meilleur=c;choix=[a,b,i,j];}
+      }
+      if(!choix)break;const [a,b,i,j]=choix,A=groupes[a].membres,B=groupes[b].membres;[A[i],B[j]]=[B[j],A[i]];
+    }
+    groupes.forEach(g=>g.membres.sort((a,b)=>a-b));
+    return {v:1,id:"eq-"+maintenant.toString(36),cree:maintenant,groupes};
+  }
+  function enregistre(p){
+    p=propre(p);if(!p)return;
+    if(window.Classe)Classe.modifie(c=>{c.equipages=p;});
+    else {S.equipages=p;sauve();}
+  }
+  function assure(){
+    if(plan() || (typeof DEMO!=="undefined"&&DEMO))return;
+    const l=liste(),h=historique();
+    if(l.length<2 || !l.some(e=>e.prenom) || !Object.values(profils(l,h)).some(e=>e.faits>=8))return;
+    enregistre(propose(l,h));
+  }
+  function drapeau(id){const r=role(id);return `<span class="eq-pavillon" style="--eq:${r.couleur}" aria-hidden="true">${iconeLucide(r.icone)}</span>`;}
+  function carte(g,detail=false){
+    const r=role(g.id),actifs=new Set(liste().map(e=>e.n));
+    return `<article class="eq-carte" style="--eq:${r.couleur}">${drapeau(g.id)}<h2>${esc(r.nom)}</h2><p>${esc(r.mission)}</p><ul class="eq-membres">${g.membres.filter(n=>actifs.has(n)).map(n=>`<li>${esc(nom(n))}</li>`).join("")}</ul>${detail?`<p class="eq-devise">${esc(r.devise)}</p>`:""}</article>`;
+  }
+  // Préparer avant la première réponse : les objectifs ne changent jamais en cours de séance.
+  function prepare(qs,presents,mode){
+    const p=plan(), prof=profils(presents,historique()), defis={};
+    presents.forEach(e=>{
+      const indices=qs.map((q,i)=>prof[e.n].notions[q.n]?.length>=3?i:-1).filter(i=>i>=0);
+      const connus=indices.length>=3, choisis=connus?indices:qs.map((_,i)=>i);
+      const attendu=connus?choisis.reduce((s,i)=>{const a=prof[e.n].notions[qs[i].n];return s+a.reduce((x,y)=>x+y,0)/a.length;},0):choisis.length*.5;
+      const maintien=connus&&attendu/choisis.length>=.85;
+      const cible=connus ? maintien?Math.ceil(.85*choisis.length):Math.min(choisis.length,Math.floor(attendu)+1) : Math.max(1,Math.ceil(attendu));
+      defis[e.n]={indices:choisis,cible,type:connus?(maintien?"cap":"progres"):"decouverte",titre:connus?(maintien?"Garder le cap":"Un pas de plus"):"Premières perles"};
+    });
+    return {v:1,plan:p?copie(p):null,defis,collectif:mode==="collectif",individuel:mode==="individuel"};
+  }
+  function resultats(comp,scores,questions){
+    if(!comp)return null;
+    const defis=Object.entries(comp.defis||{}).map(([n,d])=>{
+      let faits=0,ok=0;
+      d.indices.forEach(i=>{const q=questions[i],r=q?.r?.[n];if(r){faits++;if(r===q.ok)ok++;}});
+      return {n:+n,prenom:scores[n]?.prenom||nom(+n),...d,faits,ok,reussi:d.indices.length>=2&&faits===d.indices.length&&ok>=d.cible};
+    });
+    const l=Object.values(scores||{}).filter(e=>e.faits>0);
+    const perles=l.reduce((s,e)=>s+e.ok,0),bonus=defis.filter(d=>d.reussi).length;
+    const equipe=(comp.plan?.groupes||[]).map(g=>{
+      const participants=g.membres.map(n=>scores[n]).filter(e=>e?.faits>0);
+      const defi=defis.filter(d=>g.membres.includes(d.n)&&d.reussi).length;
+      // Chaque participant pèse autant, quelle que soit la taille de son équipage.
+      const points=participants.length?Math.round(1000*(.9*participants.reduce((s,e)=>s+e.ok/e.faits,0)+.1*defi)/participants.length)/10:0;
+      return {equipe:true,id:g.id,prenom:role(g.id).nom,points,defis:defi,participants:participants.length};
+    }).filter(g=>g.participants);
+    equipe.sort((a,b)=>b.points-a.points||ROLES.findIndex(r=>r.id===a.id)-ROLES.findIndex(r=>r.id===b.id));
+    equipe.forEach((g,i)=>{g.rang=i&&g.points===equipe[i-1].points?equipe[i-1].rang:i+1;});
+    return {perles,bonus,objectif:Math.max(1,Math.ceil(l.reduce((s,e)=>s+e.faits,0)*.7)),defis,equipes:equipe,collectif:comp.collectif,individuel:comp.individuel};
+  }
+  function podium(r,scores){return r&&!r.individuel&&r.equipes.length?r.equipes.filter(g=>g.rang<=3):classementRituel(scores);}
+  function coffreHTML(r){
+    const atteint=r.perles>=r.objectif;
+    return `<div class="eq-coffre"><img src="img/tresor.webp" alt="Le coffre de la classe"><div><span class="eq-surtitre">Le trésor de toute la classe</span><h2>${atteint?"Le coffre est ouvert !":"Notre trésor grandit !"}</h2><p class="eq-grand">${r.perles} perle${r.perles>1?"s":""}${r.bonus?` <span>+ ${r.bonus} étoile${r.bonus>1?"s":""} de défi</span>`:""}</p><div class="eq-jauge" role="progressbar" aria-label="Objectif collectif" aria-valuenow="${Math.min(r.perles,r.objectif)}" aria-valuemin="0" aria-valuemax="${r.objectif}"><i style="width:${Math.min(100,100*r.perles/r.objectif)}%"></i></div><p>${atteint?"Chaque réussite a aidé notre bateau à avancer.":"Chaque perle gagnée compte. Continuons à apprendre ensemble !"}</p></div></div>`;
+  }
+  function reussitesHTML(r){
+    const defis=r.defis.filter(d=>d.reussi), groupes=r.equipes.filter(g=>g.defis);
+    return `<div class="eq-reussites">${groupes.length?groupes.map(g=>`<article class="eq-distinction">${drapeau(g.id)}<h3>${esc(g.prenom)}</h3><p>${g.defis} défi${g.defis>1?"s":""} personnel${g.defis>1?"s":""} accompli${g.defis>1?"s":""}</p></article>`).join(""):defis.map(d=>`<article class="eq-distinction">${iconeLucide("star")}<h3>${esc(d.prenom)}</h3><p>Défi personnel accompli</p></article>`).join("")}</div>${!defis.length?`<p class="eq-ensemble">${r.perles?"Les premières perles sont dans le coffre. Les défis continuent à la prochaine séance !":"Nous avons pris le temps de chercher ensemble. Une nouvelle occasion nous attend !"}</p>`:""}`;
+  }
+  function priveHTML(r){
+    if(!r)return "";
+    return `<section class="be-reussites"><h3>Défis personnels</h3><p class="aut-note">Chaque défi accompli apporte une étoile. Les objectifs individuels restent sur ton téléphone.</p><ul class="eq-defis-prives">${r.defis.map(d=>`<li><strong>${esc(d.prenom)}</strong> · ${esc(d.titre)} : ${d.cible} réussite${d.cible>1?"s":""} sur ${d.indices.length}<small>${d.reussi?"★ Accompli":d.faits<d.indices.length?"Lecture incomplète — aucun jugement":"À poursuivre"}</small></li>`).join("")}</ul></section>`;
+  }
+  async function ceremonie(r,podium){
+    const pages=["coffre",...(!r.collectif&&podium.length?["podium"]:[]),"reussites"],s=S.seance;
+    if(s?.ceremonieFinie)return;
+    let i=Math.min(s?.ceremonieEtape||0,pages.length-1);
+    const gen=GEN;
+    while(i<pages.length){
+      const p=pages[i];if(p==="podium"){try{Son.fanfare();}catch(e){}}if(s){s.ceremonieEtape=i;sauve();}
+      layer.innerHTML=`<section class="carte eq-fete" aria-label="Cérémonie de fin de séance">${p==="podium"?`<div class="eq-confettis" aria-hidden="true">${Array.from({length:14},(_,k)=>`<i style="--k:${k};--eq:${ROLES[k%ROLES.length].couleur}"></i>`).join("")}</div>`:""}<div class="eq-etapes">${pages.map((x,k)=>`<span ${k===i?'aria-current="step"':""}>${["Le trésor","Le podium","Nos réussites"][x==="coffre"?0:x==="podium"?1:2]}</span>`).join("")}</div>${p==="coffre"?coffreHTML(r):p==="podium"?podiumBateauHTML(podium):`<span class="eq-surtitre">Chaque réussite compte</span><h2>Les étoiles du voyage</h2>${reussitesHTML(r)}`}<div class="centre"><button class="btn prim big" data-go="ceremonie-suite">${i===pages.length-1?"Écrire le journal de bord":pages[i+1]==="podium"?"Découvrir le podium":"Célébrer les réussites"}</button></div></section>`;
+      await attendre();if(gen!==GEN)return new Promise(()=>{});i++;
+    }
+    if(s){s.ceremonieFinie=true;sauve();}
+  }
+  async function presentation(){
+    const p=plan();if(!p)return;
+    const gen=GEN,anciensEnJeu=enJeu;enJeu=true;QCUR=null;emitQ();
+    let i=-1;
+    while(i<=p.groupes.length){
+      const fin=i===p.groupes.length;
+      layer.innerHTML=`<section class="carte eq-presentation"><span class="eq-surtitre">La cérémonie des équipages</span>${i<0?`${perro("salut","eq-kiko")}<h1>Un bateau, plusieurs missions !</h1><p class="eq-intro">Pour notre voyage, nous formons ${p.groupes.length} équipages.<br>Chaque mission est indispensable. Chaque élève a sa place.</p><p>Les bonnes réponses apportent des perles. Les défis personnels apportent des étoiles. Ensemble, nous remplissons le coffre de la classe !</p>`:fin?`<h1>Tout l’équipage est à bord !</h1><div class="eq-flotte">${p.groupes.map(g=>carte(g)).join("")}</div><p class="eq-ensemble">Nous cherchons, nous nous entraidons et nous progressons ensemble.</p>`:`<span class="eq-num">Équipage ${i+1} sur ${p.groupes.length}</span>${carte(p.groupes[i],true)}`}<div class="centre">${i>=0?`<button class="btn" data-go="equipage-precedent">Précédent</button>`:""}<button class="btn prim big" data-go="equipage-suite">${fin?"L’aventure peut commencer !":i<0?"Découvrir les équipages":i===p.groupes.length-1?"Réunir tout l’équipage":"Accueillir l’équipage suivant"}</button></div></section>`;
+      const go=await attendre();if(gen!==GEN)return new Promise(()=>{});
+      if(go==="equipage-precedent"){i--;continue;}i++;
+    }
+    S.equipagesPresentes=p.id;sauve();enJeu=anciensEnJeu;
+  }
+  async function ouvre(){
+    if(!window.Accueil)return;
+    await Historique.init();assure();
+    const s=Accueil.section("aa-classe");Accueil.montre("aa-classe");
+    let brouillon=null;
+    const rend=()=>{
+      const p=brouillon||plan(),l=liste(),prof=profils(l,historique());
+      const connus=Object.values(prof).filter(e=>e.faits>=8).length;
+      s.innerHTML=`<div class="aa-barre"><button class="aa-retour" id="eq-retour">${Accueil.IC.retour}Accueil</button><h1>Les équipages</h1></div><div class="aa-bloc"><p>Des équipes de force comparable, avec des niveaux mélangés. Leur composition reste stable jusqu’à ce que tu la modifies.</p><p class="aut-note">Résultats des 35 derniers jours, séances terminées : ${connus} élève${connus>1?"s":""} avec au moins 8 réponses lues. Les absences et les cartes non lues ne comptent pas comme des erreurs.</p>${connus<l.length?"<p class=\"aut-note\">Pour les élèves ayant peu de résultats, la répartition est provisoire : ajuste les groupes selon ce que tu observes en classe.</p>":""}${p?`<div class="eq-gestion">${p.groupes.map(g=>`<article style="--eq:${role(g.id).couleur}"><h2>${drapeau(g.id)}${esc(role(g.id).nom)}</h2>${g.membres.filter(n=>l.some(e=>e.n===n)).map(n=>`<label>${esc(nom(n))}<select data-equipe-eleve="${n}" aria-label="Équipage de ${esc(nom(n))}">${p.groupes.map(x=>`<option value="${x.id}" ${g.id===x.id?"selected":""}>${esc(role(x.id).nom)}</option>`).join("")}</select></label>`).join("")}</article>`).join("")}</div>${l.some(e=>!p.groupes.some(g=>g.membres.includes(e.n)))?`<p>Des élèves n’ont pas encore d’équipage. Utilise « Rééquilibrer » pour les intégrer.</p>`:""}`:"<p>Les équipages ne sont pas encore formés.</p>"}<div class="aa-actions">${brouillon?`<button class="btn prim" id="eq-appliquer">Utiliser cette répartition</button><button class="btn" id="eq-annuler">Annuler</button>`:`<button class="btn" id="eq-repartir" ${l.length<2?"disabled":""}>${p?"Rééquilibrer les équipages":"Former les équipages"}</button>${p?'<button class="btn prim" id="eq-presenter">Présenter les équipages au tableau</button>':""}`}</div><p class="aut-note">La cérémonie affiche les prénoms et les missions, sans résultats individuels. Le score d’équipe compte pour 90 points de réussite et 10 points de défis ; chaque participant pèse autant. Le score repart à zéro à chaque partie.</p></div>`;
+      s.querySelector("#eq-retour").onclick=()=>Accueil.accueilTel();
+      s.querySelector("#eq-repartir")?.addEventListener("click",()=>{brouillon=propose(l,historique());rend();});
+      s.querySelector("#eq-annuler")?.addEventListener("click",()=>{brouillon=null;rend();});
+      s.querySelector("#eq-appliquer")?.addEventListener("click",()=>{enregistre(brouillon);brouillon=null;rend();});
+      s.querySelectorAll("[data-equipe-eleve]").forEach(x=>x.onchange=()=>{brouillon=copie(p);const n=+x.dataset.equipeEleve;brouillon.groupes.forEach(g=>{g.membres=g.membres.filter(v=>v!==n);if(g.id===x.value)g.membres.push(n);});brouillon.id="eq-"+Date.now().toString(36);rend();});
+      s.querySelector("#eq-presenter")?.addEventListener("click",async()=>{Accueil.ouvreActivite("bateau");const r=await useCap("room");if(r)r.emit("cmd",{a:"equipages"}).catch(()=>{});});
+    };rend();
+  }
+  return {ROLES,role,propre,plan,profils,propose,enregistre,assure,prepare,resultats,podium,coffreHTML,reussitesHTML,priveHTML,ceremonie,presentation,ouvre,drapeau};
+})();
+window.Competition=Competition;
 
 /* ---------- téléphone : lecture des cartes en direct avec la caméra (version autonome) ----------
    Les images sont analysées dans le téléphone puis oubliées : seuls les numéros de carte et les lettres lues sortent.
@@ -7915,6 +8228,7 @@ const Classe = (() => {
       maj:+o.maj||0, eleves:d.eleves, absents:{jour:"", n:[]}};
     (Array.isArray(o.eleves) ? o.eleves : []).forEach(e=>{ const n = +(e && e.n); if (n>=1 && n<=MAX) r.eleves[n-1] = {n, prenom:String(e.prenom||"").trim().slice(0,24), actif:!!e.actif}; });
     if (o.absents && typeof o.absents.jour==="string") r.absents = {jour:o.absents.jour, n:(Array.isArray(o.absents.n) ? o.absents.n : []).map(Number).filter(n=>n>=1 && n<=MAX)};
+    r.equipages=Competition.propre(o.equipages);
     return r;
   }
   const annonce = origine => ecoutes.forEach(f=>{ try { f(c, origine); } catch(e){ console.error(e); } });
@@ -8360,6 +8674,7 @@ const Accueil = (() => {
           <button id="aa-chapitres">${IC.cartes}<span>Chapitres à réviser<small>Activer ou désactiver les chapitres du Bateau-école</small></span>${IC.suite}</button></div>
         <h2 class="aa-h2">Ma classe</h2>
         <div class="aa-liste">
+          <button data-v="equipages">${IC.eleves}<span>Les équipages<small>Composition, missions et cérémonie de présentation</small></span>${IC.suite}</button>
           <button data-v="appel">${IC.appel}<span>Faire l'appel<small id="aa-presents">${n ? `${pres} présent${pres>1?"s":""} sur ${n} aujourd'hui` : "Ajoute d'abord tes élèves"}</small></span>${IC.suite}</button>
           <button data-v="suivi">${IC.suivi}<span>Suivi de la classe<small id="aa-suivi">${window.Historique ? esc(Historique.resumeCourt()) : ""}</small></span>${IC.suite}</button>
           <button data-v="eleves">${IC.eleves}<span>Élèves et cartes<small>${n ? `${n} élève${n>1?"s":""}, chacun sa carte numérotée` : "Ajoute tes élèves"}</small></span>${IC.suite}</button>
@@ -8373,6 +8688,7 @@ const Accueil = (() => {
       const v = e.target.closest("[data-v]"); if (!v) return;
       if (v.dataset.v==="appel") appel(); if (v.dataset.v==="eleves") classe(); if (v.dataset.v==="sauve") sauvegardes();
       if (v.dataset.v==="suivi" && window.Historique) Historique.suivi();
+      if (v.dataset.v==="equipages") Competition.ouvre();
       if (v.dataset.v==="cartes") imprime(v);
     };
     s.querySelector("#aa-preparer").onclick = ()=>Preparation.ouvre();
@@ -8595,6 +8911,7 @@ const Accueil = (() => {
     await Classe.init();
     await Preparation.init();
     if (window.Historique) Historique.init().then(()=>{
+      if(mode!=="tbi")Competition.assure();
       const majSuivi = ()=>{ const x = document.getElementById("aa-suivi"); if (x) x.textContent = Historique.resumeCourt(); };
       Historique.surChange(majSuivi); majSuivi();
       if (mode!=="tbi" && window.AutoSauve && AutoSauve.possible()){ // téléphone : une sauvegarde par jour, et après chaque changement
@@ -8614,6 +8931,7 @@ const Accueil = (() => {
       if (!Classe.existe()){ const nom = S.eleves.some(e=>e.prenom.trim()); Classe.adopte(Classe.depuisEtat(S, nom ? (S.maj||1) : 0)); }
       else Classe.versJeu();
       if (room){ room.presence({role:"tbi"}).catch(()=>{});
+        room.on("cmd",async m=>{if(m.data?.a!=="equipages"||enJeu||Pavillons.occupe())return;ouvreActivite("bateau",true);retourMenu();await Competition.presentation();accueil();});
         room.onPeers(ch=>{ tbiVuTel = ch.peers.some(p=>p.presence && p.presence.role==="scanner"); dessineTelEcran(); });
         room.on("cmd", m=>{ const d = m.data||{}; if (d.a!=="activite") return; // le téléphone choisit l'activité, sauf en pleine partie
           const libre = courant==="aa-ecran" || (courant==="pv-ecran" && !Pavillons.occupe()) || (courant==="scr-tbi" && typeof enJeu!=="undefined" && !enJeu);
@@ -8944,7 +9262,7 @@ const Pavillons = (() => {
       pres:(P ? P.pres : presents()).map(e=>e.n), compte:c ? !!c.tel : telPv,
       hisses:montre ? [...P.hisses[P.i]] : phase==="verif" ? [...verifVus] : [],
       bons:montre && phase==="revele" ? c.bons : null, score:P ? P.score : null,
-      fin:phase==="fin" && P ? {res:P.res, calcs:P.calcs.map(x=>({txt:texte(x), juste:x.juste, vrai:texte(x, x.r), bons:x.bons})), nb:P.pres.length, pm:P.pm} : null};
+      fin:phase==="fin" && P ? {res:P.res, calcs:P.calcs.map(x=>({txt:texte(x), juste:x.juste, vrai:texte(x, x.r), bons:x.bons})), nb:P.pres.length, pm:P.pm, fete:P.fete||0} : null};
   }
   function emet(){ if (roomE) roomE.emit("pv", sur() ? etat() : {v:1, phase:null}).catch(()=>{}); }
   function brancheEcran(){
@@ -8964,6 +9282,7 @@ const Pavillons = (() => {
   function commande(d){
     if (!sur()) return;
     if (d.f==="lance") lance();
+    else if (d.f==="fete" && P && phase==="fin"){P.fete=Math.min(2,(P.fete||0)+1);dessineCentre();emet();}
     else if (d.f==="verif") verif();
     else if (d.f==="salon" || d.f==="stop") arrete();
     else if (d.f==="pause") pause();
@@ -8978,6 +9297,8 @@ const Pavillons = (() => {
     clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf);
     const pres = presents(), calcs = genere(R);
     P = {id:Autonome.rid(4), debut:Date.now(), calcs, i:0, hisses:calcs.map(()=>new Set()), temps:calcs.map(()=>new Map()), pres, score:{bons:0, total:0}, res:null, pm:null, pause:false};
+    const notion="pv:"+R.op+":"+(R.op==="fois"?(R.tables||[]).slice().sort((a,b)=>a-b).join(","):R.max||20);
+    P.competition=Competition.prepare(calcs.map(()=>({n:notion})),pres,R.recompense);P.fete=0;
     phase = "compte"; dessine(); emet();
     const pas = k => { if (!P) return; if (k===0){ calc(); return; } const z = document.querySelector("#pv-ecran .pv-decompte"); if (z){ z.textContent = k; z.style.animation = "none"; void z.offsetWidth; z.style.animation = ""; } sons("pop"); programme(900, ()=>pas(k-1)); };
     pas(3);
@@ -9022,17 +9343,17 @@ const Pavillons = (() => {
     Historique.enreg({id:"p"+P.id, a:"pavillons", d:P.debut, r:R, fini, pres:P.pres.map(e=>[e.n, e.prenom||""]),
       c:faits.map(c=>({t:texte(c), j:c.juste ? 1 : 0, b:c.bons, op:c.op, a:c.a, x:c.b})), res, tm});
   }
-  /* le palmarès : uniquement les trois meilleurs scores, départagés par la rapidité */
+  /* Même score, même place : le temps de lecture ne départage jamais les élèves. */
   function palmares(){
-    const compte = P.calcs.map((c,i)=>c.bons!=null ? i : -1).filter(i=>i>=0); if (!compte.length) return null;
-    const L = P.pres.map(e=>{ const s = P.res[e.n]||"", ok = [...s].filter(x=>x==="1").length, faits = [...s].filter(x=>x!=="-").length;
-      const tps = compte.filter(i=>P.calcs[i].juste && P.hisses[i].has(e.n) && P.temps[i].has(e.n)).map(i=>P.temps[i].get(e.n));
-      const justes = compte.filter(i=>P.calcs[i].juste), hj = justes.filter(i=>P.hisses[i].has(e.n)).length;
-      return {n:e.n, ok, faits, moy:tps.length ? Math.round(tps.reduce((a,b)=>a+b,0)/tps.length) : null,
-        actif:!justes.length || hj>0}; }); // garder sa carte baissée tout le temps ne suffit pas
-    const lent = x => x.moy==null ? 1e9 : x.moy;
-    const podium = L.filter(x=>x.ok>0 && x.actif).sort((a,b)=>b.ok-a.ok || lent(a)-lent(b) || a.n-b.n).slice(0,3).map(x=>({n:x.n, ok:x.ok, faits:x.faits, moy:x.moy}));
-    return {podium:R.recompense==="collectif"?[]:podium,collectif:R.recompense==="collectif"};
+    const compte=P.calcs.map((c,i)=>c.bons!=null?i:-1).filter(i=>i>=0);if(!compte.length)return null;
+    const scores={};
+    P.pres.forEach(e=>{const r=P.res[e.n]||"",justes=compte.filter(i=>P.calcs[i].juste);
+      scores[e.n]={n:e.n,prenom:nomDe(e.n).replace(/^carte /,"Carte "),ok:[...r].filter(c=>c==="1").length,faits:[...r].filter(c=>c!=="-").length,actif:!justes.length||justes.some(i=>P.hisses[i].has(e.n))};});
+    const questions=P.calcs.map((c,i)=>({ok:"A",r:Object.fromEntries(P.pres.filter(e=>P.res[e.n]?.[i]!=="-").map(e=>[e.n,P.res[e.n][i]==="1"?"A":"B"]))}));
+    const competition=Competition.resultats(P.competition,scores,questions);
+    const eligibles=Object.fromEntries(Object.entries(scores).filter(([,e])=>e.actif));
+    const podium=R.recompense==="collectif"?[]:Competition.podium(competition,eligibles);
+    return {podium,competition,collectif:R.recompense==="collectif"};
   }
   function verif(){ clearTimeout(minuteur); clearTimeout(attenteFin); P = null; phase = "verif"; verifVus = new Set(); dessine(); emet(); }
   function arrete(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; dessine(); emet(); }
@@ -9079,15 +9400,10 @@ const Pavillons = (() => {
     p.style.background = telPv ? "#D9F0E1" : telLie ? "#FFF1CF" : "var(--soleil)"; p.style.color = telPv ? "#1f6b3d" : "var(--nuit)"; p.style.cursor = telLie ? "default" : "pointer";
   }
   function dessineDrisse(){
-    const d = document.querySelector("#pv-ecran .pv-drisse"); if (!d) return;
-    const pres = P ? P.pres : presents(), cle = pres.map(e=>e.n).join(",");
-    if (d.dataset.cle!==cle){ d.dataset.cle = cle; d.style.setProperty("--nb", pres.length);
-      d.innerHTML = pres.map((e,k)=>`<div class="pv-place" data-n="${e.n}" style="--k:${k}"><b class="pv-fl">${drapeau(e.n)}</b><i>${e.n}</i></div>`).join(""); }
-    const c = P && P.calcs[P.i], joue = c && ["calc","ferme","revele"].includes(phase);
-    const haut = phase==="salon" || phase==="fin" ? null : phase==="verif" ? verifVus : joue ? P.hisses[P.i] : new Set();
-    d.querySelectorAll(".pv-place").forEach(el=>el.classList.toggle("haut", haut===null || haut.has(+el.dataset.n)));
-    d.classList.toggle("fete", haut===null);
-    d.classList.toggle("juste", phase==="revele" && !!c && c.juste); d.classList.toggle("faux", phase==="revele" && !!c && !c.juste);
+    const d=document.querySelector("#pv-ecran .pv-drisse");if(!d)return;
+    // Une guirlande décorative fixe, sans lien entre drapeau et élève.
+    if(!d.dataset.decor){d.dataset.decor="1";d.setAttribute("aria-hidden","true");d.style.setProperty("--nb",7);d.innerHTML=Array.from({length:7},(_,k)=>`<div class="pv-place haut" style="--k:${k}"><b class="pv-fl">${drapeau(k+1)}</b></div>`).join("");}
+    d.classList.add("fete");
   }
   function dessineBas(){ const b = document.querySelector("#pv-ecran .pv-bas"); if (!b) return; b.hidden = !enPartie() || phase==="compte";
     const p = b.querySelector('[data-pv="pause"]'); if (p){ p.textContent = P && P.pause ? "Reprendre" : "Pause"; p.hidden = phase==="calc" && sansMinuteur(); }
@@ -9110,7 +9426,7 @@ const Pavillons = (() => {
       z.innerHTML = `<div class="pv-verif"><h1>Tout le monde lève sa carte !</h1>
         <p>Bien droite, face au téléphone. Chaque pavillon hissé, c'est une carte que le téléphone voit.</p>
         <div class="pv-grand">${verifVus.size} <small>sur ${pres.length}</small></div>
-        <p>${!telPv ? "Le téléphone ne filme pas encore : dans l'appli, touche « Filmer la classe »." : !manque.length ? "Le téléphone voit toutes les cartes. Parfait !" : "Le téléphone ne voit pas encore "+(manque.length>12 ? esc(manque.slice(0,12).map(e=>e.prenom || "carte "+e.n).join(", "))+"… ("+manque.length+" cartes)." : esc(liste(manque.map(e=>e.prenom || "carte "+e.n)))+".")}</p>
+        <p>${!telPv ? "Le téléphone ne filme pas encore : dans l'appli, touche « Filmer la classe »." : !manque.length ? "Le téléphone voit toutes les cartes. Parfait !" : "La lecture continue. Gardez vos cartes bien droites face au téléphone."}</p>
         <div class="pv-boutons"><button class="btn" data-pv="salon">Retour</button><button class="btn prim" data-pv="lance">C'est parti !</button></div></div>`;
       return;
     }
@@ -9135,25 +9451,12 @@ const Pavillons = (() => {
   }
   const sec = ms => (ms/1000).toFixed(1).replace(".", ",")+" s";
   function palmaresHTML(pm){
-    const nom = n => nomDe(n).replace(/^carte /, "Carte ");
-    const ordre = [[pm.podium[1],2],[pm.podium[0],1],[pm.podium[2],3]];
-    const pod = ordre.map(([x,r])=>x ? `<div class="pv-marche m${r}"><div class="pv-mat">${drapeau(x.n)}</div><b>${esc(nom(x.n))}</b><small>${x.ok}/${x.faits}${x.moy!=null ? " · "+sec(x.moy) : ""}</small><div class="pv-bloc">${r}</div></div>` : `<div class="pv-marche"></div>`).join("");
-    return `<div class="pv-palmares"><h2>Le palmarès</h2><div class="pv-podium">${pod}</div></div>`;
+    return `<div class="pv-palmares eq-fete">${podiumBateauHTML(pm.podium)}</div>`;
   }
   function finHTML(){
-    const compte = P.calcs.filter(c=>c.bons!=null), nb = P.pres.length;
-    const pct = P.score.total ? Math.round(100*P.score.bons/P.score.total) : 0, et = pct>=90 ? 3 : pct>=75 ? 2 : pct>=50 ? 1 : 0;
-    const titre = !compte.length ? "Partie terminée !" : pct>=90 ? "Équipage d'élite !" : pct>=75 ? "Bravo l'équipage !" : pct>=50 ? "Bien joué, moussaillons !" : "On s'entraîne encore ?";
-    const durs = P.calcs.map(c=>({c, t:c.bons==null ? null : Math.round(100*c.bons/Math.max(1,nb))})).filter(x=>x.t!=null && x.t<80).sort((a,b)=>a.t-b.t).slice(0,3);
-    const chip = ({c,t}) => `<span class="pv-rc ${t>=50 ? "moyen" : "dur"}"><span>${c.a} ${OPS[c.op]} ${c.b} = ${c.juste ? c.r : `<s>${c.aff}</s> ${c.r}`}</span><b>${t} %</b></span>`;
-    const carte = `<div class="pv-fin-carte"><h1>${titre}</h1>${R.recompense==="collectif"&&compte.length?`<p class="pv-bravo">${pct>=70?"Défi collectif réussi : au moins 70 % de bonnes réponses !":"Cap sur 70 % de bonnes réponses ensemble."}</p>`:""}
-      ${compte.length ? `<div class="pv-pct">${pct} %<span class="pv-etoiles">${"★".repeat(et)}<i>${"★".repeat(3-et)}</i></span></div>
-        <p>${br(P.score.bons)} sur ${P.score.total} : pavillons hissés sur les calculs justes, gardés baissés sur les faux.</p>
-        ${durs.length ? `<div class="pv-arevoir"><b>À revoir ensemble</b><div class="pv-recap">${durs.map(chip).join("")}</div></div>` : `<p class="pv-bravo">Tous les calculs ont été bien réussis !</p>`}`
-        : `<p>Sans téléphone qui filme, les cartes n'ont pas été comptées.</p>`}
-      <div class="pv-boutons"><button class="btn" data-pv="salon">Changer les calculs</button><button class="btn prim" data-pv="lance">Rejouer</button></div></div>`;
-    return P.pm && P.pm.podium.length ? `<div class="pv-fin deux">${carte}${palmaresHTML(P.pm)}</div>`
-      : `<div class="pv-fin"><img class="perro" src="img/halloween-perroquet-bravo.png" alt="">${carte}</div>`;
+    const pm=P.pm,r=pm?.competition,etape=P.fete||0;
+    const contenu=!r?'<h1>Partie terminée !</h1><p>Merci pour cette révision ensemble.</p>':etape===0?Competition.coffreHTML(r):etape===1&&pm.podium.length?palmaresHTML(pm):`<h1>Les étoiles du voyage</h1>${Competition.reussitesHTML(r)}`;
+    return `<div class="pv-fin"><div class="pv-fin-carte eq-fete">${contenu}<div class="pv-boutons">${r&&etape<2?`<button class="btn prim" data-pv="fete">${etape===0&&pm.podium.length?"Découvrir le podium":"Célébrer les réussites"}</button>`:`<button class="btn" data-pv="salon">Changer les calculs</button><button class="btn prim" data-pv="lance">Rejouer</button>`}</div></div></div>`;
   }
 
   /* ---------- réglages (sur l'écran de la classe comme sur le téléphone) ---------- */
@@ -9284,7 +9587,7 @@ const Pavillons = (() => {
     }
     if (E.phase==="fin" && E.fin){
       z.innerHTML = `<div class="aa-bloc"><div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer</button><button class="btn" data-c="salon">Changer les calculs</button></div></div>
-        ${E.fin.pm?.collectif?`<div class="aa-bloc"><h3>Défi collectif</h3><p>${E.score?.total&&E.score.bons/E.score.total>=.7?"Objectif de 70 % atteint !":"Cap sur 70 % de bonnes réponses ensemble."}</p></div>`:""}${palmaresTel(E.fin.pm)}<div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;
+        ${E.fin.pm?.collectif?`<div class="aa-bloc"><h3>Défi collectif</h3><p>${E.score?.total&&E.score.bons/E.score.total>=.7?"Objectif de 70 % atteint !":"Cap sur 70 % de bonnes réponses ensemble."}</p></div>`:""}${E.fin.pm?.competition&&(E.fin.fete||0)<2?`<button class="btn prim" data-c="fete">${!(E.fin.fete||0)&&E.fin.pm.podium.length?"Découvrir le podium":"Célébrer les réussites"}</button>`:""}${palmaresTel(E.fin.pm)}<div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;
       return;
     }
     const c = E.calc, rev = E.phase==="revele";
@@ -9300,9 +9603,8 @@ const Pavillons = (() => {
       <div class="aa-actions deux">${E.phase==="calc" && E.r && E.r.vitesse==="signal" ? "" : `<button class="btn" data-c="${E.pause ? "reprend" : "pause"}">${E.pause ? "Reprendre" : "Pause"}</button>`}<button class="btn" data-c="stop">Arrêter</button></div></div>`;
   }
   function palmaresTel(pm){
-    if (!pm || !pm.podium || !pm.podium.length) return "";
-    const med = ["or","argent","bronze"];
-    return `<div class="aa-bloc"><h3>Le palmarès</h3><ol class="pv-t-podium">${pm.podium.slice(0,3).map((x,k)=>`<li class="${med[k]}"><i>${k+1}</i>${drapeau(x.n)}<b>${esc(nomT(x.n))}</b><em>${x.ok}/${x.faits}${x.moy!=null ? " · "+sec(x.moy) : ""}</em></li>`).join("")}</ol></div>`;
+    if(!pm)return "";
+    return `<div class="aa-bloc">${pm.podium.length?`<h3>Le palmarès</h3><ol class="pv-t-podium">${pm.podium.map(x=>`<li class="${["or","argent","bronze"][(x.rang||1)-1]||"or"}"><i>${x.rang||1}</i>${x.equipe?Competition.drapeau(x.id):drapeau(x.n)}<b>${esc(x.prenom||nomT(x.n))}</b><em>${x.equipe?String(x.points).replace(".",",")+" pts":x.ok+" sur "+x.faits}</em></li>`).join("")}</ol>`:""}${Competition.priveHTML(pm.competition)}</div>`;
   }
   function derniereHTML(){
     if (!dernier || !dernier.fin) return "";
@@ -9727,7 +10029,11 @@ const Tel = (() => {
   function maj(){
     const podium=TQ && Array.isArray(TQ.podium) ? TQ.podium : [];
     $("#t-podium").hidden=!podium.length&&!TQ?.reussites;
-    $("#t-podium").innerHTML=podiumBateauHTML(podium)+htmlRecompenses(TQ?.reussites,true);
+    $("#t-podium").innerHTML=podiumBateauHTML(podium,true)+htmlRecompenses(TQ?.reussites,true)+Competition.priveHTML(TQ?.reussites?.competition);
+    let objectifs=document.getElementById("t-objectifs");
+    if(!objectifs){objectifs=document.createElement("details");objectifs.id="t-objectifs";objectifs.className="eq-objectifs";$("#t-grid").after(objectifs);}
+    objectifs.hidden=!TQ?.qid||!TQ?.defis;
+    if(!objectifs.hidden)objectifs.innerHTML='<summary>Défis personnels de cette séance</summary><ul>'+Object.entries(TQ.defis).map(([n,d])=>`<li><strong>${esc(cartes().find(e=>e[0]===+n)?.[1]||"Carte "+n)}</strong> · ${esc(d.titre)} : ${d.cible} sur ${d.indices.length}</li>`).join("")+'</ul>';
     const cs=cartes(); const lus=cs.filter(([n])=>rep[n]).length;
     $("#t-cpt").textContent = lus+" / "+cs.length;
     const grille=$("#t-grid"), defilement=grille.scrollTop;
