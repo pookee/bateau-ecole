@@ -647,6 +647,18 @@ img{max-width:100%}
 
 <style>
 /* Une seule scène : ces indications laissent la mer et le vrai bateau visibles. */
+/* Musique du décor : mêmes commandes sur le téléphone et l'écran. */
+.theme-musique{min-width:0;margin:0 0 22px;padding:12px 16px 14px;border:2px solid var(--sable);border-radius:16px;background:var(--theme-soft,var(--ecume));color:var(--encre)}
+.theme-musique legend{padding:0 7px;font:800 1.2rem var(--display);color:var(--nuit)}
+.theme-musique-interrupteur{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-weight:700}
+.theme-musique-interrupteur input{flex:none;width:24px;height:24px;margin:0;accent-color:var(--mer)}
+.theme-musique-interrupteur b{margin-left:auto;font-size:.9rem;color:var(--mer)}
+.theme-musique-volume{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 14px;margin-top:8px;font-weight:700}
+.theme-musique-volume output{font-variant-numeric:tabular-nums;color:var(--nuit)}
+.theme-musique-volume input{grid-column:1/-1;width:100%;min-width:0;height:44px;margin:0;accent-color:var(--mer);cursor:pointer}
+.theme-musique input:focus-visible{outline:3px solid var(--soleil);outline-offset:4px;border-radius:5px}
+.theme-musique p{margin:4px 0 0;font-size:.92rem;line-height:1.4;color:var(--gris)}
+@media(max-width:600px){.theme-musique{padding:8px 12px 12px}.theme-musique-interrupteur{gap:8px}.theme-musique-interrupteur b{font-size:.82rem}.theme-musique p{font-size:.86rem}}
 .kraken-jauge{display:flex;align-items:center;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;max-width:100%;box-sizing:border-box;padding:8px 14px;border:1px solid #DFCAA0;border-radius:12px;background:var(--papier);color:var(--nuit);font:700 1rem var(--texte)}
 .kraken-jauge-coque{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
 .kraken-jauge-titre{font:800 1.1rem/1.15 var(--display);margin-right:3px}
@@ -941,6 +953,8 @@ const Autonome = (() => {
       "jeu/chapitres": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
       "jeu/theme": {resume:d=>d && window.Themes?.valide(d.id) && Number.isSafeInteger(d.maj) && d.maj>=0 ? {id:d.id,maj:d.maj} : null,
         prefere:(a,b)=>!!b && (!a || b.maj>a.maj || (b.maj===a.maj && b.id>a.id)), delai:150},
+      "jeu/ambiance": {resume:d=>d && typeof d.actif==="boolean" && Number.isInteger(d.volume) && d.volume>=0 && d.volume<=100 && Number.isSafeInteger(d.maj) && d.maj>=0 ? {actif:d.actif,volume:d.volume,maj:d.maj} : null,
+        prefere:(a,b)=>!!b && (!a || b.maj>a.maj || (b.maj===a.maj && (b.actif?101:0)+b.volume>(a.actif?101:0)+a.volume)), delai:150},
       "classe/actuelle": {resume:d=>d ? {id:d.id||null, maj:d.maj||0} : null, prefere:(a,b)=>!!b && b.maj>0 && (!a || b.maj>a.maj), delai:700}
     };
     const DOCS = Object.keys(REGLES);
@@ -5824,11 +5838,35 @@ window.Themes = (() => {
     file=file.then(async()=>{await pret;if(db)await db.doc(DOC).set({...etat});}).catch(e=>console.warn("sauvegarde de la thématique",e && e.message));
     await file;return true;
   }
+  function selectionMusique(){
+    const son=window.AmbianceSonore;if(!son)return;
+    const r=son.reglages();
+    document.querySelectorAll('.theme-musique').forEach(zone=>{
+      zone.querySelector('[data-ambiance-actif]').checked=r.actif;
+      zone.querySelector('[data-ambiance-etat]').textContent=r.actif?"Activée":"Coupée";
+      const volume=zone.querySelector('[data-ambiance-volume]');
+      volume.value=r.volume;volume.setAttribute('aria-valuetext',r.volume===0?"0 %, silencieux":`${r.volume} %`);
+      zone.querySelector('output').textContent=`${r.volume} %`;
+    });
+  }
   function rendSelecteur(conteneur){
     conteneur.oninput=conteneur.onchange=conteneur.onclick=null;
     const groupe="theme-"+(++numero);
     conteneur.innerHTML=`<div class="theme-selecteur"><p class="note">Choisis le décor de la période. Il s’applique immédiatement et reste sélectionné au prochain démarrage. Le téléphone et l’écran reliés partagent le même choix.</p><fieldset class="theme-grille"><legend class="theme-legende">Choisir une thématique</legend>${liste.map(t=>`<label class="theme-option" data-theme-option="${t.id}"><input type="radio" name="${groupe}" value="${t.id}" ${t.id===etat.id?"checked":""}><span class="theme-apercu" aria-hidden="true" style="--apercu-mer:${t.palette.mer};--apercu-accent:${t.palette.soleil};--apercu-fond:${t.palette.ecume};--apercu-ciel:url('${image("ciel",t.id)}')"><img class="theme-apercu-bateau" data-theme-preview src="${image("bateau",t.id)}" alt=""><span class="theme-icone">${t.icone}</span></span><span class="theme-nom">${t.nom}</span><span class="theme-description">${t.description}</span><span class="theme-coche" aria-hidden="true">✓</span></label>`).join("")}</fieldset><p class="theme-statut" role="status" aria-live="polite"></p></div>`;
-    conteneur.onchange=e=>{const input=e.target.closest('input[type="radio"]');if(input && valide(input.value))choisir(input.value);};
+    if(window.AmbianceSonore){
+      conteneur.querySelector('.theme-grille').insertAdjacentHTML('beforebegin',`<fieldset class="theme-musique"><legend>Musique de fond</legend><label class="theme-musique-interrupteur"><input type="checkbox" role="switch" data-ambiance-actif><span>Activer la musique</span><b data-ambiance-etat></b></label><div class="theme-musique-volume"><label for="${groupe}-volume">Volume</label><output for="${groupe}-volume"></output><input id="${groupe}-volume" type="range" min="0" max="100" step="1" data-ambiance-volume aria-describedby="${groupe}-musique-note"></div><p id="${groupe}-musique-note">Une musique douce accompagne chaque thématique. Ce réglage est partagé avec le téléphone et l’écran.</p></fieldset>`);
+      selectionMusique();
+      Promise.resolve(AmbianceSonore.pret).then(selectionMusique);
+    }
+    const regleMusique=patch=>{
+      AmbianceSonore.demarre();
+      Promise.resolve(AmbianceSonore.regler(patch)).then(selectionMusique).catch(()=>{});
+    };
+    conteneur.oninput=e=>{if(e.target.matches('[data-ambiance-volume]'))regleMusique({volume:Number(e.target.value)});};
+    conteneur.onchange=e=>{
+      if(e.target.matches('[data-ambiance-actif]')){regleMusique({actif:e.target.checked});return;}
+      const input=e.target.closest('input[type="radio"]');if(input && valide(input.value))choisir(input.value);
+    };
     selection();
   }
   function ouvre(){
@@ -5840,12 +5878,14 @@ window.Themes = (() => {
     d.addEventListener("keydown",e=>{
       if(e.key==="Escape"){e.preventDefault();d.remove();precedent?.focus();}
       if(e.key==="Tab"){
-        const choix=d.querySelector('input:checked'),fermer=d.querySelector('[data-x]');
-        if(e.shiftKey && document.activeElement===fermer){e.preventDefault();choix?.focus();}
-        else if(!e.shiftKey && document.activeElement===choix){e.preventDefault();fermer.focus();}
+        const accessibles=[...d.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"]')].filter(el=>el.getClientRects().length && (el.type!=="radio" || el.checked));
+        const premier=accessibles[0],dernier=accessibles[accessibles.length-1];
+        if(e.shiftKey && document.activeElement===premier){e.preventDefault();dernier?.focus();}
+        else if(!e.shiftKey && document.activeElement===dernier){e.preventDefault();premier?.focus();}
       }
     });
-    d.querySelector('input:checked')?.focus();return d;
+    d.addEventListener('click',e=>{if(e.target.closest('[data-x]'))precedent?.focus();});
+    d.querySelector('input[type="radio"]:checked')?.focus();return d;
   }
   applique();
   new MutationObserver(changes=>changes.forEach(m=>{
@@ -5854,6 +5894,7 @@ window.Themes = (() => {
   })).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:["src","data-theme-image"]});
   // Deux vues du même navigateur se mettent aussi à jour, même sans liaison active.
   window.addEventListener("storage",e=>{if(e.key===CLE){try{recoit(JSON.parse(e.newValue));}catch(err){}}});
+  window.addEventListener("ambiancechange",selectionMusique);
   return {liste,actuel:()=>etat.id,get,image,valide,choisir,rendSelecteur,ouvre,pret};
 })();
 
@@ -5968,14 +6009,22 @@ const KrakenMer = (() => {
   const doux = t => {t=borne(t);return t*t*(3-2*t);};
   let etat, effet, passage, particules, vus, transitionsVues, dernierCadre, dernierTemps, fumeeDepuis, textures = new WeakMap();
   function reset(){
+    window.AmbianceSonore?.arreteKraken();
     etat={actif:false,coque:3,phase:"navigation",dernierImpact:null,impacts:0,transitions:0};
     effet=null;passage=null;particules=[];vus=new Set();transitionsVues=new Set();dernierCadre=null;dernierTemps=null;fumeeDepuis=0;
   }
   reset();
+  const pageVisible=()=>typeof document==="undefined" || !document.hidden;
+  function coupeSonsEnAttente(){
+    if(effet)effet.sonCoupe=true;
+    if(passage)passage.son=true;
+  }
+  if(typeof document!=="undefined")document.addEventListener("visibilitychange",()=>{if(!pageVisible())coupeSonsEnAttente();});
+  window.addEventListener?.("pagehide",coupeSonsEnAttente);
   function active(on){
     if(on===undefined)return etat.actif;
     etat.actif=!!on;
-    if(!etat.actif){effet=null;passage=null;particules=[];dernierTemps=null;dernierCadre=null;}
+    if(!etat.actif){window.AmbianceSonore?.arreteKraken();effet=null;passage=null;particules=[];dernierTemps=null;dernierCadre=null;}
     return etat.actif;
   }
   function sync(k={}){
@@ -5990,9 +6039,10 @@ const KrakenMer = (() => {
     sync(o);
     // Une réussite ordinaire fait avancer le bateau, sans provoquer d'attaque.
     if(o.ok)return true;
+    if(etat.actif&&pageVisible())window.AmbianceSonore?.attaque(etat.coque);
     etat.dernierImpact=o.id;etat.impacts++;
-    effet={type:"impact",id:o.id,debut:temps(),duree:DUREES.impact,emis:false};
-    if(reduit.matches){if(etat.actif&&typeof Son!=="undefined")Son.chocKraken?.();effet=null;}
+    effet={type:"impact",id:o.id,debut:temps(),duree:DUREES.impact,emis:false,sonCoupe:!pageVisible()};
+    if(reduit.matches){if(etat.actif&&!effet.sonCoupe&&typeof Son!=="undefined")Son.chocKraken?.();effet=null;}
     return true;
   }
   function transition(phase,id){
@@ -6000,8 +6050,8 @@ const KrakenMer = (() => {
     etat.transitions++;etat.phase="naufrage";etat.coque=0;
     // L'ultime coup finit de toucher la coque avant le début de l'immersion.
     const delai=effet?Math.max(0,effet.debut+850-temps()):0;
-    passage={type:phase,id,debut:temps()+delai,duree:DUREES[phase],emis:false};
-    if(reduit.matches){passage=null;effet=null;particules=[];}
+    passage={type:phase,id,debut:temps()+delai,duree:DUREES[phase],emis:false,son:!pageVisible()};
+    if(reduit.matches){if(etat.actif&&!passage.son)window.AmbianceSonore?.naufrage();passage=null;effet=null;particules=[];}
     return true;
   }
   function palette(theme){
@@ -6026,6 +6076,7 @@ const KrakenMer = (() => {
     if(calme){effet=null;passage=null;particules=[];}
     const e=effet?borne((now-effet.debut)/effet.duree):1;
     const p=passage?borne((now-passage.debut)/passage.duree):1;
+    if(passage&&!passage.son&&p>0){passage.son=true;if(p<1&&etat.actif&&pageVisible())window.AmbianceSonore?.naufrage();}
     const coup=effet?.type==="impact"?Math.max(0,1-Math.abs((now-effet.debut-620)/440)):0;
     let presence=etat.coque===3?0:etat.coque===2?.22:etat.coque===1?.7:1;
     if(effet?.type==="impact")presence=Math.max(presence,Math.sin(Math.PI*borne(e*1.4))*.98);
@@ -6038,7 +6089,7 @@ const KrakenMer = (() => {
     // Le roulis d'un coup ne coupe pas la coque au bord du canvas.
     // Seul le naufrage autorise le bateau à passer sous cette limite.
     if(!immersion)f.y=Math.min(f.y,o.H-4-Math.abs(Math.sin(rotation))*o.w*.5);
-    if(effet&&!effet.emis&&now-effet.debut>=580&&e<1){explosion(f,"choc");if(typeof Son!=="undefined")Son.chocKraken?.();effet.emis=true;}
+    if(effet&&!effet.emis&&now-effet.debut>=580&&e<1){explosion(f,"choc");if(!effet.sonCoupe&&pageVisible()&&typeof Son!=="undefined")Son.chocKraken?.();effet.emis=true;}
     if(passage&&!passage.emis&&p>.18&&p<.7){explosion({...f,y:o.y},"eau");passage.emis=true;}
     if(!calme&&etat.coque<=1&&immersion<.2&&now-fumeeDepuis>650){
       fumeeDepuis=now;const s=f.w/300;
@@ -6092,11 +6143,84 @@ const KrakenMer = (() => {
     const fissures=coque===2?[[.36,.8,.025]]:[[.36,.8,.04],[.74,.78,.04],[.52,.86,.025]];
     fissures.forEach(([x,y,r])=>{const points=[[x,y],[x-r*.45,y+r*.45],[x+r*.45,y+r],[x-r*.1,y+r*1.8],[x+r*.35,y+r*2.6]];g.beginPath();points.forEach(([a,b],i)=>i?g.lineTo(a,b):g.moveTo(a,b));g.strokeStyle="#D3A471";g.lineWidth=.009;g.stroke();g.strokeStyle="#241912";g.lineWidth=.004;g.stroke();});cache.set(coque,cv);return cv;
   }
+  // Des éléments fixes de la même épave, à différentes profondeurs. Aucun tirage
+  // aléatoire par image : une reprise conserve la disposition des morceaux.
+  const EPAVE = [
+    {type:"planche",x:-112,y:18,l:49,h:9,r:-.28,p:1.7},
+    {type:"bordage",x:89,y:17,l:58,h:12,r:.31,p:3.1},
+    {type:"coque",x:-16,y:29,l:82,h:23,r:-.12,p:.4},
+    {type:"planche",x:139,y:37,l:25,h:7,r:-.51,p:4.5},
+    {type:"mat",x:-83,y:45,l:65,h:10,r:.18,p:2.5},
+    {type:"planche",x:66,y:49,l:43,h:9,r:-.24,p:5.2},
+    {type:"eclat",x:-145,y:49,l:20,h:6,r:.43,p:3.8}
+  ];
+  function contourDebris(g,d){
+    const a=d.l*.5,b=d.h*.5;
+    g.beginPath();
+    if(d.type==="coque"){
+      g.moveTo(-a+5,-b+2);g.quadraticCurveTo(-a*.2,-b-6,a-8,-b+1);
+      g.lineTo(a-2,-b-2);g.lineTo(a-5,0);g.lineTo(a+1,3);g.lineTo(a-10,b-1);
+      g.quadraticCurveTo(-a*.05,b+5,-a+4,b-1);g.lineTo(-a+8,2);g.lineTo(-a-2,-1);g.lineTo(-a+6,-3);
+    }else{
+      g.moveTo(-a+5,-b);g.lineTo(a-7,-b-1);g.lineTo(a-2,-b+1);g.lineTo(a-7,-b+3);
+      g.lineTo(a+1,0);g.lineTo(a-6,2);g.lineTo(a-3,b);g.lineTo(-a+3,b+1);
+      g.lineTo(-a+7,b-2);g.lineTo(-a-1,1);g.lineTo(-a+6,-1);g.lineTo(-a+1,-b+2);
+    }
+    g.closePath();
+  }
+  function dessineDebris(g,f){
+    if(f.immersion<=.75)return;
+    const s=f.w/300,visible=doux((f.immersion-.75)*4),nuit=f.theme?.id==="halloween"||f.theme?.id==="noel";
+    const boisClair=nuit?"#D1A369":"#E5B67A",bois=nuit?"#A16F43":"#BA8048",chant=nuit?"#4A332C":"#69432C";
+    const peinture=f.theme?.id==="halloween"?"#30313F":(f.theme?.palette?.corail||"#B95138");
+    for(const d of EPAVE){
+      const t=f.calme?0:f.now/1000,houle=f.calme?0:Math.sin(t*1.3+d.p);
+      const dx=f.calme?0:Math.sin(t*.55+d.p)*2.2;
+      const x=f.x+(d.x+dx)*s,y=f.mer+(d.y+houle*1.5)*s,r=d.r+(f.calme?0:Math.sin(t*1.1+d.p)*.038);
+      g.save();g.globalAlpha=visible;
+      // Une ombre immergée et un reflet court empêchent les morceaux de sembler
+      // posés sur l'écran. Pas de shadowBlur ou de filtre coûteux sur téléphone.
+      g.fillStyle="rgba(2,22,37,.26)";g.beginPath();g.ellipse(x+2*s,y+5*s,d.l*s*.55,3.6*s,r*.25,0,Math.PI*2);g.fill();
+      g.strokeStyle=nuit?"rgba(209,163,105,.18)":"rgba(229,182,122,.21)";g.lineWidth=2*s;g.beginPath();g.moveTo(x-d.l*s*.24,y+9*s);g.quadraticCurveTo(x,y+11*s,x+d.l*s*.29,y+9*s);g.stroke();
+      g.translate(x,y);g.rotate(r);g.scale(s,s);
+      // Le chant épais reste visible sous la face claire, jusque dans les éclats.
+      g.save();g.translate(0,3);contourDebris(g,d);g.fillStyle=chant;g.fill();g.restore();
+      contourDebris(g,d);const face=g.createLinearGradient(0,-d.h,2,d.h);face.addColorStop(0,boisClair);face.addColorStop(.56,bois);face.addColorStop(1,"#8B572F");g.fillStyle=face;g.fill();g.strokeStyle=chant;g.lineWidth=1.15;g.stroke();
+      g.save();contourDebris(g,d);g.clip();
+      if(d.type==="coque"||d.type==="bordage"){
+        // Un morceau de coque conserve la peinture, le liston crème et le hublot.
+        g.fillStyle=peinture;g.beginPath();g.moveTo(-d.l/2,-d.h*.23);g.quadraticCurveTo(0,-d.h*.45,d.l/2,-d.h*.16);g.lineTo(d.l/2,d.h);g.lineTo(-d.l/2,d.h);g.closePath();g.fill();
+        g.strokeStyle="#F1D7A4";g.lineWidth=d.type==="coque"?2.5:1.8;g.beginPath();g.moveTo(-d.l*.5,-d.h*.27);g.quadraticCurveTo(0,-d.h*.5,d.l*.5,-d.h*.21);g.stroke();
+        g.strokeStyle="rgba(20,20,30,.46)";g.lineWidth=.9;g.beginPath();g.moveTo(-d.l*.48,d.h*.32);g.quadraticCurveTo(0,d.h*.51,d.l*.5,d.h*.26);g.stroke();
+      }else{
+        g.strokeStyle="rgba(85,48,22,.45)";g.lineWidth=.7;
+        for(const v of [-.23,.11,.32]){g.beginPath();g.moveTo(-d.l*.46,d.h*v);g.bezierCurveTo(-d.l*.16,d.h*(v-.12),d.l*.1,d.h*(v+.15),d.l*.46,d.h*(v-.02));g.stroke();}
+        if(d.type!=="eclat"){g.beginPath();g.ellipse(-d.l*.12,.6,3.5,1.25,-.05,0,Math.PI*2);g.stroke();g.beginPath();g.ellipse(-d.l*.12,.6,1.6,.45,0,0,Math.PI*2);g.stroke();}
+      }
+      g.restore();
+      // Le bois découvert aux cassures et quelques fibres restent plus clairs.
+      g.strokeStyle=boisClair;g.lineWidth=.9;g.beginPath();g.moveTo(-d.l*.5+5,-d.h*.45);g.lineTo(-d.l*.5+9,-.5);g.moveTo(d.l*.5-7,-d.h*.4);g.lineTo(d.l*.5-10,1);g.stroke();
+      if(d.type==="coque"){
+        g.save();g.translate(8,2);g.scale(1,.84);g.fillStyle="#D9A34C";g.strokeStyle="#745020";g.lineWidth=1;g.beginPath();g.arc(0,0,8,0,Math.PI*2);g.fill();g.stroke();
+        g.fillStyle=f.palette.eau;g.beginPath();g.arc(0,0,5.7,0,Math.PI*2);g.fill();g.strokeStyle="#E9FCFA";g.lineWidth=1.2;g.beginPath();g.arc(0,0,4.5,Math.PI*1.06,Math.PI*1.62);g.stroke();
+        g.fillStyle="#70502F";for(const a of [0,Math.PI*.5,Math.PI,Math.PI*1.5]){g.beginPath();g.arc(Math.cos(a)*6.8,Math.sin(a)*6.8,.75,0,Math.PI*2);g.fill();}g.restore();
+      }else if(d.type==="mat"){
+        // Trois tours de cordage identifient un bout du mât brisé.
+        for(const offset of [-3,0,3]){g.strokeStyle="#4E3925";g.lineWidth=3;g.beginPath();g.moveTo(offset-1,-d.h*.43);g.quadraticCurveTo(offset+2,0,offset+1,d.h*.47);g.stroke();g.strokeStyle="#DEC798";g.lineWidth=1.6;g.stroke();}
+      }else if(d.l>28){
+        for(const nx of [-d.l*.28,d.l*.27]){g.fillStyle="#443F38";g.beginPath();g.ellipse(nx,-d.h*.08,1.5,1.05,0,0,Math.PI*2);g.fill();g.fillStyle="#B8B5A5";g.beginPath();g.arc(nx-.35,-d.h*.08-.3,.5,0,Math.PI*2);g.fill();}
+      }
+      // Un liseré humide et deux petites traînées d'écume au contact de l'eau.
+      g.strokeStyle="rgba(255,242,206,.52)";g.lineWidth=.75;g.beginPath();g.moveTo(-d.l*.38,-d.h*.48);g.quadraticCurveTo(0,-d.h*.64,d.l*.32,-d.h*.5);g.stroke();
+      g.strokeStyle=f.palette.ecume;g.globalAlpha=visible*.58;g.lineWidth=1.2;g.lineCap="round";g.beginPath();g.moveTo(-d.l*.46,d.h*.5+4);g.quadraticCurveTo(-d.l*.27,d.h*.65+6,-d.l*.05,d.h*.53+4);g.moveTo(d.l*.23,d.h*.5+4);g.lineTo(d.l*.43,d.h*.47+3);g.stroke();
+      g.restore();
+    }
+  }
   function dessineSurface(g,f){
     if(!f)return;const c=f.palette,s=f.w/300;
     // Anneaux d'écume ancrés à la mer et fragments flottants après le naufrage.
     if(f.presence>.05||f.immersion){g.save();g.globalAlpha=.45;g.strokeStyle=c.ecume;g.lineWidth=2*s;for(let i=0;i<3;i++){const q=f.calme?.45:((f.now/1800+i/3)%1);g.globalAlpha=(1-q)*.42;g.beginPath();g.ellipse(f.x+(i-1)*f.w*.45,f.mer+28*s,f.w*(.12+q*.24),s*(4+q*8),0,0,Math.PI*2);g.stroke();}g.restore();}
-    if(f.immersion>.75){g.save();g.globalAlpha=doux((f.immersion-.75)*4);for(let i=0;i<4;i++){g.save();g.translate(f.x+(i-1.5)*f.w*.16,f.mer+25*s+(f.calme?0:Math.sin(f.now/650+i)*2*s));g.rotate((i%2?1:-1)*.22);g.fillStyle=i%2?"#B8824B":"#DBAC6C";g.fillRect(-13*s,-3*s,26*s,6*s);g.strokeStyle="#5F3C24";g.lineWidth=s;g.strokeRect(-13*s,-3*s,26*s,6*s);g.restore();}g.restore();}
+    dessineDebris(g,f);
     for(const p of particules){const a=1-p.age/p.vie;g.save();g.translate(p.x,p.y);g.rotate(p.rotation);g.globalAlpha=a;
       if(p.type==="bois"){g.fillStyle="#E5B56D";g.strokeStyle="#714626";g.lineWidth=s;g.beginPath();g.moveTo(-p.taille*1.8,-p.taille*.4);g.lineTo(p.taille*1.6,-p.taille*.2);g.lineTo(p.taille,.55*p.taille);g.lineTo(-p.taille*1.5,.35*p.taille);g.closePath();g.fill();g.stroke();}
       else if(p.type==="fumee"){g.globalAlpha=a*.28;g.fillStyle="#DAE2EB";g.beginPath();g.arc(0,0,p.taille*(1+p.age*.7),0,Math.PI*2);g.fill();}
@@ -6334,8 +6458,9 @@ function recupereEtat(distant){
 
 /* ---------- sons (synthétisés) ---------- */
 const Son = (() => {
-  let ctx=null, master=null, vagues=null, pluie=null, merAu=null;
+  let ctx=null, master=null, vagues=null, pluie=null, merAu=null, paroleEnCours=0;
   function init(){
+    window.AmbianceSonore?.demarre();
     if (ctx) { if (ctx.state==="suspended") ctx.resume(); return; }
     try { ctx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){ return; }
     master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination);
@@ -6388,7 +6513,11 @@ const Son = (() => {
     parle(txt,lang){ if(!S.reglages.son||!txt||!lang||!window.speechSynthesis) return false;
       const voix = speechSynthesis.getVoices().find(v=>v.lang && v.lang.toLowerCase().startsWith(lang.toLowerCase().slice(0,2)));
       if (!voix) return false;
-      const u=new SpeechSynthesisUtterance(txt); u.voice=voix; u.lang=voix.lang; u.rate=.85; speechSynthesis.cancel(); speechSynthesis.speak(u); return true; }
+      const u=new SpeechSynthesisUtterance(txt), id=++paroleEnCours; u.voice=voix; u.lang=voix.lang; u.rate=.85;
+      u.onstart=()=>{if(id===paroleEnCours)window.AmbianceSonore?.suspendre("parole",true);};
+      u.onend=u.onerror=()=>{if(id===paroleEnCours)window.AmbianceSonore?.suspendre("parole",false);};
+      speechSynthesis.cancel();window.AmbianceSonore?.suspendre("parole",false);
+      try {speechSynthesis.speak(u);return true;}catch(e){window.AmbianceSonore?.suspendre("parole",false);return false;} }
   };
 })();
 
@@ -6600,9 +6729,12 @@ const avecPerro = (pk,max,html) => `<div class="carte avec-perro" style="max-wid
 /* retour au menu principal : on abandonne ce qui est en cours */
 let GEN = 0; const enAttente = new Set();
 function retourMenu(){
+  window.AmbianceSonore?.arreteKraken();
+  window.AmbianceSonore?.suspendre("parole",false);
   GEN++; enAttente.forEach(f=>f()); enAttente.clear();
   document.querySelector("#mini")?.remove(); document.querySelector(".hud")?.remove(); document.querySelector(".panneau")?.remove();
   try{ speechSynthesis.cancel(); }catch(e){}
+  try{ voixAu?.pause(); }catch(e){}
   try{ Musique.stop(); }catch(e){}
   QCUR=null; enJeu=false; accueil();
 }
@@ -7499,7 +7631,8 @@ function rendR(){
       <div class="ligne"><label for="r-kraken-seuil">Objectif collectif par question</label><select id="r-kraken-seuil" ${enJeu?"disabled":""}>${[50,60,70,80,90,100].map(v=>`<option value="${v}" ${Math.round(Kraken.seuil(S)*100)===v?"selected":""}>${v} %</option>`).join("")}</select></div>
       <p class="note">3 points de coque pour la traversée. Sous l’objectif, un tentacule frappe. À zéro, le bateau coule et la traversée est perdue : retour au dernier port. Les cartes non lues sont exclues du calcul. Réglages modifiables hors séance.</p>
       <p class="note"><b>Les escales du vendredi.</b> Le bateau rejoint l’escale après une séance terminée sans naufrage. Si le Kraken gagne, il faut réussir une nouvelle tentative. Sans le Kraken, l’arrivée reste garantie.</p>
-      <div class="ligne"><label style="min-width:18ch" for="r-son">Sons</label><input type="checkbox" id="r-son" ${R.son?"checked":""}></div>
+      <div class="ligne"><label style="min-width:18ch" for="r-son">Bruitages et voix</label><input type="checkbox" id="r-son" ${R.son?"checked":""}></div>
+      <p class="note">Le volume de la musique de fond se règle dans l’onglet « Thématique ».</p>
       <div class="ligne"><label for="r-recompense">Fin de séance</label><select id="r-recompense"><option value="podium" ${R.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${R.recompense==="collectif"?"selected":""}>Défi collectif</option></select></div>
       <p class="note">Défi collectif : viser 70 % de bonnes réponses ensemble. Les progrès personnels restent dans le suivi et sur le téléphone.</p>
       <h3>Relier le téléphone</h3>
@@ -7519,7 +7652,7 @@ function rendR(){
       if(t.id==="r-recompense") R.recompense=t.value;
       if(t.id==="r-kraken"&&!enJeu) R.kraken=t.checked;
       if(t.id==="r-kraken-seuil"&&!enJeu)R.krakenSeuil=+t.value;
-      if(t.id==="r-son"){ R.son=t.checked; Son.mer(t.checked); }
+      if(t.id==="r-son"){ R.son=t.checked; Son.mer(t.checked); window.AmbianceSonore?.actualise(); }
       sauve(); };
     c.oninput = null;
     c.onclick = e=>{ if(e.target.id==="r-bapt"){ document.querySelector(".panneau")?.remove(); if(!enJeu) bapteme(); return; } if(e.target.id==="r-mode"){ lsSet("bateau-ecole-mode",""); location.reload(); return; } const bt=e.target.closest("#r-tout");
@@ -7681,14 +7814,15 @@ const MUSIQUES = [{"t": "La Marseillaise, hymne national de la France", "s": "l'
 const Musique = (() => {
   let au=null, cur=-1;
   const idx = k => (k>=ESCALES.length-1 ? 0 : k);
-  function stop(){ if(au){ au.pause(); au.currentTime=0; } cur=-1; majBoutons(); }
+  function stop(){ if(au){ au.pause(); au.currentTime=0; } cur=-1; window.AmbianceSonore?.suspendre("hymne",false); majBoutons(); }
   function majBoutons(){ document.querySelectorAll('[data-go="musique"]').forEach(b=>{ b.textContent = cur>=0 ? "Arrêter l'hymne" : "Écouter l'hymne"; }); }
   function joue(k){
     const i=idx(k);
     if (cur===i && au && !au.paused){ stop(); return; }
-    if (!au){ au=new Audio(); au.preload="none"; au.addEventListener("ended",()=>{ cur=-1; majBoutons(); }); }
+    if (!au){ au=new Audio(); au.preload="none"; au.addEventListener("ended",()=>{ cur=-1; window.AmbianceSonore?.suspendre("hymne",false); majBoutons(); }); }
     au.src = AudioPerso.url("mus-"+i) || ("hymnes/hymne"+String(i).padStart(2,"0")+".mp3"); au.volume = .9; cur=i;
-    au.play().catch(()=>{ cur=-1; majBoutons(); toast("La musique n'a pas pu démarrer."); });
+    window.AmbianceSonore?.suspendre("hymne",true);
+    au.play().catch(()=>{ cur=-1; window.AmbianceSonore?.suspendre("hymne",false); majBoutons(); toast("La musique n'a pas pu démarrer."); });
     majBoutons();
   }
   function credit(k){ const m=Object.assign({}, MUSIQUES[idx(k)]||{}); const o=AudioPerso.get("mus-"+idx(k))||{}; ["t","a","l"].forEach(x=>{ if(o[x]!=null && o.id || o[x]) m[x]=o[x]; });
@@ -7903,7 +8037,12 @@ function fxPerso(nom){
 let voixAu = null;
 function joueVoix(k){
   const i = k>=ESCALES.length-1 ? 0 : k; const u = AudioPerso.url("voix-"+i) || ("voix/bonjour"+String(i).padStart(2,"0")+".mp3");
-  try { if (voixAu) voixAu.pause(); voixAu = new Audio(u); voixAu.play().catch(()=>{}); } catch(e){ return false; }
+  try {
+    if (voixAu) voixAu.pause(); voixAu = new Audio(u);
+    const termine=()=>window.AmbianceSonore?.suspendre("parole",false);
+    voixAu.addEventListener("ended",termine,{once:true}); voixAu.addEventListener("error",termine,{once:true});
+    window.AmbianceSonore?.suspendre("parole",true); voixAu.play().catch(termine);
+  } catch(e){ window.AmbianceSonore?.suspendre("parole",false); return false; }
   return true;
 }
 
@@ -8097,6 +8236,267 @@ function editeSon(k, box){
     stopTest(); const id = o.id; AudioPerso.del(k); if (id && window.__assetsCap) window.__assetsCap.delete(id).catch(()=>{}); toast("Son d'origine remis."); sonsOuvert=null; rendR(); };
 }
 (async()=>{ window.__assetsCap = await useCap("assets"); if (typeof ongletR!=="undefined" && ongletR==="sons" && $("#r-corps")) rendR(); })();
+
+/* Musiques originales synthétisées, sans fichier ni réseau. Réglages séparés du voyage.
+   demarre() se fait dans un geste ; actualise() suit les écrans. Les ponctuels ne sont
+   jamais gardés en attente : masquer/quitter l'écran les annule définitivement. */
+window.AmbianceSonore = (() => {
+  const CLE="bateau-ecole-musique-fond", DOC="jeu/ambiance";
+  const propre=d=>d && typeof d.actif==="boolean" && Number.isInteger(d.volume) && d.volume>=0 && d.volume<=100 && Number.isSafeInteger(d.maj) && d.maj>=0 ? {v:1,actif:d.actif,volume:d.volume,maj:d.maj} : null;
+  const rang=d=>(d.actif?101:0)+d.volume;
+  const plusRecent=(a,b)=>!!b && (!a || b.maj>a.maj || (b.maj===a.maj && rang(b)>rang(a)));
+  let etat={v:1,actif:true,volume:25,maj:0}, db=null, chargee=false, choixEnAttente=false, file=Promise.resolve();
+  try { etat=propre(JSON.parse(localStorage.getItem(CLE))) || etat; } catch(e){}
+
+  // Chaque thème possède sa mesure, sa mélodie, ses accords et son orchestration.
+  // Une case est une croche ; null laisse respirer la phrase. Aucune chanson citée.
+  const partitions={
+    base:{bpm:84,mesure:3,lead:"flute",accomp:"corde",arp:[0,2,1,2,0,1],
+      accords:[[48,55,60,64],[53,57,60,65],[45,52,57,60],[43,50,59,62]],
+      melodie:[[72,null,76,79,76,74],[77,76,72,null,69,72],[76,null,72,69,71,72],[74,71,67,null,71,74]]},
+    automne:{bpm:64,mesure:4,lead:"feutre",accomp:"bois",arp:[0,null,2,1,null,3,2,null],
+      accords:[[45,52,60,64],[41,48,57,60],[48,55,59,64],[43,50,59,62]],
+      melodie:[[69,null,72,71,64,null,67,69],[69,72,null,76,72,null,69,null],[67,null,71,74,76,74,null,71],[74,71,null,67,62,null,64,67]]},
+    halloween:{bpm:76,mesure:3,lead:"celesta",accomp:"pince",arp:[0,2,null,1,3,null],
+      accords:[[50,57,62,65],[46,53,62,65],[43,50,58,62],[45,52,61,64]],
+      melodie:[[74,null,77,76,null,69],[77,74,null,70,74,null],[79,null,77,74,70,null],[73,76,null,69,73,74]]},
+    noel:{bpm:88,mesure:4,lead:"cloche",accomp:"feutre",arp:[0,null,1,2,3,null,2,1],
+      accords:[[48,55,60,64],[45,52,60,64],[53,57,60,65],[43,50,59,62]],
+      melodie:[[79,76,null,72,74,null,76,79],[81,null,79,76,72,76,null,81],[77,81,null,79,77,null,72,74],[79,null,74,71,74,76,72,null]]},
+    hiver:{bpm:54,mesure:4,lead:"verre",accomp:"air",arp:[0,null,null,2,null,null,1,null],
+      accords:[[50,57,64,69],[47,54,62,66],[43,50,59,66],[45,52,61,68]],
+      melodie:[[81,null,null,76,null,78,null,null],[78,null,74,null,null,73,null,74],[83,null,null,78,78,null,76,null],[80,null,76,null,73,null,null,null]]},
+    carnaval:{bpm:98,mesure:4,lead:"cuivre",accomp:"bois",arp:[0,null,2,1,null,2,null,3],percu:true,
+      accords:[[46,53,58,62],[43,50,58,62],[48,55,60,63],[41,48,57,60]],
+      melodie:[[74,null,77,74,null,70,72,74],[79,77,null,74,70,null,74,null],[75,null,79,75,72,70,null,72],[77,75,72,null,69,null,70,null]]},
+    printemps:{bpm:90,mesure:3,lead:"flute",accomp:"verre",arp:[0,1,2,null,3,2],
+      accords:[[55,59,62,67],[52,59,64,67],[48,55,60,64],[50,57,62,66]],
+      melodie:[[79,83,81,79,null,74],[76,null,79,83,86,null],[84,83,79,null,76,79],[81,78,74,null,76,78]]},
+    oeufs:{bpm:94,mesure:4,lead:"bois",accomp:"pince",arp:[0,2,null,1,0,null,3,2],
+      accords:[[53,60,65,69],[50,57,65,69],[46,53,62,65],[48,55,64,67]],
+      melodie:[[77,81,null,84,81,null,79,77],[74,null,77,81,null,77,74,null],[77,74,70,null,74,77,null,79],[79,null,76,72,76,79,77,null]]},
+    ete:{bpm:80,mesure:4,lead:"pince",accomp:"corde",arp:[0,null,2,1,null,3,2,null],percu:true,
+      accords:[[48,55,59,64],[50,57,60,65],[43,50,59,64],[48,55,60,64]],
+      melodie:[[76,null,79,83,null,79,76,74],[77,74,null,72,74,null,77,81],[79,null,76,74,71,null,74,null],[76,79,null,76,72,null,74,72]]}
+  };
+  const timbres={
+    flute:{ondes:[[1,"sine",1],[2,"sine",.12]],attaque:.06,tenue:.7,fin:.15},
+    corde:{ondes:[[1,"triangle",.8],[2,"sine",.13]],attaque:.024,tenue:.18,fin:.28},
+    pince:{ondes:[[1,"triangle",.85],[2,"sine",.18],[3,"sine",.06]],attaque:.009,tenue:.07,fin:.25},
+    feutre:{ondes:[[1,"sine",1],[2,"triangle",.15]],attaque:.016,tenue:.22,fin:.4},
+    bois:{ondes:[[1,"sine",1],[3,"sine",.13]],attaque:.007,tenue:.04,fin:.17},
+    celesta:{ondes:[[1,"sine",.85],[2.01,"sine",.2],[3,"sine",.08]],attaque:.006,tenue:.09,fin:.5},
+    cloche:{ondes:[[1,"sine",.8],[2,"sine",.25],[2.76,"sine",.07]],attaque:.006,tenue:.12,fin:.6},
+    verre:{ondes:[[1,"sine",1],[2.005,"sine",.1]],attaque:.08,tenue:.48,fin:.7},
+    air:{ondes:[[1,"sine",.9],[2,"sine",.1]],attaque:.25,tenue:.8,fin:.5},
+    cuivre:{ondes:[[1,"triangle",.8],[2,"sine",.2],[3,"sine",.08]],attaque:.035,tenue:.4,fin:.12}
+  };
+  let ctx=null, sortie=null, limiteur=null, bus=null, timer=null, finKraken=null;
+  let theme=null, pas=0, suivant=0, joue=false, deverrouille=false, pageCachee=false, ponctuel=null, derniereErreur=null;
+  const pauses=new Set(), voix=new Set(), compte={notes:0,attaques:0,naufrages:0};
+  const reglages=()=>({...etat});
+  const hz=n=>440*Math.pow(2,(n-69)/12);
+  function ecran(){
+    if(pageCachee || document.hidden || pauses.size)return false;
+    return ["scr-tbi","aa-ecran","pv-ecran"].some(id=>{
+      const e=document.getElementById(id);return e && !e.hidden && !e.closest?.("[hidden]");
+    });
+  }
+  function fxActifs(){try{return typeof S!=="undefined" && S.reglages?.son!==false;}catch(e){return false;}}
+  const idTheme=()=>partitions[window.Themes?.actuel()] ? window.Themes.actuel() : "base";
+  const volume=()=>etat.actif?Math.pow(etat.volume/100,1.25)*.58:0;
+  function gain(g,val,d=.08){
+    if(!ctx || !g)return;
+    g.gain.cancelScheduledValues(ctx.currentTime);g.gain.setTargetAtTime(val,ctx.currentTime,d);
+  }
+  function cree(){
+    if(ctx)return true;
+    try {
+      const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return false;
+      ctx=new Audio();sortie=ctx.createGain();sortie.gain.value=.72;
+      limiteur=ctx.createDynamicsCompressor();limiteur.threshold.value=-13;limiteur.knee.value=16;limiteur.ratio.value=4;limiteur.attack.value=.008;limiteur.release.value=.2;
+      bus={fond:ctx.createGain(),kraken:ctx.createGain(),fx:ctx.createGain()};
+      Object.values(bus).forEach(b=>{b.gain.value=0;b.connect(limiteur);});
+      limiteur.connect(sortie);sortie.connect(ctx.destination);
+      ctx.onstatechange=()=>actualise();
+      return true;
+    } catch(e){try{ctx?.close();}catch(err){}ctx=null;return false;}
+  }
+  function garde(source,noeuds,enveloppe,groupe,debut,fin){
+    const v={source,noeuds,enveloppe,groupe,arret:false,minuteur:null};voix.add(v);
+    v.nettoie=()=>{if(!voix.delete(v))return;if(v.minuteur!==null)clearTimeout(v.minuteur);source.onended=null;noeuds.forEach(n=>{try{n.disconnect();}catch(e){}});};
+    source.onended=v.nettoie;
+    try{source.start(debut);source.stop(fin);}catch(e){v.nettoie();throw e;}
+    return v;
+  }
+  function coupe(groupe){
+    if(!ctx)return;
+    [...voix].filter(v=>!v.arret && (!groupe || v.groupe===groupe)).forEach(v=>{
+      v.arret=true;
+      try{
+        const p=v.enveloppe.gain,t=ctx.currentTime;
+        if(p.cancelAndHoldAtTime)p.cancelAndHoldAtTime(t);else{p.cancelScheduledValues(t);p.setValueAtTime(p.value,t);}
+        p.linearRampToValueAtTime(0,t+.035);v.source.stop(t+.04);
+      }catch(e){}
+      // Laisser finir le fondu. Le filet de sécurité libère aussi un contexte suspendu,
+      // dont l'horloge audio (donc onended) ne progresse plus en arrière-plan.
+      v.minuteur=setTimeout(v.nettoie,90);
+    });
+  }
+  function note(midi,t,duree,instrument,niveau,groupe="fond"){
+    const timbre=timbres[instrument]||timbres.feutre;
+    timbre.ondes.forEach(([multiple,type,force])=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(hz(midi)*multiple,t);
+      const fin=t+duree+timbre.fin,attaque=Math.min(timbre.attaque,duree*.25);
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(niveau*force,t+attaque);
+      g.gain.exponentialRampToValueAtTime(Math.max(.0001,niveau*force*timbre.tenue),t+Math.max(attaque+.005,duree*.65));
+      g.gain.exponentialRampToValueAtTime(.0001,fin);
+      o.connect(g);g.connect(bus[groupe]);garde(o,[o,g],g,groupe,t,fin+.02);
+    });
+    compte.notes++;
+  }
+  let souffle=null;
+  function bruit(t,duree,niveau,filtre,debut,fin,groupe="fx",q=.7){
+    if(!souffle){souffle=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*4),ctx.sampleRate);const d=souffle.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.7;}
+    const src=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();src.buffer=souffle;
+    f.type=filtre;f.Q.value=q;f.frequency.setValueAtTime(debut,t);f.frequency.exponentialRampToValueAtTime(fin,t+duree);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(niveau,t+Math.min(.035,duree*.2));g.gain.exponentialRampToValueAtTime(.0001,t+duree);
+    src.connect(f);f.connect(g);g.connect(bus[groupe]);garde(src,[src,f,g],g,groupe,t,t+duree+.02);
+  }
+  function bulle(t,f,duree,niveau){
+    const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*.3,t+duree);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(niveau,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+duree);
+    o.connect(g);g.connect(bus.fx);garde(o,[o,g],g,"fx",t,t+duree+.02);
+  }
+  function croche(p,index,t){
+    const total=p.mesure*2,mesure=Math.floor(index/total),case_=index%total,accord=p.accords[mesure%4],beat=60/p.bpm;
+    const reponse=Math.floor(mesure/4)%2===1;
+    if(case_===0){
+      accord.slice(1).forEach(n=>note(n,t,beat*p.mesure*.86,"air",.037));
+      note(accord[0]-12,t,beat*1.35,"feutre",.14);
+    }
+    if(case_===total-2)note(accord[0]-5,t,beat*.65,"corde",.065);
+    const a=p.arp[case_];if(a!==null && a!==undefined)note(accord[a]+12,t,beat*.65,p.accomp,.048);
+    const m=p.melodie[mesure%4][case_];
+    if(m!==null && m!==undefined){
+      const prochain=p.melodie[mesure%4][case_+1],duree=beat*(prochain===null?.85:.42);
+      note(m,t,duree,p.lead,reponse?.1:.12);
+      // Réponse discrète de la deuxième phrase, puis respiration à la fin des huit mesures.
+      if(reponse && case_===2 && mesure%4!==3)note(m-12,t+beat*.25,beat*.4,p.accomp,.035);
+    }
+    if(p.percu && (case_===2 || case_===6))bruit(t,.09,.055,"highpass",2300,1700,"fond");
+  }
+  function echoue(e){
+    // L'audio est facultatif : une indisponibilité ne doit jamais couper une réponse,
+    // la sauvegarde des réglages ou la progression de l'activité.
+    const message=e?.message||String(e);deverrouille=false;
+    try{stopFond();effaceKraken();[...voix].forEach(v=>v.nettoie());if(ctx?.state==="running")ctx.suspend().catch(()=>{});}catch(err){}
+    if(message!==derniereErreur)console.warn("ambiance sonore interrompue",message);
+    derniereErreur=message;return false;
+  }
+  function programme(){try{return programmeAudio();}catch(e){return echoue(e);}}
+  function programmeAudio(){
+    if(!joue || !ctx || ctx.state!=="running")return;
+    if(!ecran() || !volume()){actualise();return;}
+    const p=partitions[theme],maintenant=ctx.currentTime;
+    if(suivant<maintenant-.25)suivant=maintenant+.025; // aucun rattrapage de notes après un onglet ralenti
+    let securite=0;
+    while(suivant<maintenant+.24 && securite++<8){croche(p,pas++,suivant);suivant+=30/p.bpm;}
+  }
+  function stopFond(){if(timer!==null){clearInterval(timer);timer=null;}joue=false;coupe("fond");theme=null;}
+  function effaceKraken(){
+    if(finKraken!==null){clearTimeout(finKraken);finKraken=null;}
+    ponctuel=null;coupe("kraken");coupe("fx");
+  }
+  function actualise(){try{actualiseAudio();return true;}catch(e){return echoue(e);}}
+  function actualiseAudio(){
+    const eligible=ecran();
+    if(!eligible){stopFond();effaceKraken();if(ctx?.state==="running")ctx.suspend().catch(()=>{});return;}
+    if(!ctx || !deverrouille)return;
+    if(ctx.state==="suspended"){ctx.resume().then(actualise).catch(()=>{});return;}
+    if(ctx.state!=="running")return;
+    gain(bus.fond,volume()*(ponctuel?.16:1));gain(bus.kraken,volume());gain(bus.fx,fxActifs()?.8:0);
+    if(!fxActifs())coupe("fx");
+    if(!volume()){stopFond();coupe("kraken");return;}
+    const id=idTheme();
+    if(!joue || theme!==id){stopFond();theme=id;pas=0;suivant=ctx.currentTime+.035;joue=true;programmeAudio();timer=setInterval(programme,100);}
+  }
+  async function demarre(){
+    if(!ecran() || !cree())return false;
+    deverrouille=true;
+    try {if(ctx.state!=="running")await ctx.resume();return actualise() && ctx.state==="running";}catch(e){return echoue(e);}
+  }
+  function preparePonctuel(type,duree){
+    if(!ecran() || !ctx || !deverrouille || ctx.state!=="running")return false;
+    effaceKraken();ponctuel=type;if(!actualise())return false;
+    finKraken=setTimeout(()=>{finKraken=null;ponctuel=null;actualise();},duree*1000);
+    return true;
+  }
+  function attaque(coque){try{return attaqueAudio(coque);}catch(e){return echoue(e);}}
+  function attaqueAudio(coque){
+    if(!volume() || !preparePonctuel("attaque",3.8))return false;
+    compte.attaques++;
+    const t=ctx.currentTime+.012,grave=coque<=1?38:43;
+    [0,.42,.84,1.26,1.68,2.1].forEach((d,i)=>{
+      note(grave+(i%2?7:0),t+d,.34,"corde",.23,"kraken");
+      note(62+[0,1,0,3,1,-2][i],t+d+.12,.38,"cuivre",.13,"kraken");
+    });
+    [50,53,57,61].forEach((n,i)=>note(n,t+.2+i*.07,2.6,"air",.06,"kraken"));
+    note(38,t+2.55,.7,"feutre",.25,"kraken");return true;
+  }
+  function naufrage(){try{return naufrageAudio();}catch(e){return echoue(e);}}
+  function naufrageAudio(){
+    if((!volume() && !fxActifs()) || !preparePonctuel("naufrage",4.2))return false;
+    compte.naufrages++;const t=ctx.currentTime+.012;
+    if(volume()){
+      [62,60,57,53,50,45,38].forEach((n,i)=>note(n,t+i*.25,.55,"corde",.17,"kraken"));
+      [38,45,50].forEach(n=>note(n,t+1.8,1.4,"air",.09,"kraken"));
+    }
+    if(fxActifs()){
+      // Fibres du bois qui cèdent, masse d'eau grave, puis bulles de plus en plus profondes.
+      [0,.09,.23,.36].forEach((d,i)=>bruit(t+d,.18+i*.035,.32-i*.025,"bandpass",1900-i*230,340+i*70,"fx",1.8));
+      bruit(t+.42,1.7,.75,"lowpass",1500,85);
+      bruit(t+.57,1.1,.22,"bandpass",2400,250);
+      for(let i=0;i<12;i++)bulle(t+1.05+i*.2,680*Math.pow(.89,i),.13+(i%3)*.04,.12-i*.006);
+    }
+    return true;
+  }
+  function arreteKraken(){try{effaceKraken();return actualise();}catch(e){return echoue(e);}}
+  function suspendre(raison,on){if(typeof raison!=="string" || !raison)return;if(on)pauses.add(raison);else pauses.delete(raison);actualise();}
+  function memorise(){try{localStorage.setItem(CLE,JSON.stringify(etat));}catch(e){}}
+  function annonce(){memorise();actualise();window.dispatchEvent(new CustomEvent("ambiancechange",{detail:{reglages:reglages()}}));}
+  function recoit(d){const suivant=propre(d);if(!plusRecent(etat,suivant))return;etat=suivant;annonce();}
+  const pret=Promise.resolve().then(async()=>{
+    try {
+      if(typeof useCap!=="function")return;
+      db=await useCap("db");if(!db)return;
+      const doc=db.doc(DOC),snap=await doc.get(),garde=propre(snap.exists && snap.data());
+      if(choixEnAttente){etat.maj=Math.max(etat.maj,(garde?.maj||0)+1);annonce();}else recoit(garde);
+      if(etat.maj>0 && plusRecent(garde,etat))await doc.set({...etat});
+      doc.onSnapshot(s=>{if(s.exists)recoit(s.data());});
+    } catch(e){console.warn("lecture de l’ambiance sonore",e && e.message);}
+    finally{chargee=true;}
+  });
+  async function regler(patch){
+    if(!patch || typeof patch!=="object")return reglages();
+    const actif=typeof patch.actif==="boolean"?patch.actif:etat.actif;
+    const volume_=typeof patch.volume==="number" && Number.isFinite(patch.volume)?Math.max(0,Math.min(100,Math.round(patch.volume))):etat.volume;
+    if(actif===etat.actif && volume_===etat.volume)return reglages();
+    if(!chargee)choixEnAttente=true;
+    etat={v:1,actif,volume:volume_,maj:Math.max(Date.now(),etat.maj+1)};annonce();
+    file=file.then(async()=>{await pret;if(db)await db.doc(DOC).set({...etat});}).catch(e=>console.warn("sauvegarde de l’ambiance sonore",e && e.message));
+    await file;return reglages();
+  }
+  window.addEventListener("themechange",actualise);
+  window.addEventListener("storage",e=>{if(e.key===CLE){try{recoit(JSON.parse(e.newValue));}catch(err){}}else if(e.key==="bateau-ecole-mode")actualise();});
+  document.addEventListener("visibilitychange",actualise);
+  window.addEventListener("pagehide",()=>{pageCachee=true;actualise();});
+  window.addEventListener("pageshow",()=>{pageCachee=false;actualise();});
+  return {reglages,regler,pret,demarre,actualise,attaque,naufrage,arreteKraken,suspendre,
+    inspect:()=>({reglages:reglages(),theme,joue,deverrouille,contexte:ctx?.state||"absent",ponctuel,derniereErreur,pauses:[...pauses],scheduler:timer!==null,
+      voix:voix.size,parGroupe:["fond","kraken","fx"].reduce((a,g)=>(a[g]=[...voix].filter(v=>v.groupe===g).length,a),{}),compte:{...compte},
+      themes:Object.entries(partitions).map(([id,p])=>({id,bpm:p.bpm,mesure:p.mesure,lead:p.lead,accomp:p.accomp,signature:JSON.stringify([p.accords,p.melodie,p.arp])}))})};
+})();
 
 /* Préparation partagée, reprise des rituels et résultats. */
 const copieJeu = o => JSON.parse(JSON.stringify(o));
@@ -9691,6 +10091,7 @@ const Accueil = (() => {
   const section = (id, cls) => { let s = document.getElementById(id); if (!s){ s = document.createElement("section"); s.id = id; s.className = cls===undefined ? "aa-page" : cls; s.hidden = true; app.appendChild(s); } return s; };
   const ECRANS = ["scr-choix","scr-tbi","scr-tel","aa-app","aa-classe","aa-bienvenue","aa-ecran","pv-ecran","pv-tel"];
   function montre(id){ const avant = courant; ECRANS.forEach(x=>{ const e = document.getElementById(x); if (e) e.hidden = x!==id; }); window.scrollTo(0,0); courant = id;
+    window.AmbianceSonore?.actualise();
     document.body.style.background = /^(scr-tel|aa-app|aa-classe|aa-bienvenue|pv-tel)$/.test(id) ? "var(--ecume)" : ""; // le bas de l'écran (sous la barre d'accueil de l'iPhone) prend la couleur de la page
     // une seule caméra à la fois, et seulement sur l'écran qui s'en sert : elle se rallume quand on y revient
     if (avant==="scr-tel" && id!=="scr-tel" && window.CameraDirect) camBateau = CameraDirect.coupe();
@@ -11400,6 +11801,7 @@ const Tel = (() => {
 /* ---------- démarrage ---------- */
 function lanceTBI(){
   $("#scr-choix").hidden=true; $("#scr-tbi").hidden=false;
+  window.AmbianceSonore?.actualise();
   Mer.start(); majBarre(); majMer(); Mer.snap(); accueil();
   $("#b-carte").onclick=()=>{ Son.init(); ouvreCarte(); };
   $("#b-carnet").onclick=()=>{ Son.init(); ouvreCarnet(); };
@@ -11413,8 +11815,11 @@ function lanceTBI(){
   if (window.BATEAU_AUTONOME) $("#b-tel").onclick=()=>{ Son.init(); ongletR="tel"; ouvreReglages(); };
   brancheDB(); brancheRoom(); AudioPerso.branche(); Preparation.init();
 }
-function lanceTel(){ $("#scr-choix").hidden=true; $("#scr-tel").hidden=false; Tel.init(); Preparation.init(); }
+function lanceTel(){ $("#scr-choix").hidden=true; $("#scr-tel").hidden=false; window.AmbianceSonore?.actualise(); Tel.init(); Preparation.init(); }
 (function(){
+  const ouvreAudio=()=>window.AmbianceSonore?.demarre();
+  document.addEventListener("pointerdown",ouvreAudio,{passive:true});
+  document.addEventListener("keydown",ouvreAudio);
   let mode = lsGet("bateau-ecole-mode");
   if (window.BATEAU_AUTONOME){ // l'appli sur un téléphone lit les cartes, un ordinateur affiche le jeu : pas de question inutile
     if (Autonome.LOCAL) mode = "tbi";
