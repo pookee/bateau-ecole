@@ -67,6 +67,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .layer{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;padding:16px;box-sizing:border-box;pointer-events:none;overflow:auto}
 .layer > *{pointer-events:auto}
 .home-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.home-cta .btn small{display:block;font-family:var(--texte);font-size:.52em;font-weight:700;margin-top:7px;text-shadow:none}
+#b-grade{flex:none;display:flex;justify-content:center;padding:6px 12px 9px;background:var(--nuit);text-align:center}
+#b-grade .grade-pill{font-size:.95rem;padding:4px 16px}
+#b-demo[aria-pressed="true"]{background:var(--soleil);color:var(--nuit);border-color:var(--soleil)}
+.prep-modes{display:grid;gap:14px}.prep-mode{border:2px solid #E3CFA2;border-radius:18px;padding:16px}.prep-mode h3{margin-top:0}.prep-mode p{margin:8px 0 14px}
 .home-titre{font-family:var(--display);color:#fff;text-align:center;background:rgba(11,39,64,.78);border-radius:22px;padding:14px 28px 16px;max-width:900px}
 .home-titre .k{font-size:clamp(1rem,1.6vw,1.3rem);color:var(--sable);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
 .home-titre .t{font-size:clamp(2rem,4.2vw,3.6rem);font-weight:800;line-height:1.05;text-wrap:balance}
@@ -551,7 +556,6 @@ img{max-width:100%}
       <div class="lbl"><span id="b-de">Marseille</span><span class="num" id="b-distance"><b id="b-reste">0</b> milles avant <b id="b-vers">Barcelone</b></span><span id="b-port" hidden>À bon port !</span></div>
       <div class="jauge"><i id="b-jauge"></i></div>
     </div>
-    <span class="pastille" id="b-demo" hidden style="background:var(--soleil);color:var(--nuit);font-weight:700">MODE DÉMO</span>
     <span class="pastille" id="b-tel">Téléphone non relié</span>
     <span class="pastille num" id="b-chrono" hidden>0:00</span>
     <div class="outils">
@@ -559,6 +563,7 @@ img{max-width:100%}
       <button class="btn ghost" id="b-carte">Carte</button>
       <button class="btn ghost" id="b-carnet">Carnet</button>
       <button class="btn ghost" id="b-journal">Journal</button>
+      <button class="btn ghost" id="b-demo" aria-pressed="false" title="Essayer sans rien enregistrer">Démo</button>
       <button class="btn ghost" id="b-reglages">Réglages</button>
     </div>
   </div>
@@ -566,6 +571,7 @@ img{max-width:100%}
     <canvas id="sea" role="img" aria-label="Le bateau et les ports du voyage"></canvas>
     <div class="layer" id="layer"></div>
   </div>
+  <footer id="b-grade" hidden aria-label="Niveau de l’équipage"></footer>
 </section>
 
 <section id="scr-tel" hidden>
@@ -6159,10 +6165,16 @@ function accueil(){
   enJeu=false; QCUR=null; emitQ(); chrono(false); Mer.orage(0); Son.pluie(false);
   majBarre(); majMer();
   const p = position(S.milles), port=escaleAuPort();
-  const vendredi = escaleVendredi();
+  const boutons=()=>Object.entries(Preparation.modes).map(([mode,titre])=>{
+    const s=Preparation.get(mode);
+    return `<button class="btn ${mode==="matin"?"prim":mode==="tempete"?"jaune":"mer"} big" data-go="${mode}"><span>${titre}</span><small>${s?`${s.questions.length} questions préparées`:"Questions aléatoires"}</small></button>`;
+  }).join("");
   const sansPrenoms = S.eleves.every(e=>!e.prenom.trim());
   const nbVues = new Set(S.questions.filter(q=>questionActive(q)).map(q=>q.n)).size;
-  $("#b-demo").hidden = !DEMO;
+  $("#b-demo").setAttribute("aria-pressed",String(DEMO));
+  $("#b-demo").textContent=DEMO?"Quitter la démo":"Démo";
+  $("#b-grade").hidden=DEMO;
+  $("#b-grade").innerHTML=`<span class="grade-pill">Équipage : <b>${GRADES[grade(nbEscales())][1]}</b> ${etoiles(grade(nbEscales()))}</span>`;
   if (DEMO){
     layer.innerHTML = `
     ${enseigne("Mode démo","On s'entraîne !","Rien n'est enregistré : en quittant, tout revient comme avant.")}
@@ -6191,26 +6203,19 @@ function accueil(){
     <div class="home-cta"><button class="btn prim big" data-go="carte">Revoir la carte</button></div>` : `
     ${port ? enseigne(`Escale ${port} sur ${ESCALES.length-1}`,`Bienvenue ${esc(aLieu(ESCALES[port].v))} !`,"Le bateau est à bon port. Profitons de notre escale avec Kiko.","bravo") : enseigne(`Escale ${p.i+1} sur ${ESCALES.length-1} · ${esc(ESCALES[p.i].v)} → ${esc(ESCALES[p.i+1].v)}`,`Cap sur ${esc(ESCALES[p.i+1].v)} !`,`Encore <b class="num">${Math.ceil(p.reste)}</b> milles. Kiko vous accompagne : une escale chaque vendredi, puis la carte postale à écrire.`)}
     ${!S.nomChoisi?`<div class="carte" style="max-width:760px;text-align:center;padding:16px 22px"><div class="msg-big" style="font-size:clamp(1.4rem,2.6vw,2.1rem)">Avant de partir : le baptême du bateau !</div><p class="sous" style="font-size:1rem">Les élèves votent avec leurs cartes-réponses parmi 4 noms.</p><div class="centre" style="margin-top:10px"><button class="btn prim big" data-go="bapteme">Choisir le nom du bateau</button></div>
-      <div class="centre" style="margin-top:12px"><button class="btn petit" data-go="matin">Rituel du matin</button><button class="btn petit" data-go="tempete">La tempête</button><button class="btn petit" data-go="demo">Mode démo</button></div></div>`:""}
-    ${S.nomChoisi?`<div class="home-cta">
-      <button class="btn prim big" data-go="matin">${vendredi?"Rituel du vendredi · escale et écriture":"Rituel du matin"}</button>
-      <button class="btn jaune big" data-go="tempete">La tempête</button>
-      <button class="btn mer big" data-go="tresor">L'île au trésor</button>
-    </div>
-    <div class="grade-pill">Équipage : <b>${GRADES[grade(nbEscales())][1]}</b> ${etoiles(grade(nbEscales()))}</div>
-    <button class="btn petit" data-go="demo">Mode démo : essayer sans rien enregistrer</button>`:""}
+      </div>`:""}
+    <div class="home-cta">${boutons()}</div>
     ${sansPrenoms||nbVues===0?`<div class="carte" style="max-width:640px;padding:12px 18px"><p class="note" style="margin:0">${nbVues===0?"Aucune notion n'est cochée comme « déjà vue » : ouvre Réglages › Questions.":"Astuce : entre les prénoms des élèves dans Réglages › Élèves (numéro de carte = élève)."}</p></div>`:""}`;
   const arrivee=rythmeVoyage(S).arrivee;
   if(arrivee || S.carteAEcrire){
     const k=arrivee?.k||S.carteAEcrire;
     layer.insertAdjacentHTML("beforeend",`<div class="carte rappel"><img src="${imgEscale(k)}" alt=""><div><b>La carte postale ${esc(deLieu(ESCALES[k].v))}</b><span>Le travail d'écriture du vendredi, à la place de la copie.</span></div><button class="btn prim" data-go="${arrivee?"escale-semaine":"carte-postale"}">${arrivee && arrivee.etape!=="ecriture"?"Reprendre l'escale":"Écrire la carte"}</button></div>`);
   }
-  layer.insertAdjacentHTML("beforeend", `<div class="home-preparation">${S.seance ? `<button class="btn prim" data-go="reprendre">${S.seance.index<S.seance.qs.length ? `Reprendre le rituel — question ${S.seance.index+1} sur ${S.seance.qs.length}` : "Reprendre le bilan du rituel"}</button>` : ""}${Preparation.get()?`<button class="btn mer" data-go="preparee">${Preparation.titre()} · ${Preparation.get().questions.length} questions · ${esc(Preparation.get().date.split("-").reverse().join("/"))}</button>`:""}<button class="btn" id="preparer-rituel">Préparer une séance</button></div>`);
-  $("#preparer-rituel").onclick=()=>Preparation.ouvre();
+  if(S.seance) layer.insertAdjacentHTML("beforeend", `<div class="home-preparation"><button class="btn prim" data-go="reprendre">${S.seance.index<S.seance.qs.length ? `Reprendre la séance — question ${S.seance.index+1} sur ${S.seance.qs.length}` : "Reprendre le bilan de la séance"}</button></div>`);
   if(window.Competition&&Competition.plan()){
     layer.insertAdjacentHTML("beforeend",'<button class="btn mer" data-go="equipages">La cérémonie des équipages</button>');
   }
-  attendre().then(async go=>{ if(go==="equipages"){await Competition.presentation();accueil();}else if(go==="escale-semaine") verifArrivee(); else if(go==="reprendre") rituel(S.seance.mode,true); else if(go==="preparee") rituel("preparee"); else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete"); else if(go==="carte") ouvreCarte(); else if(go==="demo") modeDemo(true); else if(go==="bapteme") bapteme(); else if(go==="tresor") rituel("tresor"); else if(go==="carte-postale") ecrireCarte(S.carteAEcrire); });
+  attendre().then(async go=>{ if(go==="equipages"){await Competition.presentation();accueil();}else if(go==="escale-semaine") verifArrivee(); else if(go==="reprendre") rituel(S.seance.mode,true); else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete"); else if(go==="carte") ouvreCarte(); else if(go==="bapteme") bapteme(); else if(go==="tresor") rituel("tresor"); else if(go==="carte-postale") ecrireCarte(S.carteAEcrire); });
 }
 function modeDemo(on){
   if (on){
@@ -6218,7 +6223,7 @@ function modeDemo(on){
     S.seance=null; S.carteAEcrire=null; S.rythme={...rythmeVoyage(S),arrivee:null};
   }
   else { if (avantDemo) S = charge(JSON.parse(avantDemo)); avantDemo = null; DEMO = false; Mer.snap(); }
-  majBarre(); majMer(); Mer.snap(); accueil();
+  majBarre(); majMer(); Mer.snap(); retourMenu();
 }
 
 /* ---------- choix des questions ---------- */
@@ -6451,7 +6456,11 @@ async function rituel(mode, reprise=false){
     d.querySelector("#rit-nouveau").onclick=()=>{d.remove();S.seance=null;sauve();rituel(mode);};return;
   }
   enJeu=true;
-  const preparee=mode==="preparee" ? Preparation.get() : null;
+  const generation=GEN;
+  // Un clic rapide après chargement doit aussi retrouver la préparation enregistrée.
+  await Preparation.init();
+  if(generation!==GEN)return;
+  const preparee=!reprise && !DEMO ? Preparation.get(mode==="preparee"?undefined:mode) : null;
   if(mode==="preparee"&&!preparee){enJeu=false;accueil();toast("Cette séance préparée n'est plus disponible.");return;}
   if(preparee?.groupe?.length && !S.eleves.some(e=>e.actif&&preparee.groupe.includes(e.n)&&!(window.absentAujourdhui&&absentAujourdhui(e.n)))){
     enJeu=false;accueil();toast("Aucun élève du groupe n'est présent aujourd'hui. Modifie la préparation ou l'appel.");return;
@@ -6472,7 +6481,7 @@ async function rituel(mode, reprise=false){
       <div class="centre"><button class="btn prim big" data-go="go">Affronter la tempête</button><button class="btn" data-go="non">Pas aujourd'hui</button></div>`);
   } else if (mode==="tresor"){
     layer.innerHTML = `<div class="carte avec-perro" style="max-width:880px"><img class="perro coin" src="img/tresor.webp" alt=""><div><div class="msg-big">Cap sur l'île au trésor !</div>
-      <p class="sous">Avant les vacances, une grande révision : ${qs.length} questions sur toutes les notions vues, en 3 manches. À la fin de chaque manche, un coffre s'ouvre si l'équipage a au moins 60 % de bonnes réponses.</p>
+      <p class="sous">Avant les vacances, une grande révision : ${qs.length} questions sur toutes les notions vues, en ${Math.min(3,qs.length)} manche${qs.length>1?"s":""}. À la fin de chaque manche, un coffre s'ouvre si l'équipage a au moins 60 % de bonnes réponses.</p>
       <div class="centre"><button class="btn prim big" data-go="go">À l'abordage !</button><button class="btn" data-go="non">Retour</button></div></div></div>`;
   } else {
     layer.innerHTML = avecPerro("salut",860,`<div class="msg-big">Le bateau se prépare au départ</div>
@@ -6508,7 +6517,11 @@ async function rituel(mode, reprise=false){
     if(mode==="tempete") Mer.orage(Math.max(.25,orageForce/100));
     else {
       // Chaque coffre est compté une fois, même après une reprise.
-      if(mode==="tresor"&&(i+1)%4===0){const man=res.slice(-4);await coffre((i+1)/4,man.reduce((s,r)=>s+r.pct,0)/man.length);}
+      if(mode==="tresor"){
+        const bornes=Array.from({length:Math.min(3,qs.length)},(_,k)=>Math.ceil((k+1)*qs.length/Math.min(3,qs.length)));
+        const manche=bornes.indexOf(i+1);
+        if(manche>=0){const man=res.slice(manche?bornes[manche-1]:0,i+1);await coffre(manche+1,man.reduce((s,r)=>s+r.pct,0)/man.length);}
+      }
       const pt=S.reglages.piloteTous;
       if(mode==="matin"&&pt>0&&(i+1)%pt===0) await pilote(Math.floor(i/pt));
     }
@@ -6674,7 +6687,7 @@ function ajusteMer(){
   let b=0; for(const c of layer.children){ const r=c.getBoundingClientRect(); if(r.height>0) b=Math.max(b,r.bottom-st.top); }
   Mer.place(Math.min(b,st.height));
 }
-let ajT=0; const planifie=()=>{ const m=$("#b-menu"); if(m){ m.hidden=!enJeu; } cancelAnimationFrame(ajT); ajT=requestAnimationFrame(()=>requestAnimationFrame(ajusteMer)); };
+let ajT=0; const planifie=()=>{ const m=$("#b-menu"); if(m){ m.hidden=!enJeu; } $("#b-grade").hidden=enJeu||DEMO; $("#b-demo").disabled=enJeu&&!DEMO; cancelAnimationFrame(ajT); ajT=requestAnimationFrame(()=>requestAnimationFrame(ajusteMer)); };
 new MutationObserver(planifie).observe(layer,{childList:true,subtree:true});
 window.addEventListener("resize",()=>{ const c=layer.querySelector(".qc"); if(c){ delete c.dataset.f; ajusteQ(); } planifie(); }); layer.addEventListener("scroll",planifie);
 if (document.fonts) document.fonts.addEventListener("loadingdone",()=>{ const c=layer.querySelector(".qc"); if(c){ delete c.dataset.f; ajusteQ(); planifie(); } });
@@ -6936,7 +6949,7 @@ function ouvreJournal(){
 let ongletR = "eleves";
 function ouvreReglages(){
   const d = panneau(`<h2>Réglages</h2><div class="tabs" id="r-tabs">
-    ${[["eleves","Élèves"],["questions","Questions"],["rituel","Rituel"],["bilan","Bilan des élèves"],["sons","Sons et musiques"],["sauve","Sauvegarde"]].concat(window.BATEAU_AUTONOME?[["tel","Téléphone"]]:[]).map(([k,t])=>`<button data-tab="${k}" class="${k===ongletR?"act":""}">${t}</button>`).join("")}
+    ${[["eleves","Élèves"],["questions","Questions"],["preparation","Préparer une séance"],["rituel","Rituel"],["bilan","Bilan des élèves"],["sons","Sons et musiques"],["sauve","Sauvegarde"]].concat(window.BATEAU_AUTONOME?[["tel","Téléphone"]]:[]).map(([k,t])=>`<button data-tab="${k}" class="${k===ongletR?"act":""}">${t}</button>`).join("")}
     </div><div id="r-corps"></div>`);
   d.querySelector("#r-tabs").addEventListener("click",e=>{ const b=e.target.closest("[data-tab]"); if(!b) return; ongletR=b.dataset.tab; d.querySelectorAll("#r-tabs button").forEach(x=>x.classList.toggle("act",x===b)); rendR(); });
   rendR();
@@ -6955,6 +6968,14 @@ function rendR(){
   else if (ongletR==="questions") rendQuestions(c);
   else if (ongletR==="sons") rendSons(c);
   else if (ongletR==="tel" && typeof rendTel==="function") rendTel(c);
+  else if (ongletR==="preparation"){
+    c.oninput=c.onchange=c.onclick=null;
+    c.innerHTML=`<p>Prépare les questions de chaque mode. Sur l’accueil, son bouton les lancera automatiquement. Sans préparation, les questions seront choisies au hasard parmi les notions activées.</p><div class="prep-modes">${Object.entries(Preparation.modes).map(([mode,titre])=>{
+      const s=Preparation.get(mode);
+      return `<section class="prep-mode"><h3>${titre}</h3><p>${s?`${s.questions.length} questions préparées · ${esc(s.date.split("-").reverse().join("/"))}`:"Questions aléatoires pour la prochaine séance"}</p><button class="btn" data-preparer-mode="${mode}">${s?"Modifier la séance":"Préparer une séance"}</button></section>`;
+    }).join("")}</div>`;
+    c.onclick=e=>{const b=e.target.closest('[data-preparer-mode]');if(b)Preparation.ouvre({mode:b.dataset.preparerMode});};
+  }
   else if (ongletR==="rituel"){
     const R=S.reglages;
     c.innerHTML = `
@@ -7322,7 +7343,7 @@ async function coffre(num, moy){
   if (ouvert){ sauve(); majBarre(); majMer(); Son.fanfare(); } else Son.tonnerre();
   checkpointRituel();
   layer.innerHTML = `<div class="carte avec-perro" style="max-width:820px"><img class="perro coin" src="${ouvert?"img/tresor.webp":"img/halloween-perroquet-tempete.png"}" alt=""><div>
-    <div class="sous" style="text-transform:uppercase;letter-spacing:.06em;font-weight:800;color:var(--corail)">Coffre n°${num} sur 3</div>
+    <div class="sous" style="text-transform:uppercase;letter-spacing:.06em;font-weight:800;color:var(--corail)">Coffre n°${num} sur ${Math.min(3,S.seance?.qs.length||12)}</div>
     <div class="msg-big">${ouvert?`Coffre ouvert ! +${g} milles`:"La serrure résiste…"}</div>
     <p class="sous">${Math.round(moy*100)} % de bonnes réponses. ${ouvert?"Des pièces d'or pour l'équipage !":"Il fallait 60 % pour l'ouvrir. On se rattrape au prochain !"}</p>
     <div class="centre"><button class="btn prim big" data-go="ok">Continuer</button></div></div></div>`;
@@ -7599,6 +7620,7 @@ function htmlRecompenses(r, personnel=false){
 const Preparation = (()=>{
   const DOC="jeu/preparation", CHAPITRES="jeu/chapitres", CLE="bateau-ecole-preparation";
   const OBJECTIFS={varie:"Révisions variées",recent:"Leçons récentes",revoir:"Notions à reprendre"};
+  const MODES={matin:"Rituel",tempete:"Tempête du vendredi",tresor:"L’île au trésor"};
   let doc={maj:0,seance:null}, choixChapitres={maj:0}, db=null, pret=null;
   try { doc=JSON.parse(lsGet(CLE))||doc; } catch(e){}
   function valide(s){ return s && typeof s.id==="string" && typeof s.date==="string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date) && (!s.groupe || Array.isArray(s.groupe) && s.groupe.every(n=>Number.isInteger(n)&&n>=1&&n<=NB_CARTES)) && Array.isArray(s.questions) && s.questions.length>0 && s.questions.length<=15 && s.questions.every(q=>q && typeof q.q==="string" && Array.isArray(q.c) && q.c.length>=2 && q.c.length<=4 && Number.isInteger(q.ok) && q.ok>=0 && q.ok<q.c.length); }
@@ -7611,21 +7633,31 @@ const Preparation = (()=>{
     if(NOTIONS_LECTURES_RETIREES[propre.filtres?.chapitre])propre.filtres.chapitre="";
     return propre;
   }
-  function nettoie(){
-    const seance=sansLectures(doc.seance);
-    if(JSON.stringify(seance)===JSON.stringify(doc.seance))return false;
-    doc={...doc,seance,maj:Math.max(Date.now(),(doc.maj||0)+1)};return true;
+  // Une préparation indépendante par activité ; « seance » reste lisible par les anciennes sauvegardes.
+  function normalise(o){
+    const seances={};
+    for(const source of Object.values(o.seances || (o.seance ? {ancienne:o.seance} : {}))){
+      const s=sansLectures(source);
+      if(valide(s)){const mode=Object.hasOwn(MODES,s.mode)?s.mode:"matin";seances[mode]={notions:[],groupe:[],...s,mode};}
+    }
+    const seance=Object.values(seances).find(s=>s.id===o.seance?.id)||Object.values(seances)[0]||null;
+    return {...o,seances,seance};
   }
-  // Les anciennes préparations, sans mode, restent des rituels classiques.
-  // Filtrer aussi ici protège une préparation locale avant la connexion à la base.
-  const get=()=>{const s=sansLectures(doc.seance);return valide(s) ? {notions:[],groupe:[],...s,mode:s.mode==="tempete"?"tempete":"matin"} : null;};
-  const titre=(s=get())=>s?.mode==="tempete" ? "Tempête préparée" : "Rituel préparé";
+  function nettoie(){
+    const propre=normalise(doc);
+    if(JSON.stringify(propre)===JSON.stringify(doc))return false;
+    // La migration ne rend pas une copie locale ancienne plus récente que celle du téléphone.
+    doc={...propre,maj:doc.maj||0};return !!doc.maj;
+  }
+  // Sans mode, garder l'accès à la dernière préparation pour les anciens raccourcis.
+  const get=mode=>{const propre=normalise(doc);return mode ? propre.seances[mode]||null : propre.seance;};
+  const titre=(s=get())=>s?.mode==="tempete" ? "Tempête préparée" : s?.mode==="tresor" ? "Île au trésor préparée" : "Rituel préparé";
   function annonce(){
     lsSet(CLE,JSON.stringify(doc));
-    const b=document.getElementById("aa-preparation-detail"), s=get();
-    if(b) b.textContent=s ? `${titre(s)} · ${s.questions.length} questions · ${s.date.split("-").reverse().join("/")}` : "Choisir les questions et leur ordre";
+    const b=document.getElementById("aa-preparation-detail");
+    if(b) b.textContent=resume();
     if(window.AutoSauve) AutoSauve.bientot();
-    if(window.Accueil && Accueil.estEcran() && Accueil.courant()==="scr-tbi" && !enJeu) { GEN++; enAttente.forEach(f=>f()); enAttente.clear(); accueil(); }
+    if((window.Accueil ? Accueil.estEcran() && Accueil.courant()==="scr-tbi" : !document.getElementById("scr-tbi").hidden) && !enJeu) { GEN++; enAttente.forEach(f=>f()); enAttente.clear(); accueil(); }
   }
   async function init(){
     if(pret) return pret;
@@ -7648,9 +7680,23 @@ const Preparation = (()=>{
       annonce();
     })().catch(e=>{console.warn("préparation",e);pret=null;}); return pret;
   }
-  async function enregistre(seance){
-    await init(); const suivant={maj:Math.max(Date.now(),(doc.maj||0)+1),seance:seance ? sansLectures(seance) : null};
+  function resume(){
+    const nb=Object.keys(normalise(doc).seances).length;
+    return nb ? `${nb} mode${nb>1?"s":""} préparé${nb>1?"s":""} · modifier les questions` : "Rituel, tempête ou île au trésor";
+  }
+  async function ecrit(suivant){
+    suivant={...normalise(suivant),maj:Math.max(Date.now(),(doc.maj||0)+1)};
     if(db) await db.doc(DOC).set(suivant); doc=suivant; annonce();
+  }
+  async function enregistre(seance, mode){
+    await init();
+    const seances={...normalise(doc).seances};
+    if(seance){
+      mode=Object.hasOwn(MODES,seance.mode)?seance.mode:"matin";
+      seances[mode]={...seance,mode};
+    } else if(mode) delete seances[mode];
+    else for(const k of Object.keys(seances))delete seances[k];
+    await ecrit({...doc,seances,seance});
   }
   async function banque(){
     if(!window.Accueil || Accueil.estEcran()) return S;
@@ -7737,11 +7783,13 @@ const Preparation = (()=>{
   }
   async function ouvre(opt={}){
     await init(); let etat=await banque();
-    const ancien=opt.notions ? null : get();
-    let s=ancien || {id:idVoyage(),mode:"matin",date:jourJeu(new Date(Date.now()+864e5)),objectif:opt.notions?"revoir":"varie",notions:opt.notions||[],groupe:[],recompense:etat.reglages.recompense||"podium",questions:[]};
+    let ancien=opt.notions ? null : get(opt.mode);
+    const mode=Object.hasOwn(MODES,opt.mode)?opt.mode:"matin";
+    let s=ancien || {id:idVoyage(),mode,date:jourJeu(new Date(Date.now()+864e5)),objectif:opt.notions?"revoir":"varie",notions:opt.notions||[],groupe:[],recompense:etat.reglages.recompense||"podium",questions:[]};
     s.filtres ||= {matiere:"",sous:"",chapitre:"",texte:""};
-    let nombre=s.questions.length||(opt.notions?3:etat.reglages.nbQ);
-    if(!s.questions.length) s.questions=tire(etat,s.objectif,opt.notions?3:etat.reglages.nbQ,s.notions);
+    let nombre=s.questions.length||(opt.notions?3:s.mode==="tresor"?12:s.mode==="tempete"?etat.reglages.stormQ:etat.reglages.nbQ);
+    if(!s.questions.length) s.questions=tire(etat,s.objectif,nombre,s.notions);
+    const brouillons={};
     const d=panneau(`<h2>Préparer la prochaine séance</h2><div id="prep-corps"></div>`,"preparation");
     const z=d.querySelector("#prep-corps");
     const disponibles=()=>etat.questions.filter(q=>questionActive(q,etat)&&q.c.length>=2&&(!s.notions.length||s.notions.includes(q.n)));
@@ -7766,7 +7814,7 @@ const Preparation = (()=>{
       z.querySelector('[data-prep="tirer"]').disabled=!n;
     }
     function noticeVendredi(){
-      z.querySelector("#prep-vendredi").hidden=new Date(s.date+"T12:00:00").getDay()!==5;
+      z.querySelector("#prep-vendredi").hidden=s.mode==="tresor" || new Date(s.date+"T12:00:00").getDay()!==5;
       z.querySelector("#prep-vendredi").textContent=`Vendredi matin : ${s.mode==="tempete"?"la tempête":"le rituel"} avec Kiko, puis l’escale et la carte postale à écrire, quel que soit le score. Termine la séance et son bilan pour rejoindre l’escale.`;
     }
     function remplacement(i){
@@ -7791,7 +7839,8 @@ const Preparation = (()=>{
       rendChoix();box.querySelector("select").focus();
     }
     function rend(){
-      z.innerHTML=`<div class="prep-champs"><label>Type de séance<select id="prep-mode"><option value="matin" ${s.mode!=="tempete"?"selected":""}>Rituel classique</option><option value="tempete" ${s.mode==="tempete"?"selected":""}>Tempête</option></select></label><label>Date de la séance<input type="date" id="prep-date" value="${esc(s.date)}"></label><label>Objectif<select id="prep-objectif">${Object.entries(OBJECTIFS).map(([k,t])=>`<option value="${k}" ${s.objectif===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Questions<input id="prep-nb" type="number" min="1" max="15" value="${nombre}"></label><label>Fin de séance<select id="prep-recompense"><option value="podium" ${s.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${s.recompense==="collectif"?"selected":""}>Défi collectif</option></select></label></div>
+      z.innerHTML=`<div class="prep-champs"><label>Type de séance<select id="prep-mode">${Object.entries(MODES).map(([k,t])=>`<option value="${k}" ${s.mode===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Date de la séance<input type="date" id="prep-date" value="${esc(s.date)}"></label><label>Objectif<select id="prep-objectif">${Object.entries(OBJECTIFS).map(([k,t])=>`<option value="${k}" ${s.objectif===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Questions<input id="prep-nb" type="number" min="1" max="15" value="${nombre}"></label><label>Fin de séance<select id="prep-recompense"><option value="podium" ${s.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${s.recompense==="collectif"?"selected":""}>Défi collectif</option></select></label></div>
+        <p class="note">Chaque mode garde sa propre préparation. Son bouton lancera ces questions dans l’ordre choisi. Sans préparation, il proposera des questions aléatoires.</p>
         <p id="prep-vendredi" class="prep-info">Vendredi matin : le rituel avec Kiko, la découverte de l’escale, puis la carte postale comme travail d’écriture du jour.</p>
         ${s.notions?.length?`<p>Révision ciblée : ${s.notions.map(n=>esc(etat.notions.find(x=>x.id===n)?.t||n)).join(", ")}. <button class="btn petit" data-prep="toutes">Toutes les notions</button></p>`:""}
         ${opt.eleves?.length?`<p>Élèves à accompagner : ${opt.eleves.map(n=>esc(etat.eleves.find(e=>e.n===n)?.prenom||"Carte "+n)).join(", ")}</p><label><input type="checkbox" id="prep-groupe" ${s.groupe.length?"checked":""}> Faire jouer seulement ce groupe</label>`:s.groupe?.length?`<p>Groupe de ${s.groupe.length} élèves. <button class="btn petit" data-prep="classe">Toute la classe</button></p>`:""}
@@ -7809,7 +7858,11 @@ const Preparation = (()=>{
     z.onchange=e=>{
       if(e.target.dataset.filtre){const champ=e.target.dataset.filtre;changeFiltre(s.filtres,champ,e.target.value);if(champ!=="texte"){z.querySelector("#prep-filtres").innerHTML=filtresHTML(s.filtres,"prep");z.querySelector(`#prep-${champ}`).focus();}majCompte();}
       if(e.target.id==="prep-recompense") s.recompense=e.target.value;
-      if(e.target.id==="prep-mode"){s.mode=e.target.value;noticeVendredi();}
+      if(e.target.id==="prep-mode"){
+        brouillons[s.mode]=s;const mode=e.target.value;ancien=get(mode);
+        s=brouillons[mode] || ancien || {...copieJeu(s),id:idVoyage(),mode};
+        s.filtres ||= {matiere:"",sous:"",chapitre:"",texte:""};nombre=s.questions.length;rend();
+      }
       if(e.target.id==="prep-date"){s.date=e.target.value;noticeVendredi();}
       if(e.target.id==="prep-groupe") s.groupe=e.target.checked ? opt.eleves.slice() : [];
       if(e.target.id==="prep-objectif" || e.target.id==="prep-nb"){
@@ -7843,14 +7896,15 @@ const Preparation = (()=>{
       if(a==="sauver"||a==="effacer"){
         if(a==="sauver"&&!/^\d{4}-\d{2}-\d{2}$/.test(s.date)){z.querySelector("#prep-message").textContent="Choisis une date pour la séance.";return;}
         b.disabled=true;
-        try{await enregistre(a==="effacer"?null:s);d.remove();toast(a==="effacer"?"Séance retirée.":"Séance enregistrée. Elle sera proposée sur le TBI.");}
+        try{await enregistre(a==="effacer"?null:s,s.mode);d.remove();toast(a==="effacer"?"Séance retirée : ce mode utilisera des questions aléatoires.":"Séance enregistrée : elle sera lancée avec le bouton de ce mode.");}
         catch(err){b.disabled=false;z.querySelector("#prep-message").textContent="La séance n'a pas pu être enregistrée. Réessaie.";}
       }
     };rend();
   }
-  return {init,get,titre,ouvre,chapitres,appliqueChapitres,tire,banque,enregistre,exporte:()=>copieJeu({...doc,seance:sansLectures(doc.seance)}),
-    importe:async o=>{if(o && (o.seance===null||valide(o.seance))) await enregistre(o.seance);},
-    consomme:async id=>{if(get()?.id===id)await enregistre(null);} };
+  return {init,get,titre,resume,modes:MODES,ouvre,chapitres,appliqueChapitres,tire,banque,enregistre,exporte:()=>copieJeu(normalise(doc)),
+    importe:async o=>{if(o && (o.seances || o.seance===null || valide(o.seance))){await init();await ecrit(o);}},
+    consomme:async id=>{await init();const s=Object.values(normalise(doc).seances).find(s=>s.id===id);if(s)await enregistre(null,s.mode);} };
+
 })();
 window.Preparation=Preparation;
 
@@ -9194,7 +9248,7 @@ const Accueil = (() => {
         ${ACTIVITES.map(a=>`<button class="aa-act ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}>
           <img src="${imgAct(a)}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span>
           <span class="bas"><em data-etat="${a.id}">${a.bientot?"":"…"}</em><i class="go">${a.bientot?"Bientôt":"Jouer"}</i></span></button>`).join("")}
-        <div class="aa-liste"><button id="aa-preparer">${IC.cartes}<span>Préparer la prochaine séance<small id="aa-preparation-detail">${Preparation.get() ? Preparation.titre()+" · "+Preparation.get().questions.length+" questions" : "Choisir les questions et leur ordre"}</small></span>${IC.suite}</button>
+        <div class="aa-liste"><button id="aa-preparer">${IC.cartes}<span>Préparer la prochaine séance<small id="aa-preparation-detail">${Preparation.resume()}</small></span>${IC.suite}</button>
           <button id="aa-chapitres">${IC.cartes}<span>Chapitres à réviser<small>Activer ou désactiver les chapitres du Bateau-école</small></span>${IC.suite}</button></div>
         <h2 class="aa-h2">Ma classe</h2>
         <div class="aa-liste">
@@ -10785,6 +10839,7 @@ function lanceTBI(){
   const bm=$("#b-menu"); let tMenu=null;
   bm.onclick=()=>{ if(!bm.dataset.sur){ bm.dataset.sur=1; bm.textContent="Mettre en pause ?"; bm.classList.add("prim"); clearTimeout(tMenu); tMenu=setTimeout(()=>{ delete bm.dataset.sur; bm.textContent="Menu principal"; bm.classList.remove("prim"); },4000); return; }
     delete bm.dataset.sur; bm.textContent="Menu principal"; bm.classList.remove("prim"); retourMenu(); };
+  $("#b-demo").onclick=()=>{if(!enJeu||DEMO)modeDemo(!DEMO);};
   $("#b-journal").onclick=()=>{ Son.init(); ouvreJournal(); };
   $("#b-reglages").onclick=()=>{ Son.init(); ouvreReglages(); };
   window.onEtatRecharge = ()=>{ majBarre(); majMer(); Mer.snap(); if(!enJeu) accueil(); };
