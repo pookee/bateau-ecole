@@ -36,7 +36,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .num{font-variant-numeric:tabular-nums}
 
 /* ---------- choix du mode ---------- */
-#scr-choix{min-height:100%;display:grid;place-items:center;padding:24px 16px;box-sizing:border-box;background:#6CC3F2 url(img/ciel.webp) center/cover;color:var(--nuit)}
+#scr-choix{min-height:100%;display:grid;place-items:center;padding:24px 16px;box-sizing:border-box;background:#241B49 url(img/halloween-ciel.png) center/cover;color:var(--nuit)}
 #scr-choix .box{max-width:720px;text-align:center;display:grid;gap:18px}
 #scr-choix h1{font-family:var(--display);font-size:clamp(2.4rem,7vw,4.2rem);margin:0;line-height:1;text-wrap:balance;color:#fff;text-shadow:0 3px 0 #1D6F93,0 6px 14px rgba(11,39,64,.35)}
 #scr-choix .perro{height:clamp(130px,26vh,240px);margin:0 auto -10px}
@@ -79,7 +79,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .accueil{position:relative;display:flex;justify-content:center;width:min(680px,100%,70vh)}
 .accueil .perro{position:absolute;right:calc(100% - 10px);bottom:-6px;height:clamp(110px,26vh,230px);width:auto;filter:drop-shadow(0 6px 8px rgba(4,20,35,.25))}
 @media (max-width:1000px){.accueil .perro{display:none}}
-.pancarte{flex:1;width:100%;aspect-ratio:1400/773;background:url(img/pancarte.webp) center/100% 100% no-repeat;container-type:inline-size;box-sizing:border-box;padding:16% 11% 6%;display:flex;flex-direction:column;justify-content:center;text-align:center;filter:drop-shadow(0 8px 10px rgba(4,20,35,.25))}
+.pancarte{flex:1;width:100%;aspect-ratio:1400/773;background:url(img/halloween-pancarte.png) center/100% 100% no-repeat;container-type:inline-size;box-sizing:border-box;padding:16% 11% 6%;display:flex;flex-direction:column;justify-content:center;text-align:center;filter:drop-shadow(0 8px 10px rgba(4,20,35,.25))}
 .pancarte .k{font-family:var(--display);font-weight:800;font-size:3.6cqw;color:#9A5B1E;letter-spacing:.04em;text-transform:uppercase;line-height:1.2}
 .pancarte .t{font-family:var(--display);font-weight:800;font-size:9.6cqw;color:#5B3212;line-height:1.05;text-wrap:balance}
 .pancarte .s{font-family:var(--texte);font-weight:700;font-size:4.1cqw;color:#6B4524;line-height:1.3;margin-top:1cqw}
@@ -364,6 +364,37 @@ table.bilan td.nm{text-align:left;font-weight:700;white-space:nowrap}
 .hi-besoin{border-top:1px solid #CFE4E8;padding:10px 0}.hi-besoin p{line-height:1.6}.hi-onglets{flex-wrap:wrap}
 [data-q-ligne][hidden],.banque-matiere[hidden],.banque-sous-matiere[hidden],.notion[hidden]{display:none!important}
 @media(max-width:560px){.panneau{padding:10px}.panneau>.carte{padding:18px}.prep-champs{display:grid;grid-template-columns:1fr 1fr}.prep-champs label:nth-child(1){grid-column:1/-1;grid-row:1}.prep-champs label:nth-child(2){grid-column:1;grid-row:2}.prep-champs label:nth-child(3){grid-column:1/-1;grid-row:3}.prep-champs label:nth-child(4){grid-column:2;grid-row:2}.prep-champs label:nth-child(5){grid-column:1/-1;grid-row:4}.banque-filtres>*{flex-basis:100%}.prep-champs label{min-width:120px}.panneau h2{font-size:1.4rem}.be-podium{grid-template-columns:1fr}.be-exaequo{grid-template-columns:repeat(2,minmax(0,1fr))}.be-bilan .be-palmares{grid-row:auto}.be-bilan{width:100%;min-width:0}}
+/* Habillage pirate d'Halloween : limité au Bateau-école, sans modifier les autres activités. */
+#scr-choix,#scr-tbi,#scr-tel{
+  --nuit:#26163F;--mer:#654080;--lagon:#8860AD;--ecume:#F6EEDF;
+  --corail:#C64C0D;--soleil:#FFC83E;--papier:#FFFCF4;--encre:#2F243B;--gris:#62506D;
+}
+#scr-choix h1{text-shadow:0 3px 0 #422366,0 6px 14px rgba(20,10,38,.45)}
+#scr-choix p{color:#FFEDC8;text-shadow:0 2px 5px #26163F}
+#scr-tbi .bar{background:linear-gradient(#2C1944,#221437)}
+#scr-tbi .bar .route .lbl,#scr-tbi .pastille{color:#F2E8FB}
+#scr-tbi .pastille.on{color:#B9F0CF}
+#scr-tbi .bar .btn.ghost{background:linear-gradient(#503064,#342047);border-color:#82559D;box-shadow:inset 0 1px 3px #FFFFFF20}
+#scr-tbi .bar .jauge{background:#4C2E65}
+#scr-tbi .bar .jauge i{background:linear-gradient(90deg,#AD77D3,#FFC83E)}
+:is(#scr-choix,#scr-tbi,#scr-tel) .btn.prim{background:#C64C0D;border-color:#AD3D08;box-shadow:0 5px 0 #7F2D08}
+:is(#scr-choix,#scr-tbi,#scr-tel) .btn.prim:active{box-shadow:0 1px 0 #7F2D08}
+#scr-tbi .home-cta .btn.prim{background:linear-gradient(#FF7B20,#EE590D);border-color:#DE5109;text-shadow:0 2px 1px #913008}
+:is(#scr-choix,#scr-tbi,#scr-tel) .btn.mer{background:linear-gradient(#9852C5,#7E3BAB);border-color:#743795;box-shadow:0 5px 0 #4E236E}
+:is(#scr-choix,#scr-tbi,#scr-tel) .btn.mer:active{box-shadow:0 1px 0 #4E236E}
+#scr-tbi .home-titre,#scr-tbi .hud{background:rgba(38,22,63,.86)}
+#scr-tbi .opt{background:#F0E7F7;border-color:#D9C4E7}
+#scr-tbi .opt .bar-r{background:rgba(101,64,128,.14)}
+#scr-tbi .opt.bon{background:#DDF3E5}
+#scr-tbi .panneau,#scr-tel .panneau{background:rgba(22,12,37,.76)}
+#scr-tel .tel-q,#scr-tel .tel-res,#scr-tel #t-podium{background:var(--papier)}
+#scr-tel .photo-btn{background:#C64C0D}
+/* Garder la mer et le bateau visibles sur les tableaux au format 16:9. */
+@media (min-width:900px) and (max-height:850px){
+  #scr-tbi .layer:has(>.accueil){gap:8px;padding-top:10px}
+  #scr-tbi .accueil{width:min(680px,100%,55vh)}
+  #scr-tbi .home-cta .btn.big{font-size:1.4rem;padding:.45em 1.15em}
+}
 </style>
 
 <style>
@@ -382,7 +413,7 @@ img{max-width:100%}
 <div id="app">
 <section id="scr-choix" hidden>
   <div class="box">
-    <img class="perro" src="img/perroquet-salut.webp" alt="">
+    <img class="perro" src="img/halloween-perroquet-salut.png" alt="">
     <h1>Le Bateau-école</h1>
     <p>Le rituel du matin de la classe : on révise, le bateau avance, et on fait le tour du monde.</p>
     <div class="choix">
@@ -5097,8 +5128,9 @@ async function useCap(name){
   try { return window.claude?.use ? await window.claude.use(name) : null; } catch(e){ return null; }
 }
 const IMG = {};
-["ciel","ciel-orage","soleil","nuage1","nuage2","nuage3","orage1","orage2","vague-claire","vague-foncee","bateau","bateau-calme",
- "port","ile","bateau-dessus","rocher1","rocher2","rocher3","bouteille"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.src=`img/${n}.webp`; IMG[n]=i; });
+["ciel-orage","orage1","orage2","vague-claire","vague-foncee",
+ "port","ile","rocher1","rocher2","rocher3","bouteille"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.src=`img/${n}.webp`; IMG[n]=i; });
+["ciel","bateau","bateau-dessus"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.src=`img/halloween-${n}.png`; IMG[n]=i; });
 const pret = i => i && i.complete && i.naturalWidth>0;
 
 /* ---------- la mer (canvas) ---------- */
@@ -5106,25 +5138,35 @@ const Mer = (() => {
   const cv = $("#sea"), g = cv.getContext("2d");
   let W=0,H=0,dpr=1, t0=performance.now();
   const st = {prog:0, progAff:0, vent:.2, orage:0, orageAff:0, eclair:0, dest:"", dep:"", bateau:"", haut:.72, merC:null, sC:null, merA:null, sA:null};
-  const nuages = [0,1,2,3,4].map(i=>({x:i/5+Math.random()*.1,y:.02+Math.random()*.16,s:.8+Math.random()*.5,v:.004+Math.random()*.005,k:(i%3)+1}));
   const noirs = [0,1,2].map(i=>({x:i/3+Math.random()*.1,y:.02+Math.random()*.1,s:1+Math.random()*.4,v:.01+Math.random()*.01,k:(i%2)+1}));
   const gouttes = Array.from({length:180},()=>({x:Math.random(),y:Math.random(),v:.8+Math.random()*.6}));
   function taille(){ const r=cv.getBoundingClientRect(); dpr=Math.min(2,window.devicePixelRatio||1); W=r.width; H=r.height; cv.width=Math.max(1,W*dpr); cv.height=Math.max(1,H*dpr); g.setTransform(dpr,0,0,dpr,0,0); }
   window.addEventListener("resize", taille);
   const mix=(a,b,k)=>a+(b-a)*k;
-  function couvre(im,a){ if(!pret(im)||a<=0.01) return; const k=Math.max(W/im.naturalWidth,H/im.naturalHeight); const w=im.naturalWidth*k,h=im.naturalHeight*k; g.globalAlpha=a; g.drawImage(im,(W-w)/2,0,w,h); g.globalAlpha=1; }
-  function sprite(im,x,y,w,ancre,a,rot){ if(!pret(im)||a<=0.01) return 0; const h=w*im.naturalHeight/im.naturalWidth; g.save(); g.globalAlpha=a==null?1:a; g.translate(x,y); if(rot) g.rotate(rot); g.drawImage(im,-w/2,ancre==="centre"?-h/2:-h,w,h); g.restore(); return h; }
+  function couvre(im,a,droite){ if(!pret(im)||a<=0.01) return; const k=Math.max(W/im.naturalWidth,H/im.naturalHeight); const w=im.naturalWidth*k,h=im.naturalHeight*k; g.globalAlpha=a; g.drawImage(im,droite?W-w:(W-w)/2,0,w,h); g.globalAlpha=1; }
+  // Éclairage nocturne précalculé : les dessins et la transparence restent inchangés.
+  const texturesNuit = new WeakMap();
+  function nuit(im,couleur){
+    if(texturesNuit.has(im)) return texturesNuit.get(im);
+    const c=document.createElement("canvas"); c.width=im.naturalWidth; c.height=im.naturalHeight;
+    const ctx=c.getContext("2d"); ctx.drawImage(im,0,0);
+    ctx.globalCompositeOperation="multiply"; ctx.fillStyle=couleur; ctx.fillRect(0,0,c.width,c.height);
+    ctx.globalCompositeOperation="destination-in"; ctx.drawImage(im,0,0);
+    texturesNuit.set(im,c); return c;
+  }
+  function sprite(im,x,y,w,ancre,a,rot,couleur){ if(!pret(im)||a<=0.01) return 0; const h=w*im.naturalHeight/im.naturalWidth; g.save(); g.globalAlpha=a==null?1:a; g.translate(x,y); if(rot) g.rotate(rot); g.drawImage(couleur?nuit(im,couleur):im,-w/2,ancre==="centre"?-h/2:-h,w,h); g.restore(); return h; }
   function bande(im,y,h,decal,fond){
     g.fillStyle=fond; g.fillRect(0,y+h*.6,W,H-(y+h*.6));
     if(!pret(im)) return; const w=h*im.naturalWidth/im.naturalHeight; let x=-(((decal%w)+w)%w);
-    for(;x<W;x+=w-1) g.drawImage(im,x,y,w,h);
+    const texture=nuit(im,"#A592EF");
+    for(;x<W;x+=w-1) g.drawImage(texture,x,y,w,h);
   }
   function etiquette(txt,x,y,fs){
     g.font=`800 ${fs}px "Baloo 2",sans-serif`; const lw=g.measureText(txt||"").width;
     const lx=Math.max(lw/2+16,Math.min(W-lw/2-16,x)); if(!txt) return {x:lx,w:0};
-    g.fillStyle="#FFFCF4"; g.strokeStyle="#0B2740"; g.lineWidth=3;
+    g.fillStyle="#FFFCF4"; g.strokeStyle="#493065"; g.lineWidth=3;
     g.beginPath(); g.roundRect(lx-lw/2-12,y-fs*1.05,lw+24,fs*1.5,fs*.75); g.fill(); g.stroke();
-    g.fillStyle="#0B2740"; g.textAlign="center"; g.fillText(txt,lx,y); return {x:lx,w:lw+24};
+    g.fillStyle="#241345"; g.textAlign="center"; g.fillText(txt,lx,y); return {x:lx,w:lw+24};
   }
   function frame(now){
     const t=(now-t0)/1000;
@@ -5137,37 +5179,33 @@ const Mer = (() => {
     if (st.merA==null){ st.merA=merC; st.sA=sC; }
     st.merA += (merC-st.merA)*.12; st.sA += (sC-st.sA)*.12;
     const mer=st.merA, s=st.sA;
-    // ciel, soleil, nuages
-    g.fillStyle="#6CC3F2"; g.fillRect(0,0,W,H);
-    couvre(IMG.ciel,1); couvre(IMG["ciel-orage"],o);
+    // Ciel Halloween ancré à droite pour garder la lune dans les écrans étroits.
+    g.fillStyle="#201D51"; g.fillRect(0,0,W,H);
+    couvre(IMG.ciel,1,true); couvre(IMG["ciel-orage"],o);
     const sol=Math.max(70,Math.min(W,H)*.16);
-    sprite(IMG.soleil,W-sol*.75,sol*.62+Math.sin(t*.8)*4,sol,"centre",1-o,Math.sin(t*.4)*.08);
-    nuages.forEach(n=>{ n.x+=n.v*(.3+st.vent+o*2)/60; if(n.x>1.25) n.x=-.25; sprite(IMG["nuage"+n.k],n.x*W,n.y*H+sol*.45,Math.min(W,1600)*.12*n.s,"centre",1-o*.8); });
     if(o>.02) noirs.forEach(n=>{ n.x+=n.v/60; if(n.x>1.25) n.x=-.25; sprite(IMG["orage"+n.k],n.x*W,n.y*H+sol*.5,Math.min(W,1600)*.16*n.s,"centre",o); });
     if (st.eclair>0){ g.fillStyle=`rgba(255,255,240,${st.eclair})`; g.fillRect(0,0,W,H); st.eclair-=.06; }
     // vagues du fond
     const vh = 72*s*(1+o*.4);
-    bande(IMG["vague-claire"], mer-vh*.5, vh, t*(26+o*80), o>.5?"#0F5E75":"#107991");
+    bande(IMG["vague-claire"], mer-vh*.5, vh, t*(26+o*80), o>.5?"#10294F":"#0B3565");
     // port et île avec leur nom
     const fs=Math.max(15,Math.min(24,W*.015));
     const wPort=240*s, wIle=250*s;
     const hPort = pret(IMG.port) ? wPort*IMG.port.naturalHeight/IMG.port.naturalWidth : 110*s;
     const hIle = pret(IMG.ile) ? wIle*IMG.ile.naturalHeight/IMG.ile.naturalWidth : 125*s;
     const xPort=Math.max(wPort*.5+4,W*.08), xIle=Math.min(W-wIle*.5-4,W*.92);
-    sprite(IMG.port,xPort,mer+16*s,wPort); sprite(IMG.ile,xIle,mer+16*s,wIle);
+    sprite(IMG.port,xPort,mer+16*s,wPort,"bas",1,0,"#C9B8E5"); sprite(IMG.ile,xIle,mer+16*s,wIle,"bas",1,0,"#C9B8E5");
     const eD = etiquette(st.dep,xPort,mer+16*s-hPort-8*s,fs), eA = etiquette(st.dest,xIle,mer+16*s-hIle-8*s,fs);
-    // bateau (voile gonflée selon le vent)
+    // Bateau pirate : la même silhouette conserve le roulis et la progression.
     const wB=290*s;
     const xMin = Math.max(xPort+wPort*.5+wB*.3, eD.x+eD.w/2+wB*.42);
     const xMax = Math.max(xMin, Math.min(xIle-wIle*.5-wB*.25, eA.x-eA.w/2-wB*.45));
     const xB = mix(xMin,xMax,Math.max(0,Math.min(1,st.progAff)));
     const roul = Math.sin(t*1.5)*.035*(1+o*2.5), yB = mer+38*s+Math.sin(t*1.5)*4*s*(1+o);
-    const voile = Math.max(0,Math.min(1,(st.vent-.1)/.4));
-    sprite(IMG["bateau-calme"],xB,yB,wB,"bas",1,roul);
-    sprite(IMG.bateau,xB,yB,wB,"bas",voile,roul);
+    sprite(IMG.bateau,xB,yB,wB,"bas",1,roul);
     // vagues de devant
     const vh2 = 64*s*(1+o*.5);
-    bande(IMG["vague-foncee"], mer+20*s, vh2, t*(44+o*120), o>.5?"#062F48":"#084362");
+    bande(IMG["vague-foncee"], mer+20*s, vh2, t*(44+o*120), o>.5?"#06162F":"#081D45");
     if (o>.05){ g.fillStyle=`rgba(40,30,80,${.2*o})`; g.fillRect(0,0,W,H);
       g.strokeStyle=`rgba(220,230,255,${.55*o})`; g.lineWidth=1.6; g.beginPath();
       gouttes.forEach(d=>{ d.y+=d.v*.02; d.x-=.004; if(d.y>1){d.y=0;d.x=Math.random()*1.2;} const x=d.x*W,y=d.y*H; g.moveTo(x,y); g.lineTo(x-6,y+18); }); g.stroke(); }
@@ -5234,7 +5272,7 @@ function setTel(on){ const b=$("#b-tel"); b.textContent = on ? "Téléphone reli
 function chrono(on){ const b=$("#b-chrono"); clearInterval(chronoT); b.hidden=!on; if(!on) return; const t0=Date.now();
   const f=()=>{ const s=Math.floor((Date.now()-t0)/1000); b.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); b.style.background = s>720 ? "rgba(232,93,63,.35)" : ""; }; f(); chronoT=setInterval(f,1000); }
 
-const perro = (k,cls) => `<img class="perro ${cls||""}" src="img/perroquet-${k}.webp" alt="Kiko, le perroquet">`;
+const perro = (k,cls) => `<img class="perro ${cls||""}" src="${k==="salut" ? "img/halloween-perroquet-salut.png" : `img/perroquet-${k}.webp`}" alt="Kiko, le perroquet">`;
 function enseigne(k,t,s,pk){ return `<div class="accueil">${perro(pk||"salut")}<div class="pancarte"><div class="k">${k}</div><div class="t">${t}</div>${s?`<div class="s">${s}</div>`:""}</div></div>`; }
 const avecPerro = (pk,max,html) => `<div class="carte avec-perro" style="max-width:${max}px">${perro(pk,"coin")}<div>${html}</div></div>`;
 /* retour au menu principal : on abandonne ce qui est en cours */
@@ -5438,7 +5476,7 @@ async function poserQuestion(q, i, n, mode){
 
 function trucDe(q){ if(q.truc) return q.truc; const m=/^d(\d+)$/.exec(q.id||""); if(m){ const r=Q_RAW[+m[1]]; if(r && r[1]===q.q && typeof TRUCS!=="undefined") return TRUCS[+m[1]]; } return ""; }
 function afficheTruc(q){ const t=trucDe(q); if(!t) return; const p=$("#q-pied"); if(!p) return;
-  p.insertAdjacentHTML("beforebegin",`<div class="truc"><img src="img/perroquet-salut.webp" alt=""><div><b>Le truc de Kiko</b><span>${insec(esc(t))}</span></div></div>`); }
+  p.insertAdjacentHTML("beforebegin",`<div class="truc"><img src="img/halloween-perroquet-salut.png" alt=""><div><b>Le truc de Kiko</b><span>${insec(esc(t))}</span></div></div>`); }
 function gainPour(pct){ return Math.max(1,Math.round((1+4*pct)*S.reglages.vitesse)); }
 async function afficheScore(pct, texte, mode, dejaCompte=false){
   let html = texte ? `<span class="gain">${esc(texte)}</span>` : "";
@@ -5783,14 +5821,14 @@ const MiniJeu = (() => {
     return {cv,g,hud,W:r.width,H:r.height,fin(){cv.remove();hud.remove();}};
   }
   function fondEau(g,W,H,t){
-    const gr=g.createLinearGradient(0,0,0,H); gr.addColorStop(0,"#5CC6D6"); gr.addColorStop(1,"#1E86A6"); g.fillStyle=gr; g.fillRect(0,0,W,H);
-    g.strokeStyle="rgba(255,255,255,.18)"; g.lineWidth=3;
+    const gr=g.createLinearGradient(0,0,0,H); gr.addColorStop(0,"#151E47"); gr.addColorStop(1,"#102F58"); g.fillStyle=gr; g.fillRect(0,0,W,H);
+    g.strokeStyle="rgba(196,178,239,.3)"; g.lineWidth=3;
     for(let y=30;y<H;y+=46){ g.beginPath(); for(let x=-40;x<W+40;x+=20){ const xx=x-((t*120)%40); g.lineTo(xx,y+Math.sin((xx+y)/30+t*2)*5); } g.stroke(); }
   }
   function bateauDessus(g,x,y,s,flash){
     const im=IMG["bateau-dessus"]; if(pret(im)){ const w=190*s,h=w*im.naturalHeight/im.naturalWidth; g.save(); if(flash) g.globalAlpha=.45; g.drawImage(im,x-w*.55,y-h/2,w,h); g.restore(); return; }
     g.save(); g.translate(x,y);
-    g.fillStyle=flash?"#FFD86B":"#C8433A"; g.beginPath(); g.moveTo(70*s,0); g.quadraticCurveTo(30*s,-28*s,-55*s,-24*s); g.lineTo(-55*s,24*s); g.quadraticCurveTo(30*s,28*s,70*s,0); g.fill();
+    g.fillStyle=flash?"#FFD86B":"#25232A"; g.beginPath(); g.moveTo(70*s,0); g.quadraticCurveTo(30*s,-28*s,-55*s,-24*s); g.lineTo(-55*s,24*s); g.quadraticCurveTo(30*s,28*s,70*s,0); g.fill();
     g.fillStyle="#F3D9A4"; g.beginPath(); g.ellipse(0,0,40*s,14*s,0,0,Math.PI*2); g.fill();
     g.fillStyle="#FFFCF4"; g.beginPath(); g.moveTo(-10*s,-4*s); g.quadraticCurveTo(10*s,-40*s,30*s,-36*s); g.lineTo(-10*s,4*s); g.fill();
     g.restore();
@@ -7735,7 +7773,7 @@ window.Classe = Classe;
 const Accueil = (() => {
   const L = Autonome.Liaison;
   const ACTIVITES = [
-    {id:"bateau", nom:"Le Bateau-école", texte:"Le rituel du matin : on révise, et chaque bonne réponse fait avancer le bateau autour du monde.", img:"img/bateau.webp"},
+    {id:"bateau", nom:"Le Bateau-école", texte:"Le rituel du matin : on révise, et chaque bonne réponse fait avancer le bateau autour du monde.", img:"img/halloween-bateau.png"},
     {id:"pavillons", nom:"Hissez les pavillons", texte:"Vrai ou faux ? Les calculs défilent, on lève sa carte seulement quand c'est juste.", img:()=>window.Pavillons ? Pavillons.image() : "img/bouee2.webp"}
   ];
   const IC = {
@@ -7755,12 +7793,12 @@ const Accueil = (() => {
 .ic{width:1.3em;height:1.3em;flex:none}
 /* ---------- démarrage ---------- */
 #aa-intro{position:fixed;inset:0;z-index:200;background:var(--nuit);overflow:hidden;display:grid;place-items:center;cursor:pointer}
-#aa-intro .ciel{position:absolute;inset:0;background:linear-gradient(#58B7EC,#A7DDF7 70%);opacity:0;animation:aa-apparait .6s .15s ease forwards}
+#aa-intro .ciel{position:absolute;inset:0;background:#241B49 url(img/halloween-ciel.png) center/cover;opacity:0;animation:aa-apparait .6s .15s ease forwards}
 #aa-intro .mer{position:absolute;left:0;right:0;bottom:0;height:24vh;background:url(img/vague-foncee.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 5s linear infinite}
 #aa-intro .mer2{position:absolute;left:0;right:0;bottom:0;height:17vh;background:url(img/vague-claire.webp) repeat-x 0 100%/auto 100%;animation:aa-houle 3.6s linear infinite reverse}
 #aa-intro .bateau{position:absolute;bottom:11vh;left:50%;width:min(46vw,300px);transform:translateX(-50%);animation:aa-arrive 1.1s cubic-bezier(.2,.8,.3,1) both,aa-roulis 2.4s 1.1s ease-in-out infinite}
 #aa-intro .perro{position:absolute;top:14vh;left:50%;width:min(38vw,220px);transform:translateX(-50%) scale(0);animation:aa-coucou .7s .55s cubic-bezier(.3,1.6,.5,1) forwards}
-#aa-intro .mot{position:absolute;top:calc(14vh + min(38vw,220px)*1.12);left:0;right:0;text-align:center;font:800 clamp(1.8rem,7vw,3.2rem)/1.1 var(--display);color:#fff;text-shadow:0 3px 0 #1D6F93,0 8px 18px rgba(11,39,64,.35);opacity:0;animation:aa-mot .5s .9s ease forwards}
+#aa-intro .mot{position:absolute;top:calc(14vh + min(38vw,220px)*1.12);left:0;right:0;text-align:center;font:800 clamp(1.8rem,7vw,3.2rem)/1.1 var(--display);color:#fff;text-shadow:0 3px 0 #422366,0 8px 18px rgba(20,10,38,.45);opacity:0;animation:aa-mot .5s .9s ease forwards}
 #aa-intro.fin{animation:aa-part .45s ease forwards}
 @keyframes aa-apparait{to{opacity:1}}
 @keyframes aa-houle{to{background-position-x:-800px}}
@@ -7770,7 +7808,7 @@ const Accueil = (() => {
 @keyframes aa-mot{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes aa-part{to{opacity:0;visibility:hidden}}
 /* ---------- accueil du téléphone ---------- */
-.aa-tete{position:relative;overflow:hidden;background:linear-gradient(#5BB8EC,#B4E2F8);padding:22px 18px 70px;color:var(--nuit)}
+.aa-tete{position:relative;overflow:hidden;background:#241B49 url(img/halloween-ciel.png) center/cover;padding:22px 18px 70px;color:#FFFCF4}
 .aa-tete .nuage{position:absolute;opacity:.95;pointer-events:none}
 .aa-tete .n1{top:10px;width:120px;animation:aa-nuage 38s linear infinite}
 .aa-tete .n2{top:58px;width:90px;animation:aa-nuage 52s -20s linear infinite}
@@ -7778,9 +7816,9 @@ const Accueil = (() => {
 .aa-tete .bat{position:absolute;right:14px;bottom:26px;width:86px;animation:aa-berce 3s ease-in-out infinite}
 @keyframes aa-nuage{from{transform:translateX(-140px)}to{transform:translateX(110vw)}}
 @keyframes aa-berce{50%{transform:translateY(-5px) rotate(-2deg)}}
-.aa-salut{font:800 1rem/1 var(--display);color:#1D5C7A;letter-spacing:.02em;position:relative}
+.aa-salut{font:800 1rem/1 var(--display);color:#FFC83E;letter-spacing:.02em;position:relative}
 .aa-classe{font:800 clamp(1.7rem,7.5vw,2.3rem)/1.05 var(--display);margin:6px 0 4px;position:relative;text-wrap:balance;max-width:calc(100% - 90px)}
-.aa-sous{position:relative;font-weight:700;color:#23506A;max-width:calc(100% - 86px);line-height:1.4}
+.aa-sous{position:relative;font-weight:700;color:#F2E8FB;max-width:calc(100% - 86px);line-height:1.4}
 .aa-corps{display:grid;gap:14px;padding:0 16px 28px;margin-top:-34px;position:relative}
 .aa-carte{background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 2px 0 rgba(11,39,64,.07),0 8px 20px rgba(11,39,64,.06)}
 .aa-ecran{display:grid;gap:10px}
@@ -7794,6 +7832,9 @@ const Accueil = (() => {
 .aa-act em{font-style:normal;font-weight:700;color:var(--mer);font-size:.92rem}
 .aa-act .go{flex:none;font-style:normal;background:var(--corail);color:#fff;font:800 .95rem/1 var(--display);padding:.5em .9em;border-radius:999px;box-shadow:0 3px 0 #B8452D}
 .aa-act:active{transform:translateY(2px)}
+.aa-act[data-act="bateau"],.ec-tuile[data-act="bateau"]{--nuit:#26163F;--mer:#654080;--encre:#2F243B;--gris:#62506D;background:#FFFCF4}
+.aa-act[data-act="bateau"]{box-shadow:0 3px 0 #E4CAA0,0 10px 24px rgba(38,22,63,.1)}
+.aa-act[data-act="bateau"] .go,.ec-tuile[data-act="bateau"] .go{background:#C64C0D;box-shadow:0 3px 0 #7F2D08}
 .aa-act.bientot{cursor:default;background:#F3F7F8;box-shadow:0 3px 0 #DDE7EA}
 .aa-act.bientot b{color:#4A6273}
 .aa-act.bientot img{animation:none;filter:saturate(.6)}
@@ -7897,7 +7938,7 @@ const Accueil = (() => {
   const section = (id, cls) => { let s = document.getElementById(id); if (!s){ s = document.createElement("section"); s.id = id; s.className = cls===undefined ? "aa-page" : cls; s.hidden = true; app.appendChild(s); } return s; };
   const ECRANS = ["scr-choix","scr-tbi","scr-tel","aa-app","aa-classe","aa-bienvenue","aa-ecran","pv-ecran","pv-tel"];
   function montre(id){ const avant = courant; ECRANS.forEach(x=>{ const e = document.getElementById(x); if (e) e.hidden = x!==id; }); window.scrollTo(0,0); courant = id;
-    document.body.style.background = /^(aa-app|aa-classe|aa-bienvenue|scr-tel|pv-tel)$/.test(id) ? "var(--ecume)" : ""; // le bas de l'écran (sous la barre d'accueil de l'iPhone) prend la couleur de la page
+    document.body.style.background = id==="scr-tel" ? "#F6EEDF" : /^(aa-app|aa-classe|aa-bienvenue|pv-tel)$/.test(id) ? "var(--ecume)" : ""; // le bas de l'écran (sous la barre d'accueil de l'iPhone) prend la couleur de la page
     // une seule caméra à la fois, et seulement sur l'écran qui s'en sert : elle se rallume quand on y revient
     if (avant==="scr-tel" && id!=="scr-tel" && window.CameraDirect) camBateau = CameraDirect.coupe();
     if (id==="scr-tel" && avant!=="scr-tel" && camBateau){ camBateau = false; CameraDirect.lance(); }
@@ -7915,7 +7956,7 @@ const Accueil = (() => {
     let deja = false; try { deja = sessionStorage.getItem("aa-intro")==="1"; sessionStorage.setItem("aa-intro","1"); } catch(e){}
     if (deja) return;
     const d = document.createElement("div"); d.id = "aa-intro"; d.setAttribute("aria-hidden","true");
-    d.innerHTML = `<div class="ciel"></div><img class="perro" src="img/perroquet-salut.webp" alt=""><div class="mot">Bonjour !<br>Moi, c’est Kiko.</div><div class="mer"></div><img class="bateau" src="img/bateau.webp" alt=""><div class="mer2"></div>`;
+    d.innerHTML = `<div class="ciel"></div><img class="perro" src="img/halloween-perroquet-salut.png" alt=""><div class="mot">Bonjour !<br>Moi, c’est Kiko.</div><div class="mer"></div><img class="bateau" src="img/halloween-bateau.png" alt=""><div class="mer2"></div>`;
     document.body.appendChild(d);
     const ferme = () => { if (d.classList.contains("fin")) return; d.classList.add("fin"); setTimeout(()=>d.remove(), 500); };
     d.onclick = ferme; setTimeout(ferme, matchMedia("(prefers-reduced-motion: reduce)").matches ? 500 : 2100);
@@ -8006,7 +8047,7 @@ const Accueil = (() => {
     s.innerHTML = `<header class="aa-tete">
         <div class="aa-salut">Bonjour !</div><h1 class="aa-classe">${esc(nomClasse())}</h1>
         <div class="aa-sous">${n ? `${n} élève${n>1?"s":""}` : "Pas encore d'élèves"} · ${esc(dateLongue())}</div>
-        <img class="bat" src="img/bateau.webp" alt=""><div class="vagues"></div></header>
+        <img class="bat" src="img/halloween-bateau.png" alt=""><div class="vagues"></div></header>
       <div class="aa-corps">
         <div class="aa-bandeau" id="aa-bandeau" hidden><span>Une question est ouverte sur l'écran.</span><button class="btn jaune petit" id="aa-lire">Lire les cartes</button></div>
         <div class="aa-carte aa-ecran" id="aa-ecran-etat"></div>
