@@ -5595,6 +5595,110 @@ const Matelots = (() => {
 })();
 window.Matelots=Matelots;
 
+/* L'habillage est indépendant du voyage, des équipes et des résultats.
+   Les images d'origine restent disponibles toute l'année, sans reconstruire le jeu. */
+const Ambiance = (() => {
+  const CLE = "bateau-ecole-ambiance";
+  let mode = "halloween";
+  try { if (localStorage.getItem(CLE)==="marine") mode="marine"; } catch(e){}
+  const images = Object.fromEntries(["ciel","bateau","bateau-dessus","pancarte","perroquet-salut","perroquet-bravo","perroquet-tempete"].map(n=>["img/halloween-"+n+".png","img/"+n+".webp"]));
+  const origine = chemin => Object.keys(images).find(k=>k===chemin || images[k]===chemin);
+  const image = chemin => { const k=origine(chemin);return k?(mode==="marine"?images[k]:k):chemin; };
+  const get = () => mode;
+  document.documentElement.dataset.ambiance=mode;
+  const st=document.createElement("style");
+  st.id="ambiance-style";
+  st.textContent=`
+.ambiance-choix{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--papier);color:var(--nuit);border:2px solid #E3CFA2;border-radius:16px;padding:8px 12px;font:800 1rem var(--display);box-sizing:border-box;max-width:100%}
+.ambiance-choix select{font:700 1rem var(--texte);color:var(--nuit);background:#fff;border:2px solid var(--mer);border-radius:10px;padding:7px 28px 7px 10px;min-width:0;max-width:100%;cursor:pointer}
+.ec-haut .ambiance-choix{font-size:.9rem;padding:5px 8px}
+#scr-choix .ambiance-choix{justify-self:center}
+html[data-ambiance="marine"]{--nuit:#0B2740;--mer:#217FA5;--lagon:#45B7C6;--ecume:#EDF7F8;--sable:#F3D9A4;--corail:#E45D3B;--encre:#203E50;--gris:#536B78}
+html[data-ambiance="marine"] #scr-choix,html[data-ambiance="marine"] #aa-ecran,html[data-ambiance="marine"] #pv-ecran,html[data-ambiance="marine"] #aa-intro .ciel{background-color:#8DD4F1;background-image:url(img/ciel.webp)}
+html[data-ambiance="marine"] .aa-tete,html[data-ambiance="marine"] .aa-barre,html[data-ambiance="marine"] #pv-tel .aa-barre{background:#126B94 url(img/ciel.webp) center 34%/cover;border-color:#7AB7C7;color:#0B2740}
+html[data-ambiance="marine"] .aa-barre h1,html[data-ambiance="marine"] #pv-tel .aa-barre h1,html[data-ambiance="marine"] .aa-salut,html[data-ambiance="marine"] .aa-sous{color:#0B2740;text-shadow:none}
+html[data-ambiance="marine"] #pv-tel{background:linear-gradient(180deg,#D8EFF5,var(--ecume) 460px)}
+html[data-ambiance="marine"] #aa-intro .mer,html[data-ambiance="marine"] #aa-intro .mer2,html[data-ambiance="marine"] .aa-tete .vagues,html[data-ambiance="marine"] #aa-ecran .mer,html[data-ambiance="marine"] #aa-ecran .mer2,html[data-ambiance="marine"] #pv-ecran .mer,html[data-ambiance="marine"] #pv-ecran .mer2{filter:none}
+html[data-ambiance="marine"] .pancarte,html[data-ambiance="marine"] .pv-pancarte{background-image:url(img/pancarte.webp)}
+html[data-ambiance="marine"] #scr-choix h1,html[data-ambiance="marine"] .ec-milieu h1,html[data-ambiance="marine"] .ec-haut .ec-classe,html[data-ambiance="marine"] .pv-salon h1,html[data-ambiance="marine"] .pv-verif h1,html[data-ambiance="marine"] .pv-titre,html[data-ambiance="marine"] #aa-intro .mot{color:#0B2740;text-shadow:0 2px 0 #FFFFFF70}
+html[data-ambiance="marine"] #scr-choix p,html[data-ambiance="marine"] .ec-haut .ec-date,html[data-ambiance="marine"] .pv-info,html[data-ambiance="marine"] .pv-verif p,html[data-ambiance="marine"] .pv-num,html[data-ambiance="marine"] .pv-msg,html[data-ambiance="marine"] .pv-sous{color:#0B2740;text-shadow:none}
+html[data-ambiance="marine"] .pv-info{background:#FFFCF4DC;border-radius:14px;padding:6px 12px}
+html[data-ambiance="marine"] .pv-grand,html[data-ambiance="marine"] .pv-decompte{color:#0B2740;text-shadow:0 5px 0 #FFFFFF80}
+html[data-ambiance="marine"] .btn.prim{background:#E45D3B;border-color:#C74729;box-shadow:0 5px 0 #9B341F}
+html[data-ambiance="marine"] .btn.prim:active{box-shadow:0 1px 0 #9B341F}
+html[data-ambiance="marine"] #scr-tbi .home-cta .btn.prim{background:linear-gradient(#F77B50,#E45D3B);border-color:#C74729;text-shadow:0 1px 1px #9B341F}
+html[data-ambiance="marine"] .btn.mer{background:linear-gradient(#349BBE,#217FA5);border-color:#1D6F93;box-shadow:0 5px 0 #15526E}
+html[data-ambiance="marine"] .btn.mer:active{box-shadow:0 1px 0 #15526E}
+html[data-ambiance="marine"] #scr-tbi .bar{background:linear-gradient(#133C58,#0B2740)}
+html[data-ambiance="marine"] #scr-tbi .bar .route .lbl,html[data-ambiance="marine"] #scr-tbi .pastille{color:#D5EDF4}
+html[data-ambiance="marine"] #scr-tbi .pastille.on{color:#B9F0CF}
+html[data-ambiance="marine"] #scr-tbi .bar .btn.ghost{background:linear-gradient(#245875,#153D57);border-color:#598AA2}
+html[data-ambiance="marine"] #scr-tbi .bar .jauge{background:#245875}
+html[data-ambiance="marine"] #scr-tbi .bar .jauge i{background:linear-gradient(90deg,#45B7C6,#FFCB3D)}
+html[data-ambiance="marine"] #scr-tbi .home-titre,html[data-ambiance="marine"] #scr-tbi .hud{background:rgba(11,39,64,.86)}
+html[data-ambiance="marine"] #scr-tbi .opt{background:#EEF7F8;border-color:#C4DEE5}
+html[data-ambiance="marine"] #scr-tbi .opt .bar-r{background:rgba(33,127,165,.14)}
+html[data-ambiance="marine"] #scr-tbi .opt.bon{background:#DDF3E5}
+html[data-ambiance="marine"] .panneau,html[data-ambiance="marine"] .aut-voile{background:linear-gradient(#0B2740B8,#0B2740DB),url(img/ciel.webp) center/cover}
+html[data-ambiance="marine"] .panneau>.carte,html[data-ambiance="marine"] .aut-fenetre{border-color:#9AC4D3}
+html[data-ambiance="marine"] .form-q,html[data-ambiance="marine"] .prep-remplacement,html[data-ambiance="marine"] .son-l.ouvert,html[data-ambiance="marine"] .son-ed{background:#E6F2F5}
+html[data-ambiance="marine"] input[type=text],html[data-ambiance="marine"] input[type=number],html[data-ambiance="marine"] textarea,html[data-ambiance="marine"] select,html[data-ambiance="marine"] .aa-puces button{border-color:#A9CDD9}
+html[data-ambiance="marine"] .aa-puces button[aria-pressed="true"]{border-color:var(--mer)}
+html[data-ambiance="marine"] .aa-act.bientot,html[data-ambiance="marine"] .ec-tuile.bientot{background:#E7EEF1;border-color:#CCDDE4}
+html[data-ambiance="marine"] .aa-act.bientot b,html[data-ambiance="marine"] .ec-tuile.bientot b{color:var(--gris)}
+html[data-ambiance="marine"] .aa-act.bientot .go,html[data-ambiance="marine"] .ec-tuile.bientot .go{background:#D8E5EB}
+html[data-ambiance="marine"] .aa-tele-t{color:#D5EDF4}
+html[data-ambiance="marine"] .cam-badge.mer{background:rgba(33,127,165,.94)}
+html[data-ambiance="marine"] .pv-modes button{color:#0B2740}
+html[data-ambiance="marine"] .pv-modes button[aria-pressed="true"]{background:#217FA5;color:#fff}
+html[data-ambiance="marine"] #pv-ecran .pv-battle-equipe{background:linear-gradient(180deg,#E8F9F5E8,#D1EFF500 85%);color:#0B2740}
+html[data-ambiance="marine"] #pv-ecran .pv-battle-entete strong,html[data-ambiance="marine"] #pv-ecran .pv-battle-gain{color:#805400}
+html[data-ambiance="marine"] #pv-ecran .pv-battle-attente{color:#0B2740}
+html[data-ambiance="marine"] #pv-ecran .pv-battle-piste{border-color:#17668888}
+html[data-ambiance="marine"] #pv-ecran .pv-battle-piste::after{color:#805400;text-shadow:0 1px 0 #FFF}
+@media(max-width:560px){.ec-haut .ambiance-choix{width:100%}}
+`;
+  document.head.appendChild(st);
+  function adapteImage(el){
+    const src=el.getAttribute("src"), k=origine(src);
+    if(k){const suivant=image(k);if(src!==suivant)el.setAttribute("src",suivant);}
+  }
+  function choix(parent){
+    if(!parent || parent.querySelector(":scope > .ambiance-choix"))return;
+    const label=document.createElement("label");label.className="ambiance-choix";
+    label.innerHTML='<span>Ambiance</span><select aria-label="Ambiance du Bateau-école"><option value="halloween">Halloween</option><option value="marine">Marine</option></select>';
+    label.querySelector("select").value=mode;
+    label.querySelector("select").addEventListener("change",e=>set(e.target.value));
+    parent.appendChild(label);
+  }
+  function rafraichit(){
+    document.querySelectorAll("img[src]").forEach(adapteImage);
+    ["#aa-ecran .ec-haut","#aa-app .aa-corps","#scr-choix .box"].forEach(s=>choix(document.querySelector(s)));
+    document.querySelectorAll(".ambiance-choix select").forEach(s=>{if(s.value!==mode)s.value=mode;});
+    const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=mode==="marine"?"#0B2740":"#26163F";
+  }
+  function set(nouveau){
+    if(nouveau!=="marine" && nouveau!=="halloween")return mode;
+    mode=nouveau;
+    try{localStorage.setItem(CLE,mode);}catch(e){}
+    document.documentElement.dataset.ambiance=mode;
+    rafraichit();
+    window.dispatchEvent(new CustomEvent("ambiancechange",{detail:mode}));
+    return mode;
+  }
+  function demarre(){
+    rafraichit();
+    // Les écrans sont reconstruits par les activités ; une seule passe groupée
+    // traite les nouvelles images et accueils. Une source déjà correcte reste intacte.
+    let demande=false;
+    new MutationObserver(()=>{if(demande)return;demande=true;requestAnimationFrame(()=>{demande=false;rafraichit();});})
+      .observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["src"]});
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",demarre,{once:true});else demarre();
+  return {get,set,image};
+})();
+window.Ambiance=Ambiance;
+
 "use strict";
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -5870,7 +5974,9 @@ async function useCap(name){
 const IMG = {};
 ["ciel-orage","orage1","orage2","vague-claire","vague-foncee",
  "port","ile","rocher1","rocher2","rocher3","bouteille"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.src=`img/${n}.webp`; IMG[n]=i; });
-["ciel","bateau","bateau-dessus"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.src=`img/halloween-${n}.png`; IMG[n]=i; });
+function imagesAmbiance(){["ciel","bateau","bateau-dessus"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.src=Ambiance.image(`img/halloween-${n}.png`); IMG[n]=i; });}
+imagesAmbiance();
+window.addEventListener("ambiancechange",imagesAmbiance);
 const pret = i => i && i.complete && i.naturalWidth>0;
 
 /* ---------- la mer (canvas) ---------- */
@@ -5887,6 +5993,7 @@ const Mer = (() => {
   // Éclairage nocturne précalculé : les dessins et la transparence restent inchangés.
   const texturesNuit = new WeakMap();
   function nuit(im,couleur){
+    if(Ambiance.get()==="marine")return im;
     if(texturesNuit.has(im)) return texturesNuit.get(im);
     const c=document.createElement("canvas"); c.width=im.naturalWidth; c.height=im.naturalHeight;
     const ctx=c.getContext("2d"); ctx.drawImage(im,0,0);
@@ -5912,9 +6019,9 @@ const Mer = (() => {
   function etiquette(txt,x,y,fs){
     g.font=`800 ${fs}px "Baloo 2",sans-serif`; const lw=g.measureText(txt||"").width;
     const lx=Math.max(lw/2+16,Math.min(W-lw/2-16,x)); if(!txt) return {x:lx,w:0};
-    g.fillStyle="#FFFCF4"; g.strokeStyle="#493065"; g.lineWidth=3;
+    g.fillStyle="#FFFCF4"; g.strokeStyle=Ambiance.get()==="marine"?"#1D6F93":"#493065"; g.lineWidth=3;
     g.beginPath(); g.roundRect(lx-lw/2-12,y-fs*1.05,lw+24,fs*1.5,fs*.75); g.fill(); g.stroke();
-    g.fillStyle="#241345"; g.textAlign="center"; g.fillText(txt,lx,y); return {x:lx,w:lw+24};
+    g.fillStyle=Ambiance.get()==="marine"?"#0B2740":"#241345"; g.textAlign="center"; g.fillText(txt,lx,y); return {x:lx,w:lw+24};
   }
   function frame(now){
     const t=(now-t0)/1000;
@@ -5922,20 +6029,21 @@ const Mer = (() => {
     st.orageAff += (st.orage-st.orageAff)*.03;
     st.vent += (.3-st.vent)*.004;
     const o=st.orageAff;
+    const marine=Ambiance.get()==="marine";
     const sDef=Math.max(.45,Math.min(1.2,Math.min(W/1300,H/720)));
     const merC = st.merC==null ? H*st.haut : st.merC, sC = st.sC==null ? sDef : st.sC;
     if (st.merA==null){ st.merA=merC; st.sA=sC; }
     st.merA += (merC-st.merA)*.12; st.sA += (sC-st.sA)*.12;
     const mer=st.merA, s=st.sA;
     // Ciel Halloween ancré à droite pour garder la lune dans les écrans étroits.
-    g.fillStyle="#201D51"; g.fillRect(0,0,W,H);
+    g.fillStyle=marine?"#A7E0F5":"#201D51"; g.fillRect(0,0,W,H);
     couvre(IMG.ciel,1,true); couvre(IMG["ciel-orage"],o);
     const sol=Math.max(70,Math.min(W,H)*.16);
     if(o>.02) noirs.forEach(n=>{ n.x+=n.v/60; if(n.x>1.25) n.x=-.25; sprite(IMG["orage"+n.k],n.x*W,n.y*H+sol*.5,Math.min(W,1600)*.16*n.s,"centre",o); });
     if (st.eclair>0){ g.fillStyle=`rgba(255,255,240,${st.eclair})`; g.fillRect(0,0,W,H); st.eclair-=.06; }
     // vagues du fond
     const vh = 72*s*(1+o*.4);
-    bande(IMG["vague-claire"], mer-vh*.5, vh, t*(26+o*80), o>.5?"#10294F":"#0B3565");
+    bande(IMG["vague-claire"], mer-vh*.5, vh, t*(26+o*80), o>.5?"#10294F":marine?"#279DC0":"#0B3565");
     // Deux vues propres aux villes, conservées quand une arrivée devient le départ suivant.
     const fs=Math.max(15,Math.min(24,W*.015));
     const wPort=Math.min(W*.22,Math.max(160,280*s)), wIle=wPort;
@@ -5951,7 +6059,7 @@ const Mer = (() => {
     sprite(IMG.bateau,xB,yB,wB,"bas",1,roul);
     // vagues de devant
     const vh2 = 64*s*(1+o*.5);
-    bande(IMG["vague-foncee"], mer+20*s, vh2, t*(44+o*120), o>.5?"#06162F":"#081D45");
+    bande(IMG["vague-foncee"], mer+20*s, vh2, t*(44+o*120), o>.5?"#06162F":marine?"#176688":"#081D45");
     if (o>.05){ g.fillStyle=`rgba(40,30,80,${.2*o})`; g.fillRect(0,0,W,H);
       g.strokeStyle=`rgba(220,230,255,${.55*o})`; g.lineWidth=1.6; g.beginPath();
       gouttes.forEach(d=>{ d.y+=d.v*.02; d.x-=.004; if(d.y>1){d.y=0;d.x=Math.random()*1.2;} const x=d.x*W,y=d.y*H; g.moveTo(x,y); g.lineTo(x-6,y+18); }); g.stroke(); }
@@ -9435,7 +9543,7 @@ const Pavillons = (() => {
   /* ---------- les calculs ---------- */
   function propre(r){
     r = r && typeof r==="object" ? r : {};
-    const o = {recompense:r.recompense==="collectif"?"collectif":"podium",op:OPS[r.op] ? r.op : DEFAUT.op,
+    const o = {mode:r.mode==="battle"?"battle":"classique",recompense:r.recompense==="collectif"?"collectif":"podium",op:OPS[r.op] ? r.op : DEFAUT.op,
       tables:(Array.isArray(r.tables) ? r.tables : DEFAUT.tables).map(Number).filter((n,i,l)=>n>=1 && n<=10 && l.indexOf(n)===i).sort((a,b)=>a-b),
       max:[10,20,100].includes(+r.max) ? +r.max : DEFAUT.max, nb:[5,10,15,20].includes(+r.nb) ? +r.nb : DEFAUT.nb, vitesse:Object.keys(VITESSES).includes(r.vitesse) ? r.vitesse : DEFAUT.vitesse,
       temps:(typeof r.temps==="number" || typeof r.temps==="string") && tempsValide(+r.temps) ? +r.temps : DEFAUT.temps};
@@ -9446,7 +9554,7 @@ const Pavillons = (() => {
   function resume(r){
     r = propre(r);
     const quoi = r.op==="fois" ? (r.tables.length===10 ? "Toutes les tables" : r.tables.length===1 ? "Table de "+r.tables[0] : "Tables de "+liste(r.tables)) : NOMS[r.op]+" jusqu'à "+r.max;
-    return `${OPS[r.op]} ${quoi} · ${r.nb} calculs · ${r.vitesse==="signal" ? VITESSES.signal.nom : tempsCalcul(r)/1000+" s par calcul"}`;
+    return `${r.mode==="battle"?"Battle · ":""}${OPS[r.op]} ${quoi} · ${r.nb} calculs · ${r.vitesse==="signal" ? VITESSES.signal.nom : tempsCalcul(r)/1000+" s par calcul"}`;
   }
   const hasard = n => Math.floor(Math.random()*n), pioche = l => l[hasard(l.length)];
   function melange(l){ for (let i=l.length-1;i>0;i--){ const j = hasard(i+1); [l[i], l[j]] = [l[j], l[i]]; } return l; }
@@ -9656,7 +9764,73 @@ const Pavillons = (() => {
 .pv-reglages .aut-fenetre{box-sizing:border-box}
 .pv-regl{display:grid;gap:14px}
 .pv-regl .aa-puces button{padding:.45em .8em}
-.pv-regl .aa-puces.tables button{min-width:2.6em}`;
+.pv-regl .aa-puces.tables button{min-width:2.6em}
+/* Deux navires, une course commune : les réponses individuelles restent privées. */
+.pv-modes{display:flex;gap:6px;padding:5px;background:#FFFCF4;border:2px solid #E4CAA0;border-radius:999px;box-shadow:0 4px 0 #BB945F}
+.pv-modes button{border:0;border-radius:999px;padding:.5em 1.2em;background:transparent;color:#39214F;font:800 clamp(1rem,1.5vw,1.3rem) var(--display);cursor:pointer}
+.pv-modes button[aria-pressed="true"]{background:#704697;color:#fff}
+.pv-modes button:focus-visible{outline:3px solid #EEA83D;outline-offset:2px}
+#pv-ecran[data-battle="true"]{--pan:min(31vh,29vw)}
+#pv-ecran[data-battle="true"]>.pv-bateau{display:none}
+#pv-ecran[data-battle="true"] .pv-drisse{display:none}
+#pv-ecran[data-battle="true"] .pv-score{display:none}
+#pv-ecran[data-battle="true"] .pv-centre{top:var(--haut);bottom:34vh}
+#pv-ecran[data-battle="true"] .pv-salon{gap:1.3vh}
+#pv-ecran[data-battle="true"] .pv-salon h1{font-size:clamp(1.5rem,3.4vw,2.6rem)}
+#pv-ecran[data-battle="true"] .pv-regle{padding:10px}
+#pv-ecran[data-battle="true"] .pv-regle .ill{display:none}
+#pv-ecran[data-battle="true"] .pv-compte{display:none}
+#pv-ecran[data-battle="true"] .pv-fin{display:block;width:min(86vw,820px)}
+#pv-ecran[data-battle="true"] .pv-fin-carte{text-align:center;gap:12px;padding:20px}
+#pv-ecran[data-battle="true"] .pv-fin .pv-boutons{justify-content:center}
+.pv-battle-arene{position:absolute;left:3vw;right:3vw;bottom:8vh;height:25vh;z-index:4;display:grid;grid-template-columns:1fr 1fr;gap:4vw;pointer-events:none}
+.pv-battle-arene[hidden]{display:none}
+.pv-battle-equipe{position:relative;min-width:0;border-top:3px solid var(--eq);border-radius:20px;background:linear-gradient(180deg,rgba(21,16,51,.86),rgba(21,16,51,0) 75%);padding:10px 14px;color:#fff}
+.pv-battle-equipe.en-tete{border-color:#FFD86A;box-shadow:0 -4px 20px #FFCF5333}
+.pv-battle-entete{display:flex;align-items:center;gap:10px;font:800 clamp(1rem,1.8vw,1.8rem)/1.1 var(--display)}
+.pv-battle-entete>span{flex:1;min-width:0}
+.pv-battle-entete strong{white-space:nowrap;color:#FFE39A;font-size:1.25em}
+.pv-battle-entete small{font-size:.55em}
+.pv-battle-equipe .eq-pavillon{width:32px;height:32px;flex:none}
+.pv-battle-piste{position:absolute;left:16px;right:20px;top:54px;bottom:0;border-bottom:2px dashed #FFFFFF66}
+.pv-battle-piste::after{content:"⚑";position:absolute;right:-4px;bottom:0;color:#FFDF88;font-size:36px;text-shadow:0 2px 0 #26163F}
+.pv-battle-navire{position:absolute;bottom:-6px;left:0;width:clamp(105px,13vw,185px);transition:left 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 5px 6px #10102966)}
+.pv-battle-navire img{display:block;width:100%;height:auto;max-height:17vh;object-fit:contain;animation:aa-berce 3s ease-in-out infinite}
+.pv-battle-navire::after{content:"";position:absolute;left:49%;top:8%;width:30%;height:17%;background:var(--eq);clip-path:polygon(0 0,100% 0,78% 50%,100% 100%,0 100%);filter:drop-shadow(0 1px 1px #111)}
+.pv-battle-gain{position:absolute;right:14px;top:48px;color:#FFE39A;font:800 clamp(.8rem,1.1vw,1.1rem) var(--display)}
+.pv-battle-gain:not(:empty){animation:pv-plus .6s ease}
+.pv-battle-attente{color:#fff;font-weight:700;font-size:clamp(.8rem,1.1vw,1rem);margin:5px 0}
+.pv-battle-tel{display:grid;gap:10px}
+.pv-battle-tel article{border-left:5px solid var(--eq);border-radius:12px;padding:10px;background:var(--ecume);display:grid;gap:6px}
+.pv-battle-tel h4,.pv-battle-tel p{margin:0}
+.pv-battle-tel h4{font:800 1.15rem var(--display);display:flex;justify-content:space-between;gap:8px}
+.pv-battle-tel progress{width:100%;height:12px;accent-color:var(--eq)}
+.pv-battle-tel details{font-size:.9rem}
+.pv-battle-tel summary{cursor:pointer}
+@media(max-width:650px){
+ #pv-ecran[data-battle="true"]{overflow-y:auto;--haut:100px;--pan:44vw}
+ #pv-ecran[data-battle="true"] .pv-haut{padding:8px;gap:5px;flex-wrap:wrap;align-content:center}
+ #pv-ecran[data-battle="true"] .pv-titre{font-size:1.1rem}
+ #pv-ecran[data-battle="true"] .pv-centre{position:relative;top:auto;bottom:auto;margin:var(--haut) 0 18px;padding:10px 14px}
+ #pv-ecran[data-battle="true"] .pv-regles{grid-template-columns:1fr;gap:7px}
+ #pv-ecran[data-battle="true"] .pv-regle{padding:8px;gap:2px}
+ #pv-ecran[data-battle="true"] .pv-resume{border-radius:18px;padding:8px;font-size:.9rem}
+ #pv-ecran[data-battle="true"] .pv-boutons{gap:8px}
+ #pv-ecran[data-battle="true"] .pv-boutons .btn{font-size:1rem}
+ #pv-ecran[data-battle="true"] .pv-battle-arene{position:relative;left:auto;right:auto;bottom:auto;margin:0 10px 90px;height:190px;gap:10px}
+ .pv-battle-equipe{padding:8px}
+ .pv-battle-entete{flex-wrap:wrap;font-size:.95rem;gap:5px}
+ .pv-battle-entete .eq-pavillon{display:none}
+ .pv-battle-entete strong{font-size:1.2rem}
+ .pv-battle-piste{left:8px;right:8px;top:70px}
+ .pv-battle-navire{width:85px}
+ .pv-battle-navire img{max-height:110px}
+ .pv-battle-gain{top:60px;font-size:.8rem}
+ #pv-ecran[data-battle="true"] .pv-bas{position:fixed;left:8px;bottom:12px;gap:5px}
+ #pv-ecran[data-battle="true"] .pv-bas.droite{left:auto;right:8px;bottom:62px}
+}
+@media(prefers-reduced-motion:reduce){.pv-battle-navire,.pv-battle-navire img{animation:none!important;transition:none!important}}
+`;
   document.head.appendChild(st);
 
   /* ================= écran de la classe : il mène la partie ================= */
@@ -9672,14 +9846,42 @@ const Pavillons = (() => {
   const enPartie = () => !!P && ["compte","calc","ferme","revele"].includes(phase);
   const sur = () => Accueil.courant()==="pv-ecran";
 
+  const estBattle = () => (P?.r || R).mode==="battle";
+  const pointsBattle = n => n.toLocaleString("fr-FR", {maximumFractionDigits:1});
+  // Le Battle utilise les équipages choisis par l'enseignante, sans modifier leur composition.
+  function prepareBattle(){
+    const pres=Classe.presents(), plan=Competition.plan(), groupes=plan?.groupes||[];
+    let raison="";
+    if(groupes.length!==2) raison="Sur le téléphone, ouvre Ma classe → Les équipages pour former les deux équipes.";
+    else if(pres.some(e=>!groupes.some(g=>g.membres.includes(e.n)))) raison="Un matelot présent n’a pas encore d’équipe. Complète les équipages sur le téléphone.";
+    const equipes=groupes.length===2?groupes.map(g=>{const r=Competition.role(g.id);return {id:g.id,nom:r.nom,couleur:r.couleur,membres:g.membres.filter(n=>pres.some(e=>e.n===n)),bons:0,points:0,gain:0};}):[];
+    if(!raison && equipes.some(g=>!g.membres.length)) raison="Il faut au moins un matelot présent dans chaque équipe. Vérifie l’appel sur le téléphone.";
+    return {groupes:equipes,comptes:0,raison,pret:!raison};
+  }
+  function battleEtat(){ return estBattle() ? P?.battle || prepareBattle() : null; }
+  function avanceBattle(c,h){
+    if(!P.battle)return;
+    P.battle.groupes.forEach(g=>{
+      const avant=g.points;
+      if(c.bons!=null) g.bons+=g.membres.filter(n=>h.has(n)===c.juste).length;
+      g.points=Math.round(1000*g.bons/(g.membres.length*P.calcs.length))/10;
+      g.gain=Math.round((g.points-avant)*10)/10;
+    });
+    if(c.bons!=null) P.battle.comptes++;
+  }
+  function verdictBattle(b){
+    if(!b?.comptes)return "Battle terminé · cartes non comptées";
+    const [a,c]=b.groupes;
+    return a.points===c.points ? "Égalité ! Bravo aux deux équipages !" : `${a.points>c.points?a.nom:c.nom} remportent le Battle !`;
+  }
   function etat(){
     const c = P && P.calcs[P.i], montre = c && ["calc","ferme","revele"].includes(phase);
     return {v:1, phase, r:R, id:P ? P.id : null, i:P ? P.i : 0, n:P ? P.calcs.length : 0, pause:!!(P && P.pause),
       cid:montre ? P.id+":"+P.i : null, calc:montre ? {txt:texte(c), juste:c.juste, vrai:texte(c, c.r)} : null,
       pres:(P ? P.pres : presents()).map(e=>e.n), compte:c ? !!c.tel : telPv,
       hisses:montre ? [...P.hisses[P.i]] : phase==="verif" ? [...verifVus] : [],
-      bons:montre && phase==="revele" ? c.bons : null, score:P ? P.score : null,
-      fin:phase==="fin" && P ? {res:P.res, calcs:P.calcs.map(x=>({txt:texte(x), juste:x.juste, vrai:texte(x, x.r), bons:x.bons})), nb:P.pres.length, pm:P.pm, fete:P.fete||0} : null};
+      bons:montre && phase==="revele" ? c.bons : null, score:P ? P.score : null, battle:battleEtat(),
+      fin:phase==="fin" && P ? {res:P.res, calcs:P.calcs.map(x=>({txt:texte(x), juste:x.juste, vrai:texte(x, x.r), bons:x.bons})), nb:P.pres.length, pm:P.pm, fete:P.fete||0, battle:P.battle||null} : null};
   }
   function emet(){ if (roomE) roomE.emit("pv", sur() ? etat() : {v:1, phase:null}).catch(()=>{}); }
   function brancheEcran(){
@@ -9705,15 +9907,18 @@ const Pavillons = (() => {
     else if (d.f==="pause") pause();
     else if (d.f==="ferme"){ if (phase==="calc"){ clearTimeout(minuteur); minuteur = null; if (P) P.pause = false; ferme(); dessineBas(); } }
     else if (d.f==="reprend") reprend();
-    else if (d.f==="reglages"){ R = propre(d.r); sauveReglages(); if (phase==="salon" || phase==="verif" || phase==="fin") dessineCentre(); emet(); }
+    else if (d.f==="reglages" && !enPartie()){ R = propre(d.r); P=null; phase="salon"; sauveReglages(); dessine(); emet(); }
   }
   function programme(ms, fn){ clearTimeout(minuteur); suite = fn; echeance = Date.now()+ms; minuteur = setTimeout(()=>{ minuteur = null; fn(); }, ms); }
   function sons(f){ try { Son[f](); } catch(e){} }
   function lance(){
+    if(enPartie())return;
+    const battle=R.mode==="battle"?prepareBattle():null;
+    if(battle && !battle.pret){P=null;phase="salon";dessine();emet();return;}
     try { Son.init(); } catch(e){}
     clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf);
     const pres = presents(), calcs = genere(R);
-    P = {id:Autonome.rid(4), debut:Date.now(), calcs, i:0, hisses:calcs.map(()=>new Set()), temps:calcs.map(()=>new Map()), pres, score:{bons:0, total:0}, res:null, pm:null, pause:false};
+    P = {id:Autonome.rid(4), debut:Date.now(), r:propre(R), battle, calcs, i:0, hisses:calcs.map(()=>new Set()), temps:calcs.map(()=>new Map()), pres, score:{bons:0, total:0}, res:null, pm:null, pause:false};
     const notion="pv:"+R.op+":"+(R.op==="fois"?(R.tables||[]).slice().sort((a,b)=>a-b).join(","):R.max||20);
     P.competition=Competition.prepare(calcs.map(()=>({n:notion})),pres,R.recompense);P.fete=0;
     phase = "compte"; dessine(); emet();
@@ -9734,12 +9939,15 @@ const Pavillons = (() => {
     P.calcs[P.i].tel = true;
     if (neuf){ dessineDrisse(); const b = document.querySelector("#pv-ecran .pv-compte"); if (b){ b.querySelector("b").textContent = h.size; b.querySelector("small").textContent = h.size>1 ? "pavillons hissés" : "pavillon hissé"; b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
       if (Date.now()-dernierPop>140){ dernierPop = Date.now(); sons("pop"); } }
-    if (d.fin && phase==="ferme"){ clearTimeout(attenteFin); revele(); }
+    if (d.fin && phase==="ferme"){ P.calcs[P.i].confirme=true; clearTimeout(attenteFin); revele(); }
   }
   function revele(){
     if (!P || phase!=="ferme") return;
     const c = P.calcs[P.i], h = P.hisses[P.i];
-    if (c.tel){ c.bons = P.pres.filter(e=>h.has(e.n)===c.juste).length; P.score.bons += c.bons; P.score.total += P.pres.length; } else c.bons = null;
+    // Seul le bilan final du téléphone confirme la lecture : une coupure de caméra
+    // ne doit jamais transformer toutes les cartes invisibles en réponses « faux ».
+    if (c.tel && c.confirme){ c.bons = P.pres.filter(e=>h.has(e.n)===c.juste).length; P.score.bons += c.bons; P.score.total += P.pres.length; } else c.bons = null;
+    avanceBattle(c,h);
     phase = "revele"; dessine(); emet(); sons(c.juste ? "cloche" : "plouf"); archive(false);
     const s = document.querySelector("#pv-ecran .pv-score"); if (s && c.bons){ s.classList.remove("plus"); void s.offsetWidth; s.classList.add("plus"); }
     programme(durees().revele, ()=>{ if (!P) return; P.i++; if (P.i>=P.calcs.length) fin(); else calc(); });
@@ -9757,7 +9965,7 @@ const Pavillons = (() => {
     P.pres.forEach(e=>{ res[e.n] = faits.map((c,i)=>c.bons==null ? "-" : (P.hisses[i].has(e.n)===c.juste ? "1" : "0")).join("");
       const t = faits.map((c,i)=>c.juste && c.bons!=null && P.hisses[i].has(e.n) ? P.temps[i].get(e.n) : null).filter(x=>x!=null);
       if (t.length) tm[e.n] = Math.round(t.reduce((a,b)=>a+b,0)/t.length); });
-    Historique.enreg({id:"p"+P.id, a:"pavillons", d:P.debut, r:R, fini, pres:P.pres.map(e=>[e.n, e.prenom||""]),
+    Historique.enreg({id:"p"+P.id, a:"pavillons", d:P.debut, r:P.r, battle:P.battle||null, fini, pres:P.pres.map(e=>[e.n, e.prenom||""]),
       c:faits.map(c=>({t:texte(c), j:c.juste ? 1 : 0, b:c.bons, op:c.op, a:c.a, x:c.b})), res, tm});
   }
   /* Même score, même place : le temps de lecture ne départage jamais les élèves. */
@@ -9769,7 +9977,7 @@ const Pavillons = (() => {
     const questions=P.calcs.map((c,i)=>({ok:"A",r:Object.fromEntries(P.pres.filter(e=>P.res[e.n]?.[i]!=="-").map(e=>[e.n,P.res[e.n][i]==="1"?"A":"B"]))}));
     const competition=Competition.resultats(P.competition,scores,questions);
     const eligibles=Object.fromEntries(Object.entries(scores).filter(([,e])=>e.actif));
-    const podium=R.recompense==="collectif"?[]:Competition.podium(competition,eligibles);
+    const podium=P.battle||R.recompense==="collectif"?[]:Competition.podium(competition,eligibles);
     return {podium,competition,collectif:R.recompense==="collectif"};
   }
   function verif(){ clearTimeout(minuteur); clearTimeout(attenteFin); P = null; phase = "verif"; verifVus = new Set(); dessine(); emet(); }
@@ -9789,7 +9997,7 @@ const Pavillons = (() => {
     const s = Accueil.section("pv-ecran", ""); Accueil.montre("pv-ecran");
     if (!s.dataset.pret){ s.dataset.pret = 1;
       s.innerHTML = `<div class="pv-haut"><button class="btn petit" id="pv-maison">${Accueil.IC.maison}<span>Activités</span></button><div class="pv-titre">Hissez les pavillons</div><div class="pv-score" hidden></div><span class="pastille" id="pv-tel"></span></div>
-        <div class="pv-drisse"></div><div class="pv-centre"></div>
+        <div class="pv-drisse"></div><div class="pv-centre"></div><div class="pv-battle-arene" hidden aria-label="Course des deux équipages"></div>
         <div class="pv-bas" hidden><button class="btn petit" data-pv="pause">Pause</button><button class="btn petit" data-pv="stop">Arrêter la partie</button></div>
         <div class="pv-bas droite" hidden><button class="btn prim" data-pv="ferme">Voir la réponse</button></div>
         <div class="mer"></div><img class="pv-bateau" src="img/halloween-bateau.png" alt=""><div class="mer2"></div>`;
@@ -9797,9 +10005,12 @@ const Pavillons = (() => {
       m.onclick = ()=>{ if (enPartie() && !m.dataset.sur){ m.dataset.sur = 1; m.lastChild.textContent = "Quitter la partie ?"; clearTimeout(t); t = setTimeout(()=>{ delete m.dataset.sur; m.lastChild.textContent = "Activités"; }, 4000); return; }
         delete m.dataset.sur; m.lastChild.textContent = "Activités"; arrete(); Accueil.ecran(); };
       s.querySelector("#pv-tel").onclick = ()=>{ if (!telLie){ arrete(); Accueil.ecran(); } };
-      s.addEventListener("click", e=>{ const b = e.target.closest("[data-pv]"); if (!b) return; try { Son.init(); } catch(x){}
+      s.addEventListener("click", e=>{
+        const mode=e.target.closest("[data-pv-mode]");
+        if(mode && phase==="salon"){R=propre({...R,mode:mode.dataset.pvMode});sauveReglages();dessine();emet();return;}
+        const b = e.target.closest("[data-pv]"); if (!b) return; try { Son.init(); } catch(x){}
         const f = b.dataset.pv;
-        if (f==="reglages") reglages(R, r=>{ R = r; sauveReglages(); dessineCentre(); emet(); });
+        if (f==="reglages" && !enPartie()) reglages(R, r=>commande({f:"reglages",r}));
         else if (f==="pause") P && P.pause ? reprend() : pause();
         else commande({f}); });
     }
@@ -9808,7 +10019,23 @@ const Pavillons = (() => {
     dessine();
     if (aDistance) Accueil.rappelSon();
   }
-  function dessine(){ const s = document.getElementById("pv-ecran"); if (!s) return; s.dataset.phase = phase; dessineHaut(); dessineDrisse(); dessineCentre(); dessineBas(); }
+  function dessine(){ const s = document.getElementById("pv-ecran"); if (!s) return; s.dataset.phase = phase; s.dataset.battle=estBattle(); dessineHaut(); dessineDrisse(); dessineCentre(); dessineBattle(); dessineBas(); }
+  function dessineBattle(){
+    const z=document.querySelector("#pv-ecran .pv-battle-arene"), b=battleEtat();if(!z)return;
+    z.hidden=!b || b.groupes.length!==2;if(z.hidden)return;
+    if(z.dataset.equipes!==b.groupes.map(g=>g.id).join(",")){
+      z.dataset.equipes=b.groupes.map(g=>g.id).join(",");
+      z.innerHTML=b.groupes.map(g=>`<article class="pv-battle-equipe" data-equipe="${esc(g.id)}" style="--eq:${g.couleur}"><div class="pv-battle-entete">${Competition.drapeau(g.id)}<span>${esc(g.nom)}</span><strong><b data-battle-points>0</b> <small>pts</small></strong></div><span class="pv-battle-gain" data-battle-gain></span><div class="pv-battle-piste"><div class="pv-battle-navire"><img src="${window.Ambiance?Ambiance.image('img/halloween-bateau.png'):'img/halloween-bateau.png'}" alt="Bateau de ${esc(g.nom)}"></div></div></article>`).join("");
+    }
+    b.groupes.forEach((g,i)=>{
+      const a=z.children[i];a.querySelector("[data-battle-points]").textContent=pointsBattle(g.points);
+      a.querySelector("[data-battle-gain]").textContent=phase==="revele"&&g.gain?"+ "+pointsBattle(g.gain)+" pts":"";
+      a.classList.toggle("en-tete",g.points>b.groupes[1-i].points);
+      const navire=a.querySelector(".pv-battle-navire");
+      navire.style.left=g.points+"%";navire.style.transform=`translateX(-${g.points}%)`;
+      a.setAttribute("aria-label",g.nom+" : "+pointsBattle(g.points)+" points sur 100");
+    });
+  }
   function dessineHaut(){
     const s = document.querySelector("#pv-ecran .pv-score"), p = document.getElementById("pv-tel"); if (!s || !p) return;
     const vis = P && P.calcs.some(c=>c.tel) && ["calc","ferme","revele","fin"].includes(phase);
@@ -9828,14 +10055,16 @@ const Pavillons = (() => {
   function dessineCentre(){
     const z = document.querySelector("#pv-ecran .pv-centre"); if (!z) return;
     if (phase==="salon"){
+      const battle=battleEtat(), impossible=battle&&!battle.pret;
       z.innerHTML = `<div class="pv-salon"><h1>Hissez les pavillons !</h1>
+        <div class="pv-modes" role="group" aria-label="Mode de jeu"><button data-pv-mode="classique" aria-pressed="${R.mode!=="battle"}">Classique</button><button data-pv-mode="battle" aria-pressed="${R.mode==="battle"}">⚑ Battle · 2 bateaux</button></div>
         <div class="pv-regles">
           <div class="pv-regle"><div class="ill"><span class="pv-mini">3 × 4 = 12</span></div><b>Un calcul s'affiche</b><span>Juste ou faux ? ${R.vitesse==="signal" ? "Prends le temps de décider." : pl(tempsCalcul(R)/1000, "seconde")+" pour décider."}</span></div>
           <div class="pv-regle"><div class="ill oui">${drapeau(1)}<em>✓</em></div><b>Il est juste ?</b><span>Hisse ton pavillon : lève ta carte bien haut !</span></div>
           <div class="pv-regle"><div class="ill non">${drapeau(2)}<em>✗</em></div><b>Il est faux ?</b><span>Garde ta carte baissée : ne tombe pas dans le piège !</span></div></div>
         <div class="pv-resume"><span>${esc(resume(R))}</span><button class="btn petit" data-pv="reglages">Modifier</button></div>
-        <div class="pv-boutons"><button class="btn" data-pv="verif">Essayer les cartes</button><button class="btn prim" data-pv="lance">C'est parti !</button></div>
-        <p class="pv-info">${telPv ? "Le téléphone filme la classe : il comptera les pavillons hissés." : telLie ? "Sur le téléphone, ouvre « Hissez les pavillons » et touche « Filmer la classe » : il comptera les pavillons." : "Sans téléphone, on joue à main levée. Pour compter les pavillons, relie le téléphone depuis l'accueil des activités."}</p></div>`;
+        <div class="pv-boutons"><button class="btn" data-pv="verif">Essayer les cartes</button><button class="btn prim" data-pv="lance" ${impossible?"disabled":""}>${battle?"Lancer le Battle":"C'est parti !"}</button></div>
+        <p class="pv-info">${impossible?esc(battle.raison):battle?"Deux équipages, deux bateaux ! Chaque bonne réponse fait avancer ton équipe. Jusqu’à 100 points, selon le nombre de matelots présents.":telPv ? "Le téléphone filme la classe : il comptera les pavillons hissés." : telLie ? "Sur le téléphone, ouvre « Hissez les pavillons » et touche « Filmer la classe » : il comptera les pavillons." : "Sans téléphone, on joue à main levée. Pour compter les pavillons, relie le téléphone depuis l'accueil des activités."}</p>${battle&&!telPv?'<p class="pv-info">Pour faire avancer les bateaux, active « Filmer la classe » sur le téléphone.</p>':""}</div>`;
       return;
     }
     if (phase==="verif"){
@@ -9855,7 +10084,7 @@ const Pavillons = (() => {
     if (P.pause) msg = "Pause";
     else if (phase==="ferme") msg = c.tel ? "On compte les pavillons…" : "Temps écoulé !";
     else if (d){ const bons = c.bons, nb = P.pres.length;
-      msg = bons==null ? (c.juste ? "C'était juste !" : "C'était faux !")
+      msg = bons==null ? (c.juste ? "C'était juste !" : "C'était faux !")+(P.battle?" · Cartes non comptées":"")
         : c.juste ? (bons===nb ? "Tous les pavillons sont hissés, bravo !" : `${pl(bons, "pavillon")} bien hissé${bons>1?"s":""} sur ${nb}`)
         : (bons===nb ? "Personne n'est tombé dans le piège, bravo !" : `${pl(nb-bons, "élève")} ${nb-bons>1 ? "sont tombés" : "est tombé"} dans le piège`); }
     const neuve = z.dataset.calc!==P.id+":"+P.i; z.dataset.calc = P.id+":"+P.i;
@@ -9871,6 +10100,10 @@ const Pavillons = (() => {
     return `<div class="pv-palmares eq-fete">${podiumBateauHTML(pm.podium)}</div>`;
   }
   function finHTML(){
+    if(P.battle){
+      const b=P.battle,r=P.pm?.competition;
+      return `<div class="pv-fin"><div class="pv-fin-carte eq-fete"><span class="eq-surtitre">⚑ Hissez les pavillons · Battle</span><h1>${esc(verdictBattle(b))}</h1><p>${b.comptes?"Chaque bonne réponse a fait avancer son équipage. Bravo à tous les matelots !":"Active la caméra du téléphone pour compter les réponses et faire avancer les bateaux."}</p>${P.fete&&r?Competition.reussitesHTML(r):""}<div class="pv-boutons">${r&&!P.fete?'<button class="btn" data-pv="fete">Célébrer les réussites</button>':""}<button class="btn" data-pv="salon">Retour</button><button class="btn prim" data-pv="lance">Rejouer le Battle</button></div></div></div>`;
+    }
     const pm=P.pm,r=pm?.competition,etape=P.fete||0;
     const contenu=!r?'<h1>Partie terminée !</h1><p>Merci pour cette révision ensemble.</p>':etape===0?Competition.coffreHTML(r):etape===1&&pm.podium.length?palmaresHTML(pm):`<h1>Les étoiles du voyage</h1>${Competition.reussitesHTML(r)}`;
     return `<div class="pv-fin"><div class="pv-fin-carte eq-fete">${contenu}<div class="pv-boutons">${r&&etape<2?`<button class="btn prim" data-pv="fete">${etape===0&&pm.podium.length?"Découvrir le podium":"Célébrer les réussites"}</button>`:`<button class="btn" data-pv="salon">Changer les calculs</button><button class="btn prim" data-pv="lance">Rejouer</button>`}</div></div></div>`;
@@ -9879,14 +10112,16 @@ const Pavillons = (() => {
   /* ---------- réglages (sur l'écran de la classe comme sur le téléphone) ---------- */
   function reglages(depart, ok){
     let o = propre(depart);
-    const d = Accueil.voile(`<h2>Les calculs</h2><div class="pv-regl"></div><div class="aut-boutons"><button class="btn prim" data-r="oui">C'est bon</button><button class="btn" data-r="non">Annuler</button></div>`);
+    const d = Accueil.voile(`<h2>La partie</h2><div class="pv-regl"></div><div class="aut-boutons"><button class="btn prim" data-r="oui">C'est bon</button><button class="btn" data-r="non">Annuler</button></div>`);
     d.classList.add("pv-reglages");
     const z = d.querySelector(".pv-regl");
     const groupe = (k, titre, choix, actif, cls) => `<div class="aa-champ">${titre}<div class="aa-puces ${cls||""}" data-k="${k}">${choix.map(([v,t])=>`<button type="button" data-v="${v}" aria-pressed="${actif(v)}">${t}</button>`).join("")}</div></div>`;
-    const rend = () => { z.innerHTML = groupe("op", "Calculs", [["fois","× Tables"],["plus","+ Additions"],["moins","− Soustractions"]], v=>o.op===v)
+    const rend = () => { z.innerHTML = groupe("mode", "Mode de jeu", [["classique","Classique"],["battle","⚑ Battle · 2 bateaux"]], v=>o.mode===v)
+      + (o.mode==="battle"?'<p class="aut-note">Les deux équipages de la classe s’affrontent. Les bonnes réponses font avancer leur bateau ; le score tient compte du nombre de présents. Le plus de points à la fin gagne !</p>':"")
+      + groupe("op", "Calculs", [["fois","× Tables"],["plus","+ Additions"],["moins","− Soustractions"]], v=>o.op===v)
       + (o.op==="fois" ? groupe("tables", "Quelles tables ?", Array.from({length:10},(_,i)=>[i+1, i+1]), v=>o.tables.includes(+v), "tables")
                        : groupe("max", "Nombres jusqu'à", [[10,"10"],[20,"20"],[100,"100"]], v=>o.max===+v))
-      + groupe("recompense", "Fin de séance", [["podium","Podium"],["collectif","Défi collectif"]], v=>o.recompense===v)
+      + (o.mode==="battle"?"":groupe("recompense", "Fin de séance", [["podium","Podium"],["collectif","Défi collectif"]], v=>o.recompense===v))
       + groupe("nb", "Combien de calculs ?", [[5,"5"],[10,"10"],[15,"15"],[20,"20"]], v=>o.nb===+v)
       + groupe("vitesse", "Temps par calcul", Object.entries(VITESSES).map(([k,x])=>[k, x.calc ? x.nom+" · "+Math.round(x.calc/1000)+" s" : x.nom]), v=>o.vitesse===v)
       + (o.vitesse==="personnalisee" ? `<label class="aa-champ" for="pv-duree">Durée en secondes<input id="pv-duree" type="number" inputmode="numeric" min="1" max="300" step="1" required value="${esc(o.temps)}" aria-describedby="pv-duree-aide"></label><p class="aut-note" id="pv-duree-aide">De 1 à 300 secondes, pour chaque calcul.</p>` : ""); };
@@ -9894,7 +10129,7 @@ const Pavillons = (() => {
     z.addEventListener("input", e=>{ if (e.target.id==="pv-duree") o.temps = e.target.value; });
     z.onclick = e=>{ const b = e.target.closest("[data-v]"); if (!b) return; const k = b.parentElement.dataset.k, v = b.dataset.v;
       if (k==="tables"){ const n = +v, i = o.tables.indexOf(n); if (i>=0){ if (o.tables.length>1) o.tables.splice(i,1); } else o.tables.push(n); o.tables.sort((a,b)=>a-b); }
-      else if (k==="op" || k==="vitesse" || k==="recompense") o[k] = v; else o[k] = +v;
+      else if (k==="op" || k==="vitesse" || k==="recompense" || k==="mode") o[k] = v; else o[k] = +v;
       rend(); };
     d.addEventListener("click", e=>{ const b = e.target.closest("[data-r]"); if (!b) return;
       const saisie = z.querySelector("#pv-duree"); if (b.dataset.r==="oui" && saisie && !saisie.reportValidity()) return;
@@ -9915,7 +10150,7 @@ const Pavillons = (() => {
     if (!E || (E.phase!=="calc" && E.phase!=="ferme")) ouvert = false;
     if (cam) cam.question(!!E && ["calc","ferme","verif","compte"].includes(E.phase), false);
     if (E && E.phase==="fin" && E.fin) garde(E);
-    if (telOuvert()){ if (!avant || !E || avant.phase!==E.phase || avant.cid!==E.cid || avant.pause!==E.pause || JSON.stringify(avant.r)!==JSON.stringify(E.r) || E.phase==="verif") dessineJeu(); dessineLien(); majBadge(); }
+    if (telOuvert()){ if (!avant || !E || avant.phase!==E.phase || avant.cid!==E.cid || avant.pause!==E.pause || JSON.stringify(avant.r)!==JSON.stringify(E.r) || JSON.stringify(avant.battle)!==JSON.stringify(E.battle) || avant.fin?.fete!==E.fin?.fete || E.phase==="verif") dessineJeu(); dessineLien(); majBadge(); }
     else if (Accueil.courant()==="aa-app") bandeau();
   }
   function vue(vus, t){
@@ -9927,7 +10162,7 @@ const Pavillons = (() => {
     let neuf = false; vus.forEach((v,n)=>{ if (v.k>=2 && v.t>=debut && !cumul.has(n)){ cumul.add(n); neuf = true; if (!deja.has(n)) tps.set(n, Date.now()-recu); } });
     if (neuf){ majCompte(); majBadge(); if (!envoiT) envoiT = setTimeout(()=>{ envoiT = null; envoie(false); }, 250); }
   }
-  function envoie(fin){ if (!cid) return; clearTimeout(envoiT); envoiT = null; const l = [...cumul];
+  function envoie(fin){ if (!cid || !cam?.actif()) return; clearTimeout(envoiT); envoiT = null; const l = [...cumul];
     emetT("pvc", {cid, n:l, t:l.map(n=>tps.has(n) ? Math.round(tps.get(n)/100) : null), fin:!!fin}); }
   /* le compteur posé sur l'image : cartes vues pendant l'essai, pavillons hissés pendant un calcul */
   const DRAPEAU_IC = '<svg viewBox="0 0 20 20" width=".75em" height=".75em" aria-hidden="true"><path d="M4 2v16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M5 3h11l-3 4 3 4H5z" fill="currentColor"/></svg>';
@@ -9988,8 +10223,8 @@ const Pavillons = (() => {
     if (!E){ z.innerHTML = derniereHTML(); return; }
     const pres = presT();
     if (E.phase==="salon"){
-      z.innerHTML = `<div class="aa-bloc"><h3>Les calculs</h3><p class="pv-t-resume">${esc(resume(E.r))}</p><button class="btn" data-c="reglages">Modifier les calculs</button>
-        <div class="aa-actions"><button class="btn prim" data-c="lance">C'est parti !</button><button class="btn" data-c="verif">Essayer les cartes</button></div>
+      z.innerHTML = `<div class="aa-bloc"><h3>${E.battle?"Battle · 2 bateaux":"Les calculs"}</h3><p class="pv-t-resume">${esc(resume(E.r))}</p><button class="btn" data-c="reglages">Modifier la partie</button>
+        ${battleTel(E.battle,true)}<div class="aa-actions"><button class="btn prim" data-c="lance" ${E.battle&&!E.battle.pret?"disabled":""}>${E.battle?"Lancer le Battle":"C'est parti !"}</button><button class="btn" data-c="verif">Essayer les cartes</button></div>
         ${filme ? "" : `<p class="aut-note" style="margin:0">La caméra s'allume au départ de la partie : le téléphone compte les cartes levées.</p>`}</div>
         ${derniereHTML()}`;
       return;
@@ -10003,6 +10238,7 @@ const Pavillons = (() => {
       return;
     }
     if (E.phase==="fin" && E.fin){
+      if(E.fin.battle){z.innerHTML=`<div class="aa-bloc"><h3>${esc(verdictBattle(E.fin.battle))}</h3>${battleTel(E.fin.battle)}<div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer le Battle</button><button class="btn" data-c="salon">Retour</button></div>${E.fin.pm?.competition&&!E.fin.fete?'<button class="btn" data-c="fete">Célébrer les réussites</button>':""}</div><div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;return;}
       z.innerHTML = `<div class="aa-bloc"><div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer</button><button class="btn" data-c="salon">Changer les calculs</button></div></div>
         ${E.fin.pm?.collectif?`<div class="aa-bloc"><h3>Défi collectif</h3><p>${E.score?.total&&E.score.bons/E.score.total>=.7?"Objectif de 70 % atteint !":"Cap sur 70 % de bonnes réponses ensemble."}</p></div>`:""}${E.fin.pm?.competition&&(E.fin.fete||0)<2?`<button class="btn prim" data-c="fete">${!(E.fin.fete||0)&&E.fin.pm.podium.length?"Découvrir le podium":"Célébrer les réussites"}</button>`:""}${palmaresTel(E.fin.pm)}<div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;
       return;
@@ -10015,9 +10251,13 @@ const Pavillons = (() => {
     z.innerHTML = `<div class="aa-bloc pv-t-jeu"><div class="pv-t-num">${E.phase==="compte" ? "Départ…" : `Calcul ${E.i+1} sur ${E.n}`}</div>
       <div class="pv-t-calc">${E.phase==="compte" ? "3, 2, 1…" : calcul}</div>
       ${filme ? `<div class="pv-t-compte"><b id="pv-nb">${n}</b><span>${n>1 ? " pavillons hissés" : " pavillon hissé"}</span></div>` : `<p class="aut-note" style="margin:0">La caméra est éteinte : les cartes ne sont pas comptées.</p>`}
-      ${verdict}
+      ${verdict}${battleTel(E.battle)}
       ${E.phase==="calc" ? `<button class="btn prim" data-c="ferme">Voir la réponse</button>${E.r && E.r.vitesse==="signal" ? `<p class="aut-note" style="margin:0">Touche « Voir la réponse » quand toutes les cartes levées sont comptées.</p>` : ""}` : ""}
       <div class="aa-actions deux">${E.phase==="calc" && E.r && E.r.vitesse==="signal" ? "" : `<button class="btn" data-c="${E.pause ? "reprend" : "pause"}">${E.pause ? "Reprendre" : "Pause"}</button>`}<button class="btn" data-c="stop">Arrêter</button></div></div>`;
+  }
+  function battleTel(b,composition=false){
+    if(!b)return "";
+    return `<div class="pv-battle-tel">${b.raison?`<p class="aut-note">${esc(b.raison)}</p>`:""}${b.groupes.map(g=>`<article style="--eq:${g.couleur}"><h4><span>${esc(g.nom)}</span><span>${pointsBattle(g.points)} pts</span></h4><progress value="${g.points}" max="100" aria-label="Progression de ${esc(g.nom)}"></progress>${composition?`<details><summary>${g.membres.length} matelot${g.membres.length>1?"s":""} à bord</summary><p>${esc(g.membres.map(nomT).join(", "))}</p></details>`:""}</article>`).join("")}</div>`;
   }
   function palmaresTel(pm){
     if(!pm)return "";
@@ -10026,7 +10266,7 @@ const Pavillons = (() => {
   function derniereHTML(){
     if (!dernier || !dernier.fin) return "";
     const j = new Date(dernier.date||Date.now()).toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long"});
-    return `<div class="aa-bloc"><h3>Dernière partie <span>${esc(j)}</span></h3><p class="aut-note" style="margin:0">${esc(resume(dernier.r))}</p>${resultatsHTML(dernier.fin, "tete")}
+    return `<div class="aa-bloc"><h3>Dernière partie <span>${esc(j)}</span></h3><p class="aut-note" style="margin:0">${esc(resume(dernier.r))}</p>${dernier.fin.battle?`<h4>${esc(verdictBattle(dernier.fin.battle))}</h4>${battleTel(dernier.fin.battle)}`:""}${resultatsHTML(dernier.fin, "tete")}
       <details class="pv-t-detail"><summary>Voir le détail par élève</summary>${resultatsHTML(dernier.fin, "liste")}</details></div>`;
   }
   function resultatsHTML(f, court){
@@ -10061,7 +10301,7 @@ const Pavillons = (() => {
   /* ---------- démarrage ---------- */
   async function demarre(mode){
     if (mode==="tbi"){ brancheEcran();
-      Classe.surChange(()=>{ if (sur() && !P){ dessineDrisse(); if (phase==="salon" || phase==="verif") dessineCentre(); emet(); } });
+      Classe.surChange(()=>{ if (sur() && !P){ dessine(); emet(); } });
       return; }
     roomT = await useCap("room"); if (!roomT) return;
     roomT.on("pv", m=>recoitEtat(m.data||{}));
@@ -10073,7 +10313,7 @@ const Pavillons = (() => {
   function quitteEcran(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; emet(); }
   function prepareRevision(r){
     Accueil.ouvreActivite("pavillons");
-    reglages(r, nouveau=>{if(Accueil.estEcran()){R=propre(nouveau);sauveReglages();dessineCentre();emet();}else cmd("reglages",{r:nouveau});});
+    reglages(r, nouveau=>{if(Accueil.estEcran())commande({f:"reglages",r:nouveau});else cmd("reglages",{r:nouveau});});
   }
   return { demarre, ecran, tel, quitteTel, quitteEcran, bandeau, image, drapeau, resume, prepareRevision, occupe:enPartie,
     _test:{ durees(o){ dureesTest = o; }, etat:()=>({phase, P, R, telPv}), fin, genere, faux, propre } };
