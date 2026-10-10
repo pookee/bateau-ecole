@@ -426,6 +426,7 @@ input[type=text],input[type=number],textarea,select{border-color:#D8C9E1}
 .be-exaequo>div{display:flex;flex-direction:column;align-items:center;gap:7px;margin:10px 0}
 .be-exaequo>div>span:not(.eq-pavillon):not(.eq-medaille){font:700 1rem var(--display);color:#635050}
 .eq-fete .be-podium:has(>.be-place:only-child),.be-podium:has(>.be-place:only-child){grid-template-columns:1fr;max-width:1000px}
+.eq-fete .be-podium:has(>.be-place:nth-child(2):last-child),.be-podium:has(>.be-place:nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,1fr));max-width:850px}
 .be-place:only-child{grid-column:1}
 .be-place:only-child .be-exaequo{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
 .eq-medaille{font-size:2.5rem;color:#BC831C;text-shadow:0 2px #F4DF8B}
@@ -437,6 +438,7 @@ input[type=text],input[type=number],textarea,select{border-color:#D8C9E1}
 .eq-carte{border:3px solid color-mix(in srgb,var(--eq) 40%,#E9D7BC);border-radius:22px;background:#FFFCF4;padding:22px;min-width:0;text-align:center}
 .eq-carte h2{font:800 clamp(1.4rem,2.8vw,2.7rem)/1.1 var(--display);color:var(--eq);margin:14px 0 8px}
 .eq-carte p{line-height:1.4;margin:8px auto 16px;max-width:48ch}
+.eq-carte .eq-effectif{font-weight:800;color:var(--eq);margin:4px auto 12px}
 .eq-presentation>.eq-carte{max-width:820px;margin:0 auto}
 .eq-presentation>.eq-carte>.eq-pavillon{width:94px;height:108px}
 .eq-membres{list-style:none;padding:0;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0}
@@ -504,7 +506,7 @@ img{max-width:100%}
     </div>
   </div>
   <div id="stage">
-    <canvas id="sea"></canvas>
+    <canvas id="sea" role="img" aria-label="Le bateau et les ports du voyage"></canvas>
     <div class="layer" id="layer"></div>
   </div>
 </section>
@@ -5200,6 +5202,308 @@ const ROUTES = [
  [[8.7,41.9],[5.3,42.9],[5.35,43.28]]
 ];
 
+/* Ports propres aux escales. Repères et provenance : outils/ports/README.md. */
+const PORTS = {
+  "Marseille": {
+    "atlas": 0,
+    "repere": "Vieux-Port et Notre-Dame de la Garde",
+    "zone": [
+      4,
+      184,
+      627,
+      413
+    ]
+  },
+  "Barcelone": {
+    "atlas": 0,
+    "repere": "Sagrada Família et façades méditerranéennes",
+    "zone": [
+      643,
+      178,
+      608,
+      422
+    ]
+  },
+  "Tanger": {
+    "atlas": 0,
+    "repere": "Médina blanche et remparts de la kasbah",
+    "zone": [
+      4,
+      725,
+      633,
+      352
+    ]
+  },
+  "Lisbonne": {
+    "atlas": 0,
+    "repere": "Tour de Belém et façades lisboètes",
+    "zone": [
+      641,
+      735,
+      613,
+      349
+    ]
+  },
+  "Îles Canaries": {
+    "atlas": 1,
+    "repere": "Teide et architecture canarienne",
+    "zone": [
+      9,
+      253,
+      632,
+      381
+    ]
+  },
+  "Dakar": {
+    "atlas": 1,
+    "repere": "Phare des Mamelles et pirogues",
+    "zone": [
+      641,
+      187,
+      604,
+      450
+    ]
+  },
+  "Rio de Janeiro": {
+    "atlas": 1,
+    "repere": "Pain de Sucre et Christ du Corcovado",
+    "zone": [
+      3,
+      727,
+      638,
+      419
+    ]
+  },
+  "Buenos Aires": {
+    "atlas": 1,
+    "repere": "Puerto Madero et Puente de la Mujer",
+    "zone": [
+      641,
+      810,
+      609,
+      336
+    ]
+  },
+  "Ushuaïa": {
+    "atlas": 2,
+    "repere": "Canal Beagle et montagnes de Terre de Feu",
+    "zone": [
+      4,
+      245,
+      629,
+      348
+    ]
+  },
+  "Île de Pâques": {
+    "atlas": 2,
+    "repere": "Moaïs et côte volcanique",
+    "zone": [
+      644,
+      248,
+      604,
+      351
+    ]
+  },
+  "Galápagos": {
+    "atlas": 2,
+    "repere": "Rivage volcanique et cactus des Galápagos",
+    "zone": [
+      4,
+      764,
+      627,
+      334
+    ]
+  },
+  "Acapulco": {
+    "atlas": 2,
+    "repere": "Fort San Diego et falaises de la baie",
+    "zone": [
+      635,
+      770,
+      618,
+      336
+    ]
+  },
+  "San Francisco": {
+    "atlas": 3,
+    "repere": "Golden Gate et maisons en pente",
+    "zone": [
+      3,
+      219,
+      624,
+      380
+    ]
+  },
+  "Hawaï": {
+    "atlas": 3,
+    "repere": "Honolulu et le cratère Diamond Head",
+    "zone": [
+      632,
+      290,
+      617,
+      307
+    ]
+  },
+  "Tokyo": {
+    "atlas": 3,
+    "repere": "Rainbow Bridge et Tokyo Tower",
+    "zone": [
+      3,
+      741,
+      623,
+      403
+    ]
+  },
+  "Shanghai": {
+    "atlas": 3,
+    "repere": "Perle de l’Orient et silhouette de Pudong",
+    "zone": [
+      634,
+      656,
+      613,
+      495
+    ]
+  },
+  "Baie d'Along": {
+    "atlas": 4,
+    "repere": "Pitons calcaires et jonque",
+    "zone": [
+      5,
+      195,
+      620,
+      409
+    ]
+  },
+  "Singapour": {
+    "atlas": 4,
+    "repere": "Marina Bay Sands et Merlion",
+    "zone": [
+      631,
+      199,
+      617,
+      406
+    ]
+  },
+  "Bali": {
+    "atlas": 4,
+    "repere": "Porte fendue et toits de temples balinais",
+    "zone": [
+      8,
+      756,
+      617,
+      381
+    ]
+  },
+  "Sydney": {
+    "atlas": 4,
+    "repere": "Opéra et Harbour Bridge",
+    "zone": [
+      631,
+      827,
+      616,
+      308
+    ]
+  },
+  "La Réunion": {
+    "atlas": 5,
+    "repere": "Saint-Denis, cases créoles et reliefs",
+    "zone": [
+      0,
+      256,
+      631,
+      374
+    ]
+  },
+  "Madagascar": {
+    "atlas": 5,
+    "repere": "Nosy Be, port de Hell-Ville et collines",
+    "zone": [
+      638,
+      284,
+      616,
+      347
+    ]
+  },
+  "Zanzibar": {
+    "atlas": 5,
+    "repere": "Stone Town et boutre",
+    "zone": [
+      0,
+      763,
+      631,
+      339
+    ]
+  },
+  "Bombay": {
+    "atlas": 5,
+    "repere": "Gateway of India et Taj Mahal Palace",
+    "zone": [
+      635,
+      718,
+      619,
+      390
+    ]
+  },
+  "Canal de Suez": {
+    "atlas": 6,
+    "repere": "Canal rectiligne et phare de Port-Saïd",
+    "zone": [
+      8,
+      213,
+      611,
+      401
+    ]
+  },
+  "Athènes": {
+    "atlas": 6,
+    "repere": "Acropole et port du Pirée",
+    "zone": [
+      627,
+      267,
+      619,
+      351
+    ]
+  },
+  "Naples": {
+    "atlas": 6,
+    "repere": "Castel dell’Ovo et Vésuve",
+    "zone": [
+      7,
+      804,
+      612,
+      305
+    ]
+  },
+  "Ajaccio": {
+    "atlas": 6,
+    "repere": "Citadelle, cathédrale et montagnes corses",
+    "zone": [
+      627,
+      824,
+      617,
+      291
+    ]
+  }
+};
+
+const Ports = (() => {
+  const images = new Map(), vues = new Map();
+  function vue(ville){
+    if(vues.has(ville)) return vues.get(ville);
+    const p=PORTS[ville];
+    if(!p) return null;
+    if(!images.has(p.atlas)){
+      const im=new Image(); im.decoding="async"; im.src=`img/ports-${p.atlas}.webp`;
+      images.set(p.atlas,im);
+    }
+    const v={...p,image:images.get(p.atlas)};
+    vues.set(ville,v);
+    return v;
+  }
+  return {vue};
+})();
+
+
 "use strict";
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -5499,6 +5803,14 @@ const Mer = (() => {
     texturesNuit.set(im,c); return c;
   }
   function sprite(im,x,y,w,ancre,a,rot,couleur){ if(!pret(im)||a<=0.01) return 0; const h=w*im.naturalHeight/im.naturalWidth; g.save(); g.globalAlpha=a==null?1:a; g.translate(x,y); if(rot) g.rotate(rot); g.drawImage(couleur?nuit(im,couleur):im,-w/2,ancre==="centre"?-h/2:-h,w,h); g.restore(); return h; }
+  function port(ville,x,y,w,secours){
+    const p=Ports.vue(ville);
+    if(!p){ return sprite(secours,x,y,w,"bas",1,0,"#C9B8E5") || w*.55; }
+    const [sx,sy,sw,sh]=p.zone, h=w*sh/sw;
+    if(pret(p.image)) g.drawImage(nuit(p.image,"#C9B8E5"),sx,sy,sw,sh,x-w/2,y-h,w,h);
+    else sprite(secours,x,y,w,"bas",1,0,"#C9B8E5");
+    return h;
+  }
   function bande(im,y,h,decal,fond){
     g.fillStyle=fond; g.fillRect(0,y+h*.6,W,H-(y+h*.6));
     if(!pret(im)) return; const w=h*im.naturalWidth/im.naturalHeight; let x=-(((decal%w)+w)%w);
@@ -5532,13 +5844,11 @@ const Mer = (() => {
     // vagues du fond
     const vh = 72*s*(1+o*.4);
     bande(IMG["vague-claire"], mer-vh*.5, vh, t*(26+o*80), o>.5?"#10294F":"#0B3565");
-    // port et île avec leur nom
+    // Deux vues propres aux villes, conservées quand une arrivée devient le départ suivant.
     const fs=Math.max(15,Math.min(24,W*.015));
-    const wPort=240*s, wIle=250*s;
-    const hPort = pret(IMG.port) ? wPort*IMG.port.naturalHeight/IMG.port.naturalWidth : 110*s;
-    const hIle = pret(IMG.ile) ? wIle*IMG.ile.naturalHeight/IMG.ile.naturalWidth : 125*s;
+    const wPort=Math.min(W*.22,Math.max(160,280*s)), wIle=wPort;
     const xPort=Math.max(wPort*.5+4,W*.08), xIle=Math.min(W-wIle*.5-4,W*.92);
-    sprite(IMG.port,xPort,mer+16*s,wPort,"bas",1,0,"#C9B8E5"); sprite(IMG.ile,xIle,mer+16*s,wIle,"bas",1,0,"#C9B8E5");
+    const hPort=port(st.dep,xPort,mer+16*s,wPort,IMG.port), hIle=port(st.dest,xIle,mer+16*s,wIle,IMG.ile);
     const eD = etiquette(st.dep,xPort,mer+16*s-hPort-8*s,fs), eA = etiquette(st.dest,xIle,mer+16*s-hIle-8*s,fs);
     // Bateau pirate : la même silhouette conserve le roulis et la progression.
     const wB=290*s;
@@ -5557,7 +5867,11 @@ const Mer = (() => {
   }
   return {
     st, start(){ taille(); requestAnimationFrame(frame); }, taille,
-    vers(prog,dep,dest){ st.prog=prog; st.dep=dep; st.dest=dest; },
+    vers(prog,dep,dest){
+      st.prog=prog; st.dep=dep; st.dest=dest;
+      const a=Ports.vue(dep),b=Ports.vue(dest);
+      cv.setAttribute("aria-label",`Voyage de ${dep}${a?" : "+a.repere:""} vers ${dest}${b?" : "+b.repere:""}.`);
+    },
     rafale(k){ st.vent=Math.min(1,.45+k*.6); },
     orage(k){ st.orage=k; },
     eclair(){ st.eclair=.9; },
@@ -7425,7 +7739,7 @@ const Competition = (() => {
       });
       groupes.push({id:g.id,membres});
     }
-    return groupes.length?{v:1,id:o.id.slice(0,80),cree:+o.cree||0,groupes}:null;
+    return groupes.length?{v:o.v===2?2:1,id:o.id.slice(0,80),cree:+o.cree||0,groupes}:null;
   }
   const plan = () => propre(window.Classe ? Classe.get()?.equipages : S.equipages);
   const liste = () => window.Classe ? Classe.actifs() : S.eleves.filter(e=>e.actif);
@@ -7456,7 +7770,7 @@ const Competition = (() => {
   }
   function propose(eleves,seances,maintenant=Date.now()){
     if(eleves.length<2)return null;
-    const p=profils(eleves,seances,maintenant), nb=Math.min(7,Math.max(2,Math.ceil(eleves.length/5)));
+    const p=profils(eleves,seances,maintenant), nb=2;
     const ord=eleves.slice().sort((a,b)=>p[b.n].indice-p[a.n].indice||a.n-b.n);
     const groupes=ROLES.slice(0,nb).map(r=>({id:r.id,membres:[]}));
     ord.forEach((e,i)=>{const tour=Math.floor(i/nb),j=i%nb;groupes[tour%2?nb-1-j:j].membres.push(e.n);});
@@ -7475,7 +7789,7 @@ const Competition = (() => {
       if(!choix)break;const [a,b,i,j]=choix,A=groupes[a].membres,B=groupes[b].membres;[A[i],B[j]]=[B[j],A[i]];
     }
     groupes.forEach(g=>g.membres.sort((a,b)=>a-b));
-    return {v:1,id:"eq-"+maintenant.toString(36),cree:maintenant,groupes};
+    return {v:2,id:"eq-"+maintenant.toString(36),cree:maintenant,groupes};
   }
   function enregistre(p){
     p=propre(p);if(!p)return;
@@ -7483,15 +7797,19 @@ const Competition = (() => {
     else {S.equipages=p;sauve();}
   }
   function assure(){
-    if(plan() || (typeof DEMO!=="undefined"&&DEMO))return;
+    const ancien=plan();
+    if(ancien?.v===2 || ancien?.groupes.length===2 || (typeof DEMO!=="undefined"&&DEMO))return;
     const l=liste(),h=historique();
     if(l.length<2 || !l.some(e=>e.prenom) || !Object.values(profils(l,h)).some(e=>e.faits>=8))return;
+    // Passage unique des anciens petits groupes à deux équipages. Les plans figés
+    // des séances déjà commencées et l'historique restent inchangés.
     enregistre(propose(l,h));
+    return true;
   }
   function drapeau(id){const r=role(id);return `<span class="eq-pavillon" style="--eq:${r.couleur}" aria-hidden="true">${iconeLucide(r.icone)}</span>`;}
   function carte(g,detail=false){
-    const r=role(g.id),actifs=new Set(liste().map(e=>e.n));
-    return `<article class="eq-carte" style="--eq:${r.couleur}">${drapeau(g.id)}<h2>${esc(r.nom)}</h2><p>${esc(r.mission)}</p><ul class="eq-membres">${g.membres.filter(n=>actifs.has(n)).map(n=>`<li>${esc(nom(n))}</li>`).join("")}</ul>${detail?`<p class="eq-devise">${esc(r.devise)}</p>`:""}</article>`;
+    const r=role(g.id),actifs=new Set(liste().map(e=>e.n)),membres=g.membres.filter(n=>actifs.has(n));
+    return `<article class="eq-carte" style="--eq:${r.couleur}">${drapeau(g.id)}<h2>${esc(r.nom)}</h2><p class="eq-effectif">${membres.length} matelot${membres.length>1?"s":""}</p><p>${esc(r.mission)}</p><ul class="eq-membres">${membres.map(n=>`<li>${esc(nom(n))}</li>`).join("")}</ul>${detail?`<p class="eq-devise">${esc(r.devise)}</p>`:""}</article>`;
   }
   // Préparer avant la première réponse : les objectifs ne changent jamais en cours de séance.
   function prepare(qs,presents,mode){
@@ -8911,11 +9229,11 @@ const Accueil = (() => {
     await Classe.init();
     await Preparation.init();
     if (window.Historique) Historique.init().then(()=>{
-      if(mode!=="tbi")Competition.assure();
+      const equipagesMisAJour=mode!=="tbi"&&Competition.assure();
       const majSuivi = ()=>{ const x = document.getElementById("aa-suivi"); if (x) x.textContent = Historique.resumeCourt(); };
       Historique.surChange(majSuivi); majSuivi();
       if (mode!=="tbi" && window.AutoSauve && AutoSauve.possible()){ // téléphone : une sauvegarde par jour, et après chaque changement
-        const a = AutoSauve.derniere(); if (!a || new Date(a).toDateString()!==new Date().toDateString()) AutoSauve.bientot();
+        const a = AutoSauve.derniere(); if (equipagesMisAJour || !a || new Date(a).toDateString()!==new Date().toDateString()) AutoSauve.bientot();
         Classe.surChange(()=>AutoSauve.bientot());
         useCap("db").then(db=>db.doc("jeu/etat").onSnapshot(sn=>{ if (sn.distant) AutoSauve.bientot(); })); } });
     Classe.surChange((k, origine)=>{
