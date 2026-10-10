@@ -5843,7 +5843,7 @@ window.Themes = (() => {
     const r=son.reglages();
     document.querySelectorAll('.theme-musique').forEach(zone=>{
       zone.querySelector('[data-ambiance-actif]').checked=r.actif;
-      zone.querySelector('[data-ambiance-etat]').textContent=r.actif?"Activée":"Coupée";
+      zone.querySelector('[data-ambiance-etat]').textContent=r.actif?"Activées":"Coupées";
       const volume=zone.querySelector('[data-ambiance-volume]');
       volume.value=r.volume;volume.setAttribute('aria-valuetext',r.volume===0?"0 %, silencieux":`${r.volume} %`);
       zone.querySelector('output').textContent=`${r.volume} %`;
@@ -5854,7 +5854,7 @@ window.Themes = (() => {
     const groupe="theme-"+(++numero);
     conteneur.innerHTML=`<div class="theme-selecteur"><p class="note">Choisis le décor de la période. Il s’applique immédiatement et reste sélectionné au prochain démarrage. Le téléphone et l’écran reliés partagent le même choix.</p><fieldset class="theme-grille"><legend class="theme-legende">Choisir une thématique</legend>${liste.map(t=>`<label class="theme-option" data-theme-option="${t.id}"><input type="radio" name="${groupe}" value="${t.id}" ${t.id===etat.id?"checked":""}><span class="theme-apercu" aria-hidden="true" style="--apercu-mer:${t.palette.mer};--apercu-accent:${t.palette.soleil};--apercu-fond:${t.palette.ecume};--apercu-ciel:url('${image("ciel",t.id)}')"><img class="theme-apercu-bateau" data-theme-preview src="${image("bateau",t.id)}" alt=""><span class="theme-icone">${t.icone}</span></span><span class="theme-nom">${t.nom}</span><span class="theme-description">${t.description}</span><span class="theme-coche" aria-hidden="true">✓</span></label>`).join("")}</fieldset><p class="theme-statut" role="status" aria-live="polite"></p></div>`;
     if(window.AmbianceSonore){
-      conteneur.querySelector('.theme-grille').insertAdjacentHTML('beforebegin',`<fieldset class="theme-musique"><legend>Musique de fond</legend><label class="theme-musique-interrupteur"><input type="checkbox" role="switch" data-ambiance-actif><span>Activer la musique</span><b data-ambiance-etat></b></label><div class="theme-musique-volume"><label for="${groupe}-volume">Volume</label><output for="${groupe}-volume"></output><input id="${groupe}-volume" type="range" min="0" max="100" step="1" data-ambiance-volume aria-describedby="${groupe}-musique-note"></div><p id="${groupe}-musique-note">Une musique douce accompagne chaque thématique. Ce réglage est partagé avec le téléphone et l’écran.</p></fieldset>`);
+      conteneur.querySelector('.theme-grille').insertAdjacentHTML('beforebegin',`<fieldset class="theme-musique"><legend>Musique et vagues</legend><label class="theme-musique-interrupteur"><input type="checkbox" role="switch" data-ambiance-actif><span>Activer la musique et les vagues</span><b data-ambiance-etat></b></label><div class="theme-musique-volume"><label for="${groupe}-volume">Volume</label><output for="${groupe}-volume"></output><input id="${groupe}-volume" type="range" min="0" max="100" step="1" data-ambiance-volume aria-describedby="${groupe}-musique-note"></div><p id="${groupe}-musique-note">Un seul volume pour la musique et les vagues. À 0 %, les deux sont silencieuses. Ce réglage est partagé avec le téléphone et l’écran.</p></fieldset>`);
       selectionMusique();
       Promise.resolve(AmbianceSonore.pret).then(selectionMusique);
     }
@@ -6458,7 +6458,7 @@ function recupereEtat(distant){
 
 /* ---------- sons (synthétisés) ---------- */
 const Son = (() => {
-  let ctx=null, master=null, vagues=null, pluie=null, merAu=null, paroleEnCours=0;
+  let ctx=null, master=null, paroleEnCours=0;
   function init(){
     window.AmbianceSonore?.demarre();
     if (ctx) { if (ctx.state==="suspended") ctx.resume(); return; }
@@ -6474,18 +6474,7 @@ const Son = (() => {
   }
   return {
     init,
-    mer(on_){ if(!ctx) return;
-      const um = AudioPerso.url("fx-mer");
-      if (um || merAu){ if (on_ && S.reglages.son && um){ if(!merAu){ merAu=new Audio(um); merAu.loop=true; merAu.volume=.35; merAu.play().catch(()=>{}); } if(vagues){ vagues.src.stop(); vagues.lfo.stop(); vagues=null; } return; }
-        if (merAu){ merAu.pause(); merAu=null; } if (um) return; }
-      if (on_ && S.reglages.son && !vagues){
-        const src=ctx.createBufferSource(); src.buffer=bruit(4); src.loop=true;
-        const f=ctx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=500;
-        const g=ctx.createGain(); g.gain.value=.05;
-        const lfo=ctx.createOscillator(), lg=ctx.createGain(); lfo.frequency.value=.12; lg.gain.value=.04; lfo.connect(lg); lg.connect(g.gain); lfo.start();
-        src.connect(f); f.connect(g); g.connect(master); src.start(); vagues={src,lfo,g};
-      } else if (!on_ && vagues){ vagues.src.stop(); vagues.lfo.stop(); vagues=null; }
-    },
+    mer(on_){ return window.AmbianceSonore?.mer(on_); },
     pluie(on_){ /* bruit de pluie retiré à la demande de l'enseignante (trop agressif) */ },
     chocKraken(){
       if(!on())return;
@@ -7632,7 +7621,7 @@ function rendR(){
       <p class="note">3 points de coque pour la traversée. Sous l’objectif, un tentacule frappe. À zéro, le bateau coule et la traversée est perdue : retour au dernier port. Les cartes non lues sont exclues du calcul. Réglages modifiables hors séance.</p>
       <p class="note"><b>Les escales du vendredi.</b> Le bateau rejoint l’escale après une séance terminée sans naufrage. Si le Kraken gagne, il faut réussir une nouvelle tentative. Sans le Kraken, l’arrivée reste garantie.</p>
       <div class="ligne"><label style="min-width:18ch" for="r-son">Bruitages et voix</label><input type="checkbox" id="r-son" ${R.son?"checked":""}></div>
-      <p class="note">Le volume de la musique de fond se règle dans l’onglet « Thématique ».</p>
+      <p class="note">Le volume commun de la musique et des vagues se règle dans l’onglet « Thématique ».</p>
       <div class="ligne"><label for="r-recompense">Fin de séance</label><select id="r-recompense"><option value="podium" ${R.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${R.recompense==="collectif"?"selected":""}>Défi collectif</option></select></div>
       <p class="note">Défi collectif : viser 70 % de bonnes réponses ensemble. Les progrès personnels restent dans le suivi et sur le téléphone.</p>
       <h3>Relier le téléphone</h3>
@@ -7652,7 +7641,7 @@ function rendR(){
       if(t.id==="r-recompense") R.recompense=t.value;
       if(t.id==="r-kraken"&&!enJeu) R.kraken=t.checked;
       if(t.id==="r-kraken-seuil"&&!enJeu)R.krakenSeuil=+t.value;
-      if(t.id==="r-son"){ R.son=t.checked; Son.mer(t.checked); window.AmbianceSonore?.actualise(); }
+      if(t.id==="r-son"){ R.son=t.checked; window.AmbianceSonore?.actualise(); }
       sauve(); };
     c.oninput = null;
     c.onclick = e=>{ if(e.target.id==="r-bapt"){ document.querySelector(".panneau")?.remove(); if(!enJeu) bapteme(); return; } if(e.target.id==="r-mode"){ lsSet("bateau-ecole-mode",""); location.reload(); return; } const bt=e.target.closest("#r-tout");
@@ -8142,10 +8131,11 @@ let sonTest = null;
 function stopTest(){ try { if (sonTest){ sonTest.pause ? sonTest.pause() : sonTest.stop(); } } catch(e){} sonTest=null; Musique.stop(); }
 function ecouteSon(k){
   stopTest(); Son.init();
+  if(k==="fx-mer"){ Son.mer(true); toast("Le volume des vagues et de la musique se règle ensemble dans « Thématique »."); return; }
   const info = sonInfo(k), u = AudioPerso.url(k) || info.defaut;
   if (u){ sonTest = new Audio(u); sonTest.play().catch(()=>toast("Lecture impossible.")); return; }
   if (info.type==="voix"){ const e=ESCALES[+k.split("-")[1]]; if(!Son.parle(e.voix,e.lang)) toast("Pas de voix synthétique pour cette langue : ajoute un enregistrement."); return; }
-  const n = k.slice(3); if (Son[n]) { if (n==="mer"){ Son.mer(true); toast("Les vagues sont en fond : décoche « Sons » dans Rituel pour les couper."); } else Son[n](); }
+  const n = k.slice(3); if (Son[n]) Son[n]();
 }
 
 /* ---------- onglet « Sons et musiques » des réglages ---------- */
@@ -8291,7 +8281,7 @@ window.AmbianceSonore = (() => {
     air:{ondes:[[1,"sine",.9],[2,"sine",.1]],attaque:.25,tenue:.8,fin:.5},
     cuivre:{ondes:[[1,"triangle",.8],[2,"sine",.2],[3,"sine",.08]],attaque:.035,tenue:.4,fin:.12}
   };
-  let ctx=null, sortie=null, limiteur=null, bus=null, timer=null, finKraken=null;
+  let ctx=null, sortie=null, limiteur=null, bus=null, timer=null, finKraken=null, vagues=null, merDemandee=false;
   let theme=null, pas=0, suivant=0, joue=false, deverrouille=false, pageCachee=false, ponctuel=null, derniereErreur=null;
   const pauses=new Set(), voix=new Set(), compte={notes:0,attaques:0,naufrages:0};
   const reglages=()=>({...etat});
@@ -8315,7 +8305,7 @@ window.AmbianceSonore = (() => {
       const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return false;
       ctx=new Audio();sortie=ctx.createGain();sortie.gain.value=.72;
       limiteur=ctx.createDynamicsCompressor();limiteur.threshold.value=-13;limiteur.knee.value=16;limiteur.ratio.value=4;limiteur.attack.value=.008;limiteur.release.value=.2;
-      bus={fond:ctx.createGain(),kraken:ctx.createGain(),fx:ctx.createGain()};
+      bus={fond:ctx.createGain(),kraken:ctx.createGain(),fx:ctx.createGain(),mer:ctx.createGain()};
       Object.values(bus).forEach(b=>{b.gain.value=0;b.connect(limiteur);});
       limiteur.connect(sortie);sortie.connect(ctx.destination);
       ctx.onstatechange=()=>actualise();
@@ -8343,6 +8333,39 @@ window.AmbianceSonore = (() => {
       v.minuteur=setTimeout(v.nettoie,90);
     });
   }
+  function stopMer(){
+    if(!vagues)return;
+    const v=vagues;vagues=null;
+    if(v.audio)v.audio.pause();
+    v.sources.forEach(s=>{try{s.stop();}catch(e){}});
+    v.noeuds.forEach(n=>{try{n.disconnect();}catch(e){}});
+  }
+  function actualiseMer(){
+    const bateau=document.getElementById("scr-tbi");
+    if(!merDemandee || !volume() || !bateau || bateau.hidden || bateau.closest?.("[hidden]")){stopMer();return;}
+    const url=typeof AudioPerso!=="undefined" ? AudioPerso.url("fx-mer") : null;
+    if(vagues?.url===url)return;
+    stopMer();
+    // Le gain commun est après l'enveloppe : le LFO ne peut pas contourner le volume.
+    const v={url,sources:[],noeuds:[],audio:null};vagues=v;
+    if(url){
+      const audio=new Audio(url);v.audio=audio;audio.loop=true;audio.volume=1;
+      const source=ctx.createMediaElementSource(audio),mix=ctx.createGain();
+      mix.gain.value=.35;v.noeuds.push(source,mix);source.connect(mix);mix.connect(bus.mer);
+      // Le gain WebAudio fonctionne aussi sur iPhone, où Audio.volume peut être ignoré.
+      audio.play().then(()=>{if(vagues!==v)audio.pause();}).catch(()=>{if(vagues===v)stopMer();});
+    }else{
+      const src=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain(),lfo=ctx.createOscillator(),lg=ctx.createGain();
+      v.noeuds.push(src,f,g,lfo,lg);
+      src.buffer=ctx.createBuffer(1,ctx.sampleRate*4,ctx.sampleRate);src.loop=true;
+      const d=src.buffer.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+      f.type="lowpass";f.frequency.value=500;g.gain.value=.12;
+      lfo.frequency.value=.12;lg.gain.value=.09;lfo.connect(lg);lg.connect(g.gain);
+      src.connect(f);f.connect(g);g.connect(bus.mer);
+      lfo.start();v.sources.push(lfo);src.start();v.sources.push(src);
+    }
+  }
+  function mer(on){merDemandee=!!on;return actualise();}
   function note(midi,t,duree,instrument,niveau,groupe="fond"){
     const timbre=timbres[instrument]||timbres.feutre;
     timbre.ondes.forEach(([multiple,type,force])=>{
@@ -8390,7 +8413,7 @@ window.AmbianceSonore = (() => {
     // L'audio est facultatif : une indisponibilité ne doit jamais couper une réponse,
     // la sauvegarde des réglages ou la progression de l'activité.
     const message=e?.message||String(e);deverrouille=false;
-    try{stopFond();effaceKraken();[...voix].forEach(v=>v.nettoie());if(ctx?.state==="running")ctx.suspend().catch(()=>{});}catch(err){}
+    try{stopMer();stopFond();effaceKraken();[...voix].forEach(v=>v.nettoie());if(ctx?.state==="running")ctx.suspend().catch(()=>{});}catch(err){}
     if(message!==derniereErreur)console.warn("ambiance sonore interrompue",message);
     derniereErreur=message;return false;
   }
@@ -8411,11 +8434,12 @@ window.AmbianceSonore = (() => {
   function actualise(){try{actualiseAudio();return true;}catch(e){return echoue(e);}}
   function actualiseAudio(){
     const eligible=ecran();
-    if(!eligible){stopFond();effaceKraken();if(ctx?.state==="running")ctx.suspend().catch(()=>{});return;}
+    if(!eligible){stopMer();stopFond();effaceKraken();if(ctx?.state==="running")ctx.suspend().catch(()=>{});return;}
     if(!ctx || !deverrouille)return;
     if(ctx.state==="suspended"){ctx.resume().then(actualise).catch(()=>{});return;}
     if(ctx.state!=="running")return;
-    gain(bus.fond,volume()*(ponctuel?.16:1));gain(bus.kraken,volume());gain(bus.fx,fxActifs()?.8:0);
+    gain(bus.fond,volume()*(ponctuel?.16:1));gain(bus.kraken,volume());gain(bus.mer,volume());gain(bus.fx,fxActifs()?.8:0);
+    actualiseMer();
     if(!fxActifs())coupe("fx");
     if(!volume()){stopFond();coupe("kraken");return;}
     const id=idTheme();
@@ -8492,8 +8516,9 @@ window.AmbianceSonore = (() => {
   document.addEventListener("visibilitychange",actualise);
   window.addEventListener("pagehide",()=>{pageCachee=true;actualise();});
   window.addEventListener("pageshow",()=>{pageCachee=false;actualise();});
-  return {reglages,regler,pret,demarre,actualise,attaque,naufrage,arreteKraken,suspendre,
+  return {reglages,regler,pret,demarre,actualise,mer,attaque,naufrage,arreteKraken,suspendre,
     inspect:()=>({reglages:reglages(),theme,joue,deverrouille,contexte:ctx?.state||"absent",ponctuel,derniereErreur,pauses:[...pauses],scheduler:timer!==null,
+      mer:{demandee:merDemandee,joue:!!vagues,personnalisee:!!vagues?.audio},
       voix:voix.size,parGroupe:["fond","kraken","fx"].reduce((a,g)=>(a[g]=[...voix].filter(v=>v.groupe===g).length,a),{}),compte:{...compte},
       themes:Object.entries(partitions).map(([id,p])=>({id,bpm:p.bpm,mesure:p.mesure,lead:p.lead,accomp:p.accomp,signature:JSON.stringify([p.accords,p.melodie,p.arp])}))})};
 })();
