@@ -715,6 +715,71 @@ img{max-width:100%}
   #stage.kraken-live .qc .manuel .btn{font-size:.9rem;padding:.35em .6em}
 }
 
+/* Trésor collectif : un seul compteur, lisible même pendant une question. */
+.coffre-compact{box-sizing:border-box;display:flex;align-items:center;gap:10px;width:min(760px,100%);min-height:52px;padding:3px 13px 5px 7px;border:1px solid #D7BC80;border-radius:14px;background:#FFF9E8;color:#183C4B;text-align:left;box-shadow:0 2px 0 #674D291A;font:700 1rem var(--texte);cursor:pointer;flex:none}
+.coffre-compact .coffre-dessin{width:53px;height:44px;flex:none}
+.coffre-compact-corps{min-width:0;flex:1;display:grid;gap:5px}
+.coffre-compact-ligne{display:flex;align-items:baseline;justify-content:space-between;gap:8px;line-height:1.1}
+.coffre-compact strong{font:800 1.08rem/1 var(--display)}
+.coffre-compteur{font-variant-numeric:tabular-nums;font-size:.9rem;white-space:nowrap}
+.coffre-compact-suite{font:800 1.5rem/1 var(--display);color:#85611D;flex:none}
+.coffre-a-ouvrir{border-color:#CE941D;background:#FFF0BA}
+.coffre-a-ouvrir .coffre-compact-suite{font-size:.9rem}
+.coffre-jauge{display:block;overflow:hidden;height:9px;border-radius:9px;background:#E9DFC6;box-shadow:inset 0 1px 2px #58421B24}
+.coffre-jauge i{display:block;min-width:0;height:100%;background:linear-gradient(90deg,#DDA735,#F4D676);border-radius:inherit;transition:width .45s ease}
+.coffre-dessin{position:relative;display:block;width:140px;aspect-ratio:1;flex:none;filter:drop-shadow(0 3px 3px #4C321222)}
+.coffre-dessin>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;transition:opacity .35s ease,transform .45s ease}
+.coffre-image-ouverte{opacity:0;transform:scale(.94)}.coffre-dessin-ouvert>.coffre-image-fermee{opacity:0}.coffre-dessin-ouvert>.coffre-image-ouverte{opacity:1;transform:none}
+.coffre-bilan{display:flex;align-items:center;gap:18px;width:100%;box-sizing:border-box;margin:18px 0;padding:16px 22px;border:2px solid #E3C889;border-radius:20px;background:#FFF7DF;color:#183C4B;text-align:left}
+.coffre-bilan h3{margin:0!important;color:#4F371D!important;font:800 clamp(1.3rem,2vw,1.65rem)/1.15 var(--display)}
+.coffre-bilan p{font-size:1rem!important;margin:7px 0 11px!important;line-height:1.35}
+.coffre-bilan-corps{flex:1;min-width:0}.coffre-bilan-progression{display:grid;gap:6px;margin:0 0 13px}.coffre-bilan-progression strong{font-size:1rem;font-variant-numeric:tabular-nums}
+.panneau .carte.coffre-panneau{width:min(840px,100%);padding:22px 26px 28px;background:#FFFCF4;border-color:#DABF86;color:#183C4B}
+.coffre-panneau .panneau-entete{background:#FFFCF4;border-color:#E8D6AD}
+.coffre-panneau .panneau-entete h2{color:#2F4148}
+.coffre-contenu{min-width:0}.coffre-panneau p{line-height:1.45}
+.coffre-reserve{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;padding:20px 0}
+.coffre-reserve .coffre-dessin{width:100%}
+.coffre-surtitre{margin:0 0 5px;color:#8C602A;font:800 .82rem/1.25 var(--display);letter-spacing:.065em;text-transform:uppercase}
+.coffre-grand-compteur{font:800 clamp(1.6rem,4vw,2.25rem)/1.15 var(--display)!important;margin:0 0 12px!important;color:#304850;font-variant-numeric:tabular-nums}
+.coffre-reserve .coffre-jauge{height:13px}.coffre-regle{margin:13px 0 5px;font-size:1.04rem}
+.coffre-note{font-size:.9rem;color:#68716C;margin:6px 0 0}
+.coffre-panneau .coffre-collection-titre{display:flex;align-items:center;justify-content:space-between;color:#344F55;margin:16px 0 14px;padding-top:17px;border-top:1px solid #E2D7BE}
+.coffre-collection-titre span{font:700 .9rem var(--texte);color:#697875}
+.coffre-collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.coffre-objet{min-width:0;border:1px solid #DDCCAD;border-radius:16px;background:#FFFFFF;padding:12px 14px 16px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.coffre-objet-visuel{display:grid;place-items:center;height:100px;width:100%;background:radial-gradient(ellipse at center,#FFF5D7,transparent 72%);border-radius:12px}
+.coffre-objet-image{display:block;width:150px;max-width:100%;height:100%;overflow:visible}
+.coffre-objet h4{font:800 1.16rem/1.15 var(--display);margin:9px 0 3px;color:#27444B}
+.coffre-objet p{font-size:.88rem;line-height:1.3;margin:3px 0 14px;color:#68716C;flex:1}
+.coffre-objet .btn{min-height:44px;max-width:100%;font-size:.9rem}
+.coffre-objet .btn[aria-pressed="true"]{border-color:#97B8AB;background:#E9F3EC;color:#2B6350;box-shadow:0 4px 0 #7DA18E}
+.coffre-objet.est-secret{background:#F7F5EC;border-style:dashed;border-color:#D8D4C4}
+.coffre-objet.est-secret .coffre-objet-visuel{background:none}
+.coffre-mystere{display:grid;place-items:center;width:63px;height:68px;border:2px solid #D5D1C1;border-radius:25px 25px 15px 15px;background:#EDEADF;color:#9A9D92;font:800 2.5rem var(--display);transform:rotate(-5deg)}
+.coffre-secret-note{font:700 .8rem var(--texte);color:#757B6E;padding:11px 0}
+.coffre-decouverte{text-align:center;padding:20px 8px 12px}
+.coffre-panneau .coffre-decouverte h3{font:800 clamp(1.8rem,5vw,2.7rem)/1.12 var(--display);color:#365253;margin:9px 0 0}
+.coffre-surprise{width:min(340px,100%);height:300px;margin:4px auto 8px;display:grid;place-items:center;background:radial-gradient(ellipse at center,#FFECB5 0,#FFF6D9 42%,transparent 72%)}
+.coffre-surprise>.coffre-dessin{width:300px;height:300px;max-width:100%;animation:coffre-balance 2.4s ease-in-out infinite}
+.coffre-surprise>.coffre-objet-image{width:260px;height:200px;animation:coffre-revelation .55s cubic-bezier(.16,.84,.24,1.2) both}
+.coffre-en-ouverture .coffre-surprise>.coffre-dessin{animation:none}.coffre-en-ouverture .coffre-image-fermee{opacity:0;transform:scale(.98)}.coffre-en-ouverture .coffre-image-ouverte{opacity:1;transform:none}
+.coffre-decouverte>p:not(.coffre-surtitre):not(.coffre-note){font-size:1.1rem;margin:0 auto 18px;max-width:520px}
+.coffre-decouverte>.btn{min-height:50px;font-size:1.15rem;max-width:100%}
+.coffre-lien{display:block;max-width:100%;margin:13px auto 14px;background:transparent;box-shadow:none;border:0;text-decoration:underline;text-underline-offset:3px;color:#64736D;font:700 .96rem var(--texte);padding:9px;min-height:44px}
+.coffre-decouverte>.coffre-note{margin:18px auto 0;max-width:430px}
+.coffre-reglages{border-top:1px solid #E2D7BE;padding-top:12px;margin-top:23px}.coffre-reglages h3{color:#344F55}.coffre-reglages label{display:block;font-weight:700;font-size:.95rem;margin-bottom:8px}.coffre-reglages-ligne{display:flex;gap:12px;align-items:center}.coffre-reglages input{box-sizing:border-box;min-width:0;width:120px;min-height:44px;padding:7px 12px;border:2px solid #C6BA9C;border-radius:10px;font:700 1.1rem var(--texte);color:#23414A;background:#FFF}.coffre-reglages .btn{min-height:44px}.coffre-reglages-retour{font-weight:700;font-size:.92rem;color:#38664C;margin:8px 0 0}
+@keyframes coffre-balance{0%,75%,100%{transform:rotate(0)}82%{transform:rotate(-3deg)}90%{transform:rotate(3deg)}}
+@keyframes coffre-revelation{from{opacity:0;transform:translateY(16px) scale(.76) rotate(-6deg)}to{opacity:1;transform:none}}
+@media(max-width:600px){.panneau .carte.coffre-panneau{padding:15px 16px 21px;border-width:2px;border-radius:21px}.coffre-reserve{grid-template-columns:85px minmax(0,1fr);gap:11px;padding:13px 0}.coffre-surtitre{font-size:.72rem}.coffre-grand-compteur{font-size:1.5rem!important}.coffre-regle{font-size:.94rem}.coffre-note{font-size:.8rem}.coffre-collection{gap:9px}.coffre-objet{padding:8px 9px 13px}.coffre-objet-visuel{height:83px}.coffre-objet h4{font-size:1.02rem}.coffre-objet p{font-size:.8rem}.coffre-objet .btn{font-size:.82rem;padding:.5em .6em}.coffre-bilan{padding:12px;gap:10px}.coffre-bilan>.coffre-dessin{width:84px}.coffre-bilan p{font-size:.9rem!important}.coffre-bilan h3{font-size:1.25rem}.coffre-bilan .btn{font-size:1rem}.coffre-surprise{height:230px}.coffre-surprise>.coffre-dessin{width:230px;height:230px}.coffre-surprise>.coffre-objet-image{height:172px}.coffre-decouverte{padding:16px 0 8px}.coffre-decouverte>.btn{font-size:1.03rem}.coffre-decouverte>p:not(.coffre-surtitre):not(.coffre-note){font-size:1rem}.coffre-panneau .panneau-entete h2{font-size:1.3rem}.coffre-panneau .panneau-entete .btn{font-size:.85rem;padding:.55em .7em}.coffre-compact{gap:6px;min-height:49px;padding-right:9px}.coffre-compact .coffre-dessin{width:44px;height:39px}.coffre-compact strong{font-size:.94rem}.coffre-compteur{font-size:.8rem}.coffre-compact-ligne{gap:5px}.coffre-a-ouvrir .coffre-compact-suite{font-size:.75rem}}
+@media(max-width:360px){.coffre-compact strong{font-size:.86rem}.coffre-compteur{font-size:.74rem}.coffre-compact .coffre-dessin{width:36px}.coffre-reserve{grid-template-columns:65px minmax(0,1fr)}.coffre-grand-compteur{font-size:1.28rem!important}.coffre-collection{gap:7px}.coffre-objet{padding-inline:7px}.coffre-objet h4{font-size:.93rem}.coffre-bilan>.coffre-dessin{width:67px}}
+@media(prefers-reduced-motion:reduce){.coffre-jauge i{transition:none}.coffre-surprise>.coffre-dessin,.coffre-surprise>.coffre-objet-image,.coffre-en-ouverture .coffre-dessin{animation:none}.coffre-dessin>img{transition:none}}
+/* Le coffre reste accessible sans réduire la zone de lecture des cartes. */
+#scr-tel > #t-coffre{order:4;min-width:0}
+@media (orientation:landscape) and (max-height:560px){
+  #scr-tel > #t-coffre{grid-column:2;order:8}
+}
+
 </style>
 <script src="vendor/nostr-lite.js"></script>
 <script src="vendor/mqtt.min.js"></script>
@@ -949,6 +1014,7 @@ const Autonome = (() => {
     }
     const REGLES = {
       "jeu/etat": {resume:voyage, prefere:prefereVoyage, delai:6000},
+      "jeu/coffre": {resume:d=>d && typeof d.voyage==="string" && Number.isSafeInteger(d.maj) && d.maj>=0 ? {voyage:d.voyage,maj:d.maj,contenu:JSON.stringify(d)} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj || b.maj===a.maj && b.contenu>a.contenu), delai:150},
       "jeu/preparation": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
       "jeu/chapitres": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
       "jeu/theme": {resume:d=>d && window.Themes?.valide(d.id) && Number.isSafeInteger(d.maj) && d.maj>=0 ? {id:d.id,maj:d.maj} : null,
@@ -5728,6 +5794,153 @@ const Matelots = (() => {
 })();
 window.Matelots=Matelots;
 
+/* Un trésor commun, indépendant de la coque et des séances.
+   Chaque reçu contient le maximum de bonnes réponses constaté pour une question.
+   Les accessoires acquis et leurs paliers ne sont jamais recalculés à la baisse. */
+const Coffre = (() => {
+  const CATALOGUE = Object.freeze([
+    {id:"pavillon",nom:"Le pavillon doré",description:"Un pavillon doré flotte sur notre bateau."},
+    {id:"dauphin",nom:"La figure de proue dauphin",description:"Un dauphin décore la proue de notre bateau."},
+    {id:"constellation",nom:"La voile constellation",description:"Des étoiles dessinent une constellation sur notre voile."},
+    {id:"lanternes",nom:"Les lanternes lumineuses",description:"Des lanternes colorées illuminent notre bateau."}
+  ].map(Object.freeze));
+  const ids=CATALOGUE.map(a=>a.id), objet=o=>!!o&&typeof o==="object"&&!Array.isArray(o);
+  const copie=o=>JSON.parse(JSON.stringify(o));
+  const entier=(n,d=0)=>Number.isSafeInteger(n)&&n>=0?n:d;
+  const seuil=n=>Number.isSafeInteger(Number(n))&&Number(n)>=1&&Number(n)<=1000000?Number(n):300;
+  const courant=()=>{try{return typeof S!=="undefined"?S:null;}catch(_){return null;}};
+  const parDefaut=()=>courant()||{};
+  const liste=a=>ids.filter(id=>Array.isArray(a)&&a.includes(id));
+  const valideCle=k=>typeof k==="string"&&k.length>0&&k.length<=240&&!['__proto__','prototype','constructor'].includes(k);
+  const acquis=c=>ids.filter(id=>Object.hasOwn(c.recompenses,id));
+  const depense=c=>Math.max(0,...Object.values(c.recompenses).map(r=>r.palier));
+
+  // Pure : utilisable lors du chargement, avant l'initialisation de DEMO.
+  function nettoie(source,voyage){
+    const c=objet(source)?copie(source):{};
+    c.v=1;c.voyage=typeof voyage==="string"?voyage:typeof c.voyage==="string"?c.voyage:"";
+    c.objectif=seuil(c.objectif);
+    c.objectifMaj=entier(c.objectifMaj);
+    c.recus=Object.fromEntries(Object.entries(objet(c.recus)?c.recus:{})
+      .filter(([k,n])=>valideCle(k)&&Number.isSafeInteger(n)&&n>0).sort(([a],[b])=>a.localeCompare(b)));
+    const comptes=Object.values(c.recus).reduce((s,n)=>s+n,0);
+    // Préserver aussi une éventuelle ancienne sauvegarde ne contenant qu'un total.
+    c.base=entier(c.base,Math.max(0,entier(c.total,entier(c.perles))-comptes));
+    c.total=c.base+comptes;
+    const anciennes=liste(c.debloques), recompenses=objet(c.recompenses)?c.recompenses:{};
+    c.recompenses=Object.fromEntries(ids.flatMap((id,i)=>{
+      const r=recompenses[id];
+      if(!objet(r)&&!anciennes.includes(id))return [];
+      return [[id,{...(objet(r)?r:{}),cout:seuil(r?.cout??c.objectif),
+        palier:entier(r?.palier,Math.min(c.total,(i+1)*c.objectif))}]];
+    }));
+    c.debloques=acquis(c);
+    const etatEquipement=objet(c.equipement)?c.equipement:{};
+    c.equipement=Object.fromEntries(c.debloques.map(id=>{
+      const x=etatEquipement[id];return [id,{actif:objet(x)?x.actif!==false:liste(c.equipes).includes(id),maj:entier(x?.maj)}];
+    }));
+    c.equipes=c.debloques.filter(id=>c.equipement[id].actif);
+    c.vus=liste(c.vus).filter(id=>c.debloques.includes(id));
+    c.perles=Math.max(0,c.total-depense(c));
+    return c;
+  }
+  function instantane(etat){return nettoie(etat?.coffre,etat?.voyage);}
+  function resume(etat=parDefaut()){
+    const c=instantane(etat);
+    return {perles:c.perles,objectif:c.objectif,total:c.total,debloques:c.debloques.slice(),
+      equipes:c.equipes.slice(),complet:c.debloques.length===ids.length,
+      nouveaux:c.debloques.filter(id=>!c.vus.includes(id))};
+  }
+  function annonce(etat){
+    if(etat!==courant())return;
+    const telephone=typeof window!=="undefined"&&window.Accueil&&!window.Accueil.estEcran();
+    // Le téléphone possède une copie parfois ancienne de la séance du tableau.
+    // Son choix d'accessoire ne doit publier que le coffre, jamais cette séance.
+    if(telephone){if((typeof DEMO==="undefined"||!DEMO)&&typeof lsSet==="function")lsSet("bateau-ecole-etat",JSON.stringify(etat));}
+    else if(typeof sauve==="function")sauve();
+    if(typeof window!=="undefined"&&typeof window.dispatchEvent==="function"&&typeof CustomEvent!=="undefined")
+      window.dispatchEvent(new CustomEvent("coffrechange",{detail:resume(etat)}));
+  }
+  function modifie(etat,action){
+    if(!objet(etat))return resume({});
+    const avant=JSON.stringify(etat.coffre),c=instantane(etat);
+    if(action)action(c);
+    const apres=nettoie(c,etat.voyage);
+    if(avant!==JSON.stringify(apres)){etat.coffre=apres;annonce(etat);}
+    return resume(etat);
+  }
+  function normalise(etat=parDefaut()){
+    // Charger un coffre ne crée pas une action datée ni une publication de voyage.
+    etat.coffre=instantane(etat);return etat.coffre;
+  }
+  function debloque(c){
+    let utilise=depense(c);
+    for(const id of ids){
+      if(Object.hasOwn(c.recompenses,id))continue;
+      if(c.total-utilise<c.objectif)break;
+      utilise+=c.objectif;
+      c.recompenses[id]={cout:c.objectif,palier:utilise};
+      // La découverte puis le bouton « Installer » gardent la surprise intacte.
+      c.equipement[id]={actif:false,maj:0};
+    }
+  }
+  function ajoute(cle,nb,etat=parDefaut()){
+    // En démo, seul le clone courant peut changer : aucun autre état réel.
+    if(typeof DEMO!=="undefined"&&DEMO&&etat!==courant())return resume(etat);
+    if(!valideCle(cle)||!Number.isSafeInteger(nb)||nb<=0)return resume(etat);
+    return modifie(etat,c=>{
+      const avant=c.recus[cle]||0;if(nb<=avant)return;
+      c.recus[cle]=nb;c.total+=nb-avant;debloque(c);
+    });
+  }
+  function objectif(n,etat=parDefaut()){
+    if(!Number.isSafeInteger(Number(n))||Number(n)<1||Number(n)>1000000)return resume(etat);
+    return modifie(etat,c=>{
+      if(c.objectif===Number(n))return;
+      c.objectif=Number(n);c.objectifMaj=Date.now();
+      // Le réglage seul n'attribue rien ; les coûts déjà payés restent figés.
+    });
+  }
+  function equipe(id,actif=true,etat=parDefaut()){
+    if(!ids.includes(id))return resume(etat);
+    return modifie(etat,c=>{
+      if(!Object.hasOwn(c.recompenses,id)||c.equipement[id].actif===!!actif)return;
+      c.equipement[id]={actif:!!actif,maj:Date.now()};
+    });
+  }
+  function vu(id,etat=parDefaut()){
+    if(!ids.includes(id))return resume(etat);
+    return modifie(etat,c=>{if(Object.hasOwn(c.recompenses,id)&&!c.vus.includes(id))c.vus.push(id);});
+  }
+  // Fusion pure de deux S.coffre. Ne jamais réunir les reçus de voyages distincts.
+  function fusion(a,b){
+    if(!objet(a))return nettoie(b);
+    if(!objet(b))return nettoie(a);
+    const A=nettoie(a),B=nettoie(b);
+    if(A.voyage!==B.voyage)return B;
+    const c={...A,...B,base:Math.max(A.base,B.base),recus:{...A.recus},recompenses:{...A.recompenses},equipement:{...A.equipement}};
+    for(const [cle,n] of Object.entries(B.recus))c.recus[cle]=Math.max(n,c.recus[cle]||0);
+    // Le dernier réglage explicite prime ; le seuil sert de départage déterministe.
+    if(A.objectifMaj>B.objectifMaj||A.objectifMaj===B.objectifMaj&&A.objectif>B.objectif){c.objectif=A.objectif;c.objectifMaj=A.objectifMaj;}
+    for(const id of ids){
+      const ar=A.recompenses[id],br=B.recompenses[id];
+      if(br&&(!ar||br.palier>ar.palier||br.palier===ar.palier&&br.cout>ar.cout))c.recompenses[id]=br;
+      const ae=A.equipement[id],be=B.equipement[id];
+      if(be&&(!ae||be.maj>ae.maj||be.maj===ae.maj&&!be.actif))c.equipement[id]=be;
+    }
+    c.debloques=ids.filter(id=>Object.hasOwn(c.recompenses,id));
+    c.vus=liste([...A.vus,...B.vus]);
+    const propre=nettoie(c);
+    // Une simple synchronisation du réglage ne doit pas ouvrir un coffre.
+    // Seules des réponses supplémentaires réunies depuis deux appareils le peuvent.
+    if(propre.total>Math.max(A.total,B.total))debloque(propre);
+    return nettoie(propre);
+  }
+  return {CATALOGUE,normalise,ajoute,resume,objectif,equipe,vu,fusion};
+})();
+if(typeof window!=="undefined")window.Coffre=Coffre;
+if(typeof module!=="undefined"&&module.exports)module.exports=Coffre;
+
 /* ---------- habillage saisonnier, indépendant du voyage et des élèves ---------- */
 window.Themes = (() => {
   const CLE = "bateau-ecole-theme", DOC = "jeu/theme";
@@ -6335,11 +6548,13 @@ function banqueDefaut(){
 }
 const idVoyage = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function etatDefaut(){
-  return {v:1,rv:RESET_V,migPilote:1,maj:0,voyage:idVoyage(),nom:"La Vaillante",nomChoisi:false,nomsProposes:["La Vaillante","L'Étoile des Mers","Le Grand Plouf","La Perle Bleue"],milles:0,
+  const etat = {v:1,rv:RESET_V,migPilote:1,maj:0,voyage:idVoyage(),nom:"La Vaillante",nomChoisi:false,nomsProposes:["La Vaillante","L'Étoile des Mers","Le Grand Plouf","La Perle Bleue"],milles:0,
     eleves:Array.from({length:NB_CARTES},(_,i)=>({n:i+1,prenom:CLASSE[i]||"",actif:i<(CLASSE.length||25),...(i<(CLASSE.length||25)?{avatar:Matelots.identifiant({n:i+1})}:{})})),
     reglages:{nbQ:6,piloteTous:0,vitesse:1,son:true,stormQ:6,recompense:"podium",kraken:true,krakenSeuil:70},
     notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),banque:Q_RAW.length,
     stats:{q:{},el:{}},journal:[],pilotes:[],escalesVues:[0]};
+  Coffre.normalise(etat);
+  return etat;
 }
 let S = etatDefaut();
 function charge(obj){
@@ -6392,6 +6607,7 @@ function charge(obj){
     if(couranteRetiree)s.question=null;
     if(!s.qs.length)o.seance=null;
   }
+  Coffre.normalise(o);
   Kraken.normalise(o);
   // Anciennes sauvegardes : une coque déjà à zéro clôt la traversée, en
   // conservant toutes les réponses et tous les résultats déjà enregistrés.
@@ -6429,7 +6645,7 @@ async function brancheDB(){
     if (resetFait){ sauve(); return; }
     if (snap.exists) {
       const distant = snap.data();
-      if ((distant.maj||0) > (S.maj||0)) { S = charge(JSON.parse(JSON.stringify(distant))); lsSet("bateau-ecole-etat", JSON.stringify(S)); if (window.onEtatRecharge) onEtatRecharge(); }
+      if ((distant.maj||0) > (S.maj||0)) { const coffre=S.voyage===distant.voyage?Coffre.fusion(S.coffre,distant.coffre):distant.coffre; S = charge(JSON.parse(JSON.stringify(distant))); if(coffre)S.coffre=coffre; Coffre.normalise(S); lsSet("bateau-ecole-etat", JSON.stringify(S)); if (window.onEtatRecharge) onEtatRecharge(); }
       else if ((S.maj||0) > (distant.maj||0)) sauve();
     } else if (S.maj) sauve();
     if(Preparation.appliqueChapitres(S))sauve();
@@ -6439,7 +6655,7 @@ async function brancheDB(){
    Même voyage : on prend la version la plus récente. Autre voyage (ordinateur remis à zéro, autre classe) : la maîtresse choisit. */
 function recupereEtat(distant){
   if (DEMO || !distant || typeof distant!=="object") return;
-  const applique = ()=>{ S = charge(JSON.parse(JSON.stringify(distant))); Preparation.appliqueChapitres(S); if (window.Classe) Classe.versJeu(); sauve(); if (window.onEtatRecharge) onEtatRecharge(); };
+  const applique = ()=>{ const coffre=S.voyage===distant.voyage?Coffre.fusion(S.coffre,distant.coffre):distant.coffre; S = charge(JSON.parse(JSON.stringify(distant))); if(coffre)S.coffre=coffre; Coffre.normalise(S); Preparation.appliqueChapitres(S); if (window.Classe) Classe.versJeu(); sauve(); if (window.onEtatRecharge) onEtatRecharge(); };
   if ((S.voyage && distant.voyage===S.voyage) || (distant.remplace && distant.remplace===S.voyage)){ applique(); return; }
   const neuf = !S.maj || (!S.milles && !(S.journal||[]).length && !Object.keys((S.stats&&S.stats.q)||{}).length);
   if (neuf){ applique(); if ($("#stage")) toast("Voyage repris depuis le téléphone."); return; } // cet appareil n'a pas encore navigué
@@ -6620,6 +6836,10 @@ const Mer = (() => {
     const texture=im=>k?kraken.texture(im,k.coque):im;
     if(original)sprite(texture(IMG["bateau-calme"]),bx,by,wB,"bas",alpha,rotation);
     sprite(texture(IMG.bateau),bx,by,wB,"bas",alpha*(original?Math.max(0,Math.min(1,(st.vent-.1)/.4)):1),rotation);
+    if(alpha>.01&&window.CoffreUI?.dessineBateau){
+      g.save();g.translate(bx,by);g.rotate(rotation);g.globalAlpha=alpha;
+      CoffreUI.dessineBateau(g,{w:wB,h:hauteur,t});g.restore();
+    }
     if(k){
       kraken.dessineDevant(g,k);
       const description=`Un seul bateau pour toute la classe. Coque : ${k.coque} sur 3. ${k.phase==="naufrage"?"Le bateau coule sous l'attaque du Kraken.":k.coque<3?"Le bateau garde les dégâts des attaques.":"Le bateau tient le cap."}`;
@@ -6754,7 +6974,7 @@ function accueil(){
   $("#b-demo").setAttribute("aria-pressed",String(DEMO));
   $("#b-demo").textContent=DEMO?"Quitter la démo":"Démo";
   $("#b-grade").hidden=DEMO;
-  $("#b-grade").innerHTML=`<span class="grade-pill">Équipage : <b>${GRADES[grade(nbEscales())][1]}</b> ${etoiles(grade(nbEscales()))}</span>`;
+  $("#b-grade").innerHTML=`<span class="grade-pill">Équipage : <b>${GRADES[grade(nbEscales())][1]}</b></span>`;
   if (DEMO){
     layer.innerHTML = `
     ${enseigne("Mode démo","On s'entraîne !","Rien n'est enregistré : en quittant, tout revient comme avant.")}
@@ -6765,6 +6985,7 @@ function accueil(){
       <button class="btn prim big" data-go="tempete">Tempête du vendredi · parcours complet</button>
       <button class="btn big" data-go="matin">Rituel (essai)</button>
       <button class="btn jaune big" data-go="kraken-demo">Essayer le Kraken collectif</button>
+      <button class="btn jaune big" data-go="coffre-demo">Essayer le coffre et ses trésors</button>
       <button class="btn big" data-go="bapteme">Essayer le baptême</button>
       <button class="btn big" data-go="tresor">L'île au trésor (essai)</button>
       <button class="btn big" data-go="mini">Essayer un mini-jeu</button>
@@ -6778,6 +6999,7 @@ function accueil(){
       else if(go==="tresor") rituel("tresor");
       else if(go==="mini"){ enJeu=true; Son.init(); Son.mer(true); await pilote(Math.floor(Math.random()*2)); enJeu=false; accueil(); }
       else if(go==="quitter") modeDemo(false);
+      else if(go==="coffre-demo"){delete S.coffre;Coffre.ajoute("essai-coffre",300);accueil();CoffreUI.ouvre();}
       else if(go==="bapteme") bapteme();
     });
     return;
@@ -6791,6 +7013,7 @@ function accueil(){
     ${S.reglages.kraken!==false&&!port?KrakenJeu.jauge():""}
     <div class="home-cta">${S.kraken?.phase==="naufrage"?`<button class="btn prim big" data-go="revanche">Préparer notre revanche</button>`:boutons()}</div>
     ${sansPrenoms||nbVues===0?`<div class="carte" style="max-width:640px;padding:12px 18px"><p class="note" style="margin:0">${nbVues===0?"Aucune notion n'est cochée comme « déjà vue » : ouvre Réglages › Questions.":"Astuce : entre les prénoms des élèves dans Réglages › Élèves (numéro de carte = élève)."}</p></div>`:""}`;
+  layer.insertAdjacentHTML("beforeend",CoffreUI.compact());
   const arrivee=rythmeVoyage(S).arrivee;
   if(arrivee || S.carteAEcrire){
     const k=arrivee?.k||S.carteAEcrire;
@@ -6850,8 +7073,8 @@ function emitQ(){
   const d = QCUR ? {qid:QCUR.qid, open:QCUR.open, txt:QCUR.q.q.slice(0,280), nb:QCUR.q.c.length,
       bonne: QCUR.revele ? LET[QCUR.bonne] : null, answers:QCUR.rep, fixes:QCUR.fixes||{}, choix:QCUR.q.c,
       kraken:KrakenJeu.info(),
-      defis:S.seance?.competition?.defis||null,
-      cartes: actifs().map(e=>[e.n,(e.prenom||"").slice(0,14)])} : {qid:null, podium:podiumRituel, reussites:reussitesRituel, kraken:KrakenJeu.info()};
+      coffre:Coffre.resume(),
+      cartes: actifs().map(e=>[e.n,(e.prenom||"").slice(0,14)])} : {qid:null, podium:podiumRituel, reussites:reussitesRituel, coffre:Coffre.resume(), kraken:KrakenJeu.info()};
   ROOM.emit("q", d).catch(()=>{});
 }
 function majLus(){
@@ -6881,7 +7104,7 @@ async function poserQuestion(q, i, n, mode){
       ${mode==="tempete"?`<div class="orage-jauge"><div style="color:#fff;font-family:var(--display);font-weight:700;display:flex;justify-content:space-between"><span>Force de la tempête</span><span class="num" id="o-pct"></span></div><div class="jauge"><i id="o-j"></i></div></div>`:""}
       <div class="carte qc" style="margin-top:${mode==="tempete"?"10px":"0"}">
         ${S.seance?.krakenActif?KrakenJeu.jauge():""}
-        ${S.seance?.competition?`<div class="eq-perles" aria-label="Trésor collectif">${iconeLucide("gem")} ${Object.values(scoresRituel||{}).reduce((s,e)=>s+e.ok,0)} perles dans le coffre de la classe</div>`:""}
+        ${CoffreUI.compact()}
         <div class="q-enonce"${krakenActif?' tabindex="0" aria-label="Question et propositions"':""}>
         <div class="q-head"><span class="chip" style="background:${m.c}">${esc(m.nom)} · ${esc(no.t)}</span><span class="q-num num">Question ${i+1} / ${n}</span></div>
         <div class="q-txt">${texteMath(insec(qv.q))}</div>
@@ -6927,6 +7150,9 @@ async function poserQuestion(q, i, n, mode){
     let historiqueIndex=resultatIndex;
     if(S.seance?.krakenActif){const indices=S.seance.historiqueIndices ||= {};const cle="question:"+i;historiqueIndex=indices[cle] ??= Object.keys(indices).length;}
     if(window.Historique) Historique.question(q,qv,rep,act,pct,historiqueIndex);
+    QCUR.perles=repondu.filter(e=>rep[e.n]===LET[qv.ok]).length;
+    // Le reçu séance/question protège aussi une correction reprise après fermeture.
+    Coffre.ajoute(`rituel:${S.seance.id}:${i}`,QCUR.perles);
     gardeQuestion();checkpointRituel();
     // Seule une nouvelle réponse déclenche un coup : reprendre une correction
     // restaure les dégâts sans rejouer l'attaque ni modifier la coque.
@@ -7173,7 +7399,7 @@ async function rituel(mode, reprise=false){
 function podiumBateauHTML(podium, personnel=false){
   if(!podium.length)return "";
   const equipes=podium.some(e=>e.equipe),rangs=[...new Set(podium.map(e=>e.rang||1))];
-  return `<h2>${equipes?"Le podium des équipages":"Le podium du jour"}</h2><p class="be-podium-legende">${equipes?"Des perles, des défis et une aventure partagée !":"Bravo pour vos réussites !"} Les ex æquo partagent la même marche.</p><ol class="be-podium">${rangs.map(r=>{const groupe=podium.filter(e=>(e.rang||1)===r);return `<li class="be-place be-place-${r}" style="--revelation:${Math.max(0,3-r)*.65}s"><div class="be-exaequo">${groupe.map(e=>`<div>${e.equipe?Competition.drapeau(e.id):Matelots.portrait(e.n)}<b>${esc(e.prenom)}</b>${e.equipe?`<span>${String(e.points).replace(".",",")} points</span>${Competition.galerie(e)}`:personnel?`<span>${e.ok} sur ${e.faits}${e.nonLus?` · ${e.nonLus} non lu${e.nonLus>1?"s":""}`:""}</span>`:""}</div>`).join("")}</div><div class="be-marche"><span>${r}${r===1?"er":"e"}${groupe.length>1?" ex æquo":""}</span></div></li>`;}).join("")}</ol>`;
+  return `<h2>${equipes?"Le podium des équipages":"Le podium du jour"}</h2><p class="be-podium-legende">${equipes?"Chaque bonne réponse compte pour notre aventure !":"Bravo pour vos réussites !"} Les ex æquo partagent la même marche.</p><ol class="be-podium">${rangs.map(r=>{const groupe=podium.filter(e=>(e.rang||1)===r);return `<li class="be-place be-place-${r}" style="--revelation:${Math.max(0,3-r)*.65}s"><div class="be-exaequo">${groupe.map(e=>`<div>${e.equipe?Competition.drapeau(e.id):Matelots.portrait(e.n)}<b>${esc(e.prenom)}</b>${e.equipe?`<span>${String(e.points).replace(".",",")} points</span>${Competition.galerie(e)}`:personnel?`<span>${e.ok} sur ${e.faits}${e.nonLus?` · ${e.nonLus} non lu${e.nonLus>1?"s":""}`:""}</span>`:""}</div>`).join("")}</div><div class="be-marche"><span>${r}${r===1?"er":"e"}${groupe.length>1?" ex æquo":""}</span></div></li>`;}).join("")}</ol>`;
 }
 async function bilan(res, gagne, mode){
   const generation=GEN;
@@ -7187,14 +7413,14 @@ async function bilan(res, gagne, mode){
     return `<li style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #E3ECF0"><span class="chip" style="background:${m.c}">${esc(m.nom)}</span><span style="flex:1">${esc(n.t)}</span><b class="num" style="color:${moy>=.7?"var(--ok)":moy>=.4?"#B86E0A":"var(--ko)"}">${Math.round(moy*100)} %</b></li>`; }).join("");
   reussitesRituel.notions=Object.entries(par).map(([id,arr])=>({titre:matiere(id).n.t,pct:Math.round(arr.reduce((a,b)=>a+b,0)/arr.length*100)}));
   emitQ();
-  if(competition && Object.values(scoresRituel||{}).some(e=>e.faits))await Competition.ceremonie(competition,podiumRituel);
+  // Le coffre permanent remplace la succession coffre/podium/étoiles.
   if(generation!==GEN)return new Promise(()=>{});
   const p = position(S.milles), port=escaleAuPort(), perdu=!!S.seance?.naufrage;
   majBarre(); majMer();
   layer.innerHTML = `<div class="be-bilan${podiumRituel.length?" avec-podium":""}"><div class="carte${podiumRituel.length?"":" avec-perro"}">${podiumRituel.length?"":perro("bravo","coin")}<div>
     <div class="msg-big">${perdu?"Traversée perdue · on prépare la revanche":port ? `Terre en vue : ${esc(ESCALES[port].v)} !` : `Fin du rituel : +${gagne} milles`}</div>
     <p class="sous">${perdu?`Le bateau repartira de ${esc(ESCALES[Math.max(...S.escalesVues)].v)}. Nos escales et nos apprentissages sont conservés.`:p.fin || port===ESCALES.length-1 ? "Le tour du monde est terminé !" : port ? "Bravo l’équipage, nous voilà à bon port ! Découvrons notre escale." : `Encore ${Math.ceil(p.reste)} milles avant ${esc(ESCALES[p.i+1].v)}.`}</p>
-    ${S.seance?.krakenActif?`<p>${perdu?"Révisons les notions qui nous ont résisté pour repartir ensemble.":"Un seul bateau, toute la classe à bord."}</p>`:competition?Competition.coffreHTML(competition):"<p>Une nouvelle étape parcourue ensemble !</p>"}
+    ${CoffreUI.bilan()}
     <label for="j-txt" style="font-family:var(--display);font-weight:700;color:var(--mer);font-size:1.15rem">Le journal de bord se remplit tout seul. Un mot de l'équipage à ajouter ? (facultatif)</label>
     <div class="ligne"><input type="text" id="j-txt" value="${esc(S.seance?.note||'')}" style="flex:1;font-size:1.15rem" maxlength="200" placeholder="Ex. : On a revu les types de phrases et les tables de 4."></div>
     <div class="centre"><button class="btn prim big" data-go="ok">${(!perdu&&(DEMO?S.seance?.escaleDemo:rythmeVoyage(S).arrivee||escaleVendredi(dateFinSeance())))?"Découvrir l’escale et écrire la carte":"Terminer"}</button></div></div></div>${podiumRituel.length?`<section class="carte be-palmares">${podiumBateauHTML(podiumRituel)}</section>`:""}</div>`;
@@ -7622,8 +7848,8 @@ function rendR(){
       <p class="note"><b>Les escales du vendredi.</b> Le bateau rejoint l’escale après une séance terminée sans naufrage. Si le Kraken gagne, il faut réussir une nouvelle tentative. Sans le Kraken, l’arrivée reste garantie.</p>
       <div class="ligne"><label style="min-width:18ch" for="r-son">Bruitages et voix</label><input type="checkbox" id="r-son" ${R.son?"checked":""}></div>
       <p class="note">Le volume commun de la musique et des vagues se règle dans l’onglet « Thématique ».</p>
-      <div class="ligne"><label for="r-recompense">Fin de séance</label><select id="r-recompense"><option value="podium" ${R.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${R.recompense==="collectif"?"selected":""}>Défi collectif</option></select></div>
-      <p class="note">Défi collectif : viser 70 % de bonnes réponses ensemble. Les progrès personnels restent dans le suivi et sur le téléphone.</p>
+      <div class="ligne"><label for="r-recompense">Fin de séance</label><select id="r-recompense"><option value="podium" ${R.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${R.recompense==="collectif"?"selected":""}>Bilan collectif</option></select></div>
+      <h3>Le coffre de la classe</h3><p>Une bonne réponse lue = une perle. Les perles sont conservées entre les séances, même après un naufrage.</p><div class="ligne"><label for="r-coffre">Perles pour remplir un coffre</label><input type="number" id="r-coffre" min="50" max="5000" step="50" value="${Coffre.resume().objectif}" style="width:7em"></div><button class="btn" data-coffre-ouvrir>Voir notre coffre et nos trésors</button>
       <h3>Relier le téléphone</h3>
       <p class="note">${window.BATEAU_AUTONOME?"Dans l'onglet « Téléphone » : un QR code à viser avec l'iPhone, qui ouvre l'appli en « Téléphone de la maîtresse ».":"Sur ton téléphone, ouvre ce même lien (connectée au même compte Claude) et choisis « Téléphone de la maîtresse »."} La pastille en haut passe au vert. ${window.BATEAU_AUTONOME?"Pendant une question, filme les cartes levées : les réponses arrivent ici en direct.":"Pendant une question, prends une photo de la classe cartes levées : les réponses arrivent ici toutes seules."} Sans téléphone, le jeu marche aussi avec les ardoises : tu indiques simplement combien d'élèves ont trouvé.</p>
       <h3>Recommencer le voyage</h3>
@@ -7638,6 +7864,7 @@ function rendR(){
       if(t.id==="r-nbq") R.nbQ=Math.max(2,Math.min(15,+t.value||6));
       if(t.id==="r-pil") R.piloteTous=+t.value;
       if(t.id==="r-sq") R.stormQ=Math.max(3,Math.min(15,+t.value||6));
+      if(t.id==="r-coffre"){Coffre.objectif(+t.value);t.value=Coffre.resume().objectif;}
       if(t.id==="r-recompense") R.recompense=t.value;
       if(t.id==="r-kraken"&&!enJeu) R.kraken=t.checked;
       if(t.id==="r-kraken-seuil"&&!enJeu)R.krakenSeuil=+t.value;
@@ -8551,12 +8778,12 @@ function recompensesRituel(res, scores, mode){
   return {collectif, cle, scores:copieJeu(scores||{}), texte:reponses
     ? `${justes} bonnes réponses sur ${reponses} lues. ${complets===l.length && complets ? "Toutes les cartes ont été lues à chaque question !" : `${complets} élève${complets>1?"s":""} avec toutes les réponses lues.`}`
     : "Bravo pour cette révision ensemble !",
-    objectif:reponses ? (justes/reponses>=.7 ? "Défi de l'équipage réussi : au moins 70 % de bonnes réponses !" : "Cap sur 70 % de bonnes réponses lors d'une prochaine révision.") : "",
+    objectif:"",
     progres:progres.map(e=>`${e.prenom} : ${Math.round(e.ok/e.faits*100)} % (${Math.round(avant[e.n].ok/avant[e.n].faits*100)} % lors du dernier rituel sur ces notions)`) };
 }
 function htmlRecompenses(r, personnel=false){
   if (!r) return "";
-  return `<section class="be-reussites"><h3>${r.collectif ? "Le défi de l'équipage" : "Nos réussites"}</h3><p>${esc(r.texte)}</p>${r.collectif&&r.objectif?`<p><b>${esc(r.objectif)}</b></p>`:""}${personnel&&r.progres.length?`<h3>Des progrès à encourager</h3><ul>${r.progres.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}${personnel&&r.notions?.length?`<h3>Notions de la séance</h3><ul>${r.notions.map(n=>`<li>${esc(n.titre)} : ${n.pct} %</li>`).join("")}</ul>`:""}</section>`;
+  return `<section class="be-reussites"><h3>${r.collectif ? "Notre bilan collectif" : "Nos réussites"}</h3><p>${esc(r.texte)}</p>${r.collectif&&r.objectif?`<p><b>${esc(r.objectif)}</b></p>`:""}${personnel&&r.progres.length?`<h3>Des progrès à encourager</h3><ul>${r.progres.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}${personnel&&r.notions?.length?`<h3>Notions de la séance</h3><ul>${r.notions.map(n=>`<li>${esc(n.titre)} : ${n.pct} %</li>`).join("")}</ul>`:""}</section>`;
 }
 
 const Preparation = (()=>{
@@ -8781,7 +9008,7 @@ const Preparation = (()=>{
       rendChoix();box.querySelector("select").focus();
     }
     function rend(){
-      z.innerHTML=`<div class="prep-champs"><label>Type de séance<select id="prep-mode">${Object.entries(MODES).map(([k,t])=>`<option value="${k}" ${s.mode===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Date de la séance<input type="date" id="prep-date" value="${esc(s.date)}"></label><label>Objectif<select id="prep-objectif">${Object.entries(OBJECTIFS).map(([k,t])=>`<option value="${k}" ${s.objectif===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Questions<input id="prep-nb" type="number" min="1" max="15" value="${nombre}"></label><label>Fin de séance<select id="prep-recompense"><option value="podium" ${s.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${s.recompense==="collectif"?"selected":""}>Défi collectif</option></select></label></div>
+      z.innerHTML=`<div class="prep-champs"><label>Type de séance<select id="prep-mode">${Object.entries(MODES).map(([k,t])=>`<option value="${k}" ${s.mode===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Date de la séance<input type="date" id="prep-date" value="${esc(s.date)}"></label><label>Objectif<select id="prep-objectif">${Object.entries(OBJECTIFS).map(([k,t])=>`<option value="${k}" ${s.objectif===k?"selected":""}>${t}</option>`).join("")}</select></label><label>Questions<input id="prep-nb" type="number" min="1" max="15" value="${nombre}"></label><label>Fin de séance<select id="prep-recompense"><option value="podium" ${s.recompense!=="collectif"?"selected":""}>Podium avec ex æquo</option><option value="collectif" ${s.recompense==="collectif"?"selected":""}>Bilan collectif</option></select></label></div>
         <p class="note">Chaque mode garde sa propre préparation. Son bouton lancera ces questions dans l’ordre choisi. Sans préparation, il proposera des questions aléatoires.</p>
         <p id="prep-vendredi" class="prep-info">Vendredi matin : le rituel avec Kiko, la découverte de l’escale, puis la carte postale comme travail d’écriture du jour.</p>
         ${s.notions?.length?`<p>Révision ciblée : ${s.notions.map(n=>esc(etat.notions.find(x=>x.id===n)?.t||n)).join(", ")}. <button class="btn petit" data-prep="toutes">Toutes les notions</button></p>`:""}
@@ -8880,7 +9107,7 @@ const KrakenJeu=(()=>{
     if(!ritExtra.some(t=>t.startsWith("Naufrage")))ritExtra.push(`Naufrage : retour au dernier port, ${ESCALES[Kraken.dernierPort(S)].v}.`);
     checkpointRituel();Mer.orage(0);Son.pluie(false);majBarre();majMer();Mer.snap();emitQ();
     if(!s.naufrageBilan){
-      direct("naufrage",{titre:"Le bateau a coulé…",texte:`Traversée perdue. Retour à ${ESCALES[Kraken.dernierPort(S)].v}.`,detail:"Nos escales et nos apprentissages restent acquis. Préparons notre revanche ensemble !",action:"naufrage-bilan",bouton:"Voir le bilan · préparer la revanche"},nouveau);
+      direct("naufrage",{titre:"Le bateau a coulé…",texte:`Traversée perdue. Retour à ${ESCALES[Kraken.dernierPort(S)].v}.`,detail:"Nos perles et nos trésors restent à nous. Préparons notre revanche ensemble !",action:"naufrage-bilan",bouton:"Voir le bilan · préparer la revanche"},nouveau);
       await attendre();s.naufrageBilan=true;checkpointRituel();
     }
     // Les réponses enregistrées dans les anciennes versions restent dans le bilan.
@@ -8950,7 +9177,7 @@ const ICONES_LUCIDE = {
 };
 const iconeLucide = nom => ICONES_LUCIDE[nom] || ICONES_LUCIDE.star;
 
-/* Équipages et défis : les résultats détaillés restent sur le téléphone.
+/* Équipages : les résultats détaillés restent sur le téléphone.
    La composition est enregistrée dans classe/actuelle, jamais dans le code publié. */
 const Competition = (() => {
   const ROLES = [
@@ -9053,60 +9280,39 @@ const Competition = (() => {
     const membres=g.membres || plan()?.groupes.find(x=>x.id===g.id)?.membres || [];
     return `<ul class="eq-galerie" aria-label="Les matelots de ${esc(role(g.id).nom)}">${membres.map(n=>`<li>${Matelots.portrait(n)}<span>${esc(nom(n))}</span></li>`).join("")}</ul>`;
   }
-  // Préparer avant la première réponse : les objectifs ne changent jamais en cours de séance.
+  // La composition seule est figée avant la première réponse.
   function prepare(qs,presents,mode){
-    const p=plan(), prof=profils(presents,historique()), defis={};
-    presents.forEach(e=>{
-      const indices=qs.map((q,i)=>prof[e.n].notions[q.n]?.length>=3?i:-1).filter(i=>i>=0);
-      const connus=indices.length>=3, choisis=connus?indices:qs.map((_,i)=>i);
-      const attendu=connus?choisis.reduce((s,i)=>{const a=prof[e.n].notions[qs[i].n];return s+a.reduce((x,y)=>x+y,0)/a.length;},0):choisis.length*.5;
-      const maintien=connus&&attendu/choisis.length>=.85;
-      const cible=connus ? maintien?Math.ceil(.85*choisis.length):Math.min(choisis.length,Math.floor(attendu)+1) : Math.max(1,Math.ceil(attendu));
-      defis[e.n]={indices:choisis,cible,type:connus?(maintien?"cap":"progres"):"decouverte",titre:connus?(maintien?"Garder le cap":"Un pas de plus"):"Premières perles"};
-    });
-    return {v:1,plan:p?copie(p):null,defis,collectif:mode==="collectif",individuel:mode==="individuel"};
+    const p=plan();
+    return {v:2,plan:p?copie(p):null,collectif:mode==="collectif",individuel:mode==="individuel"};
   }
   function resultats(comp,scores,questions){
     if(!comp)return null;
-    const defis=Object.entries(comp.defis||{}).map(([n,d])=>{
-      let faits=0,ok=0;
-      d.indices.forEach(i=>{const q=questions[i],r=q?.r?.[n];if(r){faits++;if(r===q.ok)ok++;}});
-      return {n:+n,prenom:scores[n]?.prenom||nom(+n),...d,faits,ok,reussi:d.indices.length>=2&&faits===d.indices.length&&ok>=d.cible};
-    });
     const l=Object.values(scores||{}).filter(e=>e.faits>0);
-    const perles=l.reduce((s,e)=>s+e.ok,0),bonus=defis.filter(d=>d.reussi).length;
+    const perles=l.reduce((s,e)=>s+e.ok,0);
     const equipe=(comp.plan?.groupes||[]).map(g=>{
       const participants=g.membres.map(n=>scores[n]).filter(e=>e?.faits>0);
-      const defi=defis.filter(d=>g.membres.includes(d.n)&&d.reussi).length;
       // Chaque participant pèse autant, quelle que soit la taille de son équipage.
-      const points=participants.length?Math.round(1000*(.9*participants.reduce((s,e)=>s+e.ok/e.faits,0)+.1*defi)/participants.length)/10:0;
-      return {equipe:true,id:g.id,prenom:role(g.id).nom,points,defis:defi,participants:participants.length,membres:g.membres.slice()};
+      const points=participants.length?Math.round(1000*participants.reduce((s,e)=>s+e.ok/e.faits,0)/participants.length)/10:0;
+      return {equipe:true,id:g.id,prenom:role(g.id).nom,points,participants:participants.length,membres:g.membres.slice()};
     }).filter(g=>g.participants);
     equipe.sort((a,b)=>b.points-a.points||ROLES.findIndex(r=>r.id===a.id)-ROLES.findIndex(r=>r.id===b.id));
     equipe.forEach((g,i)=>{g.rang=i&&g.points===equipe[i-1].points?equipe[i-1].rang:i+1;});
-    return {perles,bonus,objectif:Math.max(1,Math.ceil(l.reduce((s,e)=>s+e.faits,0)*.7)),defis,equipes:equipe,collectif:comp.collectif,individuel:comp.individuel};
+    // Champs vides pour les téléphones encore sur l’ancienne version du jeu.
+    return {perles,defis:[],bonus:0,equipes:equipe,collectif:comp.collectif,individuel:comp.individuel};
   }
   function podium(r,scores){return r&&!r.individuel&&r.equipes.length?r.equipes.filter(g=>g.rang<=3):classementRituel(scores);}
-  function coffreHTML(r){
-    const atteint=r.perles>=r.objectif;
-    return `<div class="eq-coffre"><img src="img/tresor.webp" alt="Le coffre de la classe"><div><span class="eq-surtitre">Le trésor de toute la classe</span><h2>${atteint?"Le coffre est ouvert !":"Notre trésor grandit !"}</h2><p class="eq-grand">${r.perles} perle${r.perles>1?"s":""}${r.bonus?` <span>+ ${r.bonus} étoile${r.bonus>1?"s":""} de défi</span>`:""}</p><div class="eq-jauge" role="progressbar" aria-label="Objectif collectif" aria-valuenow="${Math.min(r.perles,r.objectif)}" aria-valuemin="0" aria-valuemax="${r.objectif}"><i style="width:${Math.min(100,100*r.perles/r.objectif)}%"></i></div><p>${atteint?"Chaque réussite a aidé notre bateau à avancer.":"Chaque perle gagnée compte. Continuons à apprendre ensemble !"}</p></div></div>`;
-  }
-  function reussitesHTML(r){
-    const defis=r.defis.filter(d=>d.reussi), groupes=r.equipes.filter(g=>g.defis);
-    return `<div class="eq-reussites">${groupes.length?groupes.map(g=>`<article class="eq-distinction">${drapeau(g.id)}<h3>${esc(g.prenom)}</h3><p>${g.defis} défi${g.defis>1?"s":""} personnel${g.defis>1?"s":""} accompli${g.defis>1?"s":""}</p></article>`).join(""):defis.map(d=>`<article class="eq-distinction">${iconeLucide("star")}<h3>${esc(d.prenom)}</h3><p>Défi personnel accompli</p></article>`).join("")}</div>${!defis.length?`<p class="eq-ensemble">${r.perles?"Les premières perles sont dans le coffre. Les défis continuent à la prochaine séance !":"Nous avons pris le temps de chercher ensemble. Une nouvelle occasion nous attend !"}</p>`:""}`;
-  }
-  function priveHTML(r){
-    if(!r)return "";
-    return `<section class="be-reussites"><h3>Défis personnels</h3><p class="aut-note">Chaque défi accompli apporte une étoile. Les objectifs individuels restent sur ton téléphone.</p><ul class="eq-defis-prives">${r.defis.map(d=>`<li><strong>${esc(d.prenom)}</strong> · ${esc(d.titre)} : ${d.cible} réussite${d.cible>1?"s":""} sur ${d.indices.length}<small>${d.reussi?"★ Accompli":d.faits<d.indices.length?"Lecture incomplète — aucun jugement":"À poursuivre"}</small></li>`).join("")}</ul></section>`;
-  }
+  function coffreHTML(){return typeof CoffreUI!=="undefined"?CoffreUI.bilan():"";}
+  // Les anciennes séances gardent leurs données privées, sans réintroduire les étoiles.
+  function reussitesHTML(){return "";}
+  function priveHTML(){return "";}
   async function ceremonie(r,podium){
-    const pages=["coffre",...(!r.collectif&&podium.length?["podium"]:[]),"reussites"],s=S.seance;
+    const pages=["coffre",...(!r.collectif&&podium.length?["podium"]:[])],s=S.seance;
     if(s?.ceremonieFinie)return;
     let i=Math.min(s?.ceremonieEtape||0,pages.length-1);
     const gen=GEN;
     while(i<pages.length){
       const p=pages[i];if(p==="podium"){try{Son.fanfare();}catch(e){}}if(s){s.ceremonieEtape=i;sauve();}
-      layer.innerHTML=`<section class="carte eq-fete" aria-label="Cérémonie de fin de séance">${p==="podium"?`<div class="eq-confettis" aria-hidden="true">${Array.from({length:14},(_,k)=>`<i style="--k:${k};--eq:${ROLES[k%ROLES.length].couleur}"></i>`).join("")}</div>`:""}<div class="eq-etapes">${pages.map((x,k)=>`<span ${k===i?'aria-current="step"':""}>${["Le trésor","Le podium","Nos réussites"][x==="coffre"?0:x==="podium"?1:2]}</span>`).join("")}</div>${p==="coffre"?coffreHTML(r):p==="podium"?podiumBateauHTML(podium):`<span class="eq-surtitre">Chaque réussite compte</span><h2>Les étoiles du voyage</h2>${reussitesHTML(r)}`}<div class="centre"><button class="btn prim big" data-go="ceremonie-suite">${i===pages.length-1?"Écrire le journal de bord":pages[i+1]==="podium"?"Découvrir le podium":"Célébrer les réussites"}</button></div></section>`;
+      layer.innerHTML=`<section class="carte eq-fete" aria-label="Bilan de la séance">${p==="podium"?`<div class="eq-confettis" aria-hidden="true">${Array.from({length:14},(_,k)=>`<i style="--k:${k};--eq:${ROLES[k%ROLES.length].couleur}"></i>`).join("")}</div>`:""}<div class="eq-etapes">${pages.map((x,k)=>`<span ${k===i?'aria-current="step"':""}>${x==="coffre"?"Le coffre de la classe":"Le podium"}</span>`).join("")}</div>${p==="coffre"?coffreHTML():podiumBateauHTML(podium)}<div class="centre"><button class="btn prim big" data-go="ceremonie-suite">${i===pages.length-1?"Écrire le journal de bord":"Découvrir le podium"}</button></div></section>`;
       await attendre();if(gen!==GEN)return new Promise(()=>{});i++;
     }
     if(s){s.ceremonieFinie=true;sauve();}
@@ -9117,7 +9323,7 @@ const Competition = (() => {
     let i=-1;
     while(i<=p.groupes.length){
       const fin=i===p.groupes.length;
-      layer.innerHTML=`<section class="carte eq-presentation"><span class="eq-surtitre">La cérémonie des équipages</span>${i<0?`${perro("salut","eq-kiko")}<h1>Un bateau, plusieurs missions !</h1><p class="eq-intro">Pour notre voyage, nous formons ${p.groupes.length} équipages.<br>Chaque mission est indispensable. Chaque élève a sa place.</p><p>Les bonnes réponses apportent des perles. Les défis personnels apportent des étoiles. Ensemble, nous remplissons le coffre de la classe !</p>`:fin?`<h1>Tout l’équipage est à bord !</h1><div class="eq-flotte">${p.groupes.map(g=>carte(g)).join("")}</div><p class="eq-ensemble">Nous cherchons, nous nous entraidons et nous progressons ensemble.</p>`:`<span class="eq-num">Équipage ${i+1} sur ${p.groupes.length}</span>${carte(p.groupes[i],true)}`}<div class="centre">${i>=0?`<button class="btn" data-go="equipage-precedent">Précédent</button>`:""}<button class="btn prim big" data-go="equipage-suite">${fin?"L’aventure peut commencer !":i<0?"Découvrir les équipages":i===p.groupes.length-1?"Réunir tout l’équipage":"Accueillir l’équipage suivant"}</button></div></section>`;
+      layer.innerHTML=`<section class="carte eq-presentation"><span class="eq-surtitre">La cérémonie des équipages</span>${i<0?`${perro("salut","eq-kiko")}<h1>Un bateau, plusieurs missions !</h1><p class="eq-intro">Pour notre voyage, nous formons ${p.groupes.length} équipages.<br>Chaque mission est indispensable. Chaque élève a sa place.</p><p>Chaque bonne réponse ajoute une perle au coffre de la classe. Quand il est plein, un trésor vient décorer notre bateau !</p>`:fin?`<h1>Tout l’équipage est à bord !</h1><div class="eq-flotte">${p.groupes.map(g=>carte(g)).join("")}</div><p class="eq-ensemble">Nous cherchons, nous nous entraidons et nous progressons ensemble.</p>`:`<span class="eq-num">Équipage ${i+1} sur ${p.groupes.length}</span>${carte(p.groupes[i],true)}`}<div class="centre">${i>=0?`<button class="btn" data-go="equipage-precedent">Précédent</button>`:""}<button class="btn prim big" data-go="equipage-suite">${fin?"L’aventure peut commencer !":i<0?"Découvrir les équipages":i===p.groupes.length-1?"Réunir tout l’équipage":"Accueillir l’équipage suivant"}</button></div></section>`;
       const go=await attendre();if(gen!==GEN)return new Promise(()=>{});
       if(go==="equipage-precedent"){i--;continue;}i++;
     }
@@ -9131,7 +9337,7 @@ const Competition = (() => {
     const rend=()=>{
       const p=brouillon||plan(),l=liste(),prof=profils(l,historique());
       const connus=Object.values(prof).filter(e=>e.faits>=8).length;
-      s.innerHTML=`<div class="aa-barre"><button class="aa-retour" id="eq-retour">${Accueil.IC.retour}Accueil</button><h1>Les équipages</h1></div><div class="aa-bloc"><p>Des équipes de force comparable, avec des niveaux mélangés. Leur composition reste stable jusqu’à ce que tu la modifies.</p><p class="aut-note">Résultats des 35 derniers jours, séances terminées : ${connus} élève${connus>1?"s":""} avec au moins 8 réponses lues. Les absences et les cartes non lues ne comptent pas comme des erreurs.</p>${connus<l.length?"<p class=\"aut-note\">Pour les élèves ayant peu de résultats, la répartition est provisoire : ajuste les groupes selon ce que tu observes en classe.</p>":""}${p?`<div class="eq-gestion">${p.groupes.map(g=>`<article style="--eq:${role(g.id).couleur}"><h2>${drapeau(g.id)}${esc(role(g.id).nom)}</h2>${g.membres.filter(n=>l.some(e=>e.n===n)).map(n=>`<label><span class="eq-identite">${Matelots.portrait(n)}<span>${esc(nom(n))}</span></span><select data-equipe-eleve="${n}" aria-label="Équipage de ${esc(nom(n))}">${p.groupes.map(x=>`<option value="${x.id}" ${g.id===x.id?"selected":""}>${esc(role(x.id).nom)}</option>`).join("")}</select></label>`).join("")}</article>`).join("")}</div>${l.some(e=>!p.groupes.some(g=>g.membres.includes(e.n)))?`<p>Des élèves n’ont pas encore d’équipage. Utilise « Rééquilibrer » pour les intégrer.</p>`:""}`:"<p>Les équipages ne sont pas encore formés.</p>"}<div class="aa-actions">${brouillon?`<button class="btn prim" id="eq-appliquer">Utiliser cette répartition</button><button class="btn" id="eq-annuler">Annuler</button>`:`<button class="btn" id="eq-repartir" ${l.length<2?"disabled":""}>${p?"Rééquilibrer les équipages":"Former les équipages"}</button>${p?'<button class="btn prim" id="eq-presenter">Présenter les équipages au tableau</button>':""}`}</div><p class="aut-note">La cérémonie présente les personnages, les prénoms et les missions, sans résultats individuels. Le score d’équipe compte pour 90 points de réussite et 10 points de défis ; chaque participant pèse autant. Le score repart à zéro à chaque partie.</p></div>`;
+      s.innerHTML=`<div class="aa-barre"><button class="aa-retour" id="eq-retour">${Accueil.IC.retour}Accueil</button><h1>Les équipages</h1></div><div class="aa-bloc"><p>Des équipes de force comparable, avec des niveaux mélangés. Leur composition reste stable jusqu’à ce que tu la modifies.</p><p class="aut-note">Résultats des 35 derniers jours, séances terminées : ${connus} élève${connus>1?"s":""} avec au moins 8 réponses lues. Les absences et les cartes non lues ne comptent pas comme des erreurs.</p>${connus<l.length?"<p class=\"aut-note\">Pour les élèves ayant peu de résultats, la répartition est provisoire : ajuste les groupes selon ce que tu observes en classe.</p>":""}${p?`<div class="eq-gestion">${p.groupes.map(g=>`<article style="--eq:${role(g.id).couleur}"><h2>${drapeau(g.id)}${esc(role(g.id).nom)}</h2>${g.membres.filter(n=>l.some(e=>e.n===n)).map(n=>`<label><span class="eq-identite">${Matelots.portrait(n)}<span>${esc(nom(n))}</span></span><select data-equipe-eleve="${n}" aria-label="Équipage de ${esc(nom(n))}">${p.groupes.map(x=>`<option value="${x.id}" ${g.id===x.id?"selected":""}>${esc(role(x.id).nom)}</option>`).join("")}</select></label>`).join("")}</article>`).join("")}</div>${l.some(e=>!p.groupes.some(g=>g.membres.includes(e.n)))?`<p>Des élèves n’ont pas encore d’équipage. Utilise « Rééquilibrer » pour les intégrer.</p>`:""}`:"<p>Les équipages ne sont pas encore formés.</p>"}<div class="aa-actions">${brouillon?`<button class="btn prim" id="eq-appliquer">Utiliser cette répartition</button><button class="btn" id="eq-annuler">Annuler</button>`:`<button class="btn" id="eq-repartir" ${l.length<2?"disabled":""}>${p?"Rééquilibrer les équipages":"Former les équipages"}</button>${p?'<button class="btn prim" id="eq-presenter">Présenter les équipages au tableau</button>':""}`}</div><p class="aut-note">La cérémonie présente les personnages, les prénoms et les missions, sans résultats individuels. Le score d’équipe est la moyenne des réussites, sur 100 points ; chaque participant pèse autant. Le score repart à zéro à chaque partie, les perles restent dans le coffre commun.</p></div>`;
       s.querySelector("#eq-retour").onclick=()=>Accueil.accueilTel();
       s.querySelector("#eq-repartir")?.addEventListener("click",()=>{brouillon=propose(l,historique());rend();});
       s.querySelector("#eq-annuler")?.addEventListener("click",()=>{brouillon=null;rend();});
@@ -9143,6 +9349,239 @@ const Competition = (() => {
   return {ROLES,role,propre,plan,profils,propose,enregistre,assure,prepare,resultats,podium,coffreHTML,reussitesHTML,priveHTML,ceremonie,presentation,ouvre,drapeau,galerie};
 })();
 window.Competition=Competition;
+
+/* Un coffre commun : la même progression sur le téléphone et le bateau de la classe. */
+window.CoffreUI = (() => {
+  const objets = [
+    {id:"pavillon",nom:"Pavillon doré",texte:"Notre premier trésor flotte tout en haut du mât."},
+    {id:"dauphin",nom:"Dauphin de proue",texte:"Un dauphin turquoise accompagne nos traversées."},
+    {id:"constellation",nom:"Voile des constellations",texte:"Des étoiles brillent sur notre petite voile."},
+    {id:"lanternes",nom:"Lanternes lumineuses",texte:"Une guirlande dorée éclaire notre bateau."}
+  ];
+  const connu=id=>objets.find(o=>o.id===id);
+  const html=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const nombre=n=>Math.max(0,Math.round(Number(n)||0));
+  function resume(valeur){
+    const r=valeur||window.Coffre?.resume?.()||{};
+    return {...r,perles:nombre(r.perles),objectif:Math.max(1,nombre(r.objectif)||300),total:nombre(r.total),
+      debloques:(r.debloques||[]).filter(connu),equipes:(r.equipes||[]).filter(connu),nouveaux:(r.nouveaux||[]).filter(connu)};
+  }
+  const etoile=(x,y,r=7)=>`M${x} ${y-r}l${r*.25} ${r*.72} ${r*.75} ${r*.28}-${r*.75} ${r*.28}-${r*.25} ${r*.72}-${r*.25}-${r*.72}-${r*.75}-${r*.28} ${r*.75}-${r*.28}Z`;
+  const dessins={
+    pavillon:`<path d="M136 15V110" stroke="#765020" stroke-width="8" stroke-linecap="round"/><path d="M132 24C99 11 65 41 21 23L36 53 18 74C64 96 102 60 132 76Z" fill="#F8C64D" stroke="#7B501A" stroke-width="4" stroke-linejoin="round"/><path d="M31 34C66 46 106 24 123 30M32 69C76 83 102 56 124 63" fill="none" stroke="#FFEBA7" stroke-width="4"/><path d="${etoile(83,53,19)}" fill="#173B51"/><circle cx="136" cy="13" r="7" fill="#FFDF79" stroke="#7B501A" stroke-width="3"/>`,
+    dauphin:`<path d="M58 98H104M76 95V79" fill="none" stroke="#BB873C" stroke-width="9" stroke-linecap="round"/><path d="M23 70C31 39 66 29 98 43L105 34 115 45 136 52 125 59C112 66 98 60 89 59 84 81 76 89 68 86L70 67C54 69 45 69 37 80L40 98 25 89 12 91 23 76Z" fill="#45BAC0" stroke="#17465B" stroke-width="4" stroke-linejoin="round"/><path d="M41 66C61 49 84 51 106 57 92 58 86 67 81 73L78 61C65 58 53 65 41 71Z" fill="#D6F5EC"/><path d="M56 41L52 24 78 38" fill="#45BAC0" stroke="#17465B" stroke-width="4" stroke-linejoin="round"/><circle cx="110" cy="48" r="2.8" fill="#14354A"/>`,
+    constellation:`<path d="M119 12C101 44 68 84 24 101L125 106Z" fill="#25476D" stroke="#BC9044" stroke-width="4" stroke-linejoin="round"/><path d="M91 54L81 73 101 87 65 93" fill="none" stroke="#A8D4EA" stroke-width="2"/>${[[91,54],[81,73],[101,87],[65,93]].map(([x,y])=>`<path d="${etoile(x,y,6)}" fill="#FFE8A5"/>`).join("")}<circle cx="108" cy="69" r="2" fill="#D6F0FF"/><circle cx="96" cy="99" r="2" fill="#D6F0FF"/>`,
+    lanternes:`<path d="M13 26Q78 59 147 26" fill="none" stroke="#755323" stroke-width="4" stroke-linecap="round"/>${[[34,37],[80,44],[126,37]].map(([x,y])=>`<g transform="translate(${x} ${y})"><path d="M0 0V12" stroke="#765323" stroke-width="3"/><circle cx="0" cy="35" r="27" fill="#F8D77B" opacity=".24"/><rect x="-13" y="15" width="26" height="33" rx="8" fill="#FFDB71" stroke="#88591F" stroke-width="3"/><path d="M-13 19H13M-13 43H13M0 20V43" stroke="#BB7B29" stroke-width="2"/><rect x="-10" y="10" width="20" height="7" rx="3" fill="#735327"/><path d="M-6 28V36" stroke="#FFF9DC" stroke-width="4" stroke-linecap="round"/></g>`).join("")}`
+  };
+  function miniature(id){return `<svg class="coffre-objet-image" viewBox="0 0 160 120" aria-hidden="true" focusable="false">${dessins[id]||""}</svg>`;}
+  function coffre(ouvert=false){
+    return `<span class="coffre-dessin${ouvert?" coffre-dessin-ouvert":""}" aria-hidden="true"><img class="coffre-image-fermee" src="img/coffre-ferme.png" alt="" width="1254" height="1254" decoding="async"><img class="coffre-image-ouverte" src="img/coffre-ouvert.png" alt="" width="1254" height="1254" decoding="async"></span>`;
+  }
+  function progression(r){
+    const fini=r.debloques.length===objets.length, pret=r.nouveaux.length>0;
+    const valeur=fini||pret?r.objectif:Math.min(r.perles,r.objectif),ratio=Math.min(100,valeur/r.objectif*100);
+    return {fini,pret,valeur,ratio,texte:fini?"Collection complète !":`${valeur} / ${r.objectif} perles`};
+  }
+  function compact(valeur){
+    const r=resume(valeur),p=progression(r);
+    return `<button type="button" class="coffre-compact${p.pret?" coffre-a-ouvrir":""}" data-coffre-ouvrir data-coffre-zone="compact" aria-label="Coffre de la classe. ${html(p.texte)}.${p.pret?" Un trésor est à découvrir.":" Ouvrir le coffre et la collection."}">${coffre(p.pret)}<span class="coffre-compact-corps"><span class="coffre-compact-ligne"><strong>Notre coffre</strong><span class="coffre-compteur">${p.texte}</span></span><span class="coffre-jauge" aria-hidden="true"><i style="width:${p.ratio}%"></i></span></span><span class="coffre-compact-suite">${p.pret?"Trésor !":"›"}</span></button>`;
+  }
+  function bilan(valeur){
+    const r=resume(valeur),p=progression(r);
+    return `<section class="coffre-bilan" data-coffre-zone="bilan">${coffre(p.pret)}<div class="coffre-bilan-corps"><h3>${p.pret?"Un trésor nous attend !":p.fini?"Notre bateau a tous ses trésors !":"Notre coffre de classe"}</h3><p>${p.pret?"Ensemble, nous avons rempli le coffre.":p.fini?"Tous les accessoires sont dans notre collection.":"Chaque bonne réponse ajoute une perle."}</p><div class="coffre-bilan-progression"><strong>${p.texte}</strong><span class="coffre-jauge" role="progressbar" aria-label="Perles du coffre" aria-valuemin="0" aria-valuemax="${r.objectif}" aria-valuenow="${p.valeur}"><i style="width:${p.ratio}%"></i></span></div><button class="btn ${p.pret?"jaune":"petit"}" data-coffre-ouvrir>${p.pret?"Découvrir notre trésor":"Voir notre coffre"}</button></div></section>`;
+  }
+  let dialogue=null,revele=null,mutation=false,precedent=null,avecReglages=false;
+  function ferme(){const d=dialogue;dialogue=null;revele=null;d?.remove();if(precedent?.isConnected)precedent.focus();else document.querySelector('[data-coffre-ouvrir]')?.focus();}
+  function reglages(r){
+    if(!avecReglages)return "";
+    return `<form class="coffre-reglages"><h3>Réglage du coffre</h3><label for="coffre-objectif">Nombre de perles pour un trésor</label><div class="coffre-reglages-ligne"><input id="coffre-objectif" name="objectif" type="number" inputmode="numeric" min="50" max="5000" step="1" required value="${r.objectif}"><button type="submit" class="btn petit">Enregistrer</button></div><p class="coffre-note">300 perles au départ. Ce réglage s’applique au coffre en cours. Les trésors gagnés restent dans la collection.</p><p class="coffre-reglages-retour" role="status"></p></form>`;
+  }
+  function corps(r){
+    const p=progression(r),nouveau=connu(r.nouveaux[0]);
+    if(nouveau){
+      const ouvert=revele===nouveau.id;
+      return `<div class="coffre-decouverte${ouvert?" est-revele":""}"><p class="coffre-surtitre">Bravo à toute la classe</p><h3>${ouvert?html(nouveau.nom):"Notre coffre est plein !"}</h3><div class="coffre-surprise">${ouvert?miniature(nouveau.id):coffre(false)}</div><p>${ouvert?nouveau.texte:"Nous avons gagné une surprise pour notre bateau."}</p>${ouvert?`<button class="btn jaune" data-coffre-installer="${nouveau.id}">Installer sur notre bateau</button><button class="coffre-lien" data-coffre-garder="${nouveau.id}">Garder dans notre collection</button>`:`<button class="btn jaune" data-coffre-reveler="${nouveau.id}">Ouvrir notre trésor</button>`}<p class="coffre-note">Nos perles en plus sont gardées pour le prochain coffre.</p></div>`;
+    }
+    return `<div class="coffre-vue"><div class="coffre-reserve">${coffre(p.fini)}<div><p class="coffre-surtitre">Ensemble, perle après perle</p><p class="coffre-grand-compteur">${p.texte}</p><span class="coffre-jauge" role="progressbar" aria-label="Perles du coffre" aria-valuemin="0" aria-valuemax="${r.objectif}" aria-valuenow="${p.valeur}"><i style="width:${p.ratio}%"></i></span><p class="coffre-regle">${p.fini?"Nous avons gagné les quatre trésors ! Choisissons les accessoires à installer sur notre bateau.":"Chaque bonne réponse ajoute une perle. Quand le coffre est plein, nous découvrons un trésor pour notre bateau !"}</p><p class="coffre-note">Le Kraken ne prend jamais nos perles.</p></div></div><h3 class="coffre-collection-titre">Notre collection <span>${r.debloques.length} / ${objets.length}</span></h3><div class="coffre-collection">${objets.map((o,i)=>{
+      const gagne=r.debloques.includes(o.id),equipe=r.equipes.includes(o.id);
+      return `<article class="coffre-objet${gagne?" est-gagne":" est-secret"}"><div class="coffre-objet-visuel">${gagne?miniature(o.id):`<span class="coffre-mystere" aria-hidden="true">?</span>`}</div><h4>${gagne?o.nom:`Surprise ${i+1}`}</h4><p>${gagne?(equipe?"À bord de notre bateau":"Dans notre collection"):"À découvrir dans un prochain coffre"}</p>${gagne?`<button class="btn petit" data-coffre-equiper="${o.id}" aria-pressed="${equipe}">${equipe?"Retirer du bateau":"Installer sur le bateau"}</button>`:`<span class="coffre-secret-note">Trésor à découvrir</span>`}</article>`;
+    }).join("")}</div></div>`;
+  }
+  function rafraichitDialogue(focus){
+    if(!dialogue?.isConnected){dialogue=null;return;}
+    const zone=dialogue.querySelector(".coffre-contenu"),r=resume();zone.innerHTML=corps(r)+reglages(r);
+    if(focus)zone.querySelector(focus)?.focus();
+  }
+  function ouvre(options={}){
+    if(typeof panneau!=="function")return null;
+    precedent=document.activeElement;revele=null;avecReglages=options.reglages===true;
+    dialogue=panneau('<h2 id="coffre-titre">Le coffre de la classe</h2><div class="coffre-contenu"></div>',"coffre-panneau");
+    const d=dialogue;d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");d.setAttribute("aria-labelledby","coffre-titre");
+    rafraichitDialogue();
+    d.addEventListener("click",e=>{if(e.target===d||e.target.closest("[data-x]"))ferme();});
+    d.addEventListener("submit",e=>{
+      if(!e.target.matches(".coffre-reglages"))return;e.preventDefault();
+      const input=e.target.querySelector("input");if(!input.reportValidity())return;
+      window.Coffre?.objectif?.(input.valueAsNumber);rafraichitDialogue("#coffre-objectif");
+      const retour=d.querySelector(".coffre-reglages-retour");if(retour)retour.textContent="Le nouvel objectif est enregistré.";
+    });
+    d.addEventListener("keydown",e=>{
+      if(e.key==="Escape"){e.preventDefault();ferme();return;}
+      if(e.key!=="Tab")return;
+      const liste=[...d.querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),[tabindex="0"]')].filter(el=>el.getClientRects().length),premier=liste[0],dernier=liste.at(-1);
+      if(e.shiftKey&&document.activeElement===premier){e.preventDefault();dernier?.focus();}
+      else if(!e.shiftKey&&document.activeElement===dernier){e.preventDefault();premier?.focus();}
+    });
+    (d.querySelector("[data-coffre-reveler]")||d.querySelector("[data-x]"))?.focus();
+    if(window.CoffreLiaison?.pret)Promise.resolve(CoffreLiaison.pret).then(()=>{if(dialogue===d&&d.isConnected)rafraichitDialogue();}).catch(()=>{});
+    return d;
+  }
+  document.addEventListener("click",e=>{
+    const bouton=e.target.closest?.("[data-coffre-ouvrir],[data-coffre-reveler],[data-coffre-installer],[data-coffre-garder],[data-coffre-equiper]");if(!bouton)return;
+    if(bouton.hasAttribute("data-coffre-ouvrir")){ouvre({reglages:bouton.dataset.coffreReglages==="true"});return;}
+    if(bouton.dataset.coffreReveler){
+      const id=bouton.dataset.coffreReveler,d=dialogue;
+      const montrer=()=>{if(dialogue!==d||!d?.isConnected)return;revele=id;rafraichitDialogue("[data-coffre-installer]");};
+      if(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)montrer();
+      else{bouton.disabled=true;d?.querySelector(".coffre-decouverte")?.classList.add("coffre-en-ouverture");setTimeout(montrer,650);}
+      return;
+    }
+    const id=bouton.dataset.coffreInstaller||bouton.dataset.coffreGarder||bouton.dataset.coffreEquiper;if(!connu(id)||!window.Coffre)return;
+    mutation=true;
+    try{
+      if(bouton.dataset.coffreEquiper){Coffre.equipe(id,!resume().equipes.includes(id));}
+      else{if(bouton.dataset.coffreInstaller)Coffre.equipe(id,true);Coffre.vu(id);revele=null;}
+    }finally{mutation=false;}
+    actualise();
+    if(bouton.dataset.coffreEquiper)rafraichitDialogue(`[data-coffre-equiper="${id}"]`);
+    else if(resume().nouveaux.length)rafraichitDialogue("[data-coffre-reveler]");
+    else{ferme();if(typeof toast==="function")toast(bouton.dataset.coffreInstaller?`${connu(id).nom} installé sur notre bateau !`:"Notre trésor est gardé dans la collection.");}
+  });
+  function actualise(){
+    equipesCache=null;
+    const actif=document.activeElement,focusCompact=actif?.matches?.('[data-coffre-zone="compact"]');
+    document.querySelectorAll('[data-coffre-zone="compact"]').forEach(el=>{el.outerHTML=compact();});
+    document.querySelectorAll('[data-coffre-zone="bilan"]').forEach(el=>{el.outerHTML=bilan();});
+    if(focusCompact)document.querySelector('[data-coffre-zone="compact"]')?.focus();
+    if(!mutation)rafraichitDialogue();
+  }
+  window.addEventListener("coffrechange",()=>{if(!mutation)actualise();});
+  /* Les décorations sont des tracés natifs, attachés au même repère que le bateau. */
+  let equipesCache=null;
+  function equipes(){return equipesCache||(equipesCache=resume().equipes);}
+  const traces=new Map();
+  function trace(g,d,fill,stroke,width=2){let p=traces.get(d);if(!p){p=new Path2D(d);traces.set(d,p);}if(fill){g.fillStyle=fill;g.fill(p);}if(stroke){g.strokeStyle=stroke;g.lineWidth=width;g.stroke(p);}}
+  function dessineBateau(g,{w,h}){
+    const selection=equipes();if(!selection.length||typeof Path2D==="undefined")return;
+    g.save();g.lineJoin="round";g.lineCap="round";
+    // Le pavillon est posé exactement devant le pavillon saisonnier, sur la gauche du mât.
+    if(selection.includes("pavillon")){
+      g.save();g.translate(-w*.285,-h*.96);g.scale(w*.257/160,h*.126/120);
+      trace(g,"M158 8C115-5 76 32 7 20L28 54 7 84C61 116 113 65 158 80Z","#F7C349","#775020",7);
+      trace(g,"M23 34C74 51 113 11 148 20M24 79C74 100 121 62 148 70",null,"#FFECAA",5);
+      trace(g,etoile(91,53,22),"#163A52");g.restore();
+    }
+    // Une petite voile de nuit laisse les motifs de la grande voile saisonnière visibles.
+    if(selection.includes("constellation")){
+      g.save();g.scale(w,h);
+      trace(g,"M-.052-.797Q-.16-.56-.331-.392Q-.20-.387-.052-.378Z","#25476D","#E4BB6A",.006);
+      trace(g,"M-.098-.57L-.14-.476-.102-.416-.23-.418",null,"#BBDDEA",.004);
+      [[-.098,-.57],[-.14,-.476],[-.102,-.416],[-.23,-.418]].forEach(([x,y])=>trace(g,etoile(x,y,.014),"#FFE5A0"));
+      g.restore();
+    }
+    if(selection.includes("dauphin")){
+      g.save();g.translate(w*.355,-h*.416);g.scale(w*.167/160,h*.17/120);
+      trace(g,"M52 110L71 78 94 107",null,"#C89441",11);
+      trace(g,"M17 64C33 25 76 21 106 40L137 49 120 61C108 65 98 54 85 55L70 83 61 82 64 64Q43 61 31 77L33 96 18 86 4 87 17 72Z","#4EC7C8","#163F55",5);
+      trace(g,"M51 34L47 15 77 31","#4EC7C8","#163F55",5);
+      trace(g,"M34 61Q67 36 109 53Q78 50 67 68L64 56Q47 57 34 67Z","#DCFAE9");
+      g.fillStyle="#163F55";g.beginPath();g.arc(111,44,3,0,Math.PI*2);g.fill();g.restore();
+    }
+    if(selection.includes("lanternes")){
+      g.save();g.scale(w,h);
+      trace(g,"M-.4-.284Q0-.214.39-.315",null,"#6D4C25",.005);
+      [-.32,-.17,-.02,.13,.28].forEach(x=>{
+        const y=-.249-.13*x*x-.045*x;
+        g.save();g.translate(x,y);const halo=g.createRadialGradient(0,.025,.001,0,.025,.043);halo.addColorStop(0,"#FFD35499");halo.addColorStop(1,"#FFD35400");g.fillStyle=halo;g.fillRect(-.045,-.02,.09,.095);
+        trace(g,"M0-.012V.009",null,"#5F4628",.004);
+        trace(g,"M-.016.006Q0 0 .016.006L.02.043Q0 .055-.02.043Z","#FFE58D","#946329",.004);
+        trace(g,"M-.016.01H.016M-.019.04H.019M0 .012V.041",null,"#BD8131",.003);
+        trace(g,"M-.008.018V.032",null,"#FFF9E6",.004);g.restore();
+      });g.restore();
+    }
+    g.restore();
+  }
+  return {compact,bilan,ouvre,miniature,coffre,actualise,dessineBateau,objets};
+})();
+
+/* Le coffre voyage entre le téléphone et le tableau sans remplacer une séance
+   par une ancienne copie du téléphone. Il reste aussi inclus dans jeu/etat. */
+window.CoffreLiaison=(()=>{
+  const DOC="jeu/coffre",copie=o=>JSON.parse(JSON.stringify(o));
+  let db=null,file=Promise.resolve(),reception=false;
+  const telephone=()=>!!window.Accueil&&!Accueil.estEcran();
+  const signature=c=>{const o=copie(c||{});delete o.maj;return JSON.stringify(o);};
+  const signale=()=>{reception=true;try{window.dispatchEvent(new CustomEvent("coffrechange",{detail:Coffre.resume()}));}finally{reception=false;}};
+  function applique(c){
+    if(DEMO||!c||c.voyage!==S.voyage)return false;
+    const fusion=Coffre.fusion(S.coffre,c);
+    if(signature(fusion)===signature(S.coffre))return false;
+    S.coffre=fusion;
+    if(!telephone())sauve();
+    else lsSet("bateau-ecole-etat",JSON.stringify(S));
+    signale();return true;
+  }
+  function publie(){
+    if(!db||DEMO||reception)return;
+    const voyage=S.voyage,demande=copie(Coffre.normalise(S));
+    file=file.then(async()=>{
+      if(DEMO||S.voyage!==voyage)return;
+      const d=db.doc(DOC),snap=await d.get(),ancien=snap.exists?snap.data():null;
+      if(DEMO||S.voyage!==voyage)return;
+      let c=Coffre.fusion(demande,S.coffre);
+      if(ancien?.voyage===voyage)c=Coffre.fusion(ancien,c);
+      applique(c);
+      if(ancien?.voyage===voyage&&signature(ancien)===signature(c))return;
+      c.maj=Math.max(Date.now(),(ancien?.maj||0)+1,(c.maj||0)+1);
+      S.coffre=c;await d.set(c);
+      if(!telephone())sauve();
+    }).catch(e=>console.warn("coffre",e?.message||e));
+  }
+  window.addEventListener("coffrechange",publie);
+  const pret=Promise.resolve().then(async()=>{
+    const base=await useCap("db");if(!base)return;
+    const voyage=await base.doc("jeu/etat").get();
+    if(voyage.exists&&!DEMO&&!resetFait){
+      const garde=S,autre=voyage.data();
+      if(telephone()||(autre.maj||0)>(S.maj||0)){
+        S=charge(copie(autre));
+        if(garde.voyage===S.voyage)S.coffre=Coffre.fusion(garde.coffre,S.coffre);
+        if(!telephone()&&window.onEtatRecharge)onEtatRecharge();
+      }
+    }
+    // La normalisation initiale reste locale jusqu'à la lecture de l'autre copie.
+    Coffre.normalise(S);db=base;
+    const coffre=await db.doc(DOC).get();
+    if(coffre.exists)applique(coffre.data());
+    db.doc(DOC).onSnapshot(sn=>{
+      if(!sn.exists||DEMO)return;
+      const c=sn.data();if(c.voyage!==S.voyage)return;
+      applique(c);
+      if(signature(c)!==signature(S.coffre))publie();
+    });
+    db.doc("jeu/etat").onSnapshot(sn=>{
+      if(!telephone()||!sn.exists||DEMO)return;
+      const etat=charge(copie(sn.data())),ancien=S;
+      if(etat.voyage===ancien.voyage)etat.coffre=Coffre.fusion(ancien.coffre,etat.coffre);
+      S=etat;
+      signale();
+      if(S.coffre?.total||S.coffre?.objectifMaj)publie();
+    });
+    signale();
+    if(S.coffre?.total||S.coffre?.objectifMaj)publie();
+  }).catch(e=>console.warn("lecture coffre",e?.message||e));
+  return {pret,publie,applique,attend:()=>file};
+})();
 
 /* ---------- téléphone : lecture des cartes en direct avec la caméra (version autonome) ----------
    Les images sont analysées dans le téléphone puis oubliées : seuls les numéros de carte et les lettres lues sortent.
@@ -9898,6 +10337,7 @@ const Classe = (() => {
   async function contenu(){
     const v = await (await useCap("db")).doc("jeu/etat").get();
     const bateau = window.Accueil && Accueil.estEcran() && typeof S!=="undefined" && S.maj ? JSON.parse(DEMO && avantDemo ? avantDemo : JSON.stringify(S)) : (v.exists ? await Preparation.banque() : null);
+    if(bateau && window.Coffre){const cs=await (await useCap("db")).doc("jeu/coffre").get();if(cs.exists&&cs.data().voyage===bateau.voyage)bateau.coffre=Coffre.fusion(bateau.coffre,cs.data());}
     if (window.Historique) await Historique.init();
     return {format:"bateau-ecole/sauvegarde", version:3, preparation:Preparation.exporte(), date:new Date().toISOString(), classe:c, bateau, historique:window.Historique ? Historique.tout() : []};
   }
@@ -10230,6 +10670,7 @@ const Accueil = (() => {
       <div class="aa-corps">
         <div class="aa-bandeau" id="aa-bandeau" hidden><span>Une question est ouverte sur l'écran.</span><button class="btn jaune petit" id="aa-lire">Lire les cartes</button></div>
         <div class="aa-carte aa-ecran" id="aa-ecran-etat"></div>
+        <div id="aa-coffre">${typeof CoffreUI!=="undefined"?CoffreUI.compact():""}</div>
         <h2 class="aa-h2">Activités</h2>
         ${ACTIVITES.map(a=>`<button class="aa-act ${a.bientot?"bientot":""}" data-act="${a.id}" ${a.bientot?'aria-disabled="true"':""}>
           <img ${a.id==="bateau"?'data-theme-image="bateau"':""} src="${imgAct(a)}" alt=""><b>${esc(a.nom)}</b><span>${esc(a.texte)}</span>
@@ -10237,7 +10678,7 @@ const Accueil = (() => {
         <div class="aa-liste"><button id="aa-preparer">${IC.cartes}<span>Préparer la prochaine séance<small id="aa-preparation-detail">${Preparation.resume()}</small></span>${IC.suite}</button>
           <button id="aa-chapitres">${IC.cartes}<span>Chapitres à réviser<small>Activer ou désactiver les chapitres du Bateau-école</small></span>${IC.suite}</button></div>
         <h2 class="aa-h2">Réglages</h2>
-        <div class="aa-liste"><button data-v="theme">${IC.theme}<span>Thématique<small>Choisir le décor du bateau et des activités</small></span>${IC.suite}</button></div>
+        <div class="aa-liste"><button data-coffre-ouvrir data-coffre-reglages="true">${IC.sauve}<span>Le coffre de la classe<small>Nos trésors et l’objectif en perles</small></span>${IC.suite}</button><button data-v="theme">${IC.theme}<span>Thématique<small>Choisir le décor du bateau et des activités</small></span>${IC.suite}</button></div>
         <h2 class="aa-h2">Ma classe</h2>
         <div class="aa-liste">
           <button data-v="equipages">${IC.eleves}<span>Les équipages<small>Composition, missions et cérémonie de présentation</small></span>${IC.suite}</button>
@@ -10924,7 +11365,7 @@ const Pavillons = (() => {
       cid:montre ? P.id+":"+P.i : null, calc:montre ? {txt:texte(c), juste:c.juste, vrai:texte(c, c.r)} : null,
       pres:(P ? P.pres : presents()).map(e=>e.n), compte:c ? !!c.tel : telPv,
       hisses:montre ? [...P.hisses[P.i]] : phase==="verif" ? [...verifVus] : [],
-      bons:montre && phase==="revele" ? c.bons : null, score:P ? P.score : null, battle:battleEtat(),
+      bons:montre && phase==="revele" ? c.bons : null, score:P ? P.score : null, battle:battleEtat(), coffre:typeof Coffre!=="undefined"?Coffre.resume():null,
       fin:phase==="fin" && P ? {res:P.res, calcs:P.calcs.map(x=>({txt:texte(x), juste:x.juste, vrai:texte(x, x.r), bons:x.bons})), nb:P.pres.length, pm:P.pm, fete:P.fete||0, battle:P.battle||null} : null};
   }
   function emet(){ if (roomE) roomE.emit("pv", sur() ? etat() : {v:1, phase:null}).catch(()=>{}); }
@@ -10945,7 +11386,7 @@ const Pavillons = (() => {
   function commande(d){
     if (!sur()) return;
     if (d.f==="lance") lance();
-    else if (d.f==="fete" && P && phase==="fin"){P.fete=Math.min(2,(P.fete||0)+1);dessineCentre();emet();}
+    else if (d.f==="fete" && P && phase==="fin"){P.fete=1;dessineCentre();emet();}
     else if (d.f==="verif") verif();
     else if (d.f==="salon" || d.f==="stop") arrete();
     else if (d.f==="pause") pause();
@@ -11009,8 +11450,16 @@ const Pavillons = (() => {
     P.pres.forEach(e=>{ res[e.n] = faits.map((c,i)=>c.bons==null ? "-" : (P.hisses[i].has(e.n)===c.juste ? "1" : "0")).join("");
       const t = faits.map((c,i)=>c.juste && c.bons!=null && P.hisses[i].has(e.n) ? P.temps[i].get(e.n) : null).filter(x=>x!=null);
       if (t.length) tm[e.n] = Math.round(t.reduce((a,b)=>a+b,0)/t.length); });
-    Historique.enreg({id:"p"+P.id, a:"pavillons", d:P.debut, r:P.r, battle:P.battle||null, fini, pres:P.pres.map(e=>[e.n, e.prenom||""]),
-      c:faits.map(c=>({t:texte(c), j:c.juste ? 1 : 0, b:c.bons, op:c.op, a:c.a, x:c.b})), res, tm});
+    const partieId=P.id, debutPartie=P.debut, voyage=S.voyage, demo=typeof DEMO!=="undefined"&&DEMO, gains=faits.map(c=>c.bons);
+    return Historique.enreg({id:"p"+P.id, a:"pavillons", d:P.debut, r:P.r, battle:P.battle||null, fini, pres:P.pres.map(e=>[e.n, e.prenom||""]),
+      c:faits.map(c=>({t:texte(c), j:c.juste ? 1 : 0, b:c.bons, op:c.op, a:c.a, x:c.b})), res, tm}).then(()=>{
+      if(typeof Coffre==="undefined"||demo||S.voyage!==voyage)return;
+      // Un calcul confirmé est crédité après son enregistrement. Réarchiver la
+      // partie, y compris en fin de séance, ne recompte jamais ses réponses.
+      const avant=Coffre.resume().total;
+      gains.forEach((nb,i)=>{if(nb>0)Coffre.ajoute("pv:"+debutPartie+":"+partieId+":"+i,nb);});
+      if(Coffre.resume().total!==avant&&P?.id===partieId&&sur()){if(phase==="fin")dessineCentre();emet();}
+    }).catch(e=>console.warn("historique pavillons",e));
   }
   /* Même score, même place : le temps de lecture ne départage jamais les élèves. */
   function palmares(){
@@ -11144,13 +11593,14 @@ const Pavillons = (() => {
     return `<div class="pv-palmares eq-fete">${podiumBateauHTML(pm.podium)}</div>`;
   }
   function finHTML(){
+    const coffre=typeof CoffreUI!=="undefined"?CoffreUI.bilan():"";
     if(P.battle){
-      const b=P.battle,r=P.pm?.competition;
-      return `<div class="pv-fin"><div class="pv-fin-carte eq-fete"><span class="eq-surtitre">⚑ Hissez les pavillons · Battle</span><h1>${esc(verdictBattle(b))}</h1><p>${b.comptes?"Chaque bonne réponse a fait avancer son équipage. Bravo à tous les matelots !":"Active la caméra du téléphone pour compter les réponses et faire avancer les bateaux."}</p>${P.fete&&r?Competition.reussitesHTML(r):""}<div class="pv-boutons">${r&&!P.fete?'<button class="btn" data-pv="fete">Célébrer les réussites</button>':""}<button class="btn" data-pv="salon">Retour</button><button class="btn prim" data-pv="lance">Rejouer le Battle</button></div></div></div>`;
+      const b=P.battle;
+      return `<div class="pv-fin"><div class="pv-fin-carte eq-fete"><span class="eq-surtitre">⚑ Hissez les pavillons · Battle</span><h1>${esc(verdictBattle(b))}</h1><p>${b.comptes?"Chaque bonne réponse a fait avancer son équipage et ajouté une perle au coffre commun !":"Active la caméra du téléphone pour compter les réponses et faire avancer les bateaux."}</p>${coffre}<div class="pv-boutons"><button class="btn" data-pv="salon">Retour</button><button class="btn prim" data-pv="lance">Rejouer le Battle</button></div></div></div>`;
     }
-    const pm=P.pm,r=pm?.competition,etape=P.fete||0;
-    const contenu=!r?'<h1>Partie terminée !</h1><p>Merci pour cette révision ensemble.</p>':etape===0?Competition.coffreHTML(r):etape===1&&pm.podium.length?palmaresHTML(pm):`<h1>Les étoiles du voyage</h1>${Competition.reussitesHTML(r)}`;
-    return `<div class="pv-fin"><div class="pv-fin-carte eq-fete">${contenu}<div class="pv-boutons">${r&&etape<2?`<button class="btn prim" data-pv="fete">${etape===0&&pm.podium.length?"Découvrir le podium":"Célébrer les réussites"}</button>`:`<button class="btn" data-pv="salon">Changer les calculs</button><button class="btn prim" data-pv="lance">Rejouer</button>`}</div></div></div>`;
+    const pm=P.pm, podium=pm?.podium||[], montrePodium=!!P.fete&&podium.length;
+    const contenu=montrePodium?palmaresHTML(pm):coffre||'<h1>Partie terminée !</h1><p>Merci pour cette révision ensemble.</p>';
+    return `<div class="pv-fin"><div class="pv-fin-carte eq-fete">${contenu}<div class="pv-boutons">${podium.length&&!montrePodium?'<button class="btn prim" data-pv="fete">Découvrir le podium</button>':""}<button class="btn" data-pv="salon">Changer les calculs</button><button class="btn prim" data-pv="lance">Rejouer</button></div></div></div>`;
   }
 
   /* ---------- réglages (sur l'écran de la classe comme sur le téléphone) ---------- */
@@ -11165,7 +11615,7 @@ const Pavillons = (() => {
       + groupe("op", "Calculs", [["fois","× Tables"],["plus","+ Additions"],["moins","− Soustractions"]], v=>o.op===v)
       + (o.op==="fois" ? groupe("tables", "Quelles tables ?", Array.from({length:10},(_,i)=>[i+1, i+1]), v=>o.tables.includes(+v), "tables")
                        : groupe("max", "Nombres jusqu'à", [[10,"10"],[20,"20"],[100,"100"]], v=>o.max===+v))
-      + (o.mode==="battle"?"":groupe("recompense", "Fin de séance", [["podium","Podium"],["collectif","Défi collectif"]], v=>o.recompense===v))
+      + (o.mode==="battle"?"":groupe("recompense", "Fin de séance", [["podium","Coffre et podium"],["collectif","Coffre commun"]], v=>o.recompense===v))
       + groupe("nb", "Combien de calculs ?", [[5,"5"],[10,"10"],[15,"15"],[20,"20"]], v=>o.nb===+v)
       + groupe("vitesse", "Temps par calcul", Object.entries(VITESSES).map(([k,x])=>[k, x.calc ? x.nom+" · "+Math.round(x.calc/1000)+" s" : x.nom]), v=>o.vitesse===v)
       + (o.vitesse==="personnalisee" ? `<label class="aa-champ" for="pv-duree">Durée en secondes<input id="pv-duree" type="number" inputmode="numeric" min="1" max="300" step="1" required value="${esc(o.temps)}" aria-describedby="pv-duree-aide"></label><p class="aut-note" id="pv-duree-aide">De 1 à 300 secondes, pour chaque calcul.</p>` : ""); };
@@ -11194,7 +11644,7 @@ const Pavillons = (() => {
     if (!E || (E.phase!=="calc" && E.phase!=="ferme")) ouvert = false;
     if (cam) cam.question(!!E && ["calc","ferme","verif","compte"].includes(E.phase), false);
     if (E && E.phase==="fin" && E.fin) garde(E);
-    if (telOuvert()){ if (!avant || !E || avant.phase!==E.phase || avant.cid!==E.cid || avant.pause!==E.pause || JSON.stringify(avant.r)!==JSON.stringify(E.r) || JSON.stringify(avant.battle)!==JSON.stringify(E.battle) || avant.fin?.fete!==E.fin?.fete || E.phase==="verif") dessineJeu(); dessineLien(); majBadge(); }
+    if (telOuvert()){ if (!avant || !E || avant.phase!==E.phase || avant.cid!==E.cid || avant.pause!==E.pause || JSON.stringify(avant.r)!==JSON.stringify(E.r) || JSON.stringify(avant.battle)!==JSON.stringify(E.battle) || avant.fin?.fete!==E.fin?.fete || JSON.stringify(avant.coffre)!==JSON.stringify(E.coffre) || E.phase==="verif") dessineJeu(); dessineLien(); majBadge(); }
     else if (Accueil.courant()==="aa-app") bandeau();
   }
   function vue(vus, t){
@@ -11232,7 +11682,7 @@ const Pavillons = (() => {
     const s = Accueil.section("pv-tel"); Accueil.montre("pv-tel");
     if (!s.dataset.pret){ s.dataset.pret = 1;
       s.innerHTML = `<div class="aa-barre"><button class="aa-retour" id="pv-r">${Accueil.IC.retour}Accueil</button><h1>Hissez les pavillons</h1></div>
-        <div class="pv-t"><div class="pv-t-cam aa-bloc"><div id="pv-cam"></div></div><div class="pv-t-cote"><div class="pv-t-lien" id="pv-lien"></div><div id="pv-jeu"></div></div></div>`;
+        <div class="pv-t"><div class="pv-t-cam aa-bloc"><div id="pv-cam"></div></div><div class="pv-t-cote"><div class="pv-t-lien" id="pv-lien"></div><div id="pv-coffre"></div><div id="pv-jeu"></div></div></div>`;
       s.querySelector("#pv-r").onclick = ()=>Accueil.accueilTel();
       cam = nouvelleCamera({id:"pv-cam-go", bouton:"Filmer la classe", presence:true, attente:"",
         note:"Pose le téléphone debout, en hauteur, face à la classe : il doit voir toutes les cartes levées. Fais un essai des cartes avant de jouer.",
@@ -11263,6 +11713,7 @@ const Pavillons = (() => {
   }
   function dessineJeu(){
     const z = document.getElementById("pv-jeu"); if (!z) return;
+    const coffre=document.getElementById("pv-coffre");if(coffre)coffre.innerHTML=typeof CoffreUI!=="undefined"?CoffreUI.compact(E?.coffre):"";
     const filme = cam && cam.actif();
     if (!E){ z.innerHTML = derniereHTML(); return; }
     const pres = presT();
@@ -11282,9 +11733,9 @@ const Pavillons = (() => {
       return;
     }
     if (E.phase==="fin" && E.fin){
-      if(E.fin.battle){z.innerHTML=`<div class="aa-bloc"><h3>${esc(verdictBattle(E.fin.battle))}</h3>${battleTel(E.fin.battle)}<div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer le Battle</button><button class="btn" data-c="salon">Retour</button></div>${E.fin.pm?.competition&&!E.fin.fete?'<button class="btn" data-c="fete">Célébrer les réussites</button>':""}</div><div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;return;}
+      if(E.fin.battle){z.innerHTML=`<div class="aa-bloc"><h3>${esc(verdictBattle(E.fin.battle))}</h3>${battleTel(E.fin.battle)}<div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer le Battle</button><button class="btn" data-c="salon">Retour</button></div></div><div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;return;}
       z.innerHTML = `<div class="aa-bloc"><div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer</button><button class="btn" data-c="salon">Changer les calculs</button></div></div>
-        ${E.fin.pm?.collectif?`<div class="aa-bloc"><h3>Défi collectif</h3><p>${E.score?.total&&E.score.bons/E.score.total>=.7?"Objectif de 70 % atteint !":"Cap sur 70 % de bonnes réponses ensemble."}</p></div>`:""}${E.fin.pm?.competition&&(E.fin.fete||0)<2?`<button class="btn prim" data-c="fete">${!(E.fin.fete||0)&&E.fin.pm.podium.length?"Découvrir le podium":"Célébrer les réussites"}</button>`:""}${palmaresTel(E.fin.pm)}<div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;
+        ${E.fin.pm?.podium?.length&&!E.fin.fete?'<button class="btn prim" data-c="fete">Découvrir le podium</button>':""}${palmaresTel(E.fin.pm)}<div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;
       return;
     }
     const c = E.calc, rev = E.phase==="revele";
@@ -11305,7 +11756,7 @@ const Pavillons = (() => {
   }
   function palmaresTel(pm){
     if(!pm)return "";
-    return `<div class="aa-bloc">${pm.podium.length?`<h3>Le palmarès</h3><ol class="pv-t-podium">${pm.podium.map(x=>`<li class="${["or","argent","bronze"][(x.rang||1)-1]||"or"}"><i>${x.rang||1}</i>${x.equipe?Competition.drapeau(x.id):drapeau(x.n)}<b>${esc(x.prenom||nomT(x.n))}</b><em>${x.equipe?String(x.points).replace(".",",")+" pts":x.ok+" sur "+x.faits}</em></li>`).join("")}</ol>`:""}${Competition.priveHTML(pm.competition)}</div>`;
+    return `<div class="aa-bloc">${pm.podium.length?`<h3>Le palmarès</h3><ol class="pv-t-podium">${pm.podium.map(x=>`<li class="${["or","argent","bronze"][(x.rang||1)-1]||"or"}"><i>${x.rang||1}</i>${x.equipe?Competition.drapeau(x.id):drapeau(x.n)}<b>${esc(x.prenom||nomT(x.n))}</b><em>${x.equipe?String(x.points).replace(".",",")+" pts":x.ok+" sur "+x.faits}</em></li>`).join("")}</ol>`:""}</div>`;
   }
   function derniereHTML(){
     if (!dernier || !dernier.fin) return "";
@@ -11359,6 +11810,7 @@ const Pavillons = (() => {
     Accueil.ouvreActivite("pavillons");
     reglages(r, nouveau=>{if(Accueil.estEcran())commande({f:"reglages",r:nouveau});else cmd("reglages",{r:nouveau});});
   }
+  window.addEventListener("coffrechange",e=>{if(E)E.coffre=e.detail;});
   return { demarre, ecran, tel, quitteTel, quitteEcran, bandeau, image, drapeau, resume, prepareRevision, occupe:enPartie,
     _test:{ durees(o){ dureesTest = o; }, etat:()=>({phase, P, R, telPv}), fin, genere, faux, propre } };
 })();
@@ -11733,11 +12185,11 @@ const Tel = (() => {
     if(!kraken){kraken=document.createElement("div");kraken.id="t-kraken";$("#t-qt").after(kraken);}
     kraken.hidden=!TQ?.kraken;kraken.innerHTML=TQ?.kraken?KrakenVue.jauge(TQ.kraken,TQ.kraken.seuil):"";
     $("#t-podium").hidden=!podium.length&&!TQ?.reussites;
-    $("#t-podium").innerHTML=podiumBateauHTML(podium,true)+htmlRecompenses(TQ?.reussites,true)+Competition.priveHTML(TQ?.reussites?.competition);
-    let objectifs=document.getElementById("t-objectifs");
-    if(!objectifs){objectifs=document.createElement("details");objectifs.id="t-objectifs";objectifs.className="eq-objectifs";$("#t-grid").after(objectifs);}
-    objectifs.hidden=!TQ?.qid||!TQ?.defis;
-    if(!objectifs.hidden)objectifs.innerHTML='<summary>Défis personnels de cette séance</summary><ul>'+Object.entries(TQ.defis).map(([n,d])=>`<li><strong>${esc(cartes().find(e=>e[0]===+n)?.[1]||"Carte "+n)}</strong> · ${esc(d.titre)} : ${d.cible} sur ${d.indices.length}</li>`).join("")+'</ul>';
+    $("#t-podium").innerHTML=podiumBateauHTML(podium,true)+htmlRecompenses(TQ?.reussites,true);
+    document.getElementById("t-objectifs")?.remove();
+    let coffre=document.getElementById("t-coffre");
+    if(!coffre){coffre=document.createElement("div");coffre.id="t-coffre";$("#scr-tel .tel-res")?.after(coffre);}
+    coffre.innerHTML=typeof CoffreUI!=="undefined"?CoffreUI.compact(TQ?.coffre):"";
     const cs=cartes(); const lus=cs.filter(([n])=>rep[n]).length;
     $("#t-cpt").textContent = lus+" / "+cs.length;
     const grille=$("#t-grid"), defilement=grille.scrollTop;
@@ -11820,6 +12272,7 @@ const Tel = (() => {
       if (window.CameraDirect) CameraDirect.question(!!(d.qid && d.open), neuve && !!d.qid); maj(); }, ()=>{});
     setInterval(()=>{ if(TQ&&TQ.open&&Object.keys(rep).length) envoie(); },3000);
   }
+  window.addEventListener("coffrechange",e=>{if(TQ)TQ.coffre=e.detail;});
   return {init};
 })();
 

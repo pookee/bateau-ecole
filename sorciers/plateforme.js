@@ -226,8 +226,13 @@ const Autonome = (() => {
     }
     const REGLES = {
       "jeu/etat": {resume:voyage, prefere:prefereVoyage, delai:6000},
+      "jeu/coffre": {resume:d=>d && typeof d.voyage==="string" && Number.isSafeInteger(d.maj) && d.maj>=0 ? {voyage:d.voyage,maj:d.maj,contenu:JSON.stringify(d)} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj || b.maj===a.maj && b.contenu>a.contenu), delai:150},
       "jeu/preparation": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
       "jeu/chapitres": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
+      "jeu/theme": {resume:d=>d && window.Themes?.valide(d.id) && Number.isSafeInteger(d.maj) && d.maj>=0 ? {id:d.id,maj:d.maj} : null,
+        prefere:(a,b)=>!!b && (!a || b.maj>a.maj || (b.maj===a.maj && b.id>a.id)), delai:150},
+      "jeu/ambiance": {resume:d=>d && typeof d.actif==="boolean" && Number.isInteger(d.volume) && d.volume>=0 && d.volume<=100 && Number.isSafeInteger(d.maj) && d.maj>=0 ? {actif:d.actif,volume:d.volume,maj:d.maj} : null,
+        prefere:(a,b)=>!!b && (!a || b.maj>a.maj || (b.maj===a.maj && (b.actif?101:0)+b.volume>(a.actif?101:0)+a.volume)), delai:150},
       "classe/actuelle": {resume:d=>d ? {id:d.id||null, maj:d.maj||0} : null, prefere:(a,b)=>!!b && b.maj>0 && (!a || b.maj>a.maj), delai:700}
     };
     const DOCS = Object.keys(REGLES);
