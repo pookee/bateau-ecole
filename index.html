@@ -339,6 +339,7 @@ table.bilan td.nm{text-align:left;font-weight:700;white-space:nowrap}
 .be-place{min-width:0;display:grid;text-align:center;gap:5px;grid-row:1}
 .be-place b{font:800 clamp(1rem,1.5vw,1.5rem)/1.15 var(--display);color:var(--nuit);overflow-wrap:anywhere}
 .be-place>span{font-weight:700;color:var(--mer)}
+.be-place small{display:block;font-weight:700;color:var(--gris);font-size:.86em;line-height:1.3;margin-top:1px}
 .be-marche{border-radius:12px 12px 4px 4px;display:grid;place-items:center;font:800 2.4rem/1 var(--display);color:var(--nuit);box-shadow:inset 0 -6px 0 rgba(0,0,0,.12)}
 .be-place-1{grid-column:2}.be-place-2{grid-column:1}.be-place-3{grid-column:3}
 .be-place-1 .be-marche{height:clamp(90px,16vh,150px);background:linear-gradient(#FFD45A,#E9AE1C)}
@@ -384,6 +385,24 @@ table.bilan td.nm{text-align:left;font-weight:700;white-space:nowrap}
 .hi-besoin{border-top:1px solid #CFE4E8;padding:10px 0}.hi-besoin p{line-height:1.6}.hi-onglets{flex-wrap:wrap}
 [data-q-ligne][hidden],.banque-matiere[hidden],.banque-sous-matiere[hidden],.notion[hidden]{display:none!important}
 @media(max-width:560px){.panneau{padding:10px}.panneau>.carte{padding:18px}.prep-champs{display:grid;grid-template-columns:1fr 1fr}.prep-champs label:nth-child(1){grid-column:1/-1;grid-row:1}.prep-champs label:nth-child(2){grid-column:1;grid-row:2}.prep-champs label:nth-child(3){grid-column:1/-1;grid-row:3}.prep-champs label:nth-child(4){grid-column:2;grid-row:2}.prep-champs label:nth-child(5){grid-column:1/-1;grid-row:4}.banque-filtres>*{flex-basis:100%}.prep-champs label{min-width:120px}.panneau h2{font-size:1.4rem}.be-podium{grid-template-columns:1fr}.be-exaequo{grid-template-columns:repeat(2,minmax(0,1fr))}.be-bilan .be-palmares{grid-row:auto}.be-bilan{width:100%;min-width:0}}
+/* Les performances du jour : des réussites nommées, lisibles du fond de la classe.
+   Au tableau, seuls les prénoms ; le détail chiffré n'apparaît que sur le téléphone. */
+.be-perfs{margin-top:18px;display:grid;gap:10px}
+.be-perfs h3{margin:0;font:800 clamp(1.3rem,2.1vw,1.9rem)/1.1 var(--display);color:var(--nuit)}
+.be-perf-groupes{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.be-perf{background:#FFF4CF;border:3px solid #F2D27A;border-radius:18px;padding:10px 16px;display:grid;gap:3px}
+.be-perf>b{font:800 clamp(1.1rem,1.7vw,1.5rem)/1.15 var(--display);color:#9A5B1E}
+.be-perf-note{color:var(--gris);font-weight:700;font-size:clamp(.92rem,1.1vw,1.1rem);line-height:1.3}
+.be-perf-noms{list-style:none;margin:5px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px 12px}
+.be-perf-noms li{display:flex;align-items:center;gap:7px;background:rgba(255,252,244,.94);border-radius:999px;padding:4px 15px 4px 6px;min-width:0}
+.be-perf-noms .matelot{width:34px;height:42px}
+.be-perf-noms span{font:800 clamp(1rem,1.4vw,1.35rem) var(--display);color:var(--nuit);overflow-wrap:anywhere}
+.be-perf-noms em{font-style:normal;font-weight:700;color:var(--mer);font-size:.9rem}
+.be-perf-record{background:#FFEBD6;border-color:#F0B37A}
+.be-perf-rapide{background:#E3F4F6;border-color:#C9E6EC}
+.be-perf-rapide>b{color:var(--mer)}
+#t-podium .be-perf-noms li{padding:4px 12px 4px 5px}
+@media(max-width:560px){.be-perf{padding:9px 12px}.be-perf-noms{gap:6px 9px}.be-perf-noms span{font-size:1rem}.be-perf-noms .matelot{width:28px;height:35px}}
 /* Habillage partagé : les mêmes composants suivent la thématique choisie. */
 #scr-choix h1{text-shadow:0 3px 0 var(--theme-text-shadow),0 6px 14px rgba(8,25,35,.45)}
 #scr-choix p{color:var(--theme-on-dark);text-shadow:0 2px 5px var(--theme-text-shadow)}
@@ -439,11 +458,29 @@ input[type=text],input[type=number],textarea,select{border-color:var(--theme-bor
 .theme-statut{min-height:1.5em;font:700 .95rem/1.45 var(--texte);color:var(--mer);margin:16px 0 0}
 @media(max-width:600px){.theme-grille{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.theme-option{grid-template-rows:64px auto 1fr;padding:7px 7px 10px;gap:5px}.theme-nom{font-size:1rem}.theme-description{font-size:.82rem}.theme-apercu-bateau{height:58px;width:82px}.theme-icone{font-size:1rem;width:24px;height:24px;left:5px;top:5px}.theme-selecteur>.note{font-size:.94rem}.theme-coche{right:11px;top:11px;width:23px;height:23px}.panneau .carte.theme-panneau{padding:16px}.theme-grille .theme-option:last-child:nth-of-type(odd){grid-column:1/-1;grid-template-columns:90px minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;align-items:center}.theme-grille .theme-option:last-child:nth-of-type(odd) .theme-apercu{grid-row:1/3;height:64px}.theme-grille .theme-option:last-child:nth-of-type(odd) .theme-nom{align-self:end}.theme-grille .theme-option:last-child:nth-of-type(odd) .theme-description{align-self:start}.theme-grille .theme-option:last-child:nth-of-type(odd) .theme-coche{right:14px;top:12px}}
 @media(prefers-reduced-motion:reduce){.theme-option{transition:none}.theme-option:hover{transform:none}}
+
+/* ---------- lisibilité au tableau ----------
+   Les écrans de sélection (avant le jeu) sont grossis d'un cran, pour être lus du fond de la
+   classe. Le jeu lui-même garde sa taille. Réservé aux grands écrans : la même page sert
+   d'appli sur le téléphone, où tout doit rester à sa place.
+   « rituel-en-cours » n'est posé sur le body que pendant les questions. */
+@media (min-width:900px){
+  body:not(.rituel-en-cours) #scr-tbi .accueil{width:min(880px,100%,80vh)}
+  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn.big{font-size:clamp(1.45rem,2.7vw,2.25rem);padding:.52em 1.5em}
+  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn small{font-size:.56em}
+  body:not(.rituel-en-cours) #scr-tbi .home-titre .t{font-size:clamp(2.3rem,5vw,4.2rem)}
+  body:not(.rituel-en-cours) #scr-tbi .home-titre .s{font-size:clamp(1.1rem,1.8vw,1.55rem)}
+  body:not(.rituel-en-cours) #scr-tbi .grade-pill{font-size:clamp(1.1rem,1.6vw,1.45rem)}
+  body:not(.rituel-en-cours) #scr-tbi .rappel b{font-size:clamp(1.15rem,1.7vw,1.5rem)}
+  body:not(.rituel-en-cours) #scr-tbi .rappel span{font-size:clamp(1rem,1.4vw,1.25rem)}
+  body:not(.rituel-en-cours) #scr-tbi .home-preparation .btn{font-size:clamp(1.1rem,1.7vw,1.5rem)}
+}
+
 /* Garder la mer et le bateau visibles sur les tableaux au format 16:9. */
 @media (min-width:900px) and (max-height:850px){
   #scr-tbi .layer:has(>.accueil){gap:8px;padding-top:10px}
-  #scr-tbi .accueil{width:min(680px,100%,55vh)}
-  #scr-tbi .home-cta .btn.big{font-size:1.4rem;padding:.45em 1.15em}
+  #scr-tbi .accueil{width:min(760px,100%,62vh)}
+  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn.big{font-size:clamp(1.4rem,2.2vw,1.95rem);padding:.5em 1.35em}
 }
 
 /* Les cérémonies : grandes cartes lisibles au TBI, sans détails individuels de lecture. */
@@ -7515,17 +7552,24 @@ async function rituel(mode, reprise=false){
   if(await verifArrivee()) return;
   enJeu=false; accueil();
 }
-function podiumBateauHTML(podium, personnel=false){
+/* Un seul podium pour tout le jeu : classement individuel, équipages, mobilisation, Battle.
+   « o » permet d'en changer le titre, la légende et la valeur affichée sous chaque équipage. */
+function podiumBateauHTML(podium, personnel=false, o={}){
   if(!podium.length)return "";
   const equipes=podium.some(e=>e.equipe),rangs=[...new Set(podium.map(e=>e.rang||1))];
-  return `<h2>${equipes?"Le podium des équipages":"Le podium du jour"}</h2><p class="be-podium-legende">${equipes?"Chaque bonne réponse compte pour notre aventure !":"Bravo pour vos réussites !"} Les ex æquo partagent la même marche.</p><ol class="be-podium">${rangs.map(r=>{const groupe=podium.filter(e=>(e.rang||1)===r);return `<li class="be-place be-place-${r}" style="--revelation:${Math.max(0,3-r)*.65}s"><div class="be-exaequo">${groupe.map(e=>`<div>${e.equipe?Competition.drapeau(e.id):Matelots.portrait(e.n)}<b>${esc(e.prenom)}</b>${e.equipe?`<span>${String(e.points).replace(".",",")} points</span>${Competition.galerie(e)}`:personnel?`<span>${e.ok} sur ${e.faits}${e.nonLus?` · ${e.nonLus} non lu${e.nonLus>1?"s":""}`:""}</span>`:""}</div>`).join("")}</div><div class="be-marche"><span>${r}${r===1?"er":"e"}${groupe.length>1?" ex æquo":""}</span></div></li>`;}).join("")}</ol>`;
+  const titre=o.titre||(equipes?"Le podium des équipages":"Le podium du jour");
+  const legende=o.legende||(equipes?"Chaque bonne réponse compte pour notre aventure !":"Bravo pour vos réussites !");
+  const valeur=o.valeur||(e=>valeurEquipage(e));
+  const extra=o.extra||(e=>Competition.galerie(e));
+  return `<h2>${esc(titre)}</h2><p class="be-podium-legende">${esc(legende)} Les ex æquo partagent la même marche.</p><ol class="be-podium">${rangs.map(r=>{const groupe=podium.filter(e=>(e.rang||1)===r);return `<li class="be-place be-place-${r}" style="--revelation:${Math.max(0,3-r)*.65}s"><div class="be-exaequo">${groupe.map(e=>`<div>${e.equipe?Competition.drapeau(e.id):Matelots.portrait(e.n)}<b>${esc(e.prenom)}</b>${e.equipe?`<span>${valeur(e)}</span>${extra(e)}`:personnel?`<span>${e.ok} sur ${e.faits}${e.nonLus?` · ${e.nonLus} non lu${e.nonLus>1?"s":""}`:""}</span>`:""}</div>`).join("")}</div><div class="be-marche"><span>${r}${r===1?"er":"e"}${groupe.length>1?" ex æquo":""}</span></div></li>`;}).join("")}</ol>`;
 }
 async function bilan(res, gagne, mode){
   const generation=GEN;
   reussitesRituel=recompensesRituel(res,scoresRituel,mode);
   const competition=Competition.resultats(S.seance?.competition,scoresRituel,S.seance?.reponses||S.seance?.historique?.q||[]);
   reussitesRituel.competition=competition;
-  podiumRituel=reussitesRituel.collectif ? [] : Competition.podium(competition,scoresRituel);
+  reussitesRituel.performances=reussitesRituel.collectif?[]:performancesRituel(scoresRituel,res.length,S.seance?.id);
+  podiumRituel=reussitesRituel.collectif ? [] : Competition.podium(competition,scoresRituel,S.seance?.competition);
   emitQ();
   const par = {}; res.forEach(r=>{ (par[r.q.n]=par[r.q.n]||[]).push(r.pct); });
   const lignes = Object.entries(par).map(([id,arr])=>{ const {n,m}=matiere(id); const moy=arr.reduce((a,b)=>a+b,0)/arr.length;
@@ -7536,13 +7580,17 @@ async function bilan(res, gagne, mode){
   if(generation!==GEN)return new Promise(()=>{});
   const p = position(S.milles), port=escaleAuPort(), perdu=!!S.seance?.naufrage;
   majBarre(); majMer();
-  layer.innerHTML = `<div class="be-bilan${podiumRituel.length?" avec-podium":""}"><div class="carte${podiumRituel.length?"":" avec-perro"}">${podiumRituel.length?"":perro("bravo","coin")}<div>
+  const perfsRituel=reussitesRituel.performances||[];
+  // Le palmarès réunit le podium et les performances du jour.
+  const palmaresRituel=podiumRituel.length||perfsRituel.length
+    ? `<section class="carte be-palmares">${podiumBateauHTML(podiumRituel)}${htmlPerformances(perfsRituel)}</section>` : "";
+  layer.innerHTML = `<div class="be-bilan${palmaresRituel?" avec-podium":""}"><div class="carte${palmaresRituel?"":" avec-perro"}">${palmaresRituel?"":perro("bravo","coin")}<div>
     <div class="msg-big">${perdu?"Traversée perdue · on prépare la revanche":port ? `Terre en vue : ${esc(ESCALES[port].v)} !` : `Fin du rituel : +${gagne} milles`}</div>
     <p class="sous">${perdu?`Le bateau repartira de ${esc(ESCALES[Math.max(...S.escalesVues)].v)}. Nos escales et nos apprentissages sont conservés.`:p.fin || port===ESCALES.length-1 ? "Le tour du monde est terminé !" : port ? "Bravo l’équipage, nous voilà à bon port ! Découvrons notre escale." : `Encore ${Math.ceil(p.reste)} milles avant ${esc(ESCALES[p.i+1].v)}.`}</p>
     ${CoffreUI.bilan()}
     <label for="j-txt" style="font-family:var(--display);font-weight:700;color:var(--mer);font-size:1.15rem">Le journal de bord se remplit tout seul. Un mot de l'équipage à ajouter ? (facultatif)</label>
     <div class="ligne"><input type="text" id="j-txt" value="${esc(S.seance?.note||'')}" style="flex:1;font-size:1.15rem" maxlength="200" placeholder="Ex. : On a revu les types de phrases et les tables de 4."></div>
-    <div class="centre"><button class="btn prim big" data-go="ok">${(!perdu&&(DEMO?S.seance?.escaleDemo:rythmeVoyage(S).arrivee||escaleVendredi(dateFinSeance())))?"Découvrir l’escale et écrire la carte":"Terminer"}</button></div></div></div>${podiumRituel.length?`<section class="carte be-palmares">${podiumBateauHTML(podiumRituel)}</section>`:""}</div>`;
+    <div class="centre"><button class="btn prim big" data-go="ok">${(!perdu&&(DEMO?S.seance?.escaleDemo:rythmeVoyage(S).arrivee||escaleVendredi(dateFinSeance())))?"Découvrir l’escale et écrire la carte":"Terminer"}</button></div></div></div>${palmaresRituel}</div>`;
   $("#j-txt").oninput=()=>{if(S.seance){S.seance.note=$("#j-txt").value;sauve();}};
   await attendre();
   const t = ($("#j-txt")?.value||"").trim();
@@ -8905,6 +8953,61 @@ function htmlRecompenses(r, personnel=false){
   return `<section class="be-reussites"><h3>${r.collectif ? "Notre bilan collectif" : "Nos réussites"}</h3><p>${esc(r.texte)}</p>${r.collectif&&r.objectif?`<p><b>${esc(r.objectif)}</b></p>`:""}${personnel&&r.progres.length?`<h3>Des progrès à encourager</h3><ul>${r.progres.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}${personnel&&r.notions?.length?`<h3>Notions de la séance</h3><ul>${r.notions.map(n=>`<li>${esc(n.titre)} : ${n.pct} %</li>`).join("")}</ul>`:""}</section>`;
 }
 
+/* ---------- les performances du jour ----------
+   Des réussites nommées, jamais un classement par la vitesse : le Bateau-école ne mesure aucun
+   temps de réponse, toutes les cartes sont levées puis lues d'un coup par la caméra.
+   Sur le tableau, seuls les prénoms apparaissent ; les chiffres restent sur le téléphone. */
+function meilleuresSeances(ns, activite, seanceId){
+  const best={};
+  if(!window.Historique || !Historique.tout) return best;
+  for(const s of Historique.tout()){
+    if(s.a!==activite || !s.fini || s.id===seanceId) continue;
+    for(const n of ns){
+      const e=Historique.eleveSeance(s,n);
+      if(!e || !e.n) continue;
+      const pct=e.ok/e.n;
+      if(best[n]===undefined || pct>best[n]) best[n]=pct;
+    }
+  }
+  return best;
+}
+function groupesPerformances(groupes){
+  return groupes.filter(g=>g.eleves.length).map(g=>({cle:g.cle,titre:g.titre,note:g.note,
+    eleves:g.eleves.slice().sort((a,b)=>(a.prenom||"").localeCompare(b.prenom||"","fr")||a.n-b.n)
+      .map(e=>({n:e.n,prenom:e.prenom||(typeof nomEleve==="function"?nomEleve(e.n):"Carte "+e.n),detail:g.detail(e)}))}));
+}
+function performancesRituel(scores, nbQuestions, seanceId){
+  const l=Object.values(scores||{}).filter(e=>e.faits>0);
+  if(!l.length) return [];
+  const best=meilleuresSeances(l.map(e=>e.n),"bateau",seanceId), taux=e=>e.ok/e.faits;
+  const complets=l.filter(e=>e.faits>=nbQuestions && !e.nonLus);
+  return groupesPerformances([
+    {cle:"record", titre:"Record personnel battu", note:"Mieux que leur meilleur rituel précédent.",
+     eleves:l.filter(e=>e.faits>=2 && best[e.n]!=null && taux(e)>best[e.n]+1e-9),
+     detail:e=>`${Math.round(taux(e)*100)} % aujourd'hui, ${Math.round(best[e.n]*100)} % à son meilleur rituel`},
+    {cle:"sans-faute", titre:"Sans-faute", note:"Toutes leurs cartes lues étaient justes.",
+     eleves:l.filter(e=>e.faits>=2 && e.ok===e.faits),
+     detail:e=>`${e.ok} réponse${e.ok>1?"s":""} juste${e.ok>1?"s":""} sur ${e.faits} lue${e.faits>1?"s":""}`},
+    {cle:"complet", titre:"Toutes ses cartes levées", note:"Une réponse lue à chaque question.",
+     eleves:nbQuestions>1 && complets.length<l.length ? complets : [],
+     detail:e=>`${e.faits} carte${e.faits>1?"s":""} lue${e.faits>1?"s":""} sur ${nbQuestions}`}
+  ]);
+}
+/* Le tableau ne montre que les prénoms ; le téléphone ajoute le détail (personnel = true). */
+function htmlPerformances(perfs, personnel=false, titre="Les performances du jour"){
+  if(!perfs || !perfs.length) return "";
+  return `<section class="be-perfs"><h3>${esc(titre)}</h3><ul class="be-perf-groupes">${perfs.map(g=>
+    `<li class="be-perf be-perf-${g.cle}"><b>${esc(g.titre)}</b><span class="be-perf-note">${esc(g.note)}</span><ul class="be-perf-noms">${g.eleves.map(e=>
+      `<li>${typeof Matelots!=="undefined"&&e.n?Matelots.portrait(e.n):""}<span>${esc(e.prenom)}</span>${personnel&&e.detail?`<em>${esc(e.detail)}</em>`:""}</li>`).join("")}</ul></li>`).join("")}</ul></section>`;
+}
+/* Sous chaque équipage : combien de ses matelots ont trouvé, puis ses points. */
+function valeurEquipage(e, pointsDabord=false){
+  const mob=e.joueurs?`${e.reussis} matelot${e.reussis>1?"s":""} sur ${e.joueurs} ${e.reussis>1?"ont":"a"} trouvé`:"";
+  const pts=e.points==null?"":`${String(e.points).replace(".",",")} points`;
+  const l=pointsDabord?[pts,mob]:[mob,pts];
+  return l.filter(Boolean).map((x,i)=>i?`<small>${x}</small>`:x).join("");
+}
+
 const Preparation = (()=>{
   const DOC="jeu/preparation", CHAPITRES="jeu/chapitres", CLE="bateau-ecole-preparation";
   const OBJECTIFS={varie:"Révisions variées",recent:"Leçons récentes",revoir:"Notions à reprendre"};
@@ -9419,7 +9522,36 @@ const Competition = (() => {
     // Champs vides pour les téléphones encore sur l’ancienne version du jeu.
     return {perles,defis:[],bonus:0,equipes:equipe,collectif:comp.collectif,individuel:comp.individuel};
   }
-  function podium(r,scores){return r&&!r.individuel&&r.equipes.length?r.equipes.filter(g=>g.rang<=3):classementRituel(scores);}
+  // Podium de mobilisation : la part des matelots d'un équipage qui ont donné au moins une
+  // bonne réponse. Le calcul se fait parmi les joueurs de l'équipage (ceux dont une carte a
+  // été lue) : les effectifs différents n'avantagent personne et une carte non lue ne pénalise
+  // pas l'équipe, comme partout ailleurs dans le jeu.
+  function mobilisation(comp,scores){
+    const p=comp?.plan;if(!p)return [];
+    const presents=new Set(liste().map(e=>e.n));
+    const g=p.groupes.map(gr=>{
+      const membres=gr.membres.filter(n=>presents.has(n));
+      const joueurs=membres.filter(n=>scores?.[n]?.faits>0);
+      const reussis=joueurs.filter(n=>scores[n].ok>0);
+      return {equipe:true,mobilisation:true,id:gr.id,prenom:role(gr.id).nom,membres:membres.slice(),
+        joueurs:joueurs.length,reussis:reussis.length,
+        part:joueurs.length?Math.round(1000*reussis.length/joueurs.length)/10:0};
+    }).filter(x=>x.joueurs);
+    g.sort((a,b)=>b.part-a.part||b.reussis-a.reussis||ROLES.findIndex(r=>r.id===a.id)-ROLES.findIndex(r=>r.id===b.id));
+    g.forEach((x,i)=>{x.rang=i&&x.part===g[i-1].part?g[i-1].rang:i+1;});
+    return g;
+  }
+  // Le podium des équipages se départage par la mobilisation : l'équipage qui a eu le plus de
+  // matelots avec au moins une bonne réponse passe devant. Les points de réussite restent
+  // affichés et départagent les équipages à égalité.
+  function avecMobilisation(equipes,comp,scores){
+    const m=Object.fromEntries(mobilisation(comp,scores).map(g=>[g.id,g]));
+    const g=equipes.map(e=>({...e,...(m[e.id]||{joueurs:0,reussis:0,part:0})}));
+    g.sort((a,b)=>b.part-a.part||b.points-a.points||ROLES.findIndex(r=>r.id===a.id)-ROLES.findIndex(r=>r.id===b.id));
+    g.forEach((x,i)=>{x.rang=i&&x.part===g[i-1].part&&x.points===g[i-1].points?g[i-1].rang:i+1;});
+    return g;
+  }
+  function podium(r,scores,comp){return r&&!r.individuel&&r.equipes.length?avecMobilisation(r.equipes,comp,scores).filter(g=>g.rang<=3):classementRituel(scores);}
   function coffreHTML(){return typeof CoffreUI!=="undefined"?CoffreUI.bilan():"";}
   // Les anciennes séances gardent leurs données privées, sans réintroduire les étoiles.
   function reussitesHTML(){return "";}
@@ -9465,7 +9597,7 @@ const Competition = (() => {
       s.querySelector("#eq-presenter")?.addEventListener("click",async()=>{Accueil.ouvreActivite("bateau");const r=await useCap("room");if(r)r.emit("cmd",{a:"equipages"}).catch(()=>{});});
     };rend();
   }
-  return {ROLES,role,propre,plan,profils,propose,enregistre,assure,prepare,resultats,podium,coffreHTML,reussitesHTML,priveHTML,ceremonie,presentation,ouvre,drapeau,galerie};
+  return {ROLES,role,propre,plan,profils,propose,enregistre,assure,prepare,resultats,podium,mobilisation,avecMobilisation,coffreHTML,reussitesHTML,priveHTML,ceremonie,presentation,ouvre,drapeau,galerie};
 })();
 window.Competition=Competition;
 
@@ -10714,6 +10846,19 @@ const Accueil = (() => {
 .aa-son{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);z-index:30;background:var(--soleil);color:var(--nuit);border-radius:999px;padding:10px 20px;font:800 1.1rem var(--display);box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer}
 .bar .btn.aa-maison svg{width:1.1em;height:1.1em}
 #scr-tel header .aa-retour{margin-right:4px}
+/* Lisibilité au tableau : le choix des activités est grossi d'un cran sur grand écran.
+   Sur le téléphone, la même page garde ses tailles. */
+@media (min-width:900px){
+  .ec-haut .ec-classe{font-size:clamp(1.75rem,3vw,2.8rem)}
+  .ec-haut .ec-date{font-size:clamp(1.05rem,1.6vw,1.6rem)}
+  .ec-milieu{padding-bottom:16vh}
+  .ec-milieu h1{font-size:clamp(2.4rem,5.2vw,4.8rem)}
+  .ec-tuile{width:clamp(280px,27vw,470px)}
+  .ec-tuile img{height:clamp(130px,18vh,225px)}
+  .ec-tuile b{font-size:clamp(1.7rem,2.6vw,2.6rem)}
+  .ec-tuile span{font-size:clamp(1.05rem,1.45vw,1.45rem)}
+  .ec-tuile .go{margin-top:8px;font-size:clamp(1.2rem,1.95vw,1.8rem)}
+}
 @media (prefers-reduced-motion:reduce){#aa-intro *,#aa-intro,.aa-tete *,#aa-ecran *,.aa-act img,.aa-etape .perro,.ec-tuile img{animation-duration:.01s!important;animation-iteration-count:1!important;animation-delay:0s!important}}`;
   document.head.appendChild(st);
 
@@ -11272,6 +11417,9 @@ const Pavillons = (() => {
 .pv-drisse.faux .haut .pv-fl{filter:grayscale(.8);transform:translateY(3px) rotate(5deg)}
 .pv-drisse.faux .haut i{background:var(--ko)}
 .pv-centre{position:absolute;left:0;right:0;top:calc(var(--haut) + 14vh);bottom:14vh;display:grid;place-items:center;z-index:5;padding:0 3vw}
+/* Fin de partie : le palmarès et les performances peuvent dépasser la hauteur d'un tableau.
+   « safe center » garde le centrage quand ça tient, et laisse défiler sans rogner le haut. */
+#pv-ecran[data-phase="fin"] .pv-centre{overflow-y:auto;overscroll-behavior:contain;align-items:safe center;padding-block:1vh}
 .pv-bas{position:absolute;left:22px;bottom:20px;z-index:8;display:flex;gap:10px}
 .pv-bas[hidden]{display:none}
 .pv-bas.droite{left:auto;right:22px}
@@ -11356,6 +11504,30 @@ const Pavillons = (() => {
 .m2 .pv-bloc{height:clamp(48px,8.5vh,84px);background:linear-gradient(#DDE6EA,#A9BBC4);animation-delay:.15s}
 .m3 .pv-bloc{height:clamp(36px,6vh,60px);background:linear-gradient(#EDB888,#C98A52)}
 @keyframes pv-monte{from{transform:scaleY(0)}to{transform:none}}
+/* Lisibilité au tableau : le salon de départ est grossi d'un cran, et le jeu d'un cran de plus
+   (c'est là que les élèves lisent les calculs du fond de la classe). Grands écrans seulement :
+   l'écran de la classe s'affiche aussi en petit sur le téléphone. */
+@media (min-width:900px){
+  .pv-salon,.pv-verif{width:min(96vw,1280px)}
+  .pv-salon h1,.pv-verif h1{font-size:clamp(2rem,min(5.2vw,8.4vh),4.8rem)}
+  .pv-regle b{font-size:clamp(1.15rem,min(2.1vw,3.2vh),2rem)}
+  .pv-regle span{font-size:clamp(1rem,min(1.45vw,2.2vh),1.5rem)}
+  .pv-regle .ill{height:clamp(56px,9vh,112px)}
+  .pv-regle .pv-dr{width:clamp(60px,min(6.6vw,9.6vh),104px)}
+  .pv-regle .ill em{font-size:clamp(1.7rem,min(3.5vw,5.2vh),3.1rem)}
+  .pv-mini{font-size:clamp(1.2rem,min(2.4vw,3.6vh),2.3rem)}
+  .pv-resume{font-size:clamp(1.05rem,min(1.75vw,2.6vh),1.65rem)}
+  .pv-boutons .btn{font-size:clamp(1.15rem,min(2vw,3vh),1.9rem)}
+  .pv-info{font-size:clamp(1rem,min(1.5vw,2.2vh),1.5rem)}
+  #pv-ecran{--pan:min(50vh,38vw)}
+  #pv-ecran[data-battle="true"]{--pan:min(35vh,33vw)}
+  #pv-ecran[data-battle="true"] .pv-salon h1{font-size:clamp(1.7rem,4vw,3.1rem)}
+  #pv-ecran[data-battle="true"] .pv-salon .pv-info{font-size:clamp(.98rem,1.35vw,1.3rem);padding:6px 14px}
+  .pv-num{font-size:clamp(1.1rem,1.9vw,1.8rem)}
+  .pv-msg{font-size:clamp(1.4rem,2.8vw,2.7rem)}
+  .pv-sous{font-size:clamp(1.35rem,2.6vw,2.5rem)}
+  .pv-temps{width:min(46vw,680px);height:clamp(12px,1.7vh,20px)}
+}
 @media (prefers-reduced-motion:reduce){#pv-ecran *,#pv-ecran{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}}
 /* ---------- Hissez les pavillons : téléphone ---------- */
 #pv-tel{background:linear-gradient(180deg,var(--theme-soft),var(--ecume) 460px)}
@@ -11432,6 +11604,7 @@ const Pavillons = (() => {
 #pv-ecran[data-battle="true"] .pv-regle .ill{display:none}
 #pv-ecran[data-battle="true"] .pv-compte{display:none}
 #pv-ecran[data-battle="true"] .pv-fin{display:block;width:min(86vw,820px)}
+#pv-ecran[data-battle="true"] .pv-fin.podium{width:min(94vw,1150px)}
 #pv-ecran[data-battle="true"] .pv-fin-carte{text-align:center;gap:12px;padding:20px}
 #pv-ecran[data-battle="true"] .pv-fin .pv-boutons{justify-content:center}
 .pv-battle-arene{position:absolute;left:3vw;right:3vw;bottom:8vh;height:25vh;z-index:4;display:grid;grid-template-columns:1fr 1fr;gap:4vw;pointer-events:none}
@@ -11480,6 +11653,13 @@ const Pavillons = (() => {
  #pv-ecran[data-battle="true"] .pv-bas{position:fixed;left:8px;bottom:12px;gap:5px}
  #pv-ecran[data-battle="true"] .pv-bas.droite{left:auto;right:8px;bottom:62px}
 }
+/* Au salon, les consignes peuvent grandir (caméra éteinte, zoom, petite fenêtre).
+   L'arène suit leur hauteur réelle au lieu de passer sous le texte. */
+#pv-ecran[data-battle="true"][data-phase="salon"]{display:flex;flex-direction:column;overflow-y:auto;padding-top:var(--haut)}
+#pv-ecran[data-battle="true"][data-phase="salon"] .pv-haut{box-sizing:border-box}
+#pv-ecran[data-battle="true"][data-phase="salon"] .pv-centre{position:relative;top:auto;bottom:auto;flex:1 0 auto;margin:0;padding:1vh 3vw;min-width:0;grid-template-columns:minmax(0,1fr)}
+#pv-ecran[data-battle="true"][data-phase="salon"] .pv-salon{max-width:100%}
+#pv-ecran[data-battle="true"][data-phase="salon"] .pv-battle-arene{position:relative;left:auto;right:auto;bottom:auto;flex:0 0 auto;height:max(190px,25vh);margin:2vh 3vw}
 @media(prefers-reduced-motion:reduce){.pv-battle-navire,.pv-battle-navire img{animation:none!important;transition:none!important}}
 `;
   document.head.appendChild(st);
@@ -11627,6 +11807,42 @@ const Pavillons = (() => {
       if(Coffre.resume().total!==avant&&P?.id===partieId&&sur()){if(phase==="fin")dessineCentre();emet();}
     }).catch(e=>console.warn("historique pavillons",e));
   }
+  /* Le podium du Battle reprend les points de la course, pour que l'écran de fin et l'arène
+     racontent le même score. Les deux équipages apparaissent, même à égalité. */
+  function podiumBattle(b,scores){
+    if(!b || b.groupes.length!==2) return [];
+    const mob=Object.fromEntries(Competition.mobilisation(P.competition,scores).map(g=>[g.id,g]));
+    const g=b.groupes.map(x=>({equipe:true,id:x.id,prenom:x.nom,points:x.points,membres:x.membres.slice(),
+      ...(mob[x.id]||{joueurs:0,reussis:0,part:0})}));
+    g.sort((a,c)=>c.points-a.points);
+    g.forEach((x,i)=>{x.rang=i&&x.points===g[i-1].points?g[i-1].rang:i+1;});
+    return g;
+  }
+  /* Les performances d'une partie. Le podium, lui, reste sans départage par la vitesse :
+     la rapidité n'apparaît qu'ici, nommée à part, à partir des temps mesurés par le téléphone. */
+  function performancesPavillons(scores){
+    const l=Object.values(scores).filter(e=>e.faits>0);
+    if(!l.length) return [];
+    const best=meilleuresSeances(l.map(e=>e.n),"pavillons","p"+P.id), taux=e=>e.ok/e.faits;
+    const moyennes=new Map();
+    l.forEach(e=>{
+      const t=P.calcs.map((c,i)=>c.juste && c.bons!=null && P.hisses[i].has(e.n) ? P.temps[i].get(e.n) : null).filter(x=>x!=null);
+      if(t.length>=2) moyennes.set(e.n,t.reduce((a,b)=>a+b,0)/t.length);
+    });
+    const mini=moyennes.size?Math.min(...moyennes.values()):null;
+    const seconde=x=>(x/1000).toLocaleString("fr-FR",{maximumFractionDigits:1});
+    return groupesPerformances([
+      {cle:"record", titre:"Record personnel battu", note:"Mieux que leur meilleure partie précédente.",
+       eleves:l.filter(e=>e.faits>=2 && best[e.n]!=null && taux(e)>best[e.n]+1e-9),
+       detail:e=>`${Math.round(taux(e)*100)} % aujourd'hui, ${Math.round(best[e.n]*100)} % à leur meilleure partie`},
+      {cle:"sans-faute", titre:"Sans-faute", note:"Aucun pavillon oublié, aucun piège.",
+       eleves:l.filter(e=>e.faits>=2 && e.ok===e.faits),
+       detail:e=>`${e.ok} calcul${e.ok>1?"s":""} juste${e.ok>1?"s":""} sur ${e.faits}`},
+      {cle:"rapide", titre:"Les pavillons les plus rapides", note:"Les plus prompts à hisser sur un calcul juste.",
+       eleves:mini==null?[]:l.filter(e=>moyennes.has(e.n) && moyennes.get(e.n)<=mini+150),
+       detail:e=>`${seconde(moyennes.get(e.n))} s en moyenne`}
+    ]);
+  }
   /* Même score, même place : le temps de lecture ne départage jamais les élèves. */
   function palmares(){
     const compte=P.calcs.map((c,i)=>c.bons!=null?i:-1).filter(i=>i>=0);if(!compte.length)return null;
@@ -11636,8 +11852,12 @@ const Pavillons = (() => {
     const questions=P.calcs.map((c,i)=>({ok:"A",r:Object.fromEntries(P.pres.filter(e=>P.res[e.n]?.[i]!=="-").map(e=>[e.n,P.res[e.n][i]==="1"?"A":"B"]))}));
     const competition=Competition.resultats(P.competition,scores,questions);
     const eligibles=Object.fromEntries(Object.entries(scores).filter(([,e])=>e.actif));
-    const podium=P.battle||R.recompense==="collectif"?[]:Competition.podium(competition,eligibles);
-    return {podium,competition,collectif:R.recompense==="collectif"};
+    const collectif=R.recompense==="collectif";
+    // En Battle, le podium reprend les points de la course ; sinon le classement habituel.
+    // La mobilisation compte tous les matelots dont les cartes ont été comptées, même ceux
+    // qui n'ont jamais hissé : c'est justement ce qu'elle raconte.
+    const podium=P.battle?podiumBattle(P.battle,scores):collectif?[]:Competition.podium(competition,eligibles,P.competition);
+    return {podium,perfs:performancesPavillons(scores),competition,collectif};
   }
   function verif(){ clearTimeout(minuteur); clearTimeout(attenteFin); P = null; phase = "verif"; verifVus = new Set(); dessine(); emet(); }
   function arrete(){ clearTimeout(minuteur); clearTimeout(attenteFin); cancelAnimationFrame(raf); P = null; phase = "salon"; dessine(); emet(); }
@@ -11755,14 +11975,17 @@ const Pavillons = (() => {
     dessineBas();
   }
   const sec = ms => (ms/1000).toFixed(1).replace(".", ",")+" s";
-  function palmaresHTML(pm){
-    return `<div class="pv-palmares eq-fete">${podiumBateauHTML(pm.podium)}</div>`;
+  function palmaresHTML(pm, o){
+    return `<div class="pv-palmares eq-fete">${podiumBateauHTML(pm.podium,false,o)}${htmlPerformances(pm.perfs)}</div>`;
   }
   function finHTML(){
     const coffre=typeof CoffreUI!=="undefined"?CoffreUI.bilan():"";
     if(P.battle){
-      const b=P.battle;
-      return `<div class="pv-fin"><div class="pv-fin-carte eq-fete"><span class="eq-surtitre">⚑ Hissez les pavillons · Battle</span><h1>${esc(verdictBattle(b))}</h1><p>${b.comptes?"Chaque bonne réponse a fait avancer son équipage et ajouté une perle au coffre commun !":"Active la caméra du téléphone pour compter les réponses et faire avancer les bateaux."}</p>${coffre}<div class="pv-boutons"><button class="btn" data-pv="salon">Retour</button><button class="btn prim" data-pv="lance">Rejouer le Battle</button></div></div></div>`;
+      const b=P.battle, pmB=P.pm, podiumB=pmB?.podium||[], montreB=!!P.fete&&podiumB.length;
+      const corps=montreB
+        ? palmaresHTML(pmB,{titre:"Le podium du Battle",legende:"Les points de la partie, équipage par équipage !",valeur:e=>valeurEquipage(e,true)})
+        : `<p>${b.comptes?"Chaque bonne réponse a fait avancer son équipage et ajouté une perle au coffre commun !":"Active la caméra du téléphone pour compter les réponses et faire avancer les bateaux."}</p>${coffre}`;
+      return `<div class="pv-fin${montreB?" podium":""}"><div class="pv-fin-carte eq-fete"><span class="eq-surtitre">⚑ Hissez les pavillons · Battle</span><h1>${esc(verdictBattle(b))}</h1>${corps}<div class="pv-boutons">${podiumB.length&&!montreB?'<button class="btn prim" data-pv="fete">Découvrir le podium</button>':""}<button class="btn" data-pv="salon">Retour</button><button class="btn prim" data-pv="lance">Rejouer le Battle</button></div></div></div>`;
     }
     const pm=P.pm, podium=pm?.podium||[], montrePodium=!!P.fete&&podium.length;
     const contenu=montrePodium?palmaresHTML(pm):coffre||'<h1>Partie terminée !</h1><p>Merci pour cette révision ensemble.</p>';
@@ -11899,7 +12122,8 @@ const Pavillons = (() => {
       return;
     }
     if (E.phase==="fin" && E.fin){
-      if(E.fin.battle){z.innerHTML=`<div class="aa-bloc"><h3>${esc(verdictBattle(E.fin.battle))}</h3>${battleTel(E.fin.battle)}<div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer le Battle</button><button class="btn" data-c="salon">Retour</button></div></div><div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;return;}
+      // Le Battle a lui aussi son podium : le même bouton qu'à l'écran le découvre.
+      if(E.fin.battle){z.innerHTML=`<div class="aa-bloc"><h3>${esc(verdictBattle(E.fin.battle))}</h3>${battleTel(E.fin.battle)}<div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer le Battle</button><button class="btn" data-c="salon">Retour</button></div></div>${E.fin.pm?.podium?.length&&!E.fin.fete?'<button class="btn prim" data-c="fete">Découvrir le podium</button>':""}${palmaresTel(E.fin.pm)}<div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;return;}
       z.innerHTML = `<div class="aa-bloc"><div class="aa-actions deux"><button class="btn prim" data-c="lance">Rejouer</button><button class="btn" data-c="salon">Changer les calculs</button></div></div>
         ${E.fin.pm?.podium?.length&&!E.fin.fete?'<button class="btn prim" data-c="fete">Découvrir le podium</button>':""}${palmaresTel(E.fin.pm)}<div class="aa-bloc">${resultatsHTML(E.fin)}</div>`;
       return;
@@ -11922,7 +12146,8 @@ const Pavillons = (() => {
   }
   function palmaresTel(pm){
     if(!pm)return "";
-    return `<div class="aa-bloc">${pm.podium.length?`<h3>Le palmarès</h3><ol class="pv-t-podium">${pm.podium.map(x=>`<li class="${["or","argent","bronze"][(x.rang||1)-1]||"or"}"><i>${x.rang||1}</i>${x.equipe?Competition.drapeau(x.id):drapeau(x.n)}<b>${esc(x.prenom||nomT(x.n))}</b><em>${x.equipe?String(x.points).replace(".",",")+" pts":x.ok+" sur "+x.faits}</em></li>`).join("")}</ol>`:""}</div>`;
+    const ligne=x=>`<li class="${["or","argent","bronze"][(x.rang||1)-1]||"or"}"><i>${x.rang||1}</i>${x.equipe?Competition.drapeau(x.id):drapeau(x.n)}<b>${esc(x.prenom||nomT(x.n))}</b><em>${x.equipe?(x.joueurs?x.reussis+" sur "+x.joueurs+" · ":"")+String(x.points).replace(".",",")+" pts":x.ok+" sur "+x.faits}</em></li>`;
+    return `<div class="aa-bloc">${pm.podium.length?`<h3>Le palmarès</h3><ol class="pv-t-podium">${pm.podium.map(ligne).join("")}</ol>`:""}${htmlPerformances(pm.perfs,true)}</div>`;
   }
   function derniereHTML(){
     if (!dernier || !dernier.fin) return "";
@@ -12351,7 +12576,8 @@ const Tel = (() => {
     if(!kraken){kraken=document.createElement("div");kraken.id="t-kraken";$("#t-qt").after(kraken);}
     kraken.hidden=!TQ?.kraken;kraken.innerHTML=TQ?.kraken?KrakenVue.jauge(TQ.kraken,TQ.kraken.seuil):"";
     $("#t-podium").hidden=!podium.length&&!TQ?.reussites;
-    $("#t-podium").innerHTML=podiumBateauHTML(podium,true)+htmlRecompenses(TQ?.reussites,true);
+    $("#t-podium").innerHTML=podiumBateauHTML(podium,true)
+      +htmlPerformances(TQ?.reussites?.performances,true)+htmlRecompenses(TQ?.reussites,true);
     document.getElementById("t-objectifs")?.remove();
     let coffre=document.getElementById("t-coffre");
     if(!coffre){coffre=document.createElement("div");coffre.id="t-coffre";$("#scr-tel .tel-res")?.after(coffre);}
