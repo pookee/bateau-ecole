@@ -829,6 +829,32 @@ img{max-width:100%}
   #scr-tel > #t-coffre{grid-column:2;order:8}
 }
 
+/* Une carte de voyage lumineuse, un carnet lisible du fond de la classe. */
+.ile-tresor{--ile-nuit:#07383a;--ile-or:#f1ca76;--ile-ivoire:#fff8e8;--ile-vert:#165955;position:relative;isolation:isolate;width:min(1240px,100%);flex:none;box-sizing:border-box;color:var(--ile-nuit);background:var(--ile-ivoire);border:1px solid #f1dbaa;border-radius:25px;overflow:hidden;box-shadow:0 22px 70px #001c3180,0 2px 0 #fff8 inset;font-family:var(--texte);animation:ile-entree .45s ease both}
+.ile-tresor *{box-sizing:border-box}.ile-tresor h2,.ile-tresor h3,.ile-tresor p{margin:0}.ile-tresor button,.ile-tresor input{font:inherit}.ile-entete{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 28px 15px;background:linear-gradient(105deg,#fffaf0,#f5e7c9);border-bottom:1px solid #d8c7a3}.ile-surtitre{font-size:clamp(.8rem,1.15vw,1rem);font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:#75704d;margin-bottom:4px}.ile-entete h2{font:800 clamp(1.7rem,2.65vw,2.55rem)/1.1 var(--display);text-wrap:balance}.ile-embleme{font-size:48px;color:#b98d30;line-height:1}.ile-expedition{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(340px,1fr);min-height:0}.ile-carte{position:relative;width:100%;aspect-ratio:1.6;min-height:0;overflow:hidden;background:#12666e}.ile-carte-image{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.ile-carte::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 48px #073a3955;pointer-events:none}.ile-brume{position:absolute;inset:0;z-index:1;background:linear-gradient(125deg,transparent 10%,#fff5 33%,transparent 48%,transparent 70%,#fff3);opacity:.45;pointer-events:none;animation:ile-brume 18s ease-in-out infinite alternate;transform:translateX(-4%)}.ile-rose{position:absolute;right:15px;top:10px;color:#fff8dc;text-shadow:0 2px 8px #002822;text-align:center;font-size:14px;z-index:2}.ile-rose b{display:block;font-weight:800}.ile-rose span{display:block;font-size:45px;line-height:.8}.ile-lieu{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);display:flex;align-items:center;gap:7px;padding:5px 11px 5px 5px;border-radius:40px;border:2px solid #ffe5a7;background:#062b32e8;color:#fff8e8;white-space:nowrap;box-shadow:0 5px 12px #001a2970;font-weight:800!important;font-size:clamp(.95rem,1.35vw,1.2rem)!important;z-index:3;cursor:pointer;transition:transform .2s,background .2s;min-height:42px}.ile-lieu strong{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#f1ca76;color:#063136;font:800 1rem var(--display)}.ile-lieu:disabled{cursor:default;opacity:1}.ile-lieu:not(:disabled):hover,.ile-lieu:not(:disabled):focus-visible{transform:translate(-50%,-50%) scale(1.08);background:#146661;outline:3px solid #fff;outline-offset:4px}.ile-lieu.fouille{border-color:#fff;background:#965f18}.ile-ondes{position:absolute;inset:-8px;border:2px solid #ffe499;border-radius:40px;animation:ile-fouille 1.4s ease-out 3;pointer-events:none}.ile-carte-legende{position:absolute;bottom:12px;left:16px;color:#fff8e5;font:italic 600 clamp(1rem,1.5vw,1.4rem) var(--display);text-shadow:0 2px 5px #052e37;z-index:2}.ile-carnet{padding:20px 24px;display:flex;flex-direction:column;gap:14px;justify-content:center;background:radial-gradient(ellipse at top left,#fffdf6,#f4e9d0)}.ile-carnet h3{font:800 clamp(1.2rem,1.7vw,1.6rem) var(--display)}.ile-indices{list-style:none;display:grid;gap:11px;margin:0;padding:0}.ile-indices li{display:flex;gap:11px;align-items:flex-start;color:#42605b}.ile-indices li>span{display:grid;place-items:center;width:26px;height:26px;flex:none;background:#e3d7b7;color:#4a5648;border-radius:50%;font-weight:800}.ile-indices li p{font:650 clamp(1rem,1.5vw,1.33rem)/1.35 var(--texte);text-wrap:pretty}.ile-indices li.nouveau{color:#123f39}.ile-indices li.nouveau>span{color:#fff;background:#21645b}.ile-cles{display:flex;justify-content:center;gap:12px}.ile-cles>span{display:grid;justify-items:center;gap:2px;color:#c7bea7}.ile-cles b{font:600 40px/1 var(--texte);transform:rotate(-30deg)}.ile-cles small{font-size:12px;font-weight:800;letter-spacing:.05em}.ile-cles .acquise{color:#9a690b}.ile-conseil{display:flex;align-items:center;gap:10px;margin-top:auto}.ile-kiko{height:100px;width:82px;object-fit:contain;flex:none;filter:drop-shadow(0 7px 5px #31524322)}.ile-conseil p{font:600 clamp(.95rem,1.25vw,1.12rem)/1.3 var(--texte);color:#546254}.ile-pied{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 26px;background:#fffaf0;border-top:1px solid #decdaa;min-height:84px}.ile-pied p{font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.3;font-weight:600;max-width:60ch}.ile-tresor .btn{border-radius:14px;white-space:normal;font-size:clamp(1.05rem,1.45vw,1.3rem);line-height:1.2;padding:.72em 1.15em;box-shadow:0 3px 0 #001d2255;max-width:100%}.ile-tresor .btn.prim{background:linear-gradient(#236b61,#14534e);color:#fff8e8;border-color:#164e45}.ile-tresor .btn.prim:hover{background:#134b43}.ile-pied .btn{flex:none}.ile-consigne{padding:13px;background:#e9debd;border-radius:12px;font-size:clamp(1rem,1.5vw,1.3rem);font-weight:800}.ile-departage{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.ile-departage .btn{font-size:1rem}.ile-trouvaille{text-align:center;align-items:center;gap:12px}.ile-trouvaille p{font-size:clamp(1rem,1.5vw,1.3rem);line-height:1.4}.ile-objet{font:normal 90px/1 var(--display);color:#b9851e;text-shadow:0 5px 10px #ad872840;animation:ile-trouvaille .65s cubic-bezier(.2,.8,.3,1.3) both}.ile-objet.coffre{height:130px}.ile-objet img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 8px 9px #7c501833)}.ile-aide{color:#355d48;font-weight:800;padding:10px;background:#e6dcc0;border-radius:10px}.ile-intro-paysage{position:relative;height:clamp(240px,35vh,350px);overflow:hidden}.ile-intro-paysage>img{width:100%;height:100%;object-fit:cover;object-position:center 52%;animation:ile-zoom 14s ease-out both}.ile-intro-voile{position:absolute;inset:0;background:linear-gradient(transparent 25%,#003a378c 70%,#002825e8)}.ile-intro-texte{position:absolute;bottom:24px;left:30px;right:30px;color:#fff7db}.ile-intro-texte>span{font:800 clamp(1.7rem,2.7vw,2.5rem)/1.1 var(--display);text-shadow:0 2px 10px #07382c}.ile-intro-texte p{font-size:clamp(1.1rem,1.65vw,1.5rem);font-weight:700;margin-top:10px}.ile-intro-bas{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 28px}.ile-suite-voyage{display:block;font-size:.8em;line-height:1.35;color:#547065;margin-top:9px}.ile-intro-bas>p{font:600 clamp(1.1rem,1.6vw,1.4rem)/1.35 var(--texte);max-width:43ch}.ile-intro-bas>div{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.ile-centre{justify-content:center}.ile-coffre-scene{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:400px;text-align:center;overflow:hidden;background:radial-gradient(ellipse at center,#285d50,#062f33);color:#fff5db;padding:22px}.ile-halo{position:absolute;left:50%;top:40%;width:420px;height:420px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(#ffe1a568,#f5c45b18 42%,transparent 67%);pointer-events:none;animation:ile-halo 4s ease-in-out infinite alternate}.ile-grand-coffre{position:relative;width:240px;height:180px;object-fit:contain;filter:drop-shadow(0 15px 24px #0007);animation:ile-flotte 4s ease-in-out infinite}.ile-coffre-scene .ile-cles{position:relative}.ile-coffre-scene .ile-cles .acquise{color:#f8d88f}.ile-coffre-scene p{position:relative;font-size:clamp(1.15rem,1.8vw,1.6rem);line-height:1.35}.ile-particules{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:4}.ile-particules i{position:absolute;left:var(--x);top:10%;width:5px;height:5px;border-radius:50%;background:#ffe29c;box-shadow:0 0 8px #ffc862;animation:ile-poussiere calc(3s + var(--i)*.11s) linear infinite;animation-delay:calc(var(--i)*-.3s);opacity:.6}.ile-lettre-scene{display:flex;align-items:center;justify-content:center;gap:35px;padding:24px 40px;background:radial-gradient(ellipse at center,#faf0d5,#e7d7ac);min-height:400px}.ile-lettre-scene>.ile-kiko{width:160px;height:230px;filter:drop-shadow(0 18px 10px #5c593044)}.ile-lettre{position:relative;width:min(720px,100%);background:#fffaf0;border:1px solid #d6c299;box-shadow:0 10px 30px #7f724233;padding:23px 34px;display:grid;gap:12px;border-radius:4px 20px 20px 5px;transform:rotate(-.7deg)}.ile-lettre p{font-size:clamp(1.05rem,1.5vw,1.3rem);line-height:1.35;max-width:55ch}.ile-lettre strong{display:block;text-align:center;font-size:clamp(1.05rem,1.5vw,1.3rem);line-height:1.3;color:#496052}.ile-lettre em{font:800 normal clamp(1.6rem,2.4vw,2.2rem)/1.15 var(--display);color:#996916}.ile-signature{font:italic 700 1.3rem var(--display);text-align:right;color:#365f50}.ile-cachet{position:absolute;right:20px;top:-10px;display:grid;place-items:center;width:43px;height:43px;border-radius:50%;background:#b46a3d;border:3px double #edc38b;color:#ffe5ac;font-size:25px;transform:rotate(15deg)}.ile-navire-scene{height:390px;position:relative;background:linear-gradient(#082f3b 0%,#2b7b7b 60%,#236b76 61%,#063c51);overflow:hidden;display:flex;align-items:center;justify-content:center}.ile-soleil{position:absolute;left:50%;top:8%;width:250px;height:250px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(#fff0bd,#ffe4a8aa 40%,#ffda8833 70%,transparent);filter:blur(8px)}.ile-navire-rayons{position:absolute;width:700px;height:700px;top:50%;left:50%;margin:-350px;background:repeating-conic-gradient(from 0deg,#ffdf8e00 0deg 12deg,#ffdf8e16 13deg 25deg);border-radius:50%;animation:ile-rayons 65s linear infinite;mask-image:radial-gradient(#000,transparent 70%)}.ile-navire{position:relative;z-index:2;display:block;width:min(560px,75%);height:300px;object-fit:contain;filter:drop-shadow(0 16px 14px #00202e88);animation:ile-navire-reveal 1.3s cubic-bezier(.22,.8,.25,1) both,ile-flotte 6s 1.3s ease-in-out infinite}.ile-mer-front{position:absolute;bottom:0;left:-5%;width:110%;height:32%;background:linear-gradient(transparent,#073c50aa);border-radius:50% 50% 0 0;z-index:3;pointer-events:none}.ile-grade{position:relative;z-index:5;border:1px solid #f7d58499;border-radius:30px;background:#123d3e;color:#ffe1a1;font:800 clamp(1.1rem,1.7vw,1.55rem) var(--display);padding:10px 26px;text-align:center}.ile-navire-scene>.ile-grade{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);white-space:nowrap}.ile-bapteme-prepare{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:25px;padding:22px 30px}.ile-bapteme-vignette{text-align:center;background:radial-gradient(#e8eed4,#e0e6ce);border-radius:18px;padding:20px}.ile-bapteme-vignette img{width:100%;height:220px;object-fit:contain}.ile-bapteme-vignette p{font-weight:700;font-size:1.1rem}.ile-noms-form{display:grid;gap:10px}.ile-noms-form label{display:flex;align-items:center;gap:12px}.ile-noms-form label>span,.ile-nom-choix>span{display:grid;place-items:center;flex:none;width:38px;height:38px;background:#ead7a7;color:#574b2b;border-radius:50%;font-weight:800}.ile-noms-form input{border:2px solid #d9c9a1;background:#fffdf5;color:#163f3b;border-radius:12px;padding:12px;min-width:0;width:100%;font-size:1.2rem;font-weight:700}.ile-noms-form>p{font-size:.95rem;color:#607064;line-height:1.3;margin-top:5px}.ile-noms-vote{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:28px;padding:26px 35px;min-height:370px}.ile-noms-vote>img{width:100%;height:260px;object-fit:contain;filter:drop-shadow(0 12px 10px #26473933)}.ile-noms-vote>div{display:grid;gap:12px}.ile-nom-choix{display:flex;align-items:center;gap:15px;padding:14px 17px;background:#fffaf0;border:2px solid #d9c79e;border-radius:15px;color:#164c44;font-size:clamp(1.1rem,1.65vw,1.5rem)!important;font-weight:800!important;cursor:pointer;text-align:left}.ile-nom-choix:hover,.ile-nom-choix:focus-visible{background:#ecdfbc;outline:3px solid #316f63;outline-offset:2px}.ile-celebration{position:relative;min-height:410px;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;padding:12px 24px 22px;background:radial-gradient(ellipse at center,#337b72,#073642 80%);overflow:hidden;color:#fff5dc}.ile-celebration>.ile-navire{height:200px;width:min(450px,80%)}.ile-celebration-nom{position:relative;z-index:5;text-align:center;font:800 clamp(1.8rem,3.3vw,3rem)/1.1 var(--display);text-shadow:0 3px 8px #002d3f;overflow-wrap:anywhere}.ile-celebration p{position:relative;font-size:1.15rem;text-align:center}.ile-celebration>.ile-grade{font-size:1.2rem;padding:7px 22px}
+.ile-messager{position:relative;width:180px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center}.ile-messager:before{content:"";position:absolute;inset:-25px;background:radial-gradient(#fff2bca0,transparent 65%);border-radius:50%;pointer-events:none}.ile-messager .ile-kiko{position:relative;width:150px;height:180px;z-index:2;filter:drop-shadow(0 10px 8px #816b3333)}.ile-coffre-ouvert{position:relative;width:170px;height:130px;object-fit:contain;margin-top:-28px;z-index:3;filter:drop-shadow(0 12px 8px #6c581833)}.ile-lettre{animation:ile-lettre-sort .7s ease both}@keyframes ile-lettre-sort{from{opacity:0;transform:translateY(20px) rotate(-2deg)}to{opacity:1;transform:translateY(0) rotate(-.7deg)}}
+.ile-navire-scene>.ile-navire{height:calc(100% - 95px);align-self:flex-start;margin-top:5px}.ile-navire-brume{position:absolute;top:-15%;bottom:-15%;width:70%;z-index:6;pointer-events:none;background:radial-gradient(ellipse at 30% 30%,#e2f7efed,transparent 58%),radial-gradient(ellipse at 70% 65%,#8fc9c3ed,transparent 65%),linear-gradient(90deg,#c9e8deeb,#d5f2e5cc);filter:blur(14px);animation-duration:2.25s;animation-timing-function:cubic-bezier(.25,.6,.3,1);animation-fill-mode:both}.ile-navire-brume.gauche{left:-9%;animation-name:ile-brume-gauche}.ile-navire-brume.droite{right:-9%;animation-name:ile-brume-droite}@keyframes ile-brume-gauche{0%,12%{transform:translateX(0);opacity:1}100%{transform:translateX(-105%);opacity:0}}@keyframes ile-brume-droite{0%,12%{transform:translateX(0);opacity:1}100%{transform:translateX(105%);opacity:0}}
+@keyframes ile-entree{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes ile-brume{to{transform:translateX(5%);opacity:.22}}@keyframes ile-fouille{0%{transform:scale(.9);opacity:1}100%{transform:scale(1.5);opacity:0}}@keyframes ile-trouvaille{from{opacity:0;transform:translateY(35px) scale(.55)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes ile-flotte{50%{transform:translateY(-7px) rotate(.6deg)}}@keyframes ile-halo{to{opacity:.5;transform:translate(-50%,-50%) scale(1.15)}}@keyframes ile-poussiere{0%{transform:translateY(340px) scale(.5);opacity:0}25%{opacity:.7}100%{transform:translateY(-50px) scale(1);opacity:0}}@keyframes ile-rayons{to{transform:rotate(360deg)}}@keyframes ile-navire-reveal{from{opacity:0;transform:translateY(70px) scale(.72);filter:brightness(2) drop-shadow(0 0 25px #fff5)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes ile-zoom{from{transform:scale(1.08)}to{transform:scale(1)}}
+@media(min-width:900px) and (max-height:800px){.ile-entete{padding:13px 24px}.ile-carnet{padding:16px 20px;gap:11px}.ile-pied{padding:12px 24px;min-height:76px}.ile-navire-scene{height:390px}.ile-coffre-scene,.ile-lettre-scene{min-height:350px}.ile-lettre-scene{padding:18px 35px}.ile-lettre{padding:18px 28px;gap:9px}.ile-celebration{min-height:360px}.ile-celebration>.ile-navire{height:180px}.ile-noms-vote{min-height:330px;padding:20px 30px}.ile-noms-vote>img{height:240px}}
+@media(max-width:850px){.ile-messager{display:none}.ile-expedition{grid-template-columns:1fr}.ile-carte{aspect-ratio:1.6;min-height:220px}.ile-carnet{padding:18px 20px}.ile-conseil{display:none}.ile-cles{gap:18px}.ile-carnet>.ile-cles{display:none}.ile-pied,.ile-intro-bas{flex-direction:column;align-items:stretch;text-align:center;padding:16px 18px;gap:13px}.ile-pied .btn{width:100%}.ile-intro-bas>div{justify-content:center}.ile-intro-bas>p{max-width:none}.ile-entete{padding:17px 20px}.ile-entete h2{font-size:1.8rem}.ile-embleme{font-size:35px}.ile-indices{gap:8px}.ile-indices li p{font-size:1.06rem}.ile-carnet h3{font-size:1.2rem}.ile-lieu{font-size:.95rem!important;gap:4px;padding-right:8px}.ile-lieu strong{width:26px;height:26px}.ile-intro-paysage{height:280px}.ile-intro-texte{left:20px;right:20px;bottom:20px}.ile-intro-texte>span{font-size:1.8rem}.ile-lettre-scene{gap:12px;padding:20px;min-height:0}.ile-lettre-scene>.ile-kiko{width:80px;height:140px}.ile-lettre{padding:20px;gap:12px}.ile-lettre p{font-size:1.05rem}.ile-lettre em{font-size:1.65rem}.ile-navire-scene{height:320px}.ile-navire{height:240px;width:90%}.ile-navire-scene>.ile-grade{font-size:1rem;max-width:94%;white-space:normal;width:max-content}.ile-bapteme-prepare,.ile-noms-vote{grid-template-columns:1fr;gap:18px;padding:20px}.ile-bapteme-vignette img,.ile-noms-vote>img{height:160px}.ile-bapteme-vignette{padding:10px}.ile-noms-vote{min-height:0}.ile-departage{justify-content:center}.ile-coffre-scene{min-height:350px}.ile-celebration{min-height:350px}.ile-celebration-nom{font-size:2rem}}
+@media(max-width:480px){.ile-tresor{border-radius:18px}.ile-entete h2{font-size:1.5rem}.ile-surtitre{font-size:.7rem;letter-spacing:.1em}.ile-embleme{display:none}.ile-lieu{font-size:.76rem!important;border-width:1px;gap:4px;padding:3px 6px 3px 3px;min-height:32px}.ile-lieu strong{width:22px;height:22px;font-size:.8rem}.ile-carte{min-height:210px}.ile-rose{right:8px;top:7px;font-size:10px}.ile-rose span{font-size:28px}.ile-lettre-scene>.ile-kiko{display:none}.ile-lettre-scene{padding:18px}.ile-lettre{padding:20px}.ile-intro-paysage{height:245px}.ile-intro-bas .btn{width:100%}.ile-intro-texte>span{font-size:1.55rem}.ile-trouvaille{gap:9px}.ile-objet{font-size:65px}.ile-objet.coffre{height:100px}}
+@media(prefers-reduced-motion:reduce){.ile-navire-brume{display:none}.ile-tresor,.ile-tresor *,.ile-tresor *::before,.ile-tresor *::after{animation:none!important;transition:none!important}.ile-particules{display:none}}
+
+.flotte-demo.carte{width:min(1240px,96vw);max-width:1240px;background:#f5efdf;padding:24px;color:#21394a;border:1px solid #d6c9a3;box-shadow:0 24px 80px #071e3955}
+.flotte-demo-titre{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.flotte-demo h2{font:800 clamp(1.4rem,2.5vw,2.3rem)/1.1 var(--display);margin:5px 0}
+.flotte-demo h3{font:800 clamp(1rem,1.6vw,1.5rem)/1.2 var(--display);margin:3px 0}
+.flotte-demo p{margin:4px 0}.flotte-demo-kicker{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:#786237;font-weight:700}
+.flotte-demo-themes{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0}.flotte-demo-themes .btn{font-size:.85rem;padding:7px 12px}
+.flotte-demo-grille{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.flotte-demo-grille article{overflow:hidden;border-radius:14px;background:#fffaf0;border:1px solid #dccba5;box-shadow:0 4px 12px #19384b0d}
+.flotte-demo-grille article>div:last-child{padding:8px 14px}.flotte-demo-grille article span{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#807050}.flotte-demo-grille article p{font-size:.85rem;color:#536572}
+.flotte-demo-mer{height:clamp(120px,19vh,190px);position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 120%,#fff8 0,transparent 65%),linear-gradient(165deg,var(--flotte-fond),var(--flotte-mer));overflow:hidden}
+.flotte-demo-mer:after{content:"";position:absolute;left:-10%;right:-10%;height:25%;bottom:-18%;border-radius:50%;background:#9ee7e980;box-shadow:0 -6px 0 #c1eeeb20}
+.flotte-demo-mer img{width:90%;height:94%;object-fit:contain;filter:drop-shadow(0 9px 9px #00132360);animation:flotte-demo-roulis 6s ease-in-out infinite}.flotte-demo-grille article:nth-child(even) img{animation-delay:-3s}
+@keyframes flotte-demo-roulis{0%,100%{transform:translateY(1px) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1deg)}}
+@media(max-width:650px){.flotte-demo.carte{padding:14px}.flotte-demo-titre{align-items:start;flex-direction:column;gap:8px}.flotte-demo-grille{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.flotte-demo-mer{height:120px}.flotte-demo-grille article>div:last-child{padding:8px}.flotte-demo-themes .btn{font-size:.75rem;padding:6px 8px}}
+@media(prefers-reduced-motion:reduce){.flotte-demo-mer img{animation:none}}
+
 </style>
 <script src="vendor/nostr-lite.js"></script>
 <script src="vendor/mqtt.min.js"></script>
@@ -6306,6 +6332,289 @@ const Coffre = (() => {
 if(typeof window!=="undefined")window.Coffre=Coffre;
 if(typeof module!=="undefined"&&module.exports)module.exports=Coffre;
 
+/* Les grandes expéditions font grandir l'équipage, indépendamment des perles.
+   Tout reste dans jeu/etat : copies du voyage, liaison et démo gardent les mêmes règles. */
+window.Expeditions = (() => {
+  const GRADES = ["Moussaillons","Matelots","Navigateurs","Explorateurs","Capitaines","Légendes des mers"];
+  const periodes = [
+    {id:"toussaint",nom:"Toussaint"},{id:"noel",nom:"Noël"},{id:"hiver",nom:"Vacances d’hiver"},
+    {id:"printemps",nom:"Vacances de printemps"},{id:"ete",nom:"Grandes vacances"}
+  ];
+  const entier = n => Math.max(0,Math.min(5,Number.isFinite(Number(n))?Math.floor(Number(n)):0));
+  function periode(date=new Date()){
+    // Périodes scolaires, sans imposer une date de vacances ni une zone académique.
+    const m=date.getMonth(), annee=date.getFullYear()-(m<8?1:0);
+    const i=m>=8&&m<=9?0:m>=10?1:m<=1?2:m<=3?3:4;
+    return {...periodes[i],cle:`${annee}-${periodes[i].id}`};
+  }
+  function propre(o){
+    o=o&&typeof o==="object"?o:{};
+    const acquis={}, noms={};
+    for(const [cle,r] of Object.entries(o.acquis||{})){
+      if(!/^\d{4}-(toussaint|noel|hiver|printemps|ete)$/.test(cle)||!r||typeof r!=="object")continue;
+      acquis[cle]={...r,niveau:entier(r.niveau)};
+    }
+    for(const [n,nom] of Object.entries(o.noms||{}))if(/^[0-5]$/.test(n)&&typeof nom==="string")noms[n]=nom.slice(0,60);
+    return {...o,v:1,niveau:Math.max(entier(o.niveau),0,...Object.values(acquis).map(r=>r.niveau)),acquis,noms};
+  }
+  function normalise(etat){
+    if(!etat.expeditions){
+      // Les grades déjà gagnés à l'ancienne restent acquis, sans effacer une escale.
+      const escales=Math.max(0,...(etat.escalesVues||[0]));
+      const heritage=[0,4,9,15,22,28].reduce((g,n,i)=>escales>=n?i:g,0);
+      etat.expeditions={v:1,niveau:heritage,acquis:{},noms:{[heritage]:etat.nom||"La Vaillante"},heritage};
+    }
+    return etat.expeditions=propre(etat.expeditions);
+  }
+  function prevision(etat=S,date=new Date()){
+    const e=normalise(etat),p=periode(date),nouveau=!e.acquis[p.cle]&&e.niveau<5;
+    const niveau=Math.min(5,e.niveau+(nouveau?1:0));
+    return {periode:p,niveau,nouveau,grade:GRADES[niveau]};
+  }
+  function fusion(a,b){
+    const x=propre(a),y=propre(b),acquis={...x.acquis};
+    for(const [cle,r] of Object.entries(y.acquis)){
+      const ancien=acquis[cle];
+      if(!ancien||r.niveau>ancien.niveau||r.niveau===ancien.niveau&&String(r.date||"")>String(ancien.date||""))acquis[cle]=r;
+    }
+    const noms={...x.noms,...y.noms};
+    if(x.niveau>y.niveau&&x.noms[x.niveau])noms[x.niveau]=x.noms[x.niveau];
+    return propre({...x,...y,niveau:Math.max(x.niveau,y.niveau),acquis,noms});
+  }
+  function promouvoir({niveau,nom,id,periode:p}={}){
+    const p0=prevision(S),e=normalise(S);
+    p=p&&/^\d{4}-(toussaint|noel|hiver|printemps|ete)$/.test(p.cle)?p:p0.periode;
+    const deja=e.acquis[p.cle]||Object.values(e.acquis).find(r=>id&&r.id===id);
+    const nouveau=!deja&&e.niveau<5;
+    if(nouveau){
+      // Une seule étape par expédition, même si un vieux téléphone en annonce davantage.
+      e.niveau=Math.min(5,e.niveau+1);
+      const choisi=String(nom||S.nom||"La Vaillante").trim().slice(0,60);
+      e.noms[e.niveau]=choisi;
+      e.acquis[p.cle]={id:String(id||S.seance?.id||p.cle),niveau:e.niveau,date:new Date().toISOString(),nom:choisi};
+      S.nom=choisi;S.nomChoisi=true;
+      if(typeof noteJournal==="function")noteJournal({type:"promotion",titre:`L’équipage devient ${GRADES[e.niveau]}`,esc:p.nom||p0.periode.nom,m:0,det:[`Nouveau navire : ${choisi}`,"Une grande expédition réussie ensemble."]});
+      sauve();
+    }
+    window.Navires?.actualise();
+    return {niveau:e.niveau,nouveau,grade:GRADES[e.niveau],nom:S.nom};
+  }
+  return {GRADES,periodes,periode,normalise,prevision,promouvoir,fusion};
+})();
+
+/* La flotte de l'équipage. Dessins SVG autonomes, sans réseau ni données de classe.
+   Un niveau définit la silhouette ; une thématique n'en change que l'habillage.
+   Le stockage de la progression appartient à Expeditions, jamais à ce module. */
+window.Navires = (() => {
+  const liste = [
+    {id:"moussaillons",nom:"Le Petit Cap",grade:"Moussaillons",type:"Voilier de nos premiers voyages",devise:"Chaque aventure commence par un premier cap."},
+    {id:"matelots",nom:"L’Étoile du large",grade:"Matelots",type:"Brigantin aux voiles généreuses",devise:"Ensemble, nous savons tenir le cap."},
+    {id:"navigateurs",nom:"Le Céleste",grade:"Navigateurs",type:"Trois-mâts des constellations",devise:"Les étoiles nous montrent le chemin."},
+    {id:"explorateurs",nom:"L’Alizé",grade:"Explorateurs",type:"Jonque des horizons lointains",devise:"Au-delà de l’horizon, tout reste à découvrir."},
+    {id:"capitaines",nom:"Le Souverain",grade:"Capitaines",type:"Grand galion de l’équipage",devise:"Notre force, c’est tout l’équipage."},
+    {id:"legendes",nom:"L’Aurore",grade:"Légendes des mers",type:"Nef légendaire aux ailes de lumière",devise:"Nos aventures deviennent une légende."}
+  ];
+  const matieres={
+    base:{bois:"#BC783F",ombre:"#542F29",clair:"#F7C875",coque:"#23576A",bas:"#123C54",voile:"#FFF0C9",pli:"#D3B98A",or:"#EAB75B",accent:"#CD6248",corde:"#A88553",encre:"#263D4B",motif:"boussole"},
+    automne:{bois:"#A85D2D",ombre:"#512F25",clair:"#F4C181",coque:"#8B472B",bas:"#593525",voile:"#F5C978",pli:"#C47A37",or:"#E8B25D",accent:"#9E432F",corde:"#AD844C",encre:"#553D2B",motif:"feuille"},
+    halloween:{bois:"#765181",ombre:"#251D3C",clair:"#CC8D77",coque:"#59416F",bas:"#2E2446",voile:"#EBC08C",pli:"#C47A4E",or:"#F5B75D",accent:"#CB642C",corde:"#967078",encre:"#493455",motif:"citrouille"},
+    noel:{bois:"#9F7245",ombre:"#294837",clair:"#E8C998",coque:"#326452",bas:"#163F38",voile:"#FFF0CC",pli:"#D9BC8F",or:"#E6BB59",accent:"#B94A49",corde:"#A28E5F",encre:"#345347",motif:"sapin"},
+    hiver:{bois:"#769BAE",ombre:"#294C66",clair:"#D5F4F6",coque:"#548DAA",bas:"#2F5E81",voile:"#ECFAFF",pli:"#A4CADB",or:"#C6E5EF",accent:"#6A8FBF",corde:"#7699B0",encre:"#3F6C8D",motif:"flocon"},
+    carnaval:{bois:"#9E568C",ombre:"#49345D",clair:"#F3B987",coque:"#8A458C",bas:"#543466",voile:"#FBE1AD",pli:"#D4A27A",or:"#F4C46A",accent:"#D25591",corde:"#B48A76",encre:"#755075",motif:"losange"},
+    printemps:{bois:"#9C9B60",ombre:"#3E5742",clair:"#EDE2A5",coque:"#50876F",bas:"#2A5E53",voile:"#F7F1D2",pli:"#CDD4A3",or:"#DEC37C",accent:"#D37D93",corde:"#9B9C6A",encre:"#4F7056",motif:"fleur"},
+    oeufs:{bois:"#BA8C9C",ombre:"#5E466B",clair:"#F8D6AC",coque:"#977AAD",bas:"#665881",voile:"#FFF1D9",pli:"#D9B8CA",or:"#EDCC88",accent:"#78B7B1",corde:"#A892A7",encre:"#79617C",motif:"oeuf"},
+    ete:{bois:"#D4A26A",ombre:"#345A5D",clair:"#FFE7AB",coque:"#359EAC",bas:"#246C83",voile:"#FFF9DE",pli:"#E1C889",or:"#EFC663",accent:"#EB8A65",corde:"#BBAC75",encre:"#46787C",motif:"soleil"}
+  };
+  const borne=n=>Math.min(5,Math.max(0,Math.floor(Number(n)||0)));
+  function niveau(etat){try{return borne((etat===undefined?S:etat)?.expeditions?.niveau);}catch(_){return 0;}}
+  const theme=id=>matieres[id]?id:(window.Themes?.actuel?.()||"base");
+  const cache=new Map();
+  const chemin=(d,fill,stroke,width=3,extra="")=>`<path d="${d}" fill="${fill}" stroke="${stroke||"none"}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" ${extra}/>`;
+  const ligne=(x1,y1,x2,y2,c,w=3,extra="")=>`<path d="M${x1} ${y1}L${x2} ${y2}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" ${extra}/>`;
+  function medaille(c,x,y,r=33,motif=c.motif){
+    let signe="";
+    if(motif==="boussole")signe=chemin("M0 -29L7 -8L25 0L7 7L0 29L-7 7L-25 0L-7 -8Z",c.or,c.encre,1.5)+chemin("M0 -29L0 0L25 0L7 -8Z",c.voile);
+    if(motif==="feuille")signe=chemin("M0 30C-7 12 -32 10 -25 -9L-7 -6L-10 -26L3 -16L19 -31L19 -10L33 -10C27 5 15 17 0 22Z",c.accent,c.encre,1.3)+ligne(0,27,15,-15,c.or,2);
+    if(motif==="citrouille")signe=`<ellipse cx="0" cy="3" rx="29" ry="25" fill="${c.accent}" stroke="${c.encre}" stroke-width="2"/><ellipse cx="0" cy="3" rx="15" ry="25" fill="none" stroke="${c.or}" stroke-width="2"/>${chemin("M-3 -22Q-9 -36 4 -33L8 -24",c.encre)}${chemin("M-17 0L-10 -10L-4 0ZM4 0L11 -10L17 0ZM-13 10Q0 24 13 10Z",c.or)}`;
+    if(motif==="sapin")signe=chemin("M0 -30L15 -10H9L25 7H15L31 25H-31L-15 7H-25L-9 -10H-15Z",c.coque,c.encre,1.3)+ligne(0,21,0,34,c.bois,5)+`<circle cx="0" cy="-24" r="4" fill="${c.or}"/>`;
+    if(motif==="flocon")signe=Array.from({length:6},(_,i)=>`<g transform="rotate(${i*60})">${ligne(0,0,0,-30,c.encre,3)}${chemin("M-7 -25L0 -17L7 -25","none",c.encre,2.5)}</g>`).join("");
+    if(motif==="losange")signe=[[-15,0,c.accent],[15,0,"#49B7B6"],[0,-18,c.or]].map(([a,b,f])=>chemin(`M${a} ${b-18}L${a+12} ${b}L${a} ${b+18}L${a-12} ${b}Z`,f,c.encre,1.5)).join("");
+    if(motif==="fleur")signe=Array.from({length:5},(_,i)=>`<ellipse cx="0" cy="-16" rx="10" ry="15" transform="rotate(${i*72})" fill="${c.accent}" stroke="${c.encre}" stroke-width="1"/>`).join("")+`<circle r="10" fill="${c.or}"/>`;
+    if(motif==="oeuf")signe=chemin("M0 -32C13 -32 28 -9 27 8C25 33 -25 33 -27 8C-28 -9 -13 -32 0 -32Z",c.accent,c.encre,2)+chemin("M-23 -3L-12 3L0 -3L12 3L24 -3M-24 14Q0 22 24 14","none",c.voile,4);
+    if(motif==="soleil")signe=Array.from({length:10},(_,i)=>`<g transform="rotate(${i*36})">${ligne(0,-23,0,-32,c.accent,3)}</g>`).join("")+`<circle r="17" fill="${c.or}" stroke="${c.accent}" stroke-width="2"/>`;
+    return `<g transform="translate(${x} ${y}) scale(${r/36})">${signe}</g>`;
+  }
+  function definitions(c){return `<defs>
+    <linearGradient id="coque" x1="0" y1="0" x2="0.15" y2="1"><stop stop-color="${c.coque}"/><stop offset=".48" stop-color="${c.coque}"/><stop offset="1" stop-color="${c.bas}"/></linearGradient>
+    <linearGradient id="bois" x1="0" y1="0" x2="0.15" y2="1"><stop stop-color="${c.clair}"/><stop offset=".27" stop-color="${c.bois}"/><stop offset="1" stop-color="${c.ombre}"/></linearGradient>
+    <linearGradient id="or" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="${c.voile}"/><stop offset=".22" stop-color="${c.or}"/><stop offset=".58" stop-color="${c.or}"/><stop offset="1" stop-color="${c.bois}"/></linearGradient>
+    <linearGradient id="toile" x1="0" y1=".2" x2="1" y2=".7"><stop stop-color="${c.pli}"/><stop offset=".2" stop-color="${c.voile}"/><stop offset=".55" stop-color="${c.voile}"/><stop offset="1" stop-color="${c.pli}"/></linearGradient>
+    <linearGradient id="verre" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ED5D8"/><stop offset=".4" stop-color="#285D78"/><stop offset="1" stop-color="#183B52"/></linearGradient>
+    <radialGradient id="lueur"><stop stop-color="#FFF4B9" stop-opacity=".7"/><stop offset="1" stop-color="${c.or}" stop-opacity="0"/></radialGradient>
+    <pattern id="toilefine" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M0 0H11M0 0V11" fill="none" stroke="${c.encre}" stroke-opacity=".035" stroke-width="1"/></pattern>
+    <pattern id="bordage" width="280" height="22" patternUnits="userSpaceOnUse"><path d="M0 21H280M77 0V21M240 21V0M4 8Q80 1 155 8T280 8" fill="none" stroke="${c.ombre}" stroke-opacity=".34" stroke-width="1.5"/><path d="M0 23H280" stroke="${c.clair}" stroke-opacity=".2"/></pattern>
+  </defs>`;}
+  function hublot(c,x,y,r=18){return `<g><circle cx="${x+1}" cy="${y+2}" r="${r+5}" fill="${c.ombre}" opacity=".6"/><circle cx="${x}" cy="${y}" r="${r+3}" fill="url(#or)" stroke="${c.ombre}" stroke-width="2"/><circle cx="${x}" cy="${y}" r="${r-3}" fill="url(#verre)" stroke="${c.voile}" stroke-opacity=".6" stroke-width="1.5"/><path d="M${x-r/2} ${y-3}Q${x-r/3} ${y-r/1.6} ${x+5} ${y-r/2}" stroke="#F1FCF8" stroke-width="3" opacity=".7" fill="none"/>${[0,90,180,270].map(a=>`<circle cx="${x+Math.cos(a*Math.PI/180)*r}" cy="${y+Math.sin(a*Math.PI/180)*r}" r="1.4" fill="${c.ombre}"/>`).join("")}</g>`;}
+  function lanterne(c,x,y,s=1){return `<g transform="translate(${x} ${y}) scale(${s})"><circle class="n-lueur" cy="17" r="45" fill="url(#lueur)"/>${chemin("M-13 2L-9 29H9L13 2Z","#FFD990",c.ombre,2)}${ligne(0,1,0,30,c.or,2)}${chemin("M-16 0L0 -12L16 0ZM-11 31H11L8 36H-8Z","url(#or)",c.ombre,2)}${ligne(0,-12,0,-23,c.ombre,3)}</g>`;}
+  function mat(c,x,haut,bas=658,fanion=true){return `<g>${chemin(`M${x-6} ${bas}L${x-4} ${haut}Q${x} ${haut-8} ${x+4} ${haut}L${x+8} ${bas}Z`,"url(#bois)",c.ombre,2)}${ligne(x-2,haut+6,x+1,bas-4,c.clair,2)}<circle cx="${x}" cy="${haut}" r="7" fill="url(#or)" stroke="${c.ombre}" stroke-width="2"/>${fanion?chemin(`M${x+2} ${haut+7}Q${x-28} ${haut+22} ${x-70} ${haut+12}Q${x-61} ${haut+29} ${x-87} ${haut+38}Q${x-38} ${haut+53} ${x+2} ${haut+35}Z`,c.accent,c.ombre,2,'class="n-fanion"'):""}</g>`;}
+  function cordage(c,x,haut,gauche,droite,bas=657){let s=ligne(x,haut,gauche,bas,c.corde,2)+ligne(x,haut,droite,bas,c.corde,2);for(let i=0;i<5;i++){const b=gauche+i*12;s+=ligne(x,haut+110,b,bas,c.corde,1.5);}for(let i=1;i<14;i++){const k=i/14;s+=ligne(x+(gauche-x)*k,haut+110+(bas-haut-110)*k,x+(gauche+48-x)*k,haut+110+(bas-haut-110)*k,c.corde,1.4);}return s;}
+  function voile(c,x,y,w,h,motif=false){const d=`M${x-w*.5} ${y}Q${x} ${y+13} ${x+w*.5} ${y}Q${x+w*.41} ${y+h*.51} ${x+w*.57} ${y+h}Q${x} ${y+h*.85} ${x-w*.56} ${y+h}Q${x-w*.39} ${y+h*.45} ${x-w*.5} ${y}Z`;
+    return `<g class="n-voile" style="animation-delay:-${(y%7)*.43}s">${chemin(d,"url(#toile)",c.ombre,2.5)}${chemin(d,"url(#toilefine)")}${chemin(`M${x-w*.46} ${y+5}Q${x-w*.24} ${y+h*.48} ${x-w*.51} ${y+h-7}Q${x-w*.35} ${y+h*.6} ${x-w*.46} ${y+5}Z`,c.pli)}${chemin(`M${x-w*.45} ${y+7}Q${x} ${y+21} ${x+w*.46} ${y+7}`,"none",c.voile,3)}${[.22,.44,.66,.85].map(a=>chemin(`M${x-w*.5+w*a} ${y+7}Q${x-w*.5+w*a+w*.035} ${y+h*.42} ${x-w*.56+w*1.13*a} ${y+h*(.97-.07*Math.sin(Math.PI*a))}`,"none",c.pli,1.5)).join("")}${chemin(`M${x-w*.56} ${y+h}Q${x} ${y+h*.85} ${x+w*.57} ${y+h}`,"none",c.or,4)}${ligne(x-w*.54,y-3,x+w*.54,y-3,c.ombre,10)}${ligne(x-w*.54,y-5,x+w*.54,y-5,c.bois,6)}${motif?medaille(c,x,y+h*.51,Math.min(w*.15,h*.28)):""}</g>`;
+  }
+  function foc(c,x,y,px,py,bx,by){return `${chemin(`M${x} ${y}Q${px+30} ${py-20} ${px} ${py}Q${bx+30} ${by-30} ${bx} ${by}Z`,"url(#toile)",c.ombre,2)}${chemin(`M${x} ${y}Q${px-30} ${py-70} ${px} ${py}Q${bx+65} ${by-45} ${bx} ${by}Q${px-70} ${py-95} ${x} ${y}Z`,c.pli,undefined,0,'opacity=".45"')}${ligne(x,y,bx,by,c.voile,2)}`;}
+  function coque(c,n){
+    const d=n===3?"M117 666Q428 701 814 634L935 588Q902 733 790 783Q491 839 222 777Q159 744 117 666Z":n===4?"M118 586L255 600L276 668Q557 698 849 628L938 593Q911 759 796 795Q494 839 248 782Q155 745 118 586Z":n===5?"M93 620Q154 657 202 650Q506 697 815 634Q906 618 943 553Q944 700 815 784Q557 836 270 791Q125 758 93 620Z":"M123 648Q414 699 831 625L932 587Q902 742 791 784Q512 829 267 782Q167 748 123 648Z";
+    let s=`<g>${chemin(d,"url(#coque)",c.ombre,5)}${chemin(d,"url(#bordage)")}${chemin(n===4?"M122 594L249 608L270 676Q560 707 849 638L932 603":n===3?"M124 675Q433 711 815 644L928 600":n===5?"M104 633Q154 671 202 663Q506 710 818 648Q905 627 936 577":"M133 657Q414 712 835 637L924 600","none",c.ombre,17)}${chemin(n===4?"M122 590L252 604L276 670Q560 700 849 632L936 597":n===3?"M124 668Q433 703 815 636L928 593":n===5?"M102 625Q154 663 202 655Q506 702 818 640Q905 619 936 569":"M130 650Q414 704 835 629L929 592","none","url(#or)",11)}${chemin("M208 731Q451 806 808 734","none",c.or,5)}${chemin("M234 751Q467 821 785 758","none",c.clair,1.5, 'opacity=".35"')}${chemin("M269 789Q523 829 792 782","none",c.ombre,5)}`;
+    for(let i=0;i<(n>=4?7:5);i++){const x=310+i*(n>=4?67:94),y=727-Math.pow((x-500)/43,2)*.15;s+=hublot(c,x,y,n>=4?16:18);}
+    for(let i=0;i<11;i++){const x=245+i*52,y=689-Math.pow((x-450)/45,2)*.3;s+=`<circle cx="${x}" cy="${y}" r="2.4" fill="${c.or}"/>`;}
+    s+=chemin("M819 665Q874 647 890 616Q883 665 848 692Q859 669 819 665Z","url(#or)",c.ombre,2);
+    return s+"</g>";
+  }
+  function cabine(c,x,y,w=140,h=64){return `<g>${chemin(`M${x} ${y+h}V${y+12}Q${x+w*.5} ${y-13} ${x+w} ${y+10}V${y+h}Z`,"url(#bois)",c.ombre,3)}${chemin(`M${x-10} ${y+12}Q${x+w*.45} ${y-16} ${x+w+10} ${y+9}L${x+w+7} ${y+18}Q${x+w*.4} ${y-4} ${x-10} ${y+21}Z`,c.coque,c.ombre,2)}${[.24,.55,.82].map(a=>`<rect x="${x+w*a-11}" y="${y+24}" width="22" height="26" rx="5" fill="url(#verre)" stroke="${c.or}" stroke-width="3"/>${ligne(x+w*a,y+25,x+w*a,y+49,c.or,2)}`).join("")}${ligne(x,y+h-8,x+w,y+h-8,c.or,3)}</g>`;}
+  function bastingage(c,x1,y1,x2,y2){let s=ligne(x1,y1,x2,y2,c.ombre,6)+ligne(x1,y1-1,x2,y2-1,c.or,3);const nb=Math.round((x2-x1)/27);for(let i=0;i<=nb;i++){const k=i/nb;s+=ligne(x1+(x2-x1)*k,y1+(y2-y1)*k,x1+(x2-x1)*k,y1+(y2-y1)*k+28,c.ombre,4)+ligne(x1+(x2-x1)*k-1,y1+(y2-y1)*k,x1+(x2-x1)*k-1,y1+(y2-y1)*k+25,c.or,1.5);}return s;}
+  function decor(c,n,id){let s="";const xs=[240,335,431,528,624,720,813];
+    if(["noel","carnaval","printemps","oeufs","ete"].includes(id)){
+      s+=chemin("M230 665Q522 731 829 639","none",id==="printemps"?c.coque:c.or,3);
+      xs.forEach((x,i)=>{const y=679+Math.sin(i/6*Math.PI)*24-i*5;
+        if(id==="carnaval"||id==="ete")s+=chemin(`M${x-10} ${y-3}L${x+11} ${y}L${x} ${y+25}Z`,[c.accent,c.or,"#61BFC1"][i%3],c.ombre,1);
+        else if(id==="printemps")s+=medaille(c,x,y,13);
+        else if(id==="oeufs")s+=medaille(c,x,y+10,11);
+        else s+=`<circle cx="${x}" cy="${y+5}" r="9" fill="${i%2?c.accent:c.or}" stroke="${c.ombre}" stroke-width="1.5"/><circle cx="${x-3}" cy="${y+2}" r="2.3" fill="#FFF6CB"/>`;
+      });
+    }
+    if(id==="halloween")s+=medaille(c,230,n===4?576:633,25)+medaille(c,779,636,20);
+    if(id==="automne")s+=medaille(c,242,n===4?577:633,26)+medaille(c,799,629,21);
+    if(id==="hiver")s+=chemin("M128 649L160 654L164 674L172 655L201 660L205 677L213 661M742 647L763 643L768 661L776 641L809 635L814 648L821 632","none",c.voile,5);
+    if(n>=4)s+=medaille(c,197,n===4?661:714,28,"boussole");
+    return s+lanterne(c,n===4?153:210,n===4?576:612,.73)+lanterne(c,820,607,.6);
+  }
+  function jonque(c,x,y,w,h){
+    const d=`M${x} ${y}Q${x+w*.65} ${y-70} ${x+w} ${y+25}Q${x+w*.8} ${y+h*.45} ${x+w*.96} ${y+h}Q${x+w*.45} ${y+h-35} ${x} ${y+h+15}Z`;
+    let s=chemin(d,"url(#toile)",c.ombre,3)+chemin(d,"url(#toilefine)");
+    for(let i=0;i<7;i++){const k=i/6,yy=y+k*h,xx=x+w*(1-.12*Math.sin(k*Math.PI));s+=chemin(`M${x} ${yy}Q${x+w*.5} ${yy-40} ${xx} ${yy+(i===0?25:0)}`,"none",c.bois,5)+chemin(`M${x} ${yy-1}Q${x+w*.5} ${yy-41} ${xx} ${yy+(i===0?24:-1)}`,"none",c.or,1.5);}
+    return `<g class="n-voile" style="animation-delay:-${(y%7)*.43}s">${s+medaille(c,x+w*.49,y+h*.49,44)}</g>`;
+  }
+  function voileAurore(c,x,y,w,h,motif=false){
+    // Les ailes de la nef finale ont un contour et des nervures propres :
+    // ce n'est pas un galion ordinaire simplement recoloré en doré.
+    const d=`M${x-w*.57} ${y-15}Q${x} ${y+24} ${x+w*.57} ${y-15}Q${x+w*.39} ${y+h*.43} ${x+w*.63} ${y+h+12}Q${x+w*.28} ${y+h*.72} ${x} ${y+h}Q${x-w*.28} ${y+h*.72} ${x-w*.63} ${y+h+12}Q${x-w*.39} ${y+h*.43} ${x-w*.57} ${y-15}Z`;
+    let s=chemin(d,"url(#toile)",c.ombre,2.5)+chemin(d,"url(#toilefine)")+chemin(d,"none",c.or,4);
+    for(const k of [-.42,-.23,0,.23,.42])s+=chemin(`M${x+w*k} ${y+6}Q${x+w*k*.72} ${y+h*.45} ${x+w*k*1.22} ${y+h*(.93-Math.abs(k)*.08)}`,"none",c.or,1.8);
+    s+=ligne(x-w*.6,y-17,x+w*.6,y-17,c.ombre,8)+ligne(x-w*.6,y-19,x+w*.6,y-19,c.or,4);
+    if(motif)s+=medaille(c,x,y+h*.47,Math.min(w*.15,h*.28));
+    return `<g class="n-voile" style="animation-delay:-${(y%7)*.43}s">${s}</g>`;
+  }
+  function dessin(n,id,dessus=false){
+    const c=matieres[id];
+    if(dessus)return vueDessus(n,c);
+    let s=definitions(c)+`<style>
+      @keyframes navire-voile{0%,100%{transform:scaleX(1) skewY(0deg)}45%{transform:scaleX(1.009) skewY(.25deg)}75%{transform:scaleX(.997) skewY(-.12deg)}}
+      @keyframes navire-lueur{0%,100%{opacity:.65}50%{opacity:1}}
+      @keyframes navire-fanion{0%,100%{transform:skewY(0deg) scaleX(1)}35%{transform:skewY(2deg) scaleX(.97)}68%{transform:skewY(-1deg) scaleX(1.015)}}
+      .n-voile{transform-box:fill-box;transform-origin:50% 0%;animation:navire-voile 6.4s ease-in-out infinite}
+      .n-lueur{animation:navire-lueur 3.8s ease-in-out infinite}
+      .n-fanion{transform-box:fill-box;transform-origin:100% 50%;animation:navire-fanion 3.3s ease-in-out infinite}
+      @media(prefers-reduced-motion:reduce){.n-voile,.n-lueur,.n-fanion{animation:none}}
+    </style>`, mats=[];
+    if(n===1)mats=[[340,180],[589,108]];
+    if(n===2)mats=[[260,245],[454,69],[662,164]];
+    if(n===3)mats=[[318,211],[600,100]];
+    if(n===4)mats=[[248,232],[475,73],[699,166]];
+    if(n===5)mats=[[221,263],[449,71],[685,172]];
+    // Le beaupré, les haubans et les échelles passent derrière les voiles.
+    s+=ligne(793,645,968,512,c.ombre,12)+ligne(790,641,967,509,c.bois,7)+ligne(800,639,968,508,c.clair,2);
+    mats.forEach(([x,y])=>{s+=cordage(c,x,y+18,x-96,x+105);});
+    s+=ligne(mats.at(-1)[0],mats.at(-1)[1]+15,963,512,c.corde,2);
+    if(n===1){
+      s+=foc(c,599,164,941,523,664,578);
+      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
+      s+=voile(c,337,243,223,135)+voile(c,340,405,257,172,true)+voile(c,589,172,237,155)+voile(c,590,354,275,220,true);
+      s+=cabine(c,180,591,168,70)+bastingage(c,163,614,287,637)+bastingage(c,650,619,825,588);
+    }
+    if(n===2){
+      s+=foc(c,675,207,945,521,730,584);
+      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
+      s+=voile(c,257,306,166,103)+voile(c,261,438,196,137,true)+voile(c,452,132,169,108)+voile(c,454,265,227,129)+voile(c,454,420,265,176,true)+voile(c,665,227,167,123)+voile(c,665,375,211,182,true);
+      s+=`<g transform="translate(452 106)"><ellipse rx="27" ry="10" fill="${c.coque}" stroke="${c.or}" stroke-width="4"/>${chemin("M-25 -3L-19 17Q0 28 19 17L25 -3",c.coque,c.ombre,2)}</g>`;
+      s+=cabine(c,179,602,142,62)+bastingage(c,161,622,289,640)+bastingage(c,715,609,828,586);
+      s+=medaille(c,453,357,23,"boussole");
+    }
+    if(n===3){
+      s+=foc(c,610,167,944,521,832,575);
+      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
+      s+=jonque(c,179,289,234,285)+jonque(c,435,181,326,363);
+      s+=cabine(c,198,591,183,68)+chemin("M165 608Q220 601 237 574Q288 608 389 579L400 599Q280 626 165 620Z",c.coque,c.ombre,3);
+      s+=bastingage(c,177,641,316,656)+bastingage(c,692,628,850,590);
+    }
+    if(n===4){
+      s+=foc(c,713,213,946,521,773,581);
+      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
+      s+=voile(c,245,293,168,111)+voile(c,245,433,211,137,true)+voile(c,475,133,183,111)+voile(c,475,273,250,137)+voile(c,475,441,296,170,true)+voile(c,700,226,190,129)+voile(c,700,385,230,181,true);
+      s+=cabine(c,130,485,146,71)+cabine(c,139,554,150,75)+bastingage(c,127,480,266,478)+bastingage(c,288,630,364,641)+bastingage(c,732,607,840,580);
+      s+=ligne(152,547,285,553,c.or,7)+lanterne(c,140,471,.7);
+    }
+    if(n===5){
+      s+=`<g transform="translate(450 223)"><circle r="139" fill="none" stroke="${c.or}" stroke-width="6"/><circle r="151" fill="none" stroke="${c.or}" stroke-width="1.5" stroke-dasharray="2 12"/><ellipse rx="75" ry="139" fill="none" stroke="${c.or}" stroke-width="2" transform="rotate(-28)"/></g>`;
+      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
+      s+=foc(c,688,230,948,521,794,594)+foc(c,225,294,170,584,81,535);
+      s+=voileAurore(c,450,144,181,105)+voileAurore(c,450,293,249,137,true)+voileAurore(c,451,476,286,137,true)+voileAurore(c,687,244,191,142)+voileAurore(c,689,432,230,152,true)+voileAurore(c,224,337,179,101)+voileAurore(c,224,480,206,111);
+      s+=cabine(c,154,590,166,70)+bastingage(c,153,584,306,595)+bastingage(c,742,608,859,570);
+      s+=chemin("M921 587Q979 570 968 530Q961 512 950 532Q962 547 937 563Q918 575 909 598Z","url(#or)",c.ombre,2);
+    }
+    s+=coque(c,n)+decor(c,n,id);
+    if(n===5){
+      s+=chemin("M131 669Q111 614 70 603Q117 674 157 717L217 748Q179 706 131 669ZM816 706Q889 684 906 636Q918 693 849 744Z","url(#or)",c.ombre,3);
+      s+=chemin("M244 764Q506 800 786 751","none",c.or,8)+medaille(c,520,778,28,"boussole");
+    }
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="850" viewBox="0 0 1000 850"><title>${liste[n].nom} — ${id}</title>${s}</svg>`;
+  }
+  function vueDessus(n,c){
+    let s=definitions(c);
+    s+=chemin("M63 255Q168 92 612 116Q805 132 958 252Q817 389 609 403Q177 419 63 255Z","url(#coque)",c.ombre,8);
+    s+=chemin("M86 255Q190 117 610 137Q792 151 920 253Q791 367 610 381Q194 395 86 255Z","url(#bois)",c.or,8);
+    s+=chemin("M130 255Q219 145 609 161Q769 170 873 253Q768 340 609 357Q223 372 130 255Z","url(#bordage)",c.ombre,2);
+    const xm=n===1?[355,614]:n===3?[350,650]:[290,490,699];
+    for(const x of xm){s+=ligne(x,131,x,378,c.ombre,12)+ligne(x,130,x,376,c.or,6)+chemin(`M${x-76} 128Q${x+43} 255 ${x-76} 381Q${x+108} 350 ${x+87} 252Q${x+105} 155 ${x-76} 128Z`,"url(#toile)",c.ombre,2)+medaille(c,x+27,254,25);}
+    s+=`<rect x="123" y="200" width="102" height="111" rx="31" fill="${c.coque}" stroke="${c.or}" stroke-width="5"/>`;
+    if(n>=4)s+=chemin("M94 197H180V314H94Q65 252 94 197Z",c.coque,c.or,5);
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="520" viewBox="0 0 1000 520">${s}</svg>`;
+  }
+  function initial(id,dessus=false){
+    const nom=dessus?"bateau-dessus":"bateau";
+    if(id==="halloween")return `img/halloween-${nom}.png`;
+    if(dessus||id==="base")return `img/${nom}.webp`;
+    if(id==="noel")return "img/theme-noel-bateau-equipage.png";
+    return `img/theme-${id}-bateau.webp`;
+  }
+  function image(n=niveau(),id=theme(),dessus=false){
+    n=borne(n);id=theme(id);
+    if(!n)return initial(id,dessus);
+    const cle=`${n}|${id}|${dessus}`;
+    if(!cache.has(cle))cache.set(cle,"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(dessin(n,id,dessus)).replace(/'/g,"%27"));
+    return cache.get(cle);
+  }
+  function accessoires(n=niveau()){
+    n=borne(n);
+    const voiles={1:[.006,-.605,.25,.22],2:[-.163,-.562,.25,.22],3:[-.057,-.66,.28,.27],4:[-.16,-.54,.28,.21],5:[-.19,-.505,.28,.17]};
+    const mats={1:[.089,-.865],2:[-.046,-.911],3:[.1,-.873],4:[-.025,-.905],5:[-.051,-.908]};
+    const p=mats[n]||mats[1];
+    return {pavillon:[p[0]-.17,p[1]-.055,.17,.1,"droite"],proue:[.355,-.30,.13,.16],voile:voiles[n]||voiles[1],guirlande:[-.3,-.235,.62,.14]};
+  }
+  let dernier=-1,dernierTheme="";
+  function actualise(){
+    const n=niveau(),id=theme(),change=n!==dernier||id!==dernierTheme;
+    dernier=n;dernierTheme=id;
+    document.documentElement.dataset.navire=liste[n].id;
+    document.querySelectorAll('img[data-theme-image="bateau"],img[data-theme-image="bateau-dessus"]').forEach(im=>{const src=image(n,theme(),im.dataset.themeImage==="bateau-dessus");if(im.getAttribute("src")!==src)im.src=src;});
+    document.querySelectorAll('.theme-option[data-theme-option] img[data-theme-preview]').forEach(im=>{const src=image(n,im.closest("[data-theme-option]").dataset.themeOption);if(im.getAttribute("src")!==src)im.src=src;});
+    if(change)window.dispatchEvent(new CustomEvent("navirechange",{detail:{niveau:n,navire:liste[n]}}));
+  }
+  // Un remplacement de S (liaison, démo, sauvegarde importée) ne conserve pas le
+  // bateau précédent. Ce contrôle ne touche jamais le stockage de la classe.
+  function verifie(){if(niveau()!==dernier)actualise();}
+  return {liste,niveau,image,imageDessus:(n,id)=>image(n,id,true),apercu:image,accessoires,actualise,verifie};
+})();
+
 /* ---------- habillage saisonnier, indépendant du voyage et des élèves ---------- */
 window.Themes = (() => {
   const CLE = "bateau-ecole-theme", DOC = "jeu/theme";
@@ -6353,6 +6662,9 @@ window.Themes = (() => {
   const get = id => parId.get(id===undefined ? etat.id : id);
   function image(nom,id=etat.id){
     if(!valide(id))id=etat.id;
+    // Le grade choisit le navire ; la saison habille cette même silhouette,
+    // y compris dans les neuf aperçus du sélecteur de thématique.
+    if(window.Navires?.niveau()>0 && (nom==="bateau" || nom==="bateau-dessus"))return nom==="bateau-dessus"?Navires.imageDessus(Navires.niveau(),id):Navires.image(Navires.niveau(),id);
     if(id==="noel" && nom==="bateau")return "img/theme-noel-bateau-equipage.png";
     if(id==="noel" && /^perroquet-(salut|bravo|tempete)$/.test(nom))return `img/theme-noel-${nom}.png`;
     if(id!=="base" && id!=="halloween" && (nom==="ciel" || nom==="bateau"))return `img/theme-${id}-${nom}.webp`;
@@ -6879,7 +7191,8 @@ function avanceBateau(gain){
   return S.milles-avant;
 }
 function escaleVendredi(d=new Date(), etat=S){
-  if(etat.reglages?.kraken!==false && ["sauvetage","naufrage"].includes(etat.kraken?.phase))return false;
+  const expeditionReussie=etat.seance?.mode==="tresor"&&etat.seance.ile?.phase==="terminee";
+  if(!expeditionReussie&&etat.reglages?.kraken!==false && ["sauvetage","naufrage"].includes(etat.kraken?.phase))return false;
   const r=rythmeVoyage(etat);
   return d.getDay()===5 && !r.arrivee && (!r.derniereSemaine || r.derniereSemaine<semaineJeu(d)) && Math.max(...etat.escalesVues)<ESCALES.length-1;
 }
@@ -6887,9 +7200,11 @@ function dateFinSeance(s=S.seance){ return new Date(s?.termineeLe || s?.historiq
 function marqueEscale(etat,k,d){
   etat.milles=CUM[k];etat.escalesVues.push(k);etat.carteAEcrire=k;
   const r=rythmeVoyage(etat);r.derniereSemaine=semaineJeu(d);r.arrivee={k,etape:"trajet"};
+  Kraken.debut(etat);
 }
 function escaleSeanceTerminee(etat){
   const s=etat.seance;
+  if(s?.mode==="tresor"&&s.ile&&s.ile.phase!=="terminee")return false;
   if(s?.krakenActif && (etat.kraken?.phase!=="navigation" || s.naufrage))return false;
   if(!s || s.index<s.qs.length || (!s.termineeLe && !s.historique?.d) || (s.mode==="tempete"&&!s.bonusTempete))return false;
   const d=dateFinSeance(s);if(!escaleVendredi(d,etat))return false;
@@ -6926,6 +7241,7 @@ function etatDefaut(){
     notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),banque:Q_RAW.length,
     stats:{q:{},el:{}},journal:[],pilotes:[],escalesVues:[0]};
   Coffre.normalise(etat);
+  Expeditions.normalise(etat);
   return etat;
 }
 let S = etatDefaut();
@@ -6980,6 +7296,9 @@ function charge(obj){
     if(!s.qs.length)o.seance=null;
   }
   Coffre.normalise(o);
+  // Object.assign ajoute les défauts ; la migration doit repérer les anciennes sauvegardes.
+  if(!obj.expeditions)delete o.expeditions;
+  Expeditions.normalise(o);
   Kraken.normalise(o);
   // Anciennes sauvegardes : une coque déjà à zéro clôt la traversée, en
   // conservant toutes les réponses et tous les résultats déjà enregistrés.
@@ -7017,17 +7336,31 @@ async function brancheDB(){
     if (resetFait){ sauve(); return; }
     if (snap.exists) {
       const distant = snap.data();
-      if ((distant.maj||0) > (S.maj||0)) { const coffre=S.voyage===distant.voyage?Coffre.fusion(S.coffre,distant.coffre):distant.coffre; S = charge(JSON.parse(JSON.stringify(distant))); if(coffre)S.coffre=coffre; Coffre.normalise(S); lsSet("bateau-ecole-etat", JSON.stringify(S)); if (window.onEtatRecharge) onEtatRecharge(); }
+      if ((distant.maj||0) > (S.maj||0)) { S=chargeAvecAcquis(distant); lsSet("bateau-ecole-etat", JSON.stringify(S)); if (window.onEtatRecharge) onEtatRecharge(); }
       else if ((S.maj||0) > (distant.maj||0)) sauve();
     } else if (S.maj) sauve();
     if(Preparation.appliqueChapitres(S))sauve();
   } catch(e) { console.warn("lecture", e && e.code); }
 }
+function chargeAvecAcquis(distant){
+  const nouveau=charge(JSON.parse(JSON.stringify(distant)));
+  if(S.voyage&&S.voyage===nouveau.voyage){
+    // Un ancien téléphone ne doit pas réinventer des promotions à partir des escales.
+    if(!distant.expeditions)nouveau.expeditions=JSON.parse(JSON.stringify(S.expeditions));
+    const niveauRecu=distant.expeditions?nouveau.expeditions.niveau:0;
+    nouveau.coffre=Coffre.fusion(S.coffre,nouveau.coffre);
+    nouveau.expeditions=Expeditions.fusion(S.expeditions,nouveau.expeditions);
+    if(nouveau.expeditions.niveau>niveauRecu&&nouveau.expeditions.noms[nouveau.expeditions.niveau]){
+      nouveau.nom=nouveau.expeditions.noms[nouveau.expeditions.niveau];nouveau.nomChoisi=true;
+    }
+  }
+  return nouveau;
+}
 /* version autonome : le téléphone relié garde une copie du voyage et la propose au TBI.
    Même voyage : on prend la version la plus récente. Autre voyage (ordinateur remis à zéro, autre classe) : la maîtresse choisit. */
 function recupereEtat(distant){
   if (DEMO || !distant || typeof distant!=="object") return;
-  const applique = ()=>{ const coffre=S.voyage===distant.voyage?Coffre.fusion(S.coffre,distant.coffre):distant.coffre; S = charge(JSON.parse(JSON.stringify(distant))); if(coffre)S.coffre=coffre; Coffre.normalise(S); Preparation.appliqueChapitres(S); if (window.Classe) Classe.versJeu(); sauve(); if (window.onEtatRecharge) onEtatRecharge(); };
+  const applique = ()=>{ S=chargeAvecAcquis(distant); Preparation.appliqueChapitres(S); if (window.Classe) Classe.versJeu(); sauve(); if (window.onEtatRecharge) onEtatRecharge(); };
   if ((S.voyage && distant.voyage===S.voyage) || (distant.remplace && distant.remplace===S.voyage)){ applique(); return; }
   const neuf = !S.maj || (!S.milles && !(S.journal||[]).length && !Object.keys((S.stats&&S.stats.q)||{}).length);
   if (neuf){ applique(); if ($("#stage")) toast("Voyage repris depuis le téléphone."); return; } // cet appareil n'a pas encore navigué
@@ -7111,6 +7444,7 @@ function imagesTheme(){
 }
 imagesTheme();
 window.addEventListener("themechange", imagesTheme);
+window.addEventListener("navirechange", imagesTheme);
 const pret = i => i && (i.complete === undefined || i.complete) && (i.naturalWidth || i.width)>0;
 
 /* ---------- la mer (canvas) ---------- */
@@ -7163,6 +7497,7 @@ const Mer = (() => {
     g.fillStyle=Themes.get().palette.nuit; g.textAlign="center"; g.fillText(txt,lx,y); return {x:lx,w:lw+24};
   }
   function frame(now){
+    window.Navires?.verifie();
     const t=(now-t0)/1000;
     st.progAff += (st.prog-st.progAff)*.02;
     st.orageAff += (st.orage-st.orageAff)*.03;
@@ -7206,8 +7541,9 @@ const Mer = (() => {
     if(k)kraken.dessineDos(g,k);
     const bx=k?k.x:xB,by=k?k.y:yB,rotation=k?k.rotation:roul,alpha=k?k.alpha:1;
     const texture=im=>k?kraken.texture(im,k.coque):im;
-    if(original)sprite(texture(IMG["bateau-calme"]),bx,by,wB,"bas",alpha,rotation);
-    sprite(texture(IMG.bateau),bx,by,wB,"bas",alpha*(original?Math.max(0,Math.min(1,(st.vent-.1)/.4)):1),rotation);
+    const premierNavire=!window.Navires?.niveau();
+    if(original&&premierNavire)sprite(texture(IMG["bateau-calme"]),bx,by,wB,"bas",alpha,rotation);
+    sprite(texture(IMG.bateau),bx,by,wB,"bas",alpha*(original&&premierNavire?Math.max(0,Math.min(1,(st.vent-.1)/.4)):1),rotation);
     if(alpha>.01&&window.CoffreUI?.dessineBateau){
       g.save();g.translate(bx,by);g.rotate(rotation);g.globalAlpha=alpha;
       CoffreUI.dessineBateau(g,{w:wB,h:hauteur,t});g.restore();
@@ -7271,7 +7607,7 @@ function toast(t){ const d=document.createElement("div"); d.className="toast"; d
 function escaleAuPort(){
   const r=rythmeVoyage(S), k=Math.max(0,...S.escalesVues);
   if(r.arrivee) return r.arrivee.k;
-  if(S.seance && S.seance.index>=S.seance.qs.length && (!S.seance.krakenActif || S.kraken?.phase==="navigation" && !S.seance.naufrage)){
+  if(S.seance && S.seance.index>=S.seance.qs.length && (S.seance.mode!=="tresor"||!S.seance.ile||S.seance.ile.phase==="terminee") && (!S.seance.krakenActif || S.kraken?.phase==="navigation" && !S.seance.naufrage)){
     const destination=DEMO ? S.seance.escaleDemo : escaleVendredi(dateFinSeance()) ? k+1 : null;
     if(destination) return destination;
   }
@@ -7295,6 +7631,7 @@ function majBarre(){
   }
 }
 function majMer(){
+  window.Navires?.actualise();
   const p=position(S.milles), port=escaleAuPort();
   if(port) Mer.vers(1,ESCALES[port-1].v,ESCALES[port].v);
   else if(p.fin) Mer.vers(1,ESCALES[ESCALES.length-2].v,"Marseille");
@@ -7310,6 +7647,7 @@ const avecPerro = (pk,max,html) => `<div class="carte avec-perro" style="max-wid
 /* retour au menu principal : on abandonne ce qui est en cours */
 let GEN = 0; const enAttente = new Set();
 function retourMenu(){
+  window.IleTresor?.nettoie?.();
   window.AmbianceSonore?.arreteKraken();
   window.AmbianceSonore?.suspendre("parole",false);
   GEN++; enAttente.forEach(f=>f()); enAttente.clear();
@@ -7352,24 +7690,32 @@ function accueil(){
     ${enseigne("Mode démo","On s'entraîne !","Rien n'est enregistré : en quittant, tout revient comme avant.")}
     <p class="sous" style="text-align:center">Le vendredi complet : affrontez la tempête et échappez au Kraken pour arriver à l’escale, tamponner le passeport et écrire la carte postale.</p>
     <div class="home-cta">
+      ${S.seance?.mode==="tresor"?`<button class="btn prim big" data-go="reprendre-tresor">Reprendre l’expédition de démo</button>`:""}
+      <button class="btn prim big" data-go="tresor">Île au trésor · démo express</button>
+      <button class="btn mer big" data-go="tresor-complet">Île au trésor · les 12 questions</button>
+      <button class="btn mer big" data-go="flotte-demo">Les navires et leurs 9 thèmes</button>
+      <button class="btn big" data-go="quitter">Quitter le mode démo</button>
       ${S.seance?.krakenActif&&!S.seance.escaleDemo?`<button class="btn prim big" data-go="reprendre-kraken">Reprendre l’essai du Kraken</button>`:""}
-      ${S.seance?.escaleDemo || S.rythme?.arrivee ? `<button class="btn mer big" data-go="reprendre-vendredi">Reprendre la démo du vendredi</button>` : ""}
+      ${(S.seance?.escaleDemo&&S.seance.mode!=="tresor") || S.rythme?.arrivee ? `<button class="btn mer big" data-go="reprendre-vendredi">Reprendre l’arrivée et la carte postale</button>` : ""}
       <button class="btn prim big" data-go="tempete">Tempête du vendredi · parcours complet</button>
       <button class="btn big" data-go="matin">Rituel (essai)</button>
       <button class="btn jaune big" data-go="kraken-demo">Essayer le Kraken collectif</button>
       <button class="btn jaune big" data-go="coffre-demo">Essayer le coffre et ses trésors</button>
       <button class="btn jaune big" data-go="accessoires-demo">Essayer tous les accessoires</button>
       <button class="btn big" data-go="bapteme">Essayer le baptême</button>
-      <button class="btn big" data-go="tresor">L'île au trésor (essai)</button>
       <button class="btn big" data-go="mini">Essayer un mini-jeu</button>
-      <button class="btn mer big" data-go="quitter">Quitter le mode démo</button>
     </div>`;
     attendre().then(async go=>{
       if(go==="kraken-demo"){KrakenMer.reset();S.seance=null;if(Math.max(...S.escalesVues)>=ESCALES.length-1){S.escalesVues=[0];S.milles=0;}delete S.kraken;Kraken.debut(S);S.reglages.kraken=true;S.reglages.nbQ=3;S.krakenEssai=true;rituel("matin");}
       else if(go==="reprendre-kraken")rituel(S.seance.mode,true);
       else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete");
-      else if(go==="reprendre-vendredi"){ if(S.rythme?.arrivee) verifArrivee(); else rituel("tempete",true); }
-      else if(go==="tresor") rituel("tresor");
+      else if(go==="reprendre-vendredi"){ if(S.rythme?.arrivee) verifArrivee(); else rituel(S.seance?.mode||"tempete",true); }
+      else if(go==="tresor"||go==="tresor-complet"){
+        S.seance=null;S.expeditions={v:1,niveau:0,acquis:{},noms:{0:S.nom}};S.ileDemoCourte=go==="tresor";
+        rituel("tresor");
+      }
+      else if(go==="reprendre-tresor")rituel("tresor",true);
+      else if(go==="flotte-demo")demoFlotte();
       else if(go==="mini"){ enJeu=true; Son.init(); Son.mer(true); await pilote(Math.floor(Math.random()*2)); enJeu=false; accueil(); }
       else if(go==="quitter") modeDemo(false);
       else if(go==="coffre-demo"){delete S.coffre;Coffre.ajoute("essai-coffre",300);accueil();CoffreUI.ouvre();}
@@ -7386,11 +7732,11 @@ function accueil(){
   }
   layer.innerHTML = p.fin ? `
     ${enseigne("Tour du monde terminé",`Bravo, l'équipage de ${esc(S.nom)} !`,"Le bateau est rentré à Marseille.","bravo")}
-    <div class="home-cta"><button class="btn prim big" data-go="carte">Revoir la carte</button></div>` : `
+    <div class="home-cta"><button class="btn prim big" data-go="carte">Revoir la carte</button><button class="btn mer big" data-go="tresor">L’île au trésor · grande expédition</button></div>` : `
     ${port ? enseigne(`Escale ${port} sur ${ESCALES.length-1}`,`Bienvenue ${esc(aLieu(ESCALES[port].v))} !`,"Le bateau est à bon port. Profitons de notre escale avec Kiko.","bravo") : enseigne(`Escale ${p.i+1} sur ${ESCALES.length-1} · ${esc(ESCALES[p.i].v)} → ${esc(ESCALES[p.i+1].v)}`,`Cap sur ${esc(ESCALES[p.i+1].v)} !`,`Encore <b class="num">${Math.ceil(p.reste)}</b> milles. Atteignons le prochain port ensemble pour découvrir son escale et écrire notre carte postale.`)}
     ${!S.nomChoisi?`<div class="carte" style="max-width:760px;text-align:center;padding:16px 22px"><div class="msg-big" style="font-size:clamp(1.4rem,2.6vw,2.1rem)">Avant de partir : le baptême du bateau !</div><p class="sous" style="font-size:1rem">Les élèves votent avec leurs cartes-réponses parmi 4 noms.</p><div class="centre" style="margin-top:10px"><button class="btn prim big" data-go="bapteme">Choisir le nom du bateau</button></div>
       </div>`:""}
-    <div class="home-cta">${S.kraken?.phase==="naufrage"?`<button class="btn prim big" data-go="revanche">Préparer notre revanche</button>`:boutons()}</div>
+    <div class="home-cta">${S.kraken?.phase==="naufrage"?`<button class="btn prim big" data-go="revanche">Préparer notre revanche</button><button class="btn mer big" data-go="tresor">L’île au trésor · grande expédition</button>`:boutons()}</div>
     ${sansPrenoms||nbVues===0?`<div class="carte" style="max-width:640px;padding:12px 18px"><p class="note" style="margin:0">${nbVues===0?"Aucune notion n'est cochée comme « déjà vue » : ouvre Réglages › Questions.":"Astuce : entre les prénoms des élèves dans Réglages › Élèves (numéro de carte = élève)."}</p></div>`:""}`;
   layer.insertAdjacentHTML("beforeend",CoffreUI.compact());
   const arrivee=rythmeVoyage(S).arrivee;
@@ -7412,6 +7758,19 @@ function modeDemo(on){
   }
   else { if (avantDemo) S = charge(JSON.parse(avantDemo)); avantDemo = null; DEMO = false; Mer.snap(); }
   majBarre(); majMer(); Mer.snap(); retourMenu();
+}
+
+/* Galerie de contrôle : aucune sélection ne modifie le thème ou les acquis réels. */
+async function demoFlotte(){
+  if(!DEMO)return;
+  enJeu=true;const generation=GEN;let theme=Themes.actuel();
+  while(generation===GEN&&DEMO){
+    layer.innerHTML=`<section class="flotte-demo carte"><div class="flotte-demo-titre"><div><span class="flotte-demo-kicker">L’arsenal de l’équipage · démo</span><h2>Un navire pour chaque aventure</h2><p>Chaque silhouette conserve sa forme dans les neuf thématiques.</p></div><button class="btn prim" data-go="retour-flotte">Retour à la démo</button></div><div class="flotte-demo-themes">${Themes.liste.map(t=>`<button class="btn ${theme===t.id?"prim":""}" data-go="flotte-theme-${t.id}" aria-pressed="${theme===t.id}">${t.icone} ${t.nom.replace("Thématique de base","Marine")}</button>`).join("")}</div><div class="flotte-demo-grille">${Navires.liste.map((n,i)=>`<article style="--flotte-fond:${Themes.get(theme).palette.nuit};--flotte-mer:${Themes.get(theme).palette.mer}"><div class="flotte-demo-mer"><img data-theme-preview src="${Navires.image(i,theme)}" alt="${esc(n.nom)} — ${esc(Themes.get(theme).nom)}"></div><div><span>${i===0?"Au départ":`Expédition ${i}`}</span><h3>${esc(Expeditions.GRADES[i])}</h3><p>${esc(n.nom)}</p></div></article>`).join("")}</div></section>`;
+    const go=await attendre();
+    if(generation!==GEN)return;
+    if(go==='retour-flotte'){enJeu=false;accueil();return;}
+    if(go.startsWith('flotte-theme-'))theme=go.slice(13);
+  }
 }
 
 /* ---------- choix des questions ---------- */
@@ -7450,7 +7809,7 @@ function nettoie(a,nb){ const o={}; if(a&&typeof a==="object") for(const k in a)
 function emitQ(){
   if(!ROOM) return;
   const d = QCUR ? {qid:QCUR.qid, open:QCUR.open, txt:QCUR.q.q.slice(0,280), nb:QCUR.q.c.length,
-      bonne: QCUR.revele ? LET[QCUR.bonne] : null, answers:QCUR.rep, fixes:QCUR.fixes||{}, choix:QCUR.q.c,
+      bonne: QCUR.revele ? LET[QCUR.bonne] : null, answers:QCUR.rep, fixes:QCUR.fixes||{}, choix:QCUR.q.c, vote:QCUR.bonne===-1||QCUR.type==="ile-vote",
       kraken:KrakenJeu.info(),
       coffre:Coffre.resume(),
       cartes: actifs().map(e=>[e.n,(e.prenom||"").slice(0,14)])} : {qid:null, podium:podiumRituel, reussites:reussitesRituel, coffre:Coffre.resume(), kraken:KrakenJeu.info()};
@@ -7667,8 +8026,8 @@ async function rituel(mode, reprise=false){
   if (enJeu) return;
   Kraken.normalise(S);
   const nouvelEssaiVendredi=DEMO && mode==="tempete" && !reprise;
-  if(!reprise && !nouvelEssaiVendredi && S.seance?.krakenActif && S.kraken?.phase==="naufrage")return rituel(S.seance.mode,true);
-  if(!reprise && !nouvelEssaiVendredi && S.kraken?.phase==="naufrage"){accueil();toast("La traversée est perdue. Lancez une revanche pour repartir ensemble.");return;}
+  if(mode!=="tresor" && !reprise && !nouvelEssaiVendredi && S.seance?.krakenActif && S.kraken?.phase==="naufrage")return rituel(S.seance.mode,true);
+  if(mode!=="tresor" && !reprise && !nouvelEssaiVendredi && S.kraken?.phase==="naufrage"){accueil();toast("La traversée est perdue. Lancez une revanche pour repartir ensemble.");return;}
   if(S.seance && !reprise && !DEMO){
     const d=panneau(`<h2>Un rituel est en cours</h2><p>Tu peux le reprendre ou commencer une nouvelle séance. Les réponses et les milles déjà enregistrés sont conservés.</p><div class="ligne"><button class="btn prim" id="rit-reprendre">Reprendre</button><button class="btn" id="rit-nouveau">Commencer une nouvelle séance</button></div>`);
     d.querySelector("#rit-reprendre").onclick=()=>{d.remove();rituel(S.seance.mode,true);};
@@ -7686,12 +8045,12 @@ async function rituel(mode, reprise=false){
   }
   if(preparee) mode=preparee.mode;
   Son.init(); Son.mer(true);
-  const n = mode==="tempete" ? S.reglages.stormQ : mode==="tresor" ? 12 : S.reglages.nbQ;
+  const n = mode==="tempete" ? S.reglages.stormQ : mode==="tresor" ? (DEMO&&S.ileDemoCourte?3:12) : S.reglages.nbQ;
   const qs = reprise ? S.seance.qs : preparee ? preparee.questions : choisirQuestions(n);
   if (!qs.length){ toast("Aucune question sélectionnée : coche des questions dans Réglages › Questions."); enJeu=false; return accueil(); }
   const p = position(S.milles);
-  const escaleDemo=DEMO && mode==="tempete" ? (reprise ? S.seance.escaleDemo : nbEscales()<ESCALES.length-1 ? nbEscales()+1 : 1) : null;
-  const krakenPrevu=escaleDemo ? S.reglages.kraken!==false : Kraken.actif(S);
+  const escaleDemo=DEMO && (mode==="tempete"||mode==="tresor") ? (reprise ? S.seance.escaleDemo : mode==="tresor" ? ESCALES.findIndex(e=>e.v==="Lisbonne") : nbEscales()<ESCALES.length-1 ? nbEscales()+1 : 1) : null;
+  const krakenPrevu=mode!=="tresor"&&(escaleDemo ? S.reglages.kraken!==false : Kraken.actif(S));
   if(!reprise){
   if (mode==="tempete"){
     Mer.orage(1); Son.pluie(true); setTimeout(()=>{Mer.eclair();Son.tonnerre();},600);
@@ -7700,9 +8059,7 @@ async function rituel(mode, reprise=false){
       ${escaleDemo?`<p class="sous">${krakenPrevu?"Si le bateau reste à flot, Kiko vous emmène":"Puis Kiko vous emmène"} ${esc(aLieu(ESCALES[escaleDemo].v))} : découverte de l’escale, passeport et carte postale à écrire. Tu peux essayer ce vendredi complet n’importe quel jour.</p>`:""}
       <div class="centre"><button class="btn prim big" data-go="go">Affronter la tempête</button><button class="btn" data-go="non">Pas aujourd'hui</button></div>`);
   } else if (mode==="tresor"){
-    layer.innerHTML = `<div class="carte avec-perro" style="max-width:880px"><img class="perro coin" src="img/tresor.webp" alt=""><div><div class="msg-big">Cap sur l'île au trésor !</div>
-      <p class="sous">Avant les vacances, une grande révision : ${qs.length} questions sur toutes les notions vues, en ${Math.min(3,qs.length)} manche${qs.length>1?"s":""}. À la fin de chaque manche, un coffre s'ouvre si l'équipage a au moins 60 % de bonnes réponses.</p>
-      <div class="centre"><button class="btn prim big" data-go="go">À l'abordage !</button><button class="btn" data-go="non">Retour</button></div></div></div>`;
+    layer.innerHTML = IleTresor.intro(qs.length);
   } else {
     layer.innerHTML = avecPerro("salut",860,`<div class="msg-big">Le bateau se prépare au départ</div>
       <p class="sous">${escaleVendredi()?"Ce matin, on commence avec Kiko : le rituel, puis la découverte de l’escale et la carte postale à écrire.":"Sortez vos cartes-réponses, Kiko vous attend !"}<br>Aujourd'hui : ${qs.length} questions, cap sur ${esc(ESCALES[Math.min(p.i+1,ESCALES.length-1)].v)}.</p>
@@ -7710,10 +8067,10 @@ async function rituel(mode, reprise=false){
   }
   if(krakenPrevu){const boutonsIntro=layer.querySelector(".centre");if(boutonsIntro)boutonsIntro.insertAdjacentHTML("beforebegin",KrakenJeu.regle()+(DEMO&&S.krakenEssai&&!escaleDemo?`<p class="kraken-regle"><b>Essai sans modifier le voyage de la classe.</b> La coque commence à 3 points. Après « Voir la réponse », choisis « Peu » à chaque question pour voir les trois attaques sur le bateau. À la troisième erreur, le bateau coule et la traversée est perdue. Choisis « Presque tous » pour garder la coque intacte et avancer.</p>`:""));}
   // Fenêtre de départ seule au centre : elle s’agrandit pour se lire du fond de la classe.
-  layer.querySelector(":scope > .carte")?.classList.add("fenetre-tableau");
+  if(mode!=="tresor")layer.querySelector(":scope > .carte")?.classList.add("fenetre-tableau");
   if ((await attendre())==="non"){ enJeu=false; return accueil(); }
   if(escaleDemo){
-    S.escalesVues=S.escalesVues.filter(k=>k<escaleDemo);
+    S.escalesVues=mode==="tresor"?Array.from({length:escaleDemo},(_,k)=>k):S.escalesVues.filter(k=>k<escaleDemo);
     S.milles=Math.max(CUM[escaleDemo-1],Math.min(S.milles,CUM[escaleDemo]-1));
     S.rythme={derniereSemaine:null,arrivee:null}; S.carteAEcrire=null;
     if(S.tampons) delete S.tampons[escaleDemo];
@@ -7721,11 +8078,12 @@ async function rituel(mode, reprise=false){
     S.seance=null;delete S.kraken;delete S.krakenEssai;Kraken.debut(S);KrakenMer.reset();
     majBarre(); majMer(); Mer.snap();
   }
-  Kraken.debut(S);
-  S.seance={krakenActif:Kraken.actif(S),id:idVoyage(),mode,qs:copieJeu(qs),index:0,depart:S.milles,res:[],scores:{},force:100,extra:[],question:null,
+  if(mode!=="tresor")Kraken.debut(S);
+  S.seance={krakenActif:mode!=="tresor"&&Kraken.actif(S),id:idVoyage(),mode,qs:copieJeu(qs),index:0,depart:S.milles,res:[],scores:{},force:100,extra:[],question:null,
     recompense:preparee?.recompense||S.reglages.recompense, groupe:preparee?.groupe||[], preparation:preparee?.id||null,escaleDemo};
   }
   const seance=S.seance;
+  if(mode==="tresor")IleTresor.normalise(seance);
   // Le Kraken ne supprime plus le podium : il est actif presque chaque jour jusqu’à l’escale,
   // et le podium des équipages comme les performances du jour doivent rester visibles (14/10).
   scoresRituel=seance.scores||{};podiumRituel=[];
@@ -7737,6 +8095,13 @@ async function rituel(mode, reprise=false){
   if(!reprise&&seance.competition?.plan&&S.equipagesPresentes!==seance.competition.plan.id){await Competition.presentation();}
   if(seance.preparation&&!DEMO) Preparation.consomme(seance.preparation).catch(()=>{});
   const depart=seance.depart,res=seance.res;
+  const bornesIle=mode==="tresor"?Array.from({length:Math.min(3,qs.length)},(_,k)=>Math.ceil((k+1)*qs.length/Math.min(3,qs.length))):[];
+  // Une pause après une réponse doit reprendre l'indice/la fouille avant la question suivante.
+  if(mode==="tresor")for(let k=0;k<bornesIle.length;k++)if(seance.index>=bornesIle[k]){
+    const man=res.slice(k?bornesIle[k-1]:0,bornesIle[k]);
+    await IleTresor.manche(k+1,man.reduce((s,r)=>s+r.pct,0)/Math.max(1,man.length));
+    if(generation!==GEN)return;
+  }
   if(seance.krakenActif && (seance.naufrage || S.kraken.phase==="naufrage")){
     Kraken.naufrage(S);seance.naufrage=true;checkpointRituel();
     // Une correction déjà révélée peut encore être lue. Les anciens défis de
@@ -7745,6 +8110,7 @@ async function rituel(mode, reprise=false){
   }
   for(let i=seance.index;i<qs.length;i++){
     const pct=await poserQuestion(qs[i],i,qs.length,mode);
+    if(generation!==GEN)return;
     res[i]={q:qs[i],pct};seance.index=i+1;seance.question=null;
     if(seance.index===qs.length)seance.termineeLe=new Date().toISOString();
     checkpointRituel();
@@ -7753,15 +8119,16 @@ async function rituel(mode, reprise=false){
     else {
       // Chaque coffre est compté une fois, même après une reprise.
       if(mode==="tresor"){
-        const bornes=Array.from({length:Math.min(3,qs.length)},(_,k)=>Math.ceil((k+1)*qs.length/Math.min(3,qs.length)));
+        const bornes=bornesIle;
         const manche=bornes.indexOf(i+1);
-        if(manche>=0){const man=res.slice(manche?bornes[manche-1]:0,i+1);await coffre(manche+1,man.reduce((s,r)=>s+r.pct,0)/man.length);}
+        if(manche>=0){const man=res.slice(manche?bornes[manche-1]:0,i+1);await IleTresor.manche(manche+1,man.reduce((s,r)=>s+r.pct,0)/man.length);if(generation!==GEN)return;}
       }
       const pt=S.reglages.piloteTous;
       if(mode==="matin"&&pt>0&&(i+1)%pt===0) await pilote(Math.floor(i/pt));
     }
     checkpointRituel();
   }
+  if(mode==="tresor"){await IleTresor.finale();if(generation!==GEN)return;}
   if (mode==="tempete"){
     const passe = orageForce<=30;
     const g=seance.bonusTempete ? (seance.gainTempete??Math.round((passe?30:10)*S.reglages.vitesse)) : avanceBateau(Math.round((passe?30:10)*S.reglages.vitesse));
@@ -7899,6 +8266,7 @@ async function bapteme(){
   QCUR=null; emitQ();
   // 3. célébration
   S.nom = props[gagnant]; S.nomChoisi = true;
+  Expeditions.normalise(S).noms[Navires.niveau()]=S.nom;
   noteJournal({type:"bapteme", titre:`Baptême du bateau : « ${S.nom} »`, esc:"Marseille", m:0, det:[`Noms proposés : ${props.join(", ")}`].concat(votes.length?[`${votes.length} votes avec les cartes-réponses`]:[])});
   sauve(); majBarre();
   Son.fanfare(); Mer.rafale(1);
@@ -8294,7 +8662,7 @@ function rendR(){
       <button class="btn" id="r-tout">Tout recommencer</button>
       <h3>Cet appareil</h3><p class="note">Cet appareil est utilisé comme écran de la classe.</p><button class="btn" id="r-mode">Changer d'appareil</button>`;
     c.onchange = e=>{ const t=e.target;
-      if(t.id==="r-nom"){ S.nom=t.value.trim()||"La Vaillante"; S.nomChoisi=true; majBarre(); }
+      if(t.id==="r-nom"){ S.nom=t.value.trim()||"La Vaillante"; S.nomChoisi=true; Expeditions.normalise(S).noms[Navires.niveau()]=S.nom; majBarre(); }
       if(t.id==="r-nbq") R.nbQ=Math.max(2,Math.min(15,+t.value||6));
       if(t.id==="r-pil") R.piloteTous=+t.value;
       if(t.id==="r-sq") R.stormQ=Math.max(3,Math.min(15,+t.value||6));
@@ -8481,9 +8849,9 @@ const Musique = (() => {
 })();
 
 /* ---------- grades de l'équipage ---------- */
-const GRADES = [[0,"Moussaillons"],[4,"Matelots"],[9,"Quartiers-maîtres"],[15,"Seconds"],[22,"Capitaines"],[28,"Capitaines au long cours"]];
+const GRADES = Expeditions.GRADES.map((nom,i)=>[i,nom]);
 const nbEscales = () => Math.max(0,...S.escalesVues);
-function grade(n){ let g=0; GRADES.forEach(([m],i)=>{ if(n>=m) g=i; }); return g; }
+function grade(){ return Expeditions.normalise(S).niveau; }
 function etoiles(g){ return `<span class="etoiles" aria-label="${g+1} étoile${g?"s":""}">${"★".repeat(g+1)}<span class="vides">${"★".repeat(GRADES.length-1-g)}</span></span>`; }
 
 /* ---------- carnet de voyage : passeport + album ---------- */
@@ -8505,6 +8873,7 @@ function ouvreCarnet(){
   const n=nbEscales(), g=grade(n);
   const d = panneau(`<h2>Carnet de voyage</h2>
     <p class="note" style="margin:0 0 10px">Équipage : <b>${GRADES[g][1]}</b> ${etoiles(g)} · ${n} escale${n>1?"s":""} sur ${ESCALES.length-1}</p>
+    <p class="note">${g<5?"Les grandes expéditions de l’Île au trésor font grandir notre équipage et lui offrent un nouveau navire avant les vacances.":"Légendes des mers : les cinq grandes promotions sont acquises !"}</p>
     <div class="tabs" id="c-tabs">${[["passeport","Passeport"],["album","Album des animaux"]].map(([k,t])=>`<button data-tab="${k}" class="${k===ongletC?"act":""}">${t}</button>`).join("")}</div>
     <div id="c-corps"></div>`,"carte-monde");
   const rend=()=>{ const c=$("#c-corps"); c.innerHTML = ongletC==="passeport" ? htmlPasseport(null) : htmlAlbum(); };
@@ -8512,7 +8881,8 @@ function ouvreCarnet(){
   d.addEventListener("click",e=>{ const v=e.target.closest(".vignette.ok"); if(v && !enJeu){ const k=+v.dataset.esc; d.remove(); cartePostale(k,false).then(accueil); } });
   rend();
 }
-/* tamponner tous ensemble au TBI, puis l'animal rejoint l'album, puis promotion éventuelle */
+/* Tamponner tous ensemble au TBI, puis l'animal rejoint l'album.
+   Les promotions appartiennent désormais aux grandes expéditions. */
 async function tamponner(k){
   S.tampons = S.tampons||{};
   const e = ESCALES[k], generation=GEN;
@@ -8526,7 +8896,6 @@ async function tamponner(k){
   if (c){ c.classList.remove("a-tamponner"); c.classList.add("fait","vient"); c.innerHTML = `<span class="n num">${k}</span><span class="v">${esc(e.v)}</span><img class="tp" src="img/tampon.webp" alt="" style="transform:rotate(-12deg)"><span class="d">${dateCourte(S.tampons[k])}</span>`; }
   await sleep(900);
   if(generation!==GEN) return;
-  const avant = grade(k-1), apres = grade(k);
   const final = k===ESCALES.length-1;
   layer.querySelector(".carte").insertAdjacentHTML("beforeend", `<div class="centre" style="margin-top:14px">${final?"":`<button class="btn mer big" data-go="album">Voir l'animal dans l'album</button>`}<button class="btn prim big" data-go="ok">Continuer</button></div>`);
   let go = await attendre();
@@ -8538,18 +8907,9 @@ async function tamponner(k){
   }
   const arrivee=rythmeVoyage(S).arrivee;
   if(!arrivee?.journalFait) noteJournal({type:"escale", titre: final?`Retour à ${e.v} : le tour du monde est terminé !`:`Arrivée ${aLieu(e.v)} (${e.p})`, esc:e.v, m:0,
-    det:["Passeport tamponné"].concat(final?[]:[`Nouvel animal dans l'album : ${e.anN.split(",")[0]}`], apres>avant?[`Promotion : l'équipage devient « ${GRADES[apres][1]} »`]:[])});
+    det:["Passeport tamponné"].concat(final?[]:[`Nouvel animal dans l'album : ${e.anN.split(",")[0]}`])});
   if(arrivee) arrivee.journalFait=true;
   sauve();
-  if (apres>avant){
-    Son.fanfare();
-    layer.innerHTML = avecPerro("bravo",860,`<div class="sous" style="text-transform:uppercase;letter-spacing:.06em;font-weight:800;color:var(--corail)">Promotion !</div>
-      <div class="msg-big" style="font-size:clamp(2rem,4.4vw,3.4rem)">L'équipage devient : ${GRADES[apres][1]}</div>
-      <p class="sous" style="font-size:1.6rem">${etoiles(apres)}</p>
-      <p class="sous">${k} escales déjà. Bravo à tout l'équipage !</p>
-      <div class="centre"><button class="btn prim big" data-go="ok">Hissez les voiles !</button></div>`);
-    await attendre();
-  }
 }
 
 const LIEUX = {"Îles Canaries":["des îles Canaries","aux îles Canaries","les îles Canaries"],"Galápagos":["des Galápagos","aux Galápagos","les Galápagos"],"Île de Pâques":["de l'île de Pâques","sur l'île de Pâques","l'île de Pâques"],"Canal de Suez":["du canal de Suez","au canal de Suez","le canal de Suez"],"Baie d'Along":["de la baie d'Along","dans la baie d'Along","la baie d'Along"]};
@@ -9195,6 +9555,7 @@ function classementRituel(scores){
 }
 function gardeQuestion(){
   if (!rituelEnCours || !S.seance || !QCUR) return;
+  if(QCUR.type==="ile-vote"){if(S.seance.ile)S.seance.ile.vote=copieJeu(QCUR);sauve();return;}
   S.seance.question=copieJeu(QCUR); S.seance.scores=copieJeu(scoresRituel||{}); sauve();
 }
 function checkpointRituel(){
@@ -9359,7 +9720,7 @@ const Preparation = (()=>{
   async function banque(){
     if(!window.Accueil || Accueil.estEcran()) return S;
     const d=await useCap("db"), s=d && await d.doc("jeu/etat").get();
-    const etat=s?.exists ? charge(copieJeu(s.data())) : copieJeu(S);
+    const etat=s?.exists ? chargeAvecAcquis(s.data()) : copieJeu(S);
     appliqueChapitres(etat);return etat;
   }
   function appliqueChapitres(etat){
@@ -10032,9 +10393,9 @@ window.CoffreUI = (() => {
     g.drawImage(entree.image,sx,sy,sw,sh,dx,y+(h-dh)/2,dw,dh);return true;
   }
   function dessineBateau(g,{w,h}){
-    const places={pavillon:[-.295,-.968,.275,.16,"droite"],proue:[.345,-.424,.19,.19],voile:[-.355,-.8,.31,.44,"droite"],guirlande:[-.42,-.33,.84,.29]};
+    const places=window.Navires?.niveau()>0?Navires.accessoires():{pavillon:[-.295,-.968,.275,.16,"droite"],proue:[.345,-.424,.19,.19],voile:[-.355,-.8,.31,.44,"droite"],guirlande:[-.42,-.33,.84,.29]};
     // Le Père Noël et Kiko sont devant la voile basse de cette illustration.
-    if(Themes.actuel()==="noel")places.voile=[-.188,-.767,.16,.19,"droite"];
+    if(Themes.actuel()==="noel"&&!window.Navires?.niveau())places.voile=[-.188,-.767,.16,.19,"droite"];
     for(const id of equipes()){
       const o=connu(id);if(!o||cible(o)!=="bateau")continue;
       const slot=o.emplacement||({pavillon:"pavillon",dauphin:"proue",constellation:"voile",lanternes:"guirlande"}[id]),p=places[slot];if(!p)continue;
@@ -10087,6 +10448,20 @@ window.CoffreLiaison=(()=>{
   const telephone=()=>!!window.Accueil&&!Accueil.estEcran();
   const signature=c=>{const o=copie(c||{});delete o.maj;return JSON.stringify(o);};
   const signale=()=>{reception=true;try{window.dispatchEvent(new CustomEvent("coffrechange",{detail:Coffre.resume()}));}finally{reception=false;}};
+  function gardeAcquis(avant,apres,recu){
+    if(avant.voyage!==apres.voyage)return;
+    apres.coffre=Coffre.fusion(avant.coffre,apres.coffre);
+    // Un ancien client ignore ce champ : ses escales ne sont pas de nouvelles promotions.
+    if(!recu.expeditions&&avant.expeditions){
+      apres.expeditions=copie(avant.expeditions);
+      if(apres.expeditions.niveau>0){apres.nom=avant.nom;apres.nomChoisi=avant.nomChoisi;}
+    }
+    const niveauRecu=apres.expeditions?.niveau||0;
+    apres.expeditions=Expeditions.fusion(avant.expeditions,apres.expeditions);
+    if(apres.expeditions.niveau>niveauRecu&&apres.expeditions.noms[apres.expeditions.niveau]){
+      apres.nom=apres.expeditions.noms[apres.expeditions.niveau];apres.nomChoisi=true;
+    }
+  }
   function applique(c){
     if(DEMO||!c||c.voyage!==S.voyage)return false;
     const fusion=Coffre.fusion(S.coffre,c);
@@ -10120,7 +10495,7 @@ window.CoffreLiaison=(()=>{
       const garde=S,autre=voyage.data();
       if(telephone()||(autre.maj||0)>(S.maj||0)){
         S=charge(copie(autre));
-        if(garde.voyage===S.voyage)S.coffre=Coffre.fusion(garde.coffre,S.coffre);
+        gardeAcquis(garde,S,autre);window.Navires?.actualise();
         if(!telephone()&&window.onEtatRecharge)onEtatRecharge();
       }
     }
@@ -10136,9 +10511,10 @@ window.CoffreLiaison=(()=>{
     });
     db.doc("jeu/etat").onSnapshot(sn=>{
       if(!telephone()||!sn.exists||DEMO)return;
-      const etat=charge(copie(sn.data())),ancien=S;
-      if(etat.voyage===ancien.voyage)etat.coffre=Coffre.fusion(ancien.coffre,etat.coffre);
+      const recu=sn.data(),etat=charge(copie(recu)),ancien=S;
+      gardeAcquis(ancien,etat,recu);
       S=etat;
+      window.Navires?.actualise();
       signale();
       if(S.coffre?.total||S.coffre?.objectifMaj)publie();
     });
@@ -10147,6 +10523,162 @@ window.CoffreLiaison=(()=>{
   }).catch(e=>console.warn("lecture coffre",e?.message||e));
   return {pret,publie,applique,attend:()=>file};
 })();
+
+/* L'expédition de l'île : les votes ne sont jamais des réponses scolaires.
+   Chaque transition est conservée dans la séance ; la promotion est reçue une fois. */
+const IleTresor = (() => {
+  const lieux = [
+    {nom:"La grotte",x:24,y:27,objet:"Une boussole ancienne",texte:"Elle indique l'est… mais le trésor n'est pas dans la grotte.",icone:"◈"},
+    {nom:"Le volcan",x:74,y:18,objet:"Une pierre qui étincelle",texte:"Kiko souffle dessus : c'est de la poussière dorée ! Le vrai coffre est ailleurs.",icone:"✦"},
+    {nom:"L'épave",x:23,y:64,objet:"La vieille botte du capitaine",texte:"Un coquillage, du sable… et une chaussette ! Kiko préfère continuer les recherches.",icone:"⚓"},
+    {nom:"Le temple",x:77,y:58,objet:"Un coffre aux trois sceaux",texte:"Il est bien là ! Trois clés seront nécessaires pour découvrir son secret.",icone:"✧"}
+  ];
+  const indices = [
+    "Le trésor n'est pas caché dans un lieu en bois.",
+    "La cachette se trouve à droite de la rivière.",
+    "Deux oiseaux de pierre gardent l'entrée."
+  ];
+  const nomsDefaut = ["L'Étoile des mers","Le Grand Horizon","L'Intrépide","Le Rêve d'or"];
+  const lettre = k => ["A","B","C","D"][k];
+  const e = x => esc(String(x ?? ""));
+  function destination(){
+    if(DEMO)return ESCALES[3]?.v||"";
+    if(new Date().getDay()!==5)return "";
+    const r=rythmeVoyage(S),k=nbEscales();
+    if(r.arrivee)return ESCALES[r.arrivee.k]?.v||"";
+    return k<ESCALES.length-1 && (!r.derniereSemaine||r.derniereSemaine<semaineJeu())?ESCALES[k+1].v:"";
+  }
+  function normalise(){
+    if(!S.seance) return null;
+    if(!S.seance.ile || typeof S.seance.ile!=="object"){
+      const p=Expeditions.prevision(S);
+      S.seance.ile={v:1,niveau:p.niveau,periode:copieJeu(p.periode),nouveau:p.nouveau,grade:p.grade,manches:{},phase:"coffre"};
+    }
+    const st=S.seance.ile;
+    if(!st.manches || typeof st.manches!=="object")st.manches={};
+    if(!st.phase)st.phase="coffre";
+    return st;
+  }
+  function sauveEtape(){checkpointRituel();}
+  function fermeVote(st){QCUR=null;if(st)delete st.vote;emitQ();}
+  function montre(html,etape){layer.innerHTML=`<section class="ile-tresor" data-ile-etape="${etape}" aria-label="L'île au trésor">${html}</section>`;}
+  const titre = (petit,grand) => `<header class="ile-entete"><div><div class="ile-surtitre">${petit}</div><h2>${grand}</h2></div><span class="ile-embleme" aria-hidden="true">✦</span></header>`;
+  const kiko = (pose="salut") => `<img class="ile-kiko" src="${e(Themes.image("perroquet-"+pose))}" alt="Kiko">`;
+  const bouton = (go,texte,prim=true) => `<button class="btn ${prim?"prim":""} big" data-go="${go}">${texte}</button>`;
+  const particules = () => `<div class="ile-particules" aria-hidden="true">${Array.from({length:18},(_,i)=>`<i style="--i:${i};--x:${(i*37)%100}%"></i>`).join("")}</div>`;
+  const cles = n => `<div class="ile-cles" aria-label="${n} clés sur 3">${[1,2,3].map(k=>`<span class="${k<=n?"acquise":""}"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="12" r="7"/><path d="m18 17 15 15m-5-5 4-4m-9-1 4-4"/></g></svg><small>Clé ${k}</small></span>`).join("")}</div>`;
+  function carte(num,choix=null,interactive=false){
+    return `<div class="ile-carte"><img class="ile-carte-image" src="img/ile-carte.webp" alt="Île : grotte en haut à gauche, volcan en haut à droite, épave en bas à gauche, temple gardé par deux oiseaux en bas à droite. Une rivière sépare les deux côtés."><div class="ile-brume" aria-hidden="true"></div><div class="ile-rose" aria-hidden="true"><b>N</b><span>✧</span></div>${lieux.map((l,k)=>`<button class="ile-lieu ${choix===k?"fouille":""}" style="--x:${l.x}%;--y:${l.y}%" ${interactive?`data-go="ile-choix-${k}"`:"disabled"} aria-label="${lettre(k)} — ${e(l.nom)}"><strong>${lettre(k)}</strong><span>${e(l.nom)}</span>${choix===k?'<i class="ile-ondes" aria-hidden="true"></i>':""}</button>`).join("")}<div class="ile-carte-legende">L'île des trois clés</div></div>`;
+  }
+  const listeIndices = num => `<ol class="ile-indices">${indices.slice(0,num).map((t,k)=>`<li class="${k===num-1?"nouveau":""}"><span>${k+1}</span><p>${e(t)}</p></li>`).join("")}</ol>`;
+  function intro(n=12){
+    const port=destination();
+    return `<section class="ile-tresor ile-intro" data-ile-etape="intro">${titre("Une expédition extraordinaire","L'île au trésor")}
+      <div class="ile-intro-paysage"><img src="img/ile-carte.webp" alt="Une île mystérieuse avec une grotte, un volcan, une épave et un temple"><div class="ile-intro-voile"></div><div class="ile-intro-texte"><span>Un secret attend votre équipage.</span><p>${Math.max(1,n)} défis · 3 indices · 1 grand trésor</p></div></div>
+      <div class="ile-intro-bas"><p>Gagnez les clés, observez la carte et votez ensemble pour choisir où fouiller.${port?`<small class="ile-suite-voyage">Puis cap sur ${e(port)} pour le passeport et la carte postale.</small>`:""}</p><div>${bouton("go","Débarquer sur l'île !")}${bouton("non","Pas maintenant",false)}</div></div></section>`;
+  }
+  /* Un vote peut être lu par la caméra ou décidé au tableau. En cas d'égalité,
+     aucun choix arbitraire : l'enseignante fait départager la classe. */
+  async function vote(st,cle,question,choix,affiche){
+    const generation=GEN, qid=`ile-vote:${S.seance.id}:${cle}`;
+    QCUR=st.vote?.qid===qid?copieJeu(st.vote):{qid,type:"ile-vote",vote:true,q:{q:question,c:choix,ok:-1,n:""},open:true,revele:false,bonne:-1,rep:{}};
+    QCUR.vote=true;QCUR.type="ile-vote";st.vote=copieJeu(QCUR);sauveEtape();
+    affiche();emitQ();majLus();
+    if(QCUR.open){
+      const go=await attendre();if(generation!==GEN)return null;
+      if(/^ile-choix-[0-3]$/.test(go)){const k=+go.slice(-1);fermeVote(st);return k;}
+      if(go!=="reveal")return null;
+      QCUR.open=false;QCUR.revele=true;st.vote=copieJeu(QCUR);sauveEtape();emitQ();
+    }
+    const votes=actifs().filter(el=>QCUR.rep[el.n]);
+    const comptes=choix.map((_,k)=>votes.filter(el=>QCUR.rep[el.n]===lettre(k)).length);
+    const maximum=Math.max(...comptes), candidats=maximum?comptes.map((c,k)=>c===maximum?k:-1).filter(k=>k>=0):choix.map((_,k)=>k);
+    // Le vote est clos : seule la confirmation du résultat (ou le départage)
+    // reste actionnable, y compris depuis la télécommande.
+    layer.querySelectorAll('[data-go^="ile-choix-"]').forEach(b=>{b.disabled=true;b.removeAttribute("data-go");});
+    const pied=layer.querySelector(".ile-vote-pied");
+    if(pied){
+      pied.innerHTML=`<p>${maximum?(candidats.length===1?`La classe choisit <strong>${e(choix[candidats[0]])}</strong> !`:`Égalité ! Départagez les ${candidats.length} choix.`):"Votez à main levée, puis choisissez ensemble."}</p><div class="ile-departage">${candidats.map(k=>bouton(`ile-choix-${k}`,`${lettre(k)} · ${e(choix[k])}${maximum?` (${comptes[k]})`:""}`,candidats.length===1)).join("")}</div>`;
+    }
+    const go=await attendre();if(generation!==GEN)return null;
+    const k=+go.slice(-1);if(!candidats.includes(k))return null;
+    fermeVote(st);return k;
+  }
+  async function manche(num,moy){
+    const st=normalise();if(!st)return false;
+    num=Math.max(1,Math.min(3,Math.floor(num)));const generation=GEN;
+    const m=st.manches[num] ||= {phase:"indice",moy:Number(moy)||0,essais:0};
+    if(m.phase==="terminee")return true;
+    if(m.phase==="indice"){
+      fermeVote(st);sauveEtape();
+      montre(`${titre(`Expédition · étape ${num} sur 3`,"Une clé. Un nouvel indice.")}<div class="ile-expedition">${carte(num)}<aside class="ile-carnet">${cles(num)}<h3>Le carnet de Kiko</h3>${listeIndices(num)}<div class="ile-conseil">${kiko()}<p>${num===1?"Regardez bien les quatre lieux. Lequel peut-on éliminer ?":num===2?"Croisez les deux indices. Où faut-il chercher maintenant ?":"Tous les indices sont réunis. À vous de trouver la cachette !"}</p></div></aside></div><footer class="ile-pied"><p>${m.moy>=.6?"L'équipage a gagné une nouvelle clé !":"Kiko vous confie la clé : chaque effort fait avancer l'expédition."}</p>${bouton("ile-indice-suite","Choisir où fouiller")}</footer>`,"indice");
+      await attendre();if(generation!==GEN)return false;m.phase="vote";sauveEtape();
+    }
+    while(m.phase==="vote"||m.phase==="resultat"){
+      if(m.phase==="vote"){
+        const choix=await vote(st,`fouille:${num}:${m.essais}`,"Où allons-nous fouiller ?",lieux.map(l=>l.nom),()=>montre(`${titre(`Fouille ${num} · le choix de l'équipage`,"Où cache-t-il son trésor ?")}<div class="ile-expedition">${carte(num,null,true)}<aside class="ile-carnet"><h3>Les indices</h3>${listeIndices(num)}<p class="ile-consigne">Levez votre carte A, B, C ou D.</p></aside></div><footer class="ile-pied ile-vote-pied"><p>Discutez, observez… puis votez !</p>${bouton("reveal","Voir les résultats")}</footer>`,"vote"));
+        if(generation!==GEN||choix===null)return false;
+        m.choix=choix;m.phase="resultat";sauveEtape();Son.cloche();
+      }
+      const l=lieux[m.choix],trouve=m.choix===3,fin=num===3;
+      montre(`${titre(`Fouille ${num} · ${e(l.nom)}`,trouve?"Un coffre sous la pierre !":e(l.objet))}<div class="ile-expedition ile-decouverte">${carte(num,m.choix)}<aside class="ile-carnet ile-trouvaille"><div class="ile-objet ${trouve?"coffre":""}" aria-hidden="true">${trouve?'<img src="img/coffre-ferme.png" alt="">':l.icone}</div><h3>${trouve?(fin?"Les trois clés sont réunies !":"Le secret est bien gardé…"):e(l.objet)}</h3><p>${trouve?(fin?"Les indices vous ont menés au bon endroit. Que contient ce coffre ?":`Vous avez ${num} clé${num>1?"s":""} sur 3. Continuons les défis pour l'ouvrir !`):e(l.texte)}</p>${fin&&!trouve?'<p class="ile-aide">Cherchez le lieu où deux oiseaux de pierre gardent l’entrée.</p>':cles(num)}</aside></div><footer class="ile-pied"><p>${fin&&!trouve?"Le carnet de Kiko garde tous vos indices.":trouve?"Bien observé, l'équipage !":"Chaque découverte nous rapproche du secret."}</p>${bouton("ile-resultat-suite",fin?(trouve?"Approcher du coffre":"Relire les indices et réessayer"):"Continuer l'expédition")}</footer>`,"resultat");
+      await attendre();if(generation!==GEN)return false;
+      if(fin&&!trouve){m.essais++;m.phase="vote";sauveEtape();continue;}
+      m.phase="terminee";sauveEtape();return true;
+    }
+    return true;
+  }
+  function navire(st){
+    const fiche=window.Navires?.liste?.[st.niveau]||{};
+    return {image:window.Navires?.image(st.niveau,Themes.actuel())||Themes.image("bateau"),nom:fiche.nom||"Votre nouveau navire",grade:st.grade||fiche.grade||"Équipage d'explorateurs"};
+  }
+  async function finale(){
+    const st=normalise();if(!st||st.phase==="terminee")return true;
+    const generation=GEN;
+    // Une séance préparée très courte révèle tout de même les trois indices.
+    for(let n=1;n<=3;n++){if(st.manches[n]?.phase!=="terminee"){await manche(n,st.manches[n]?.moy??1);if(generation!==GEN)return false;}}
+    if(st.phase!=="bapteme")fermeVote(st);const n=navire(st);
+    if(st.phase==="coffre"){
+      montre(`${titre("Les trois clés · le dernier secret","Le trésor vous attend")}
+        <div class="ile-coffre-scene">${particules()}<div class="ile-halo"></div><img class="ile-grand-coffre" src="img/coffre-ferme.png" alt="Le coffre au trésor">${cles(3)}<p>Trois clés. Un seul équipage.<br>Prêts à découvrir ce qui se cache à l'intérieur ?</p></div><footer class="ile-pied ile-centre">${bouton("ile-coffre-ouvrir","Ouvrir le grand coffre")}</footer>`,"coffre");
+      await attendre();if(generation!==GEN)return false;st.phase="lettre";sauveEtape();Son.fanfare();
+    }
+    if(st.phase==="lettre"){
+      montre(`${titre("Le message secret de Kiko","Ce trésor, vous l'avez mérité")}
+        <div class="ile-lettre-scene"><div class="ile-messager">${kiko("bravo")}<img class="ile-coffre-ouvert" src="img/coffre-ouvert.png" alt="Le coffre est ouvert"></div><article class="ile-lettre"><span class="ile-cachet" aria-hidden="true">✦</span><p>À mon incroyable équipage,</p><p>Vous avez cherché, réfléchi et uni vos idées. Aujourd'hui, votre courage et votre entraide ouvrent une nouvelle page de notre voyage.</p><strong>${st.nouveau?"Je vous nomme":"Vous portez fièrement le titre de"}<br><em>${e(n.grade)}</em></strong><p>${st.nouveau?"Et un équipage comme le vôtre mérite un nouveau navire…":"Votre navire et son nom vous attendent. Célébrons cette nouvelle expédition !"}</p><span class="ile-signature">Votre fidèle Kiko</span></article></div><footer class="ile-pied ile-centre">${bouton("ile-lettre-suite",st.nouveau?"Découvrir notre nouveau navire":"Retrouver notre navire")}</footer>`,"lettre");
+      await attendre();if(generation!==GEN)return false;st.phase="navire";sauveEtape();Son.fanfare();
+    }
+    if(st.phase==="navire"){
+      montre(`${titre(st.nouveau?"La relève de votre équipage":"Le navire de votre équipage",e(n.nom))}<div class="ile-navire-scene">${particules()}<div class="ile-soleil"></div><div class="ile-navire-rayons"></div><img class="ile-navire" src="${e(n.image)}" alt="${e(n.nom)}"><div class="ile-mer-front"></div><div class="ile-grade">✦ ${e(n.grade)} ✦</div><div class="ile-navire-brume gauche" aria-hidden="true"></div><div class="ile-navire-brume droite" aria-hidden="true"></div></div><footer class="ile-pied"><p>${st.nouveau?"Un nouveau bateau pour poursuivre votre aventure ensemble.":"Une aventure de plus dans votre journal de bord."}</p>${bouton("ile-navire-suite",st.nouveau?"Lui choisir un nom":"Fêter notre découverte")}</footer>`,"navire");
+      await attendre();if(generation!==GEN)return false;st.phase=st.nouveau?"bapteme":"celebration";sauveEtape();
+    }
+    if(st.phase==="bapteme"){
+      st.propositions ||= nomsDefaut.slice();
+      if(!st.baptemePret){
+        montre(`${titre("Une nouvelle page du voyage","Le baptême de notre navire")}<div class="ile-bapteme-prepare"><div class="ile-bapteme-vignette"><img src="${e(n.image)}" alt="${e(n.nom)}"><p>Quatre noms à proposer à l'équipage.</p></div><div class="ile-noms-form">${st.propositions.map((nom,k)=>`<label><span>${lettre(k)}</span><input data-ile-nom="${k}" aria-label="Nom ${lettre(k)}" value="${e(nom)}" maxlength="32"></label>`).join("")}<p>Les propositions peuvent être modifiées sur cet écran avant le vote.</p></div></div><footer class="ile-pied"><p>Un nom choisi par toute la classe.</p>${bouton("ile-bapteme-vote","Lancer le vote des noms")}</footer>`,"bapteme");
+        await attendre();if(generation!==GEN)return false;
+        st.propositions=st.propositions.map((nom,k)=>(layer.querySelector(`[data-ile-nom="${k}"]`)?.value||nom).trim().slice(0,32)||nomsDefaut[k]);
+        st.baptemePret=true;sauveEtape();
+      }
+      const choix=await vote(st,"bapteme","Quel nom pour notre nouveau navire ?",st.propositions,()=>montre(`${titre("Le baptême · vote de l'équipage","Quel nom pour notre navire ?")}<div class="ile-noms-vote"><img src="${e(n.image)}" alt="${e(n.nom)}"><div>${st.propositions.map((nom,k)=>`<button class="ile-nom-choix" data-go="ile-choix-${k}"><span>${lettre(k)}</span>${e(nom)}</button>`).join("")}</div></div><footer class="ile-pied ile-vote-pied"><p>Levez la lettre de votre nom préféré.</p>${bouton("reveal","Voir les résultats")}</footer>`,"bapteme"));
+      if(generation!==GEN||choix===null)return false;
+      st.nom=st.propositions[choix];st.phase="celebration";sauveEtape();
+    }
+    if(st.phase==="celebration"){
+      if(!st.promotion){
+        st.promotion=Expeditions.promouvoir({niveau:st.niveau,nom:st.nom||S.nom,id:S.seance.id,periode:st.periode});
+        st.nom=st.promotion?.nom||st.nom||S.nom;sauveEtape();
+      }
+      Son.fanfare();
+      const port=destination();
+      montre(`${titre("L'île a livré son secret","Hissez les voiles !")}<div class="ile-celebration">${particules()}<div class="ile-halo"></div><img class="ile-navire" src="${e(n.image)}" alt="${e(n.nom)}"><div class="ile-celebration-nom">« ${e(st.nom)} »</div><div class="ile-grade">${e(n.grade)}</div><p>${port?`À ${e(port)}, le passeport et la carte postale vous attendent.`:"Un seul bateau. Tout un équipage. L'aventure continue."}</p></div><footer class="ile-pied ile-centre">${bouton("ile-celebration-fin",port?`Cap sur ${e(port)} !`:"Reprendre la mer !")}</footer>`,"celebration");
+      await attendre();if(generation!==GEN)return false;st.phase="terminee";sauveEtape();
+    }
+    return true;
+  }
+  return {intro,manche,finale,normalise,lieux,indices};
+})();
+window.IleTresor=IleTresor;
 
 /* ---------- téléphone : lecture des cartes en direct avec la caméra (version autonome) ----------
    Les images sont analysées dans le téléphone puis oubliées : seuls les numéros de carte et les lettres lues sortent.
@@ -12880,7 +13412,8 @@ const Tel = (() => {
       return `<button type="button" data-carte="${n}" class="${cl}" ${TQ?.open?"":"disabled"} aria-label="${esc(p||"Carte "+n)} : ${esc(rep[n]||"non lu")}${TQ?.open?", corriger":""}"><b>${n}</b>${esc(p||"")}<small>${rep[n]?esc(rep[n])+" · ":""}${etat}${fixes[n]!==undefined?" · corrigée":""}</small></button>`; }).join("");
     grille.scrollTop=defilement;
     if (!TQ||!TQ.qid){ $("#t-qk").textContent="Pas de question en cours"; $("#t-qt").textContent= tbiVu ? "Lance le rituel sur le TBI." : (window.BATEAU_AUTONOME ? "Affiche le jeu sur l'ordinateur de la classe." : "Ouvre le jeu sur l'ordinateur du TBI (même lien, même compte)."); }
-    else { $("#t-qk").textContent = TQ.open ? "Question en cours : levez les cartes !" : (TQ.bonne ? "Réponse : "+TQ.bonne : "Question fermée"); $("#t-qt").innerHTML = texteMath(TQ.txt); }
+    else { $("#t-qk").textContent = TQ.vote ? (TQ.open ? "Vote en cours : levez les cartes !" : "Vote terminé") : (TQ.open ? "Question en cours : levez les cartes !" : (TQ.bonne ? "Réponse : "+TQ.bonne : "Question fermée")); $("#t-qt").innerHTML = texteMath(TQ.txt); }
+    $("#t-rev").textContent = TQ?.vote ? "Voir les résultats" : "Voir la réponse";
     $("#t-rev").disabled = !(TQ&&TQ.open); $("#t-next").disabled = !(TQ&&TQ.qid&&!TQ.open);
     if (window.EcransAutonome && EcransAutonome.scan) EcransAutonome.scan(cs, rep, TQ);
   }
@@ -12971,7 +13504,7 @@ function lanceTBI(){
   $("#b-demo").onclick=()=>{if(!enJeu||DEMO)modeDemo(!DEMO);};
   $("#b-journal").onclick=()=>{ Son.init(); ouvreJournal(); };
   $("#b-reglages").onclick=()=>{ Son.init(); ouvreReglages(); };
-  window.onEtatRecharge = ()=>{ majBarre(); majMer(); Mer.snap(); if(!enJeu) accueil(); };
+  window.onEtatRecharge = ()=>{ window.Navires?.actualise(); majBarre(); majMer(); Mer.snap(); if(!enJeu) accueil(); };
   if (window.BATEAU_AUTONOME) $("#b-tel").onclick=()=>{ Son.init(); ongletR="tel"; ouvreReglages(); };
   brancheDB(); brancheRoom(); AudioPerso.branche(); Preparation.init();
 }
