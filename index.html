@@ -855,6 +855,15 @@ img{max-width:100%}
 @media(max-width:650px){.flotte-demo.carte{padding:14px}.flotte-demo-titre{align-items:start;flex-direction:column;gap:8px}.flotte-demo-grille{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.flotte-demo-mer{height:120px}.flotte-demo-grille article>div:last-child{padding:8px}.flotte-demo-themes .btn{font-size:.75rem;padding:6px 8px}}
 @media(prefers-reduced-motion:reduce){.flotte-demo-mer img{animation:none}}
 
+.decouverte-escale{width:min(1120px,100%);max-width:1120px;padding:22px 26px;background:#fff9eb;color:#20464a;border:2px solid #c3d8d5;box-shadow:0 18px 60px #002c3d40;overflow:hidden}
+.decouverte-escale *{box-sizing:border-box}.decouverte-escale h2,.decouverte-escale h3,.decouverte-escale p{margin:0}.decouverte-entete{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.decouverte-entete>div>span{font-weight:800;color:#527a7e;font-size:.83rem;letter-spacing:.12em;text-transform:uppercase}.decouverte-entete h2{font:800 clamp(1.65rem,2.6vw,2.45rem)/1.15 var(--display);color:#164c57;margin-top:4px}.decouverte-azulejo{width:54px;height:54px;display:grid;place-items:center;background:repeating-conic-gradient(#e2f0ec 0deg 90deg,#fdfaf0 90deg 180deg);border:3px double #518695;color:#2a6577;font-size:34px;transform:rotate(7deg);flex:none}
+.decouverte-vue{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;align-items:center}.decouverte-illustration{position:relative;margin:0;height:246px;border-radius:17px;overflow:hidden;background:#659db2}.decouverte-illustration>img{width:100%;height:100%;object-fit:cover;object-position:center 28%;display:block}.decouverte-illustration figcaption{position:absolute;top:10px;left:12px;padding:4px 8px;border-radius:6px;font-size:.75rem;background:#fff8eddd;color:#34575d}.decouverte-invitation{position:absolute;inset:auto 0 0;padding:28px 18px 15px;color:#fff9e9;background:linear-gradient(transparent,#093744ed);display:grid;gap:3px}.decouverte-invitation b{font:800 1.65rem/1.1 var(--display)}.decouverte-invitation span{font-weight:700}.decouverte-mission>h3{font:800 1.3rem var(--display);color:#234f51}.decouverte-mission>p{font-size:.95rem;line-height:1.35;color:#55726d;margin:3px 0 12px}.decouverte-pistes{display:grid;gap:12px}.decouverte-pistes article{display:flex;gap:12px;align-items:flex-start}.decouverte-pistes article>span{display:grid;place-items:center;flex:none;width:31px;height:31px;border-radius:50%;background:#ddebe5;color:#2d635a;font:800 .9rem var(--display)}.decouverte-pistes h3{font:800 1.08rem var(--display)}.decouverte-pistes p{font-size:1rem;line-height:1.3;margin-top:1px}
+.decouverte-reperes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}.decouverte-reperes article{padding:11px 13px;background:#eef2e6;border:1px solid #d9e1cc;border-radius:12px}.decouverte-reperes h3{font:800 1.1rem var(--display);color:#3b6253}.decouverte-reperes p{font-size:.95rem;line-height:1.3;margin-top:3px}.decouverte-escale .decouverte-credit{font-size:.75rem;margin:5px 0 0;color:#64766d}.decouverte-escale a{color:#2b6679;text-decoration:underline;text-underline-offset:2px}.decouverte-mon-regard{display:flex;align-items:center;gap:18px;padding:13px 16px;margin-top:13px;background:#f5e3b8;border:1px solid #ead39d;border-radius:12px}.decouverte-mon-regard>b{font:800 1.17rem var(--display);white-space:nowrap;color:#76571f}.decouverte-mon-regard p{font-size:1rem;line-height:1.35;color:#574c31}.decouverte-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:15px}.decouverte-actions .btn{font-size:1rem;border-radius:12px;white-space:normal}.decouverte-actions .btn.prim{background:#276c69;border-color:#1d5a56;color:#fff9e8}.decouverte-escale .decouverte-sources{display:flex;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;margin-top:10px;font-size:.75rem;line-height:1.35;color:#6b756d}
+.ecriture-amorces{font-size:clamp(.95rem,1.3vw,1.1rem);line-height:1.4;margin:12px 0 0!important;color:#5f543c}.ecriture-amorces b{color:#7a5c22}.ecriture-carte .centre{flex-wrap:wrap}
+.decouverte-actions a.btn{display:inline-flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;text-align:center}
+@media(max-width:700px){.decouverte-escale{padding:17px 15px}.decouverte-entete{gap:10px}.decouverte-entete h2{font-size:1.6rem}.decouverte-azulejo{width:39px;height:39px;font-size:27px}.decouverte-vue{grid-template-columns:1fr;gap:16px}.decouverte-illustration{height:200px}.decouverte-reperes{grid-template-columns:repeat(2,minmax(0,1fr))}.decouverte-mon-regard{display:block}.decouverte-mon-regard p{margin-top:4px}.decouverte-actions{align-items:stretch;flex-direction:column}.decouverte-actions .btn{width:100%}.decouverte-escale .decouverte-sources{gap:9px;flex-direction:column}}
+@media(prefers-reduced-motion:no-preference){.decouverte-escale{animation:decouverte-apparait .35s ease-out both}@keyframes decouverte-apparait{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}}
+
 </style>
 <script src="vendor/nostr-lite.js"></script>
 <script src="vendor/mqtt.min.js"></script>
@@ -7959,7 +7968,7 @@ async function verifArrivee(){
   enJeu=false; await ecrireCarte(k); return true;
 }
 function cartePostale(k, arrivee){
-  const e = ESCALES[k];
+  const e = ESCALES[k], generation=GEN;
   const geo = GEOGRAPHIE[e.v];
   const fin = k===ESCALES.length-1;
   const im = `img/escale${String(k===ESCALES.length-1?0:k).padStart(2,"0")}.webp`;
@@ -7980,6 +7989,7 @@ function cartePostale(k, arrivee){
       </div>
     </div>
     <div class="centre">
+      ${EscalesDecouverte.bouton(k)}
       <button class="btn mer" data-go="parle">Écouter « bonjour »</button>
       <button class="btn mer" data-go="musique">Écouter l'hymne</button>
       <button class="btn prim big" data-go="ok">${arrivee?"Tamponner le passeport !":"Fermer"}</button>
@@ -7987,6 +7997,7 @@ function cartePostale(k, arrivee){
     <p class="note credit-mus" id="m-credit" hidden>${esc(Musique.credit(k))}</p></div>`;
   if (arrivee) Son.fanfare();
   return new Promise(async res=>{ for(;;){ const go = await attendre();
+    if(go==="explorer-ville"){await EscalesDecouverte.ouvre(k);if(generation!==GEN){res();return;}continue;}
     if(go==="parle"){ if(!joueVoix(k) && !Son.parle(e.voix,e.lang)) toast("Pas de voix pour cette langue sur cet ordinateur."); continue; }
     if(go==="musique"){ Musique.joue(k); const cr=$("#m-credit"); if(cr) cr.hidden=false; continue; }
     Musique.stop(); res(); break; } });
@@ -8922,8 +8933,8 @@ function modeleCarte(k){
   const plat=e.v==="Zanzibar"?"un plat parfumé aux épices":e.mg.split(" (")[0].split(",")[0];
   const lignes=[
     ["D’abord",`nous sommes arrivés ${aLieu(e.v)} avec notre bateau.`],
-    ["Ensuite",`j’ai découvert ${geo.decouverte}.`],
-    ["Puis",`j’ai goûté ${plat}.`],
+    ["Ensuite",e.v==="Lisbonne"?"j’ai appris que Lisbonne est construite sur sept collines et qu’un ascenseur relie le bas et le haut de la ville.":`j’ai découvert ${geo.decouverte}.`],
+    ["Puis",e.v==="Lisbonne"?"j’aimerais monter jusqu’au belvédère pour admirer la vue, parce que j’aime regarder les paysages.":`j’aimerais goûter ${plat}.`],
     ["Enfin","je vous envoie de gros bisous !"]
   ];
   const salut="Chère famille,",signature="Un moussaillon en voyage";
@@ -8934,21 +8945,22 @@ async function ecrireCarte(k){
   const e=ESCALES[k],a=rythmeVoyage(S).arrivee,generation=GEN;
   const modele=modeleCarte(k);
   if(a?.k!==k || a.etape!=="correction"){
-    const mots=["Chère famille,",`Nous sommes arrivés ${aLieu(e.v)}.`,"Ici, je vois…",`J’ai découvert ${GEOGRAPHIE[e.v].decouverte}.`,"J’ai goûté…","J’ai aimé…","À bientôt !","Gros bisous,"];
+    const mots=e.v==="Lisbonne"?["sept collines","un ascenseur","un belvédère","le Tage","le pont Vasco-de-Gama","l’océan Atlantique","monter","traverser","admirer","une vue","immense","surprenant"]:["un paysage","une rue","un monument","un détail","observer","admirer","découvrir","imaginer","surprenant","coloré","calme","animé"];
     layer.innerHTML = `<div class="carte postale-carte ecriture-carte" style="max-width:1100px">
       <div class="postale">
         <div class="timbre-cadre"><img class="cadre" src="img/timbre.webp" alt=""><img class="photo" src="${imgEscale(k)}" alt="${esc(e.v)}"></div>
         <div>
           <h2><small>Le travail d’écriture du vendredi</small>Une carte postale ${esc(deLieu(e.v))}</h2>
           <ol class="consigne">
-            <li>Écris à quelqu’un de ta famille : dis-lui où tu es et ce que tu découvres.</li>
-            <li>Raconte une chose que tu as goûtée ou aimée. Relie tes idées avec des connecteurs.</li>
-            <li>Termine par une formule pour dire au revoir, et signe.</li>
+            <li>Choisis à qui tu écris et situe ton voyage.</li>
+            <li>${e.v==="Lisbonne"?"Choisis un détail raconté dans la vidéo. Ajoute ton avis ou une envie, et explique pourquoi.":"Raconte un détail que tu as observé. Ajoute ton avis ou une envie, et explique pourquoi."}</li>
+            <li>Relie tes idées avec des connecteurs, puis dis au revoir et signe.</li>
           </ol>
           <p class="note" style="color:#6B4524;margin:6px 0 0">3 à 5 lignes, dans le cahier du jour. Relis-toi : majuscules, points, accords.</p>
         </div>
       </div>
       <div class="mots"><b>Boîte à mots :</b> ${mots.map(m=>`<span>${esc(m)}</span>`).join("")}</div>
+      <p class="ecriture-amorces"><b>Ton regard compte :</b> ${e.v==="Lisbonne"?"« La vidéo m’a appris… »":"« Ici, j’observe… »"} · « Ce qui me surprend, c’est… » · « J’aimerais… parce que… »</p>
       <section class="connecteurs" aria-labelledby="connecteurs-titre">
         <h3 id="connecteurs-titre">Utilise des connecteurs</h3>
         <p>Choisis deux ou trois mots pour guider ton lecteur.</p>
@@ -8958,16 +8970,26 @@ async function ecrireCarte(k){
           <div><b>Pour expliquer</b><span>parce que</span><small>J’ai aimé… parce que…</small></div>
         </div>
       </section>
-      <div class="coup-de-pouce" id="cdp" hidden><b>Coup de pouce :</b> Chère famille, d’abord, nous sommes arrivés ______. Ensuite, j’ai découvert ______. Puis, j’ai goûté ______. Gros bisous, ______.</div>
-      <div class="centre"><button class="btn" data-go="cdp">Coup de pouce</button><button class="btn mer" data-go="chrono">Lancer 10 minutes</button><button class="btn prim big" data-go="fini">Voir une correction</button><button class="btn" data-go="non">Plus tard</button></div></div>`;
-    let t=null;
-    const stop=()=>{clearInterval(t);enAttente.delete(stop);};
+      <div class="coup-de-pouce" id="cdp" hidden><b>Coup de pouce :</b> Commence par « Chère… » ou « Cher… ». Dis où tu voyages. ${e.v==="Lisbonne"?"Choisis un détail de la vidéo : « J’ai appris… ».":"Choisis ton détail : « Ici, je vois… »."} Donne ton avis ou une envie avec « parce que… ». Termine par « À bientôt ! » et ta signature.</div>
+      <div class="centre">${EscalesDecouverte.bouton(k)}<button class="btn" data-go="cdp">Coup de pouce</button><button class="btn mer" data-go="chrono">Lancer 10 minutes</button><button class="btn prim big" data-go="fini">Voir une correction</button><button class="btn" data-go="non">Plus tard</button></div></div>`;
+    let t=null,secondes=600;
+    const pause=()=>{clearInterval(t);t=null;};
+    const lance=()=>{
+      pause();const b=layer.querySelector('[data-go="chrono"]');
+      const affiche=()=>{b.textContent=`${Math.floor(secondes/60)}:${String(secondes%60).padStart(2,"0")}`;};
+      affiche();t=setInterval(()=>{secondes--;affiche();if(secondes<=0){pause();Son.cloche();b.textContent="Temps écoulé !";}},1000);
+    };
+    const stop=()=>{pause();enAttente.delete(stop);};
     enAttente.add(stop);
     for(;;){const go=await attendre();
+      if(go==="explorer-ville"){
+        const enRoute=t!==null;pause();
+        await EscalesDecouverte.ouvre(k,{retour:"Retour à ma carte"});if(generation!==GEN)return;
+        if(enRoute && secondes>0)lance();continue;
+      }
       if(go==="cdp"){$("#cdp").hidden=!$("#cdp").hidden;continue;}
       if(go==="chrono"){
-        clearInterval(t);let s=600;const b=layer.querySelector('[data-go="chrono"]');b.textContent="10:00";
-        t=setInterval(()=>{s--;b.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;if(s<=0){clearInterval(t);Son.cloche();b.textContent="Temps écoulé !";}},1000);continue;
+        secondes=600;lance();continue;
       }
       if(go!=="fini" && go!=="non")continue;
       stop();
@@ -8978,7 +9000,7 @@ async function ecrireCarte(k){
   }
   layer.innerHTML=`<div class="carte postale-carte correction-carte" style="max-width:1000px">
     <h2><small>Une proposition de correction</small>Une carte postale ${esc(deLieu(e.v))}</h2>
-    <p class="note">Voici un exemple pour comprendre le travail demandé. D’autres idées et d’autres phrases conviennent aussi.</p>
+    <p class="note">${e.v==="Lisbonne"?"Voici une carte imaginaire fondée sur les informations de la vidéo. L’envie exprimée appartient à son auteur : choisis la tienne.":"Voici un exemple pour comprendre le travail demandé. D’autres idées et d’autres phrases conviennent aussi."}</p>
     <div class="correction-exemple">
       <img src="${imgEscale(k)}" alt="Illustration de ${esc(e.v)}">
       <div class="carte-modele"><p>${esc(modele.salut)}</p>${modele.lignes.map(([c,t])=>`<p><strong>${esc(c)}</strong>, ${esc(t)}</p>`).join("")}<p class="modele-signature">${esc(modele.signature)}</p></div>
@@ -10559,6 +10581,8 @@ const IleTresor = (() => {
     if(!st.phase)st.phase="coffre";
     return st;
   }
+  // La découverte reste acquise, y compris dans les séances déjà sauvegardées.
+  const coffreRepere = (st,avant) => Object.entries(st.manches).some(([n,m])=>+n<avant && m.choix===3 && ["resultat","terminee"].includes(m.phase));
   function sauveEtape(){checkpointRituel();}
   function fermeVote(st){QCUR=null;if(st)delete st.vote;emitQ();}
   function montre(html,etape){layer.innerHTML=`<section class="ile-tresor" data-ile-etape="${etape}" aria-label="L'île au trésor">${html}</section>`;}
@@ -10609,10 +10633,16 @@ const IleTresor = (() => {
     num=Math.max(1,Math.min(3,Math.floor(num)));const generation=GEN;
     const m=st.manches[num] ||= {phase:"indice",moy:Number(moy)||0,essais:0};
     if(m.phase==="terminee")return true;
+    const repere=coffreRepere(st,num);
     if(m.phase==="indice"){
       fermeVote(st);sauveEtape();
-      montre(`${titre(`Expédition · étape ${num} sur 3`,"Une clé. Un nouvel indice.")}<div class="ile-expedition">${carte(num)}<aside class="ile-carnet">${cles(num)}<h3>Le carnet de Kiko</h3>${listeIndices(num)}<div class="ile-conseil">${kiko()}<p>${num===1?"Regardez bien les quatre lieux. Lequel peut-on éliminer ?":num===2?"Croisez les deux indices. Où faut-il chercher maintenant ?":"Tous les indices sont réunis. À vous de trouver la cachette !"}</p></div></aside></div><footer class="ile-pied"><p>${m.moy>=.6?"L'équipage a gagné une nouvelle clé !":"Kiko vous confie la clé : chaque effort fait avancer l'expédition."}</p>${bouton("ile-indice-suite","Choisir où fouiller")}</footer>`,"indice");
+      montre(`${titre(`Expédition · étape ${num} sur 3`,repere?"Une clé de plus pour notre coffre !":"Une clé. Un nouvel indice.")}<div class="ile-expedition">${carte(num,repere?3:null)}<aside class="ile-carnet">${cles(num)}<h3>${repere?"Le coffre nous attend au temple":"Le carnet de Kiko"}</h3>${listeIndices(num)}<div class="ile-conseil">${kiko()}<p>${repere?"Ces indices confirment votre découverte ! Le coffre est au temple : réunissons les trois clés pour l'ouvrir.":num===1?"Regardez bien les quatre lieux. Lequel peut-on éliminer ?":num===2?"Croisez les deux indices. Où faut-il chercher maintenant ?":"Tous les indices sont réunis. À vous de trouver la cachette !"}</p></div></aside></div><footer class="ile-pied"><p>${m.moy>=.6?"L'équipage a gagné une nouvelle clé !":"Kiko vous confie la clé : chaque effort fait avancer l'expédition."}</p>${bouton("ile-indice-suite",repere?"Retrouver le coffre au temple":"Choisir où fouiller")}</footer>`,"indice");
       await attendre();if(generation!==GEN)return false;m.phase="vote";sauveEtape();
+    }
+    // Après une première trouvaille, on gagne les clés manquantes sans demander
+    // à l'équipage de chercher à nouveau un emplacement qu'il connaît déjà.
+    if(repere && ["vote","resultat"].includes(m.phase)){
+      fermeVote(st);m.choix=3;m.phase="resultat";sauveEtape();
     }
     while(m.phase==="vote"||m.phase==="resultat"){
       if(m.phase==="vote"){
@@ -10621,7 +10651,7 @@ const IleTresor = (() => {
         m.choix=choix;m.phase="resultat";sauveEtape();Son.cloche();
       }
       const l=lieux[m.choix],trouve=m.choix===3,fin=num===3;
-      montre(`${titre(`Fouille ${num} · ${e(l.nom)}`,trouve?"Un coffre sous la pierre !":e(l.objet))}<div class="ile-expedition ile-decouverte">${carte(num,m.choix)}<aside class="ile-carnet ile-trouvaille"><div class="ile-objet ${trouve?"coffre":""}" aria-hidden="true">${trouve?'<img src="img/coffre-ferme.png" alt="">':l.icone}</div><h3>${trouve?(fin?"Les trois clés sont réunies !":"Le secret est bien gardé…"):e(l.objet)}</h3><p>${trouve?(fin?"Les indices vous ont menés au bon endroit. Que contient ce coffre ?":`Vous avez ${num} clé${num>1?"s":""} sur 3. Continuons les défis pour l'ouvrir !`):e(l.texte)}</p>${fin&&!trouve?'<p class="ile-aide">Cherchez le lieu où deux oiseaux de pierre gardent l’entrée.</p>':cles(num)}</aside></div><footer class="ile-pied"><p>${fin&&!trouve?"Le carnet de Kiko garde tous vos indices.":trouve?"Bien observé, l'équipage !":"Chaque découverte nous rapproche du secret."}</p>${bouton("ile-resultat-suite",fin?(trouve?"Approcher du coffre":"Relire les indices et réessayer"):"Continuer l'expédition")}</footer>`,"resultat");
+      montre(`${titre(`${repere?"Clé":"Fouille"} ${num} · ${e(l.nom)}`,trouve?(repere?"De retour au coffre du temple":"Vous avez trouvé le coffre !"):e(l.objet))}<div class="ile-expedition ile-decouverte">${carte(num,m.choix)}<aside class="ile-carnet ile-trouvaille"><div class="ile-objet ${trouve?"coffre":""}" aria-hidden="true">${trouve?'<img src="img/coffre-ferme.png" alt="">':l.icone}</div><h3>${trouve?(fin?"Les trois clés sont réunies !":"Trois serrures protègent le trésor"):e(l.objet)}</h3><p>${trouve?(fin?"Vous avez trouvé le bon endroit et réuni les trois clés. Le coffre peut maintenant s'ouvrir !":`Bravo, le trésor est bien ici ! Vous avez ${num} clé${num>1?"s":""} sur 3. Il manque encore ${3-num===1?"une clé":"deux clés"} pour l'ouvrir. Continuons les défis !`):e(l.texte)}</p>${fin&&!trouve?'<p class="ile-aide">Cherchez le lieu où deux oiseaux de pierre gardent l’entrée.</p>':cles(num)}</aside></div><footer class="ile-pied"><p>${fin&&!trouve?"Le carnet de Kiko garde tous vos indices.":trouve?(fin?"Le grand secret est à portée de clé !":"La cachette est trouvée : gagnons les clés restantes !"):"Chaque découverte nous rapproche du secret."}</p>${bouton("ile-resultat-suite",fin?(trouve?"Approcher du coffre":"Relire les indices et réessayer"):trouve?"Gagner la clé suivante":"Continuer l'expédition")}</footer>`,"resultat");
       await attendre();if(generation!==GEN)return false;
       if(fin&&!trouve){m.essais++;m.phase="vote";sauveEtape();continue;}
       m.phase="terminee";sauveEtape();return true;
@@ -10679,6 +10709,71 @@ const IleTresor = (() => {
   return {intro,manche,finale,normalise,lieux,indices};
 })();
 window.IleTresor=IleTresor;
+
+/* Une escale à observer avant de choisir ce que l'on veut raconter.
+   Les pistes et repères sont embarqués ; la vidéo reste sur son site officiel. */
+const EscalesDecouverte = (() => {
+  const disponible = k => ESCALES[k]?.v === "Lisbonne";
+  const lumni = "https://www.lumni.fr/video/portugal-la-visite-avec-scooby-doo";
+  const pistes = [
+    ["01", "La ville en hauteur", "Écoute ce qui est dit sur les collines, l’ascenseur et le belvédère."],
+    ["02", "Le Tage", "Repère ce que la vidéo raconte sur le trajet du fleuve."],
+    ["03", "Le pont", "Quel détail retiens-tu sur le pont Vasco-de-Gama ?"]
+  ];
+  const reperes = [
+    ["Sept collines", "Lisbonne est construite sur sept collines."],
+    ["L’ascenseur", "Il relie le bas et le haut de la ville. En haut, un belvédère permet d’admirer la vue."],
+    ["Le Tage", "Ce fleuve prend sa source en Espagne et se jette dans l’océan Atlantique."],
+    ["Le pont Vasco-de-Gama", "Ce pont de 17 km traverse le Tage."]
+  ];
+  const bouton = k => disponible(k) ? '<button class="btn mer" data-go="explorer-ville">Explorer Lisbonne</button>' : "";
+  const questions = () => `<div class="decouverte-pistes">${pistes.map(([n,t,q])=>`<article><span>${n}</span><div><h3>${t}</h3><p>${q}</p></div></article>`).join("")}</div>`;
+  const regard = () => '<div class="decouverte-mon-regard"><b>Mon détail à moi</b><p>Choisis un détail raconté dans la vidéo. Qu’est-ce qui te plaît, te surprend ou te donne envie ? Explique avec <strong>parce que</strong>.</p></div>';
+  async function ouvre(k,{retour="Retour à la fiche"}={}){
+    if(!disponible(k))return false;
+    const generation=GEN,origine=document.activeElement,defilement=layer.scrollTop;
+    Musique.stop();
+    // Conserver les vrais nœuds : boutons, aide ouverte et minuteur de l'écriture
+    // retrouvent exactement leur état au retour de la visite.
+    const precedente=document.createDocumentFragment();
+    while(layer.firstChild)precedente.append(layer.firstChild);
+    const nettoie=()=>{window.AmbianceSonore?.suspendre("decouverte",false);enAttente.delete(nettoie);};
+    enAttente.add(nettoie);
+    try{speechSynthesis.cancel();}catch(e){}
+    try{voixAu?.pause();}catch(e){}
+    window.AmbianceSonore?.suspendre("parole",false);
+    window.AmbianceSonore?.suspendre("decouverte",true);
+    const affiche=()=>{
+      layer.innerHTML=`<section class="carte decouverte-escale" data-decouverte="observation" aria-label="Explorer Lisbonne">
+        <header class="decouverte-entete"><div><span>Portugal · Carnet d’écoute</span><h2>Découvrons Lisbonne avec Scooby-Doo</h2></div><span class="decouverte-azulejo" aria-hidden="true">✦</span></header>
+        <div class="decouverte-vue">
+          <figure class="decouverte-illustration"><img src="${imgEscale(k)}" alt="Illustration de Lisbonne créée pour le jeu"><figcaption>Illustration du jeu, pas une image de la vidéo</figcaption><div class="decouverte-invitation"><b>J’écoute, je retiens…</b><span>Quel détail raconteras-tu ?</span></div></figure>
+          <aside class="decouverte-mission"><h3>Trois pistes pour regarder et écouter</h3><p>Regarde la vidéo, puis partage ce qu’elle t’a appris.</p>${questions()}</aside>
+        </div>
+        <div class="decouverte-reperes">${reperes.map(([t,p])=>`<article><h3>${t}</h3><p>${p}</p></article>`).join("")}</div><p class="decouverte-credit">Ces repères reprennent uniquement les informations de <a href="${lumni}" target="_blank" rel="noopener noreferrer">« Portugal : la visite avec Scooby-Doo » · Lumni</a>. Ils restent disponibles sans connexion.</p>
+        ${regard()}
+        <footer class="decouverte-actions"><a class="btn mer" href="${lumni}" target="_blank" rel="noopener noreferrer" data-go="decouverte-lumni">Voir Scooby-Doo sur Lumni · 4 min 18</a><button class="btn prim big" data-go="decouverte-retour">${esc(retour)}</button></footer>
+        <p class="decouverte-sources">« Portugal : la visite avec Scooby-Doo » · Lumni. La vidéo s’ouvre dans un autre onglet et nécessite Internet. Si besoin, clique sur le lien depuis l’écran de la classe.</p>
+      </section>`;
+      layer.scrollTop=0;
+    };
+    try{
+      affiche();
+      for(;;){
+        const go=await attendre();if(generation!==GEN)return false;
+        if(go==="decouverte-retour")return true;
+      }
+    }finally{
+      nettoie();
+      if(generation===GEN){
+        layer.replaceChildren(precedente);layer.scrollTop=defilement;
+        if(origine?.isConnected)origine.focus({preventScroll:true});
+      }
+    }
+  }
+  return {disponible,bouton,ouvre};
+})();
+window.EscalesDecouverte=EscalesDecouverte;
 
 /* ---------- téléphone : lecture des cartes en direct avec la caméra (version autonome) ----------
    Les images sont analysées dans le téléphone puis oubliées : seuls les numéros de carte et les lettres lues sortent.
