@@ -460,27 +460,47 @@ input[type=text],input[type=number],textarea,select{border-color:var(--theme-bor
 @media(prefers-reduced-motion:reduce){.theme-option{transition:none}.theme-option:hover{transform:none}}
 
 /* ---------- lisibilité au tableau ----------
-   Les écrans de sélection (avant le jeu) sont grossis d'un cran, pour être lus du fond de la
-   classe. Le jeu lui-même garde sa taille. Réservé aux grands écrans : la même page sert
-   d'appli sur le téléphone, où tout doit rester à sa place.
-   « rituel-en-cours » n'est posé sur le body que pendant les questions. */
+   Demande du 14/10, reprise le 15/10 : au fond de la classe, on ne lisait pas les écrans de
+   départ. Hors questions (« rituel-en-cours » n'est posé sur le body que pendant les questions),
+   l'accueil du Bateau-école, sa barre d'outils, le coffre et les rappels sont nettement plus
+   grands. Les fenêtres de départ (« Le bateau se prépare au départ »…) sont en plus agrandies
+   pour remplir l'écran par FenetresTableau (app3.js). Le jeu lui-même garde sa taille.
+   Réservé aux grands écrans : la même page sert d'appli sur le téléphone. */
 @media (min-width:900px){
-  body:not(.rituel-en-cours) #scr-tbi .accueil{width:min(880px,100%,80vh)}
-  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn.big{font-size:clamp(1.45rem,2.7vw,2.25rem);padding:.52em 1.5em}
-  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn small{font-size:.56em}
+  body:not(.rituel-en-cours) #scr-tbi .bar{padding:10px 18px;gap:10px 14px}
+  body:not(.rituel-en-cours) #scr-tbi .bar .nom{font-size:clamp(1.5rem,2.1vw,2.2rem)}
+  body:not(.rituel-en-cours) #scr-tbi .bar .route .lbl{font-size:clamp(1rem,1.3vw,1.4rem)}
+  body:not(.rituel-en-cours) #scr-tbi .bar .route .lbl > span:not(#b-de){flex:0 1 auto}
+  body:not(.rituel-en-cours) #scr-tbi .bar .outils{gap:8px}
+  body:not(.rituel-en-cours) #scr-tbi .bar .outils .btn,
+  body:not(.rituel-en-cours) #scr-tbi .bar .pastille{font-size:clamp(1.05rem,1.25vw,1.45rem)}
+  body:not(.rituel-en-cours) #scr-tbi .accueil{width:min(880px,100%,72vh)}
+  body:not(.rituel-en-cours) #scr-tbi .home-cta{gap:18px}
+  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn.big{font-size:clamp(1.8rem,3.1vw,2.8rem);padding:.48em 1.4em}
+  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn small{font-size:.6em;margin-top:5px}
   body:not(.rituel-en-cours) #scr-tbi .home-titre .t{font-size:clamp(2.3rem,5vw,4.2rem)}
   body:not(.rituel-en-cours) #scr-tbi .home-titre .s{font-size:clamp(1.1rem,1.8vw,1.55rem)}
-  body:not(.rituel-en-cours) #scr-tbi .grade-pill{font-size:clamp(1.1rem,1.6vw,1.45rem)}
-  body:not(.rituel-en-cours) #scr-tbi .rappel b{font-size:clamp(1.15rem,1.7vw,1.5rem)}
-  body:not(.rituel-en-cours) #scr-tbi .rappel span{font-size:clamp(1rem,1.4vw,1.25rem)}
-  body:not(.rituel-en-cours) #scr-tbi .home-preparation .btn{font-size:clamp(1.1rem,1.7vw,1.5rem)}
+  body:not(.rituel-en-cours) #scr-tbi .grade-pill{font-size:clamp(1.3rem,1.9vw,1.8rem);padding:5px 20px}
+  body:not(.rituel-en-cours) #scr-tbi .layer>.coffre-compact,
+  body:not(.rituel-en-cours) #scr-tbi .layer>.rappel,
+  body:not(.rituel-en-cours) #scr-tbi .layer>.home-preparation,
+  body:not(.rituel-en-cours) #scr-tbi .layer>[data-go="equipages"]{zoom:1.35}
+  body:not(.rituel-en-cours) #scr-tbi .layer>.coffre-compact,
+  body:not(.rituel-en-cours) #scr-tbi .layer>.rappel{width:min(760px,calc(100% / 1.35))}
 }
 
-/* Garder la mer et le bateau visibles sur les tableaux au format 16:9. */
+/* Garder la mer et le bateau visibles sur les tableaux au format 16:9 : l'enseigne cède
+   un peu de place aux boutons, qui restent grands. */
 @media (min-width:900px) and (max-height:850px){
-  #scr-tbi .layer:has(>.accueil){gap:8px;padding-top:10px}
-  #scr-tbi .accueil{width:min(760px,100%,62vh)}
-  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn.big{font-size:clamp(1.4rem,2.2vw,1.95rem);padding:.5em 1.35em}
+  #scr-tbi .layer:has(>.accueil){gap:8px;padding-top:8px}
+  #scr-tbi .accueil{width:min(760px,100%,56vh)}
+  body:not(.rituel-en-cours) #scr-tbi .home-cta .btn.big{font-size:clamp(1.7rem,2.8vw,2.5rem);padding:.42em 1.3em}
+  body:not(.rituel-en-cours) #scr-tbi .layer>.coffre-compact,
+  body:not(.rituel-en-cours) #scr-tbi .layer>.rappel,
+  body:not(.rituel-en-cours) #scr-tbi .layer>.home-preparation,
+  body:not(.rituel-en-cours) #scr-tbi .layer>[data-go="equipages"]{zoom:1.25}
+  body:not(.rituel-en-cours) #scr-tbi .layer>.coffre-compact,
+  body:not(.rituel-en-cours) #scr-tbi .layer>.rappel{width:min(760px,calc(100% / 1.25))}
 }
 
 /* Les cérémonies : grandes cartes lisibles au TBI, sans détails individuels de lecture. */
@@ -7689,6 +7709,8 @@ async function rituel(mode, reprise=false){
       <div class="centre"><button class="btn prim big" data-go="go">Larguer les amarres !</button><button class="btn" data-go="non">Retour</button></div>`);
   }
   if(krakenPrevu){const boutonsIntro=layer.querySelector(".centre");if(boutonsIntro)boutonsIntro.insertAdjacentHTML("beforebegin",KrakenJeu.regle()+(DEMO&&S.krakenEssai&&!escaleDemo?`<p class="kraken-regle"><b>Essai sans modifier le voyage de la classe.</b> La coque commence à 3 points. Après « Voir la réponse », choisis « Peu » à chaque question pour voir les trois attaques sur le bateau. À la troisième erreur, le bateau coule et la traversée est perdue. Choisis « Presque tous » pour garder la coque intacte et avancer.</p>`:""));}
+  // Fenêtre de départ seule au centre : elle s’agrandit pour se lire du fond de la classe.
+  layer.querySelector(":scope > .carte")?.classList.add("fenetre-tableau");
   if ((await attendre())==="non"){ enJeu=false; return accueil(); }
   if(escaleDemo){
     S.escalesVues=S.escalesVues.filter(k=>k<escaleDemo);
@@ -7704,12 +7726,13 @@ async function rituel(mode, reprise=false){
     recompense:preparee?.recompense||S.reglages.recompense, groupe:preparee?.groupe||[], preparation:preparee?.id||null,escaleDemo};
   }
   const seance=S.seance;
-  if(seance.krakenActif){seance.recompense="collectif";seance.competition=null;}
+  // Le Kraken ne supprime plus le podium : il est actif presque chaque jour jusqu’à l’escale,
+  // et le podium des équipages comme les performances du jour doivent rester visibles (14/10).
   scoresRituel=seance.scores||{};podiumRituel=[];
   ritExtra=seance.extra||[];orageForce=seance.force;
   rituelEnCours=true;document.body.classList.add("rituel-en-cours");chrono(true);
   if(window.Historique){await Historique.init();seance.historique=Historique.debutRituel(mode,actifs(),seance.historique);}
-  if(!seance.krakenActif && !seance.competition && seance.index===0)seance.competition=Competition.prepare(qs,actifs(),seance.recompense);
+  if(!seance.competition && seance.index===0)seance.competition=Competition.prepare(qs,actifs(),seance.recompense);
   checkpointRituel();
   if(!reprise&&seance.competition?.plan&&S.equipagesPresentes!==seance.competition.plan.id){await Competition.presentation();}
   if(seance.preparation&&!DEMO) Preparation.consomme(seance.preparation).catch(()=>{});
@@ -7773,6 +7796,8 @@ function podiumBateauHTML(podium, personnel=false, o={}){
 }
 async function bilan(res, gagne, mode){
   const generation=GEN;
+  // Après un naufrage, le bilan reste collectif : pas de podium sur une traversée perdue.
+  if(S.seance?.naufrage)S.seance.recompense="collectif";
   reussitesRituel=recompensesRituel(res,scoresRituel,mode);
   const competition=Competition.resultats(S.seance?.competition,scoresRituel,S.seance?.reponses||S.seance?.historique?.q||[]);
   reussitesRituel.competition=competition;
@@ -7923,6 +7948,40 @@ let ajT=0; const planifie=()=>{ const m=$("#b-menu"); if(m){ m.hidden=!enJeu; } 
 new MutationObserver(planifie).observe(layer,{childList:true,subtree:true});
 window.addEventListener("resize",()=>{ const c=layer.querySelector(".qc"); if(c){ delete c.dataset.f; ajusteQ(); } planifie(); }); layer.addEventListener("scroll",planifie);
 if (document.fonts) document.fonts.addEventListener("loadingdone",()=>{ const c=layer.querySelector(".qc"); if(c){ delete c.dataset.f; ajusteQ(); planifie(); } });
+
+/* ---------- lisibilité au tableau : les fenêtres de départ remplissent l'écran ----------
+   Demande du 14/10, reprise le 15/10 : au fond de la classe, on ne lisait pas les fenêtres
+   « Le bateau se prépare au départ », « Une tempête approche ! », « Cap sur l'île au trésor ! ».
+   Sur grand écran, chacune est agrandie (CSS zoom) jusqu'à remplir la place libre, sans
+   déborder. Le téléphone et les questions ne sont pas concernés. */
+const FenetresTableau=(()=>{
+  const MAX=1.9, grand=matchMedia("(min-width:900px) and (min-height:560px)");
+  let rAF=0;
+  function ajuste(){
+    rAF=0;
+    const f=layer.querySelector(":scope > .fenetre-tableau");
+    if(!f)return;
+    f.style.zoom="";
+    if(!grand.matches||document.body.classList.contains("rituel-en-cours")||layer.offsetParent===null)return;
+    const cs=getComputedStyle(layer);
+    const W=layer.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    const H=layer.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+    const r=f.getBoundingClientRect();
+    if(!r.width||!r.height||W<=0||H<=0)return;
+    let z=Math.min(MAX,W*.97/r.width,H*.95/r.height);
+    if(z<1.04)return;
+    f.style.zoom=z.toFixed(3);
+    // Un texte qui se replie autrement peut changer la hauteur : une vérification suffit.
+    const r2=f.getBoundingClientRect();
+    if(r2.height>H||r2.width>W){z=Math.max(1,z*Math.min(H/r2.height,W/r2.width)*.98);f.style.zoom=z.toFixed(3);}
+  }
+  const planifie=()=>{if(!rAF)rAF=requestAnimationFrame(ajuste);};
+  new MutationObserver(planifie).observe(layer,{childList:true});
+  new MutationObserver(planifie).observe(document.body,{attributes:true,attributeFilter:["class"]});
+  window.addEventListener("resize",planifie);
+  if(document.fonts)document.fonts.addEventListener("loadingdone",planifie);
+  return {ajuste};
+})();
 
 /* ---------- mini-jeux du pilote ---------- */
 const MiniJeu = (() => {
@@ -11054,18 +11113,25 @@ const Accueil = (() => {
 .aa-son{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);z-index:30;background:var(--soleil);color:var(--nuit);border-radius:999px;padding:10px 20px;font:800 1.1rem var(--display);box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer}
 .bar .btn.aa-maison svg{width:1.1em;height:1.1em}
 #scr-tel header .aa-retour{margin-right:4px}
-/* Lisibilité au tableau : le choix des activités est grossi d'un cran sur grand écran.
-   Sur le téléphone, la même page garde ses tailles. */
+/* Lisibilité au tableau (14/10, reprise le 15/10) : le choix des activités se lit du fond de
+   la classe. Sur le téléphone, la même page garde ses tailles. */
 @media (min-width:900px){
-  .ec-haut .ec-classe{font-size:clamp(1.75rem,3vw,2.8rem)}
-  .ec-haut .ec-date{font-size:clamp(1.05rem,1.6vw,1.6rem)}
-  .ec-milieu{padding-bottom:16vh}
-  .ec-milieu h1{font-size:clamp(2.4rem,5.2vw,4.8rem)}
-  .ec-tuile{width:clamp(280px,27vw,470px)}
-  .ec-tuile img{height:clamp(130px,18vh,225px)}
-  .ec-tuile b{font-size:clamp(1.7rem,2.6vw,2.6rem)}
-  .ec-tuile span{font-size:clamp(1.05rem,1.45vw,1.45rem)}
-  .ec-tuile .go{margin-top:8px;font-size:clamp(1.2rem,1.95vw,1.8rem)}
+  .ec-haut .ec-classe{font-size:clamp(1.9rem,3.2vw,3rem)}
+  .ec-haut .ec-date{font-size:clamp(1.2rem,1.9vw,1.9rem)}
+  .ec-haut .btn{font-size:clamp(1.05rem,1.35vw,1.45rem)}
+  .ec-milieu{padding-bottom:13vh;gap:clamp(14px,2.4vh,30px)}
+  .ec-milieu h1{font-size:clamp(2.6rem,min(5.6vw,9vh),5.2rem)}
+  .ec-tuile{width:clamp(300px,33vw,560px);padding:16px 22px 20px}
+  .ec-tuile img{height:clamp(110px,16vh,230px)}
+  .ec-tuile b{font-size:clamp(2rem,min(3.2vw,5.4vh),3.2rem)}
+  .ec-tuile span{font-size:clamp(1.2rem,min(1.8vw,3vh),1.9rem);line-height:1.3}
+  .ec-tuile em{font-size:clamp(1.05rem,min(1.45vw,2.4vh),1.5rem)}
+  .ec-tuile .go{margin-top:6px;font-size:clamp(1.45rem,min(2.4vw,4vh),2.4rem)}
+}
+/* Le cadre « Relie ton téléphone » occupe le coin en bas à droite : les tuiles, plus larges,
+   se centrent dans la place qui reste au lieu de passer dessous. */
+@media (min-width:1200px) and (min-height:621px){
+  #aa-ecran:has(.aut-accueil) .ec-milieu{padding-right:310px}
 }
 @media (prefers-reduced-motion:reduce){#aa-intro *,#aa-intro,.aa-tete *,#aa-ecran *,.aa-act img,.aa-etape .perro,.ec-tuile img{animation-duration:.01s!important;animation-iteration-count:1!important;animation-delay:0s!important}}`;
   document.head.appendChild(st);
@@ -11735,6 +11801,22 @@ const Pavillons = (() => {
   .pv-msg{font-size:clamp(1.4rem,2.8vw,2.7rem)}
   .pv-sous{font-size:clamp(1.35rem,2.6vw,2.5rem)}
   .pv-temps{width:min(46vw,680px);height:clamp(12px,1.7vh,20px)}
+}
+/* Le salon (avant de lancer) se lit du fond de la classe (reprise du 15/10) : il récupère la
+   place laissée libre au-dessus et en dessous, et tous ses textes grossissent nettement. */
+@media (min-width:900px){
+  #pv-ecran[data-phase="salon"]:not([data-battle="true"]) .pv-centre{top:calc(var(--haut) + 7vh);bottom:8vh}
+  #pv-ecran[data-phase="salon"]:not([data-battle="true"]) .pv-salon{gap:clamp(8px,1.8vh,22px)}
+  #pv-ecran[data-phase="salon"]:not([data-battle="true"]) .pv-salon h1{font-size:clamp(2.2rem,min(5vw,8vh),4.6rem)}
+  #pv-ecran[data-phase="salon"] .pv-modes button{font-size:clamp(1.15rem,min(2vw,3.1vh),1.9rem)}
+  #pv-ecran[data-phase="salon"] .pv-regle{gap:4px;padding:clamp(8px,1.4vh,18px) 16px}
+  #pv-ecran[data-phase="salon"] .pv-regle b{font-size:clamp(1.35rem,min(2.6vw,4vh),2.5rem)}
+  #pv-ecran[data-phase="salon"] .pv-regle span{font-size:clamp(1.15rem,min(1.85vw,2.9vh),1.85rem);line-height:1.25}
+  #pv-ecran[data-phase="salon"] .pv-regle .ill{height:clamp(48px,7.5vh,104px)}
+  #pv-ecran[data-phase="salon"] .pv-regle .pv-dr{width:clamp(56px,min(6vw,8.6vh),100px)}
+  #pv-ecran[data-phase="salon"] .pv-resume{font-size:clamp(1.2rem,min(2.1vw,3.2vh),2rem)}
+  #pv-ecran[data-phase="salon"] .pv-boutons .btn{font-size:clamp(1.35rem,min(2.5vw,3.8vh),2.3rem)}
+  #pv-ecran[data-phase="salon"] .pv-info{font-size:clamp(1.1rem,min(1.75vw,2.7vh),1.7rem)}
 }
 @media (prefers-reduced-motion:reduce){#pv-ecran *,#pv-ecran{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}}
 /* ---------- Hissez les pavillons : téléphone ---------- */
