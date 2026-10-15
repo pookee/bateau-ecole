@@ -840,7 +840,7 @@ img{max-width:100%}
 @media(max-width:480px){.ile-tresor{border-radius:18px}.ile-entete h2{font-size:1.5rem}.ile-surtitre{font-size:.7rem;letter-spacing:.1em}.ile-embleme{display:none}.ile-lieu{font-size:.76rem!important;border-width:1px;gap:4px;padding:3px 6px 3px 3px;min-height:32px}.ile-lieu strong{width:22px;height:22px;font-size:.8rem}.ile-carte{min-height:210px}.ile-rose{right:8px;top:7px;font-size:10px}.ile-rose span{font-size:28px}.ile-lettre-scene>.ile-kiko{display:none}.ile-lettre-scene{padding:18px}.ile-lettre{padding:20px}.ile-intro-paysage{height:245px}.ile-intro-bas .btn{width:100%}.ile-intro-texte>span{font-size:1.55rem}.ile-trouvaille{gap:9px}.ile-objet{font-size:65px}.ile-objet.coffre{height:100px}}
 @media(prefers-reduced-motion:reduce){.ile-navire-brume{display:none}.ile-tresor,.ile-tresor *,.ile-tresor *::before,.ile-tresor *::after{animation:none!important;transition:none!important}.ile-particules{display:none}}
 
-.flotte-demo.carte{width:min(1240px,96vw);max-width:1240px;background:#f5efdf;padding:24px;color:#21394a;border:1px solid #d6c9a3;box-shadow:0 24px 80px #071e3955}
+.flotte-demo.carte{width:min(1240px,100%);max-width:1240px;background:#f5efdf;padding:24px;color:#21394a;border:1px solid #d6c9a3;box-shadow:0 24px 80px #071e3955}
 .flotte-demo-titre{display:flex;align-items:center;justify-content:space-between;gap:20px}
 .flotte-demo h2{font:800 clamp(1.4rem,2.5vw,2.3rem)/1.1 var(--display);margin:5px 0}
 .flotte-demo h3{font:800 clamp(1rem,1.6vw,1.5rem)/1.2 var(--display);margin:3px 0}
@@ -848,18 +848,22 @@ img{max-width:100%}
 .flotte-demo-themes{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0}.flotte-demo-themes .btn{font-size:.85rem;padding:7px 12px}
 .flotte-demo-grille{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.flotte-demo-grille article{overflow:hidden;border-radius:14px;background:#fffaf0;border:1px solid #dccba5;box-shadow:0 4px 12px #19384b0d}
 .flotte-demo-grille article>div:last-child{padding:8px 14px}.flotte-demo-grille article span{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#807050}.flotte-demo-grille article p{font-size:.85rem;color:#536572}
-.flotte-demo-mer{height:clamp(120px,19vh,190px);position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 120%,#fff8 0,transparent 65%),linear-gradient(165deg,var(--flotte-fond),var(--flotte-mer));overflow:hidden}
+.flotte-demo-mer{height:clamp(120px,19vh,190px);position:relative;display:grid;grid-template: minmax(0,1fr)/minmax(0,1fr);place-items:center;background:radial-gradient(ellipse at 50% 120%,#fff8 0,transparent 65%),linear-gradient(165deg,var(--flotte-fond),var(--flotte-mer));overflow:hidden}
 .flotte-demo-mer:after{content:"";position:absolute;left:-10%;right:-10%;height:25%;bottom:-18%;border-radius:50%;background:#9ee7e980;box-shadow:0 -6px 0 #c1eeeb20}
-.flotte-demo-mer img{width:90%;height:94%;object-fit:contain;filter:drop-shadow(0 9px 9px #00132360);animation:flotte-demo-roulis 6s ease-in-out infinite}.flotte-demo-grille article:nth-child(even) img{animation-delay:-3s}
+.flotte-demo-mer img{width:90%;height:90%;object-fit:contain;filter:drop-shadow(0 9px 9px #00132360);animation:flotte-demo-roulis 6s ease-in-out infinite}.flotte-demo-grille article:nth-child(even) img{animation-delay:-3s}
 @keyframes flotte-demo-roulis{0%,100%{transform:translateY(1px) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1deg)}}
 @media(max-width:650px){.flotte-demo.carte{padding:14px}.flotte-demo-titre{align-items:start;flex-direction:column;gap:8px}.flotte-demo-grille{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.flotte-demo-mer{height:120px}.flotte-demo-grille article>div:last-child{padding:8px}.flotte-demo-themes .btn{font-size:.75rem;padding:6px 8px}}
 @media(prefers-reduced-motion:reduce){.flotte-demo-mer img{animation:none}}
+
+.flotte-demo-zoom{width:100%;border:0;padding:0;cursor:zoom-in;color:inherit;font:inherit}.flotte-demo-zoom:focus-visible{outline:3px solid #eab75b;outline-offset:-4px}.flotte-demo-zoom:hover img{filter:drop-shadow(0 9px 12px #00132380) brightness(1.06)}
+.flotte-demo-zoom .flotte-demo-agrandir{position:absolute;bottom:8px;right:8px;padding:4px 9px;border-radius:20px;background:#fff8e8e8;color:#21394a;font-size:.65rem;font-weight:800;letter-spacing:0;text-transform:none;z-index:1}
+.flotte-demo-mer.flotte-demo-detail{height:clamp(250px,49vh,540px);border-radius:16px}.flotte-demo-navigation{display:flex;align-items:center;justify-content:center;gap:20px;text-align:center;margin-top:15px}.flotte-demo-navigation>div{max-width:60ch}.flotte-demo-navigation .btn{flex:none}
 
 .decouverte-escale{flex-shrink:0;width:min(1120px,100%);max-width:1120px;padding:22px 26px;background:#fff9eb;color:#20464a;border:2px solid #c3d8d5;box-shadow:0 18px 60px #002c3d40;overflow:hidden}
 .decouverte-escale *{box-sizing:border-box}.decouverte-escale h2,.decouverte-escale h3,.decouverte-escale p{margin:0}.decouverte-entete{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.decouverte-entete>div>span{font-weight:800;color:#527a7e;font-size:.83rem;letter-spacing:.12em;text-transform:uppercase}.decouverte-entete h2{font:800 clamp(1.65rem,2.6vw,2.45rem)/1.15 var(--display);color:#164c57;margin-top:4px}.decouverte-azulejo{width:54px;height:54px;display:grid;place-items:center;background:repeating-conic-gradient(#e2f0ec 0deg 90deg,#fdfaf0 90deg 180deg);border:3px double #518695;color:#2a6577;font-size:34px;transform:rotate(7deg);flex:none}
 .decouverte-vue{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;align-items:center}.decouverte-illustration{position:relative;margin:0;height:246px;border-radius:17px;overflow:hidden;background:#659db2}.decouverte-illustration>img{width:100%;height:100%;object-fit:cover;object-position:center 28%;display:block}.decouverte-invitation{position:absolute;inset:auto 0 0;padding:28px 18px 15px;color:#fff9e9;background:linear-gradient(transparent,#093744ed);display:grid;gap:3px}.decouverte-invitation b{font:800 1.65rem/1.1 var(--display)}.decouverte-invitation span{font-weight:700}.decouverte-mission>h3{font:800 1.3rem var(--display);color:#234f51}.decouverte-mission>p{font-size:.95rem;line-height:1.35;color:#55726d;margin:3px 0 12px}.decouverte-pistes{display:grid;gap:12px}.decouverte-pistes article{display:flex;gap:12px;align-items:flex-start}.decouverte-pistes article>span{display:grid;place-items:center;flex:none;width:31px;height:31px;border-radius:50%;background:#ddebe5;color:#2d635a;font:800 .9rem var(--display)}.decouverte-pistes h3{font:800 1.08rem var(--display)}.decouverte-pistes p{font-size:1rem;line-height:1.3;margin-top:1px}
 .decouverte-reperes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}.decouverte-reperes article{padding:11px 13px;background:#eef2e6;border:1px solid #d9e1cc;border-radius:12px}.decouverte-reperes h3{font:800 1.1rem var(--display);color:#3b6253}.decouverte-reperes p{font-size:.95rem;line-height:1.3;margin-top:3px}.decouverte-escale .decouverte-credit{font-size:.75rem;margin:5px 0 0;color:#64766d}.decouverte-escale a{color:#2b6679;text-decoration:underline;text-underline-offset:2px}.decouverte-mon-regard{display:flex;align-items:center;gap:18px;padding:13px 16px;margin-top:13px;background:#f5e3b8;border:1px solid #ead39d;border-radius:12px}.decouverte-mon-regard>b{font:800 1.17rem var(--display);white-space:nowrap;color:#76571f}.decouverte-mon-regard p{font-size:1rem;line-height:1.35;color:#574c31}.decouverte-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:15px}.decouverte-actions .btn{font-size:1rem;border-radius:12px;white-space:normal}.decouverte-actions .btn.prim{background:#276c69;border-color:#1d5a56;color:#fff9e8}.decouverte-escale .decouverte-sources{display:flex;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;margin-top:10px;font-size:.75rem;line-height:1.35;color:#6b756d}
-.ecriture-amorces{font-size:clamp(.95rem,1.3vw,1.1rem);line-height:1.4;margin:12px 0 0!important;color:#5f543c}.ecriture-amorces b{color:#7a5c22}.ecriture-carte .centre{flex-wrap:wrap}
+.ecriture-carte .centre{flex-wrap:wrap}
 .decouverte-actions a.btn{display:inline-flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;text-align:center}
 @media(max-width:700px){.decouverte-escale{padding:17px 15px}.decouverte-entete{gap:10px}.decouverte-entete h2{font-size:1.6rem}.decouverte-azulejo{width:39px;height:39px;font-size:27px}.decouverte-vue{grid-template-columns:1fr;gap:16px}.decouverte-illustration{height:200px}.decouverte-reperes{grid-template-columns:repeat(2,minmax(0,1fr))}.decouverte-mon-regard{display:block}.decouverte-mon-regard p{margin-top:4px}.decouverte-actions{align-items:stretch;flex-direction:column}.decouverte-actions .btn{width:100%}.decouverte-escale .decouverte-sources{gap:9px;flex-direction:column}}
 @media(prefers-reduced-motion:no-preference){.decouverte-escale{animation:decouverte-apparait .35s ease-out both}@keyframes decouverte-apparait{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}}
@@ -6411,7 +6415,7 @@ window.Expeditions = (() => {
   return {GRADES,periodes,periode,normalise,prevision,promouvoir,fusion};
 })();
 
-/* La flotte de l'équipage. Dessins SVG autonomes, sans réseau ni données de classe.
+/* La flotte de l'équipage. Illustrations locales et vues de dessus SVG, sans réseau ni données de classe.
    Un niveau définit la silhouette ; une thématique n'en change que l'habillage.
    Le stockage de la progression appartient à Expeditions, jamais à ce module. */
 window.Navires = (() => {
@@ -6463,120 +6467,6 @@ window.Navires = (() => {
     <pattern id="toilefine" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M0 0H11M0 0V11" fill="none" stroke="${c.encre}" stroke-opacity=".035" stroke-width="1"/></pattern>
     <pattern id="bordage" width="280" height="22" patternUnits="userSpaceOnUse"><path d="M0 21H280M77 0V21M240 21V0M4 8Q80 1 155 8T280 8" fill="none" stroke="${c.ombre}" stroke-opacity=".34" stroke-width="1.5"/><path d="M0 23H280" stroke="${c.clair}" stroke-opacity=".2"/></pattern>
   </defs>`;}
-  function hublot(c,x,y,r=18){return `<g><circle cx="${x+1}" cy="${y+2}" r="${r+5}" fill="${c.ombre}" opacity=".6"/><circle cx="${x}" cy="${y}" r="${r+3}" fill="url(#or)" stroke="${c.ombre}" stroke-width="2"/><circle cx="${x}" cy="${y}" r="${r-3}" fill="url(#verre)" stroke="${c.voile}" stroke-opacity=".6" stroke-width="1.5"/><path d="M${x-r/2} ${y-3}Q${x-r/3} ${y-r/1.6} ${x+5} ${y-r/2}" stroke="#F1FCF8" stroke-width="3" opacity=".7" fill="none"/>${[0,90,180,270].map(a=>`<circle cx="${x+Math.cos(a*Math.PI/180)*r}" cy="${y+Math.sin(a*Math.PI/180)*r}" r="1.4" fill="${c.ombre}"/>`).join("")}</g>`;}
-  function lanterne(c,x,y,s=1){return `<g transform="translate(${x} ${y}) scale(${s})"><circle class="n-lueur" cy="17" r="45" fill="url(#lueur)"/>${chemin("M-13 2L-9 29H9L13 2Z","#FFD990",c.ombre,2)}${ligne(0,1,0,30,c.or,2)}${chemin("M-16 0L0 -12L16 0ZM-11 31H11L8 36H-8Z","url(#or)",c.ombre,2)}${ligne(0,-12,0,-23,c.ombre,3)}</g>`;}
-  function mat(c,x,haut,bas=658,fanion=true){return `<g>${chemin(`M${x-6} ${bas}L${x-4} ${haut}Q${x} ${haut-8} ${x+4} ${haut}L${x+8} ${bas}Z`,"url(#bois)",c.ombre,2)}${ligne(x-2,haut+6,x+1,bas-4,c.clair,2)}<circle cx="${x}" cy="${haut}" r="7" fill="url(#or)" stroke="${c.ombre}" stroke-width="2"/>${fanion?chemin(`M${x+2} ${haut+7}Q${x-28} ${haut+22} ${x-70} ${haut+12}Q${x-61} ${haut+29} ${x-87} ${haut+38}Q${x-38} ${haut+53} ${x+2} ${haut+35}Z`,c.accent,c.ombre,2,'class="n-fanion"'):""}</g>`;}
-  function cordage(c,x,haut,gauche,droite,bas=657){let s=ligne(x,haut,gauche,bas,c.corde,2)+ligne(x,haut,droite,bas,c.corde,2);for(let i=0;i<5;i++){const b=gauche+i*12;s+=ligne(x,haut+110,b,bas,c.corde,1.5);}for(let i=1;i<14;i++){const k=i/14;s+=ligne(x+(gauche-x)*k,haut+110+(bas-haut-110)*k,x+(gauche+48-x)*k,haut+110+(bas-haut-110)*k,c.corde,1.4);}return s;}
-  function voile(c,x,y,w,h,motif=false){const d=`M${x-w*.5} ${y}Q${x} ${y+13} ${x+w*.5} ${y}Q${x+w*.41} ${y+h*.51} ${x+w*.57} ${y+h}Q${x} ${y+h*.85} ${x-w*.56} ${y+h}Q${x-w*.39} ${y+h*.45} ${x-w*.5} ${y}Z`;
-    return `<g class="n-voile" style="animation-delay:-${(y%7)*.43}s">${chemin(d,"url(#toile)",c.ombre,2.5)}${chemin(d,"url(#toilefine)")}${chemin(`M${x-w*.46} ${y+5}Q${x-w*.24} ${y+h*.48} ${x-w*.51} ${y+h-7}Q${x-w*.35} ${y+h*.6} ${x-w*.46} ${y+5}Z`,c.pli)}${chemin(`M${x-w*.45} ${y+7}Q${x} ${y+21} ${x+w*.46} ${y+7}`,"none",c.voile,3)}${[.22,.44,.66,.85].map(a=>chemin(`M${x-w*.5+w*a} ${y+7}Q${x-w*.5+w*a+w*.035} ${y+h*.42} ${x-w*.56+w*1.13*a} ${y+h*(.97-.07*Math.sin(Math.PI*a))}`,"none",c.pli,1.5)).join("")}${chemin(`M${x-w*.56} ${y+h}Q${x} ${y+h*.85} ${x+w*.57} ${y+h}`,"none",c.or,4)}${ligne(x-w*.54,y-3,x+w*.54,y-3,c.ombre,10)}${ligne(x-w*.54,y-5,x+w*.54,y-5,c.bois,6)}${motif?medaille(c,x,y+h*.51,Math.min(w*.15,h*.28)):""}</g>`;
-  }
-  function foc(c,x,y,px,py,bx,by){return `${chemin(`M${x} ${y}Q${px+30} ${py-20} ${px} ${py}Q${bx+30} ${by-30} ${bx} ${by}Z`,"url(#toile)",c.ombre,2)}${chemin(`M${x} ${y}Q${px-30} ${py-70} ${px} ${py}Q${bx+65} ${by-45} ${bx} ${by}Q${px-70} ${py-95} ${x} ${y}Z`,c.pli,undefined,0,'opacity=".45"')}${ligne(x,y,bx,by,c.voile,2)}`;}
-  function coque(c,n){
-    const d=n===3?"M117 666Q428 701 814 634L935 588Q902 733 790 783Q491 839 222 777Q159 744 117 666Z":n===4?"M118 586L255 600L276 668Q557 698 849 628L938 593Q911 759 796 795Q494 839 248 782Q155 745 118 586Z":n===5?"M93 620Q154 657 202 650Q506 697 815 634Q906 618 943 553Q944 700 815 784Q557 836 270 791Q125 758 93 620Z":"M123 648Q414 699 831 625L932 587Q902 742 791 784Q512 829 267 782Q167 748 123 648Z";
-    let s=`<g>${chemin(d,"url(#coque)",c.ombre,5)}${chemin(d,"url(#bordage)")}${chemin(n===4?"M122 594L249 608L270 676Q560 707 849 638L932 603":n===3?"M124 675Q433 711 815 644L928 600":n===5?"M104 633Q154 671 202 663Q506 710 818 648Q905 627 936 577":"M133 657Q414 712 835 637L924 600","none",c.ombre,17)}${chemin(n===4?"M122 590L252 604L276 670Q560 700 849 632L936 597":n===3?"M124 668Q433 703 815 636L928 593":n===5?"M102 625Q154 663 202 655Q506 702 818 640Q905 619 936 569":"M130 650Q414 704 835 629L929 592","none","url(#or)",11)}${chemin("M208 731Q451 806 808 734","none",c.or,5)}${chemin("M234 751Q467 821 785 758","none",c.clair,1.5, 'opacity=".35"')}${chemin("M269 789Q523 829 792 782","none",c.ombre,5)}`;
-    for(let i=0;i<(n>=4?7:5);i++){const x=310+i*(n>=4?67:94),y=727-Math.pow((x-500)/43,2)*.15;s+=hublot(c,x,y,n>=4?16:18);}
-    for(let i=0;i<11;i++){const x=245+i*52,y=689-Math.pow((x-450)/45,2)*.3;s+=`<circle cx="${x}" cy="${y}" r="2.4" fill="${c.or}"/>`;}
-    s+=chemin("M819 665Q874 647 890 616Q883 665 848 692Q859 669 819 665Z","url(#or)",c.ombre,2);
-    return s+"</g>";
-  }
-  function cabine(c,x,y,w=140,h=64){return `<g>${chemin(`M${x} ${y+h}V${y+12}Q${x+w*.5} ${y-13} ${x+w} ${y+10}V${y+h}Z`,"url(#bois)",c.ombre,3)}${chemin(`M${x-10} ${y+12}Q${x+w*.45} ${y-16} ${x+w+10} ${y+9}L${x+w+7} ${y+18}Q${x+w*.4} ${y-4} ${x-10} ${y+21}Z`,c.coque,c.ombre,2)}${[.24,.55,.82].map(a=>`<rect x="${x+w*a-11}" y="${y+24}" width="22" height="26" rx="5" fill="url(#verre)" stroke="${c.or}" stroke-width="3"/>${ligne(x+w*a,y+25,x+w*a,y+49,c.or,2)}`).join("")}${ligne(x,y+h-8,x+w,y+h-8,c.or,3)}</g>`;}
-  function bastingage(c,x1,y1,x2,y2){let s=ligne(x1,y1,x2,y2,c.ombre,6)+ligne(x1,y1-1,x2,y2-1,c.or,3);const nb=Math.round((x2-x1)/27);for(let i=0;i<=nb;i++){const k=i/nb;s+=ligne(x1+(x2-x1)*k,y1+(y2-y1)*k,x1+(x2-x1)*k,y1+(y2-y1)*k+28,c.ombre,4)+ligne(x1+(x2-x1)*k-1,y1+(y2-y1)*k,x1+(x2-x1)*k-1,y1+(y2-y1)*k+25,c.or,1.5);}return s;}
-  function decor(c,n,id){let s="";const xs=[240,335,431,528,624,720,813];
-    if(["noel","carnaval","printemps","oeufs","ete"].includes(id)){
-      s+=chemin("M230 665Q522 731 829 639","none",id==="printemps"?c.coque:c.or,3);
-      xs.forEach((x,i)=>{const y=679+Math.sin(i/6*Math.PI)*24-i*5;
-        if(id==="carnaval"||id==="ete")s+=chemin(`M${x-10} ${y-3}L${x+11} ${y}L${x} ${y+25}Z`,[c.accent,c.or,"#61BFC1"][i%3],c.ombre,1);
-        else if(id==="printemps")s+=medaille(c,x,y,13);
-        else if(id==="oeufs")s+=medaille(c,x,y+10,11);
-        else s+=`<circle cx="${x}" cy="${y+5}" r="9" fill="${i%2?c.accent:c.or}" stroke="${c.ombre}" stroke-width="1.5"/><circle cx="${x-3}" cy="${y+2}" r="2.3" fill="#FFF6CB"/>`;
-      });
-    }
-    if(id==="halloween")s+=medaille(c,230,n===4?576:633,25)+medaille(c,779,636,20);
-    if(id==="automne")s+=medaille(c,242,n===4?577:633,26)+medaille(c,799,629,21);
-    if(id==="hiver")s+=chemin("M128 649L160 654L164 674L172 655L201 660L205 677L213 661M742 647L763 643L768 661L776 641L809 635L814 648L821 632","none",c.voile,5);
-    if(n>=4)s+=medaille(c,197,n===4?661:714,28,"boussole");
-    return s+lanterne(c,n===4?153:210,n===4?576:612,.73)+lanterne(c,820,607,.6);
-  }
-  function jonque(c,x,y,w,h){
-    const d=`M${x} ${y}Q${x+w*.65} ${y-70} ${x+w} ${y+25}Q${x+w*.8} ${y+h*.45} ${x+w*.96} ${y+h}Q${x+w*.45} ${y+h-35} ${x} ${y+h+15}Z`;
-    let s=chemin(d,"url(#toile)",c.ombre,3)+chemin(d,"url(#toilefine)");
-    for(let i=0;i<7;i++){const k=i/6,yy=y+k*h,xx=x+w*(1-.12*Math.sin(k*Math.PI));s+=chemin(`M${x} ${yy}Q${x+w*.5} ${yy-40} ${xx} ${yy+(i===0?25:0)}`,"none",c.bois,5)+chemin(`M${x} ${yy-1}Q${x+w*.5} ${yy-41} ${xx} ${yy+(i===0?24:-1)}`,"none",c.or,1.5);}
-    return `<g class="n-voile" style="animation-delay:-${(y%7)*.43}s">${s+medaille(c,x+w*.49,y+h*.49,44)}</g>`;
-  }
-  function voileAurore(c,x,y,w,h,motif=false){
-    // Les ailes de la nef finale ont un contour et des nervures propres :
-    // ce n'est pas un galion ordinaire simplement recoloré en doré.
-    const d=`M${x-w*.57} ${y-15}Q${x} ${y+24} ${x+w*.57} ${y-15}Q${x+w*.39} ${y+h*.43} ${x+w*.63} ${y+h+12}Q${x+w*.28} ${y+h*.72} ${x} ${y+h}Q${x-w*.28} ${y+h*.72} ${x-w*.63} ${y+h+12}Q${x-w*.39} ${y+h*.43} ${x-w*.57} ${y-15}Z`;
-    let s=chemin(d,"url(#toile)",c.ombre,2.5)+chemin(d,"url(#toilefine)")+chemin(d,"none",c.or,4);
-    for(const k of [-.42,-.23,0,.23,.42])s+=chemin(`M${x+w*k} ${y+6}Q${x+w*k*.72} ${y+h*.45} ${x+w*k*1.22} ${y+h*(.93-Math.abs(k)*.08)}`,"none",c.or,1.8);
-    s+=ligne(x-w*.6,y-17,x+w*.6,y-17,c.ombre,8)+ligne(x-w*.6,y-19,x+w*.6,y-19,c.or,4);
-    if(motif)s+=medaille(c,x,y+h*.47,Math.min(w*.15,h*.28));
-    return `<g class="n-voile" style="animation-delay:-${(y%7)*.43}s">${s}</g>`;
-  }
-  function dessin(n,id,dessus=false){
-    const c=matieres[id];
-    if(dessus)return vueDessus(n,c);
-    let s=definitions(c)+`<style>
-      @keyframes navire-voile{0%,100%{transform:scaleX(1) skewY(0deg)}45%{transform:scaleX(1.009) skewY(.25deg)}75%{transform:scaleX(.997) skewY(-.12deg)}}
-      @keyframes navire-lueur{0%,100%{opacity:.65}50%{opacity:1}}
-      @keyframes navire-fanion{0%,100%{transform:skewY(0deg) scaleX(1)}35%{transform:skewY(2deg) scaleX(.97)}68%{transform:skewY(-1deg) scaleX(1.015)}}
-      .n-voile{transform-box:fill-box;transform-origin:50% 0%;animation:navire-voile 6.4s ease-in-out infinite}
-      .n-lueur{animation:navire-lueur 3.8s ease-in-out infinite}
-      .n-fanion{transform-box:fill-box;transform-origin:100% 50%;animation:navire-fanion 3.3s ease-in-out infinite}
-      @media(prefers-reduced-motion:reduce){.n-voile,.n-lueur,.n-fanion{animation:none}}
-    </style>`, mats=[];
-    if(n===1)mats=[[340,180],[589,108]];
-    if(n===2)mats=[[260,245],[454,69],[662,164]];
-    if(n===3)mats=[[318,211],[600,100]];
-    if(n===4)mats=[[248,232],[475,73],[699,166]];
-    if(n===5)mats=[[221,263],[449,71],[685,172]];
-    // Le beaupré, les haubans et les échelles passent derrière les voiles.
-    s+=ligne(793,645,968,512,c.ombre,12)+ligne(790,641,967,509,c.bois,7)+ligne(800,639,968,508,c.clair,2);
-    mats.forEach(([x,y])=>{s+=cordage(c,x,y+18,x-96,x+105);});
-    s+=ligne(mats.at(-1)[0],mats.at(-1)[1]+15,963,512,c.corde,2);
-    if(n===1){
-      s+=foc(c,599,164,941,523,664,578);
-      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
-      s+=voile(c,337,243,223,135)+voile(c,340,405,257,172,true)+voile(c,589,172,237,155)+voile(c,590,354,275,220,true);
-      s+=cabine(c,180,591,168,70)+bastingage(c,163,614,287,637)+bastingage(c,650,619,825,588);
-    }
-    if(n===2){
-      s+=foc(c,675,207,945,521,730,584);
-      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
-      s+=voile(c,257,306,166,103)+voile(c,261,438,196,137,true)+voile(c,452,132,169,108)+voile(c,454,265,227,129)+voile(c,454,420,265,176,true)+voile(c,665,227,167,123)+voile(c,665,375,211,182,true);
-      s+=`<g transform="translate(452 106)"><ellipse rx="27" ry="10" fill="${c.coque}" stroke="${c.or}" stroke-width="4"/>${chemin("M-25 -3L-19 17Q0 28 19 17L25 -3",c.coque,c.ombre,2)}</g>`;
-      s+=cabine(c,179,602,142,62)+bastingage(c,161,622,289,640)+bastingage(c,715,609,828,586);
-      s+=medaille(c,453,357,23,"boussole");
-    }
-    if(n===3){
-      s+=foc(c,610,167,944,521,832,575);
-      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
-      s+=jonque(c,179,289,234,285)+jonque(c,435,181,326,363);
-      s+=cabine(c,198,591,183,68)+chemin("M165 608Q220 601 237 574Q288 608 389 579L400 599Q280 626 165 620Z",c.coque,c.ombre,3);
-      s+=bastingage(c,177,641,316,656)+bastingage(c,692,628,850,590);
-    }
-    if(n===4){
-      s+=foc(c,713,213,946,521,773,581);
-      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
-      s+=voile(c,245,293,168,111)+voile(c,245,433,211,137,true)+voile(c,475,133,183,111)+voile(c,475,273,250,137)+voile(c,475,441,296,170,true)+voile(c,700,226,190,129)+voile(c,700,385,230,181,true);
-      s+=cabine(c,130,485,146,71)+cabine(c,139,554,150,75)+bastingage(c,127,480,266,478)+bastingage(c,288,630,364,641)+bastingage(c,732,607,840,580);
-      s+=ligne(152,547,285,553,c.or,7)+lanterne(c,140,471,.7);
-    }
-    if(n===5){
-      s+=`<g transform="translate(450 223)"><circle r="139" fill="none" stroke="${c.or}" stroke-width="6"/><circle r="151" fill="none" stroke="${c.or}" stroke-width="1.5" stroke-dasharray="2 12"/><ellipse rx="75" ry="139" fill="none" stroke="${c.or}" stroke-width="2" transform="rotate(-28)"/></g>`;
-      mats.forEach(([x,y])=>{s+=mat(c,x,y);});
-      s+=foc(c,688,230,948,521,794,594)+foc(c,225,294,170,584,81,535);
-      s+=voileAurore(c,450,144,181,105)+voileAurore(c,450,293,249,137,true)+voileAurore(c,451,476,286,137,true)+voileAurore(c,687,244,191,142)+voileAurore(c,689,432,230,152,true)+voileAurore(c,224,337,179,101)+voileAurore(c,224,480,206,111);
-      s+=cabine(c,154,590,166,70)+bastingage(c,153,584,306,595)+bastingage(c,742,608,859,570);
-      s+=chemin("M921 587Q979 570 968 530Q961 512 950 532Q962 547 937 563Q918 575 909 598Z","url(#or)",c.ombre,2);
-    }
-    s+=coque(c,n)+decor(c,n,id);
-    if(n===5){
-      s+=chemin("M131 669Q111 614 70 603Q117 674 157 717L217 748Q179 706 131 669ZM816 706Q889 684 906 636Q918 693 849 744Z","url(#or)",c.ombre,3);
-      s+=chemin("M244 764Q506 800 786 751","none",c.or,8)+medaille(c,520,778,28,"boussole");
-    }
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="850" viewBox="0 0 1000 850"><title>${liste[n].nom} — ${id}</title>${s}</svg>`;
-  }
   function vueDessus(n,c){
     let s=definitions(c);
     s+=chemin("M63 255Q168 92 612 116Q805 132 958 252Q817 389 609 403Q177 419 63 255Z","url(#coque)",c.ombre,8);
@@ -6598,16 +6488,23 @@ window.Navires = (() => {
   function image(n=niveau(),id=theme(),dessus=false){
     n=borne(n);id=theme(id);
     if(!n)return initial(id,dessus);
-    const cle=`${n}|${id}|${dessus}`;
-    if(!cache.has(cle))cache.set(cle,"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(dessin(n,id,dessus)).replace(/'/g,"%27"));
+    if(!dessus)return `img/navire-${liste[n].id}-${id}.webp`;
+    const cle=`${n}|${id}`;
+    if(!cache.has(cle))cache.set(cle,"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(vueDessus(n,matieres[id])).replace(/'/g,"%27"));
     return cache.get(cle);
   }
   function accessoires(n=niveau()){
     n=borne(n);
-    const voiles={1:[.006,-.605,.25,.22],2:[-.163,-.562,.25,.22],3:[-.057,-.66,.28,.27],4:[-.16,-.54,.28,.21],5:[-.19,-.505,.28,.17]};
-    const mats={1:[.089,-.865],2:[-.046,-.911],3:[.1,-.873],4:[-.025,-.905],5:[-.051,-.908]};
-    const p=mats[n]||mats[1];
-    return {pavillon:[p[0]-.17,p[1]-.055,.17,.1,"droite"],proue:[.355,-.30,.13,.16],voile:voiles[n]||voiles[1],guirlande:[-.3,-.235,.62,.14]};
+    // Repères des illustrations entières : x depuis le centre, y depuis le bas.
+    // Le bord droit du pavillon rejoint le mât ; les autres dessins se centrent dans leur zone.
+    const places={
+      1:{pavillon:[-.325,-.975,.17,.10,"droite"],voile:[-.264,-.673,.205,.225],proue:[.29,-.41,.15,.20],guirlande:[-.32,-.275,.64,.19]},
+      2:{pavillon:[-.237,-.97,.17,.10,"droite"],voile:[-.14,-.645,.20,.21],proue:[.29,-.45,.15,.20],guirlande:[-.32,-.285,.64,.19]},
+      3:{pavillon:[-.31,-.925,.17,.10,"droite"],voile:[-.235,-.605,.17,.22],proue:[.28,-.45,.14,.20],guirlande:[-.32,-.28,.60,.18]},
+      4:{pavillon:[-.252,-.98,.17,.10,"droite"],voile:[-.15,-.535,.20,.19],proue:[.34,-.46,.14,.18],guirlande:[-.32,-.285,.64,.20]},
+      5:{pavillon:[-.35,-.975,.17,.10,"droite"],voile:[-.21,-.62,.17,.18],proue:[.27,-.44,.14,.20],guirlande:[-.38,-.265,.64,.18]}
+    };
+    return places[n]||places[1];
   }
   let dernier=-1,dernierTheme="";
   function actualise(){
@@ -7596,7 +7493,11 @@ const Mer = (() => {
       return {top:st.combatTop,hauteur:disponible,largeur};
     },
     place(bas){ if(window.KrakenMer?.active())return this.placeCombat(bas); if(!H) return; const avail=H-bas; const sMax=Math.max(.45,Math.min(1.2,W/1100));
-      let s=Math.max(.3,Math.min(sMax,(avail-12)/300)); let mer=bas+12+222*s; if(mer+72*s>H) mer = avail<100 ? H+220 : H-72*s;
+      const niveau=window.Navires?.niveau()||0,ratio=pret(IMG.bateau)?IMG.bateau.naturalHeight/IMG.bateau.naturalWidth:(niveau===4?1:5/6);
+      // Les nouveaux navires réservent leur hauteur entière, plus 28 px pour le
+      // roulis et la houle. Le bateau initial conserve exactement son cadrage.
+      const hauteurMer=niveau?Math.max(222,290*ratio+28-38):222,hauteurScene=niveau?hauteurMer+78:300;
+      let s=Math.max(.3,Math.min(sMax,(avail-12)/hauteurScene)); let mer=bas+12+hauteurMer*s; if(mer+72*s>H) mer = avail<100 ? H+220 : H-72*s;
       st.merC=mer; st.sC=s; }
   };
 })();
@@ -7769,15 +7670,23 @@ function modeDemo(on){
   majBarre(); majMer(); Mer.snap(); retourMenu();
 }
 
-/* Galerie de contrôle : aucune sélection ne modifie le thème ou les acquis réels. */
+/* La galerie reste indépendante du thème et des acquis réels. */
 async function demoFlotte(){
   if(!DEMO)return;
-  enJeu=true;const generation=GEN;let theme=Themes.actuel();
+  enJeu=true;const generation=GEN;let theme=Themes.actuel(),selection=null;
   while(generation===GEN&&DEMO){
-    layer.innerHTML=`<section class="flotte-demo carte"><div class="flotte-demo-titre"><div><span class="flotte-demo-kicker">L’arsenal de l’équipage · démo</span><h2>Un navire pour chaque aventure</h2><p>Chaque silhouette conserve sa forme dans les neuf thématiques.</p></div><button class="btn prim" data-go="retour-flotte">Retour à la démo</button></div><div class="flotte-demo-themes">${Themes.liste.map(t=>`<button class="btn ${theme===t.id?"prim":""}" data-go="flotte-theme-${t.id}" aria-pressed="${theme===t.id}">${t.icone} ${t.nom.replace("Thématique de base","Marine")}</button>`).join("")}</div><div class="flotte-demo-grille">${Navires.liste.map((n,i)=>`<article style="--flotte-fond:${Themes.get(theme).palette.nuit};--flotte-mer:${Themes.get(theme).palette.mer}"><div class="flotte-demo-mer"><img data-theme-preview src="${Navires.image(i,theme)}" alt="${esc(n.nom)} — ${esc(Themes.get(theme).nom)}"></div><div><span>${i===0?"Au départ":`Expédition ${i}`}</span><h3>${esc(Expeditions.GRADES[i])}</h3><p>${esc(n.nom)}</p></div></article>`).join("")}</div></section>`;
+    const palette=Themes.get(theme).palette,navire=selection===null?null:Navires.liste[selection];
+    layer.innerHTML=`<section class="flotte-demo carte" style="--flotte-fond:${palette.nuit};--flotte-mer:${palette.mer}">
+      <div class="flotte-demo-titre"><div><span class="flotte-demo-kicker">L’arsenal de l’équipage · démo</span><h2>${navire?esc(navire.nom):"Un navire pour chaque aventure"}</h2><p>${navire?esc(navire.type):"Choisis un bateau pour le voir en grand."}</p></div><button class="btn prim" data-go="${navire?"flotte-galerie":"retour-flotte"}">${navire?"Tous les navires":"Retour à la démo"}</button></div>
+      <div class="flotte-demo-themes">${Themes.liste.map(t=>`<button class="btn ${theme===t.id?"prim":""}" data-go="flotte-theme-${t.id}" aria-pressed="${theme===t.id}">${t.icone} ${t.nom.replace("Thématique de base","Marine")}</button>`).join("")}</div>
+      ${navire?`<div class="flotte-demo-mer flotte-demo-detail"><img data-theme-preview src="${Navires.image(selection,theme)}" alt="${esc(navire.nom)} — ${esc(Themes.get(theme).nom)}"></div><div class="flotte-demo-navigation"><button class="btn" data-go="flotte-voir-${(selection+5)%6}" aria-label="Navire précédent">←</button><div><h3>${esc(Expeditions.GRADES[selection])}</h3><p>${esc(navire.devise)}</p></div><button class="btn" data-go="flotte-voir-${(selection+1)%6}" aria-label="Navire suivant">→</button></div>`:
+      `<div class="flotte-demo-grille">${Navires.liste.map((n,i)=>`<article><button class="flotte-demo-mer flotte-demo-zoom" data-go="flotte-voir-${i}" aria-label="Voir ${esc(n.nom)} en grand"><img data-theme-preview src="${Navires.image(i,theme)}" alt="${esc(n.nom)} — ${esc(Themes.get(theme).nom)}"><span class="flotte-demo-agrandir" aria-hidden="true">Agrandir ↗</span></button><div><span>${i===0?"Au départ":`Expédition ${i}`}</span><h3>${esc(Expeditions.GRADES[i])}</h3><p>${esc(n.nom)}</p></div></article>`).join("")}</div>`}
+    </section>`;
     const go=await attendre();
     if(generation!==GEN)return;
     if(go==='retour-flotte'){enJeu=false;accueil();return;}
+    if(go==='flotte-galerie')selection=null;
+    if(go.startsWith('flotte-voir-'))selection=Math.min(5,Math.max(0,Number(go.slice(12))||0));
     if(go.startsWith('flotte-theme-'))theme=go.slice(13);
   }
 }
@@ -8960,7 +8869,6 @@ async function ecrireCarte(k){
         </div>
       </div>
       <div class="mots"><b>Boîte à mots :</b> ${mots.map(m=>`<span>${esc(m)}</span>`).join("")}</div>
-      <p class="ecriture-amorces"><b>Ton regard compte :</b> ${e.v==="Lisbonne"?"« La vidéo m’a appris… »":"« Ici, j’observe… »"} · « Ce qui me surprend, c’est… » · « J’aimerais… parce que… »</p>
       <section class="connecteurs" aria-labelledby="connecteurs-titre">
         <h3 id="connecteurs-titre">Utilise des connecteurs</h3>
         <p>Choisis deux ou trois mots pour guider ton lecteur.</p>
