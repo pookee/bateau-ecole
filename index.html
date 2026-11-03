@@ -3873,6 +3873,25 @@ const NOTIONS_LECTURES_RETIREES = {
 };
 const questionLectureRetiree = q => !!NOTIONS_LECTURES_RETIREES[q?.n];
 
+// Limite confirmée par l’enseignante : cours du lundi 2 novembre inclus.
+// Garder les IDs publiés pour les sauvegardes ; ces entrées attendent leur étude.
+const NOTIONS_REPORTEES = {
+ "multiplication":{"id":"multiplication","m":"ma","s":"Calcul","t":"CALC 5 · Les mots de la multiplication"},
+ "heure":{"id":"heure","m":"ma","s":"Grandeurs et mesures","t":"MES 3 · Lire l’heure"},
+ "homophones":{"id":"homophones","m":"fr","s":"Orthographe","t":"O4 · a/à, et/est, son/sont"},
+ "imparfaitER":{"id":"imparfaitER","m":"fr","s":"Conjugaison","t":"CONJ 6 · L’imparfait des verbes du 1er groupe"},
+ "histoireimages":{"id":"histoireimages","m":"ar","s":"Arts plastiques","t":"Un événement en trois images"},
+ "alimentsbase":{"id":"alimentsbase","m":"ge","s":"Se nourrir","t":"G1 · Les aliments de base dans le monde"}
+};
+const QUESTIONS_REPORTEES = new Set(["d624","d628","d629",...Array.from({length:44},(_,i)=>"d"+(638+i))]);
+const questionReportee = q => !!NOTIONS_REPORTEES[q?.n] || QUESTIONS_REPORTEES.has(q?.id) ||
+ (!/^d\d+$/.test(q?.id||"") && [...QUESTIONS_REPORTEES].some(id=>{
+   const r=Q_RAW[+id.slice(1)];
+   return q && q.n===r[0] && q.q===r[1] && q.ok===r[3] && JSON.stringify(q.c)===JSON.stringify(r[2]);
+ }));
+const questionHorsProgramme = q => questionLectureRetiree(q) || questionReportee(q);
+const notionHorsProgramme = id => !!(NOTIONS_LECTURES_RETIREES[id] || NOTIONS_REPORTEES[id]);
+
 const NOTIONS = [
  {"id":"types","m":"fr","s":"Grammaire","t":"GRAM 1 · Les types de phrases","vue":true},
  {"id":"formes","m":"fr","s":"Grammaire","t":"GRAM 1 · Les formes de phrases","vue":true},
@@ -3921,13 +3940,7 @@ const NOTIONS = [
  {"id":"presIR","m":"fr","s":"Conjugaison","t":"CONJ 3 · Le présent des verbes du 2e groupe","vue":true},
  {"id":"determinants","m":"fr","s":"Grammaire","t":"GRAM 4 · Les déterminants","vue":true},
  {"id":"dictee6","m":"fr","s":"Orthographe","t":"Dictée 6 · Les Jeux olympiques et paralympiques","vue":true},
- {"id":"probabilites","m":"ma","s":"Probabilités","t":"PROBA 1 · Le vocabulaire du hasard","vue":true},
- {"id":"multiplication","m":"ma","s":"Calcul","t":"CALC 5 · Les mots de la multiplication","vue":true},
- {"id":"heure","m":"ma","s":"Grandeurs et mesures","t":"MES 3 · Lire l’heure","vue":true},
- {"id":"homophones","m":"fr","s":"Orthographe","t":"O4 · a/à, et/est, son/sont","vue":true},
- {"id":"imparfaitER","m":"fr","s":"Conjugaison","t":"CONJ 6 · L’imparfait des verbes du 1er groupe","vue":true},
- {"id":"histoireimages","m":"ar","s":"Arts plastiques","t":"Un événement en trois images","vue":false},
- {"id":"alimentsbase","m":"ge","s":"Se nourrir","t":"G1 · Les aliments de base dans le monde","vue":false}
+ {"id":"probabilites","m":"ma","s":"Probabilités","t":"PROBA 1 · Le vocabulaire du hasard","vue":true}
 ];
 const NOTIONS_TITRES_PRECEDENTS = {"egalites":"Les additions à trous","types":"Les types de phrases","invar":"Les mots invariables","verbe":"Le verbe et son infinitif","formes":"Phrase affirmative ou négative","presER":"Le présent des verbes en -er","alpha":"L'ordre alphabétique","kayabu":"Lecture : Kayabu","dictee1":"Dictée 1 : la rentrée des classes","nombres":"Lire et écrire les nombres","decomp":"Décomposer les nombres","addition":"L'addition","tables":"Les tables de 1 à 5","probleme":"Problèmes : le tout et les parties","soustr":"La soustraction","fractions":"Les fractions","classer":"Classer les êtres vivants","moyenage":"Le Moyen Âge","chauvet":"La grotte Chauvet","anglais":"Describing myself"};
 
@@ -5349,7 +5362,7 @@ const TRUCS = [
 // Sources vérifiées dans les diaporamas de classe, y compris les leçons intégrées en images.
 // Dossier principal : Ressources Trans / 00 - Organisation de la classe / Cahiers journaux.
 // geoNov03 : Ressources Trans / 06 - Géographie / Se nourrir en mode enquête.
-// Les chapitres histoireimages et alimentsbase sont préparés, décochés jusqu’à leur étude.
+// Les cours du 3 novembre restent référencés pour les anciennes sauvegardes, hors programme actuel.
 const COURS = {
   "sept21": {
     "date": "2026-09-21",
@@ -5386,8 +5399,8 @@ const COURS = {
  "oct15":{"date":"2026-10-15","fichier":"Diaporama - jeudi 15 octobre 2026  -  Réparation.pptx"},
  "oct16":{"date":"2026-10-16","fichier":"Diaporama - vendredi 16 octobre 2026  -  Réparation.pptx"},
  "nov02":{"date":"2026-11-02","fichier":"Diaporama - lundi 2 novembre 2026.pptx"},
- "nov03":{"date":"2026-11-03","fichier":"Diaporama - mardi 3 novembre 2026.pptx"},
- "geoNov03":{"date":"2026-11-03","fichier":"Géographie - mardi 3 novembre 2026 - Que mange-t-on dans le monde.pptx"}
+ "nov03":{"date":"2026-11-03","fichier":"Diaporama - mardi 3 novembre 2026.pptx","disponible":false},
+ "geoNov03":{"date":"2026-11-03","fichier":"Géographie - mardi 3 novembre 2026 - Que mange-t-on dans le monde.pptx","disponible":false}
 };
 const Q_SOURCES = {
  "d0":{"cours":"sept28","diapos":[34,35,36]},
@@ -7483,13 +7496,20 @@ function position(m){ // {i: escale atteinte, p: progression 0-1 vers i+1}
 
 /* ---------- état du jeu ---------- */
 function questionDefaut(k){ const q=Q_RAW[k]; const o={id:"d"+k,n:q[0],q:q[1],c:q[2].slice(),ok:q[3],active:true}; if(q[4]) o.le=q[4]; return o; } // le : date de la leçon
-function questionActive(q, etat=S){ return !questionLectureRetiree(q) && q.active!==false && !!etat.notions.find(n=>n.id===q.n)?.vue; }
+function questionActive(q, etat=S){ return !questionHorsProgramme(q) && q.active!==false && !!etat.notions.find(n=>n.id===q.n)?.vue; }
 function sourceQuestion(q){
   const k=/^d(\d+)$/.exec(q.id||""); const r=k && Q_RAW[+k[1]];
   return r && q.n===r[0] && q.q===r[1] && q.ok===r[3] && JSON.stringify(q.c)===JSON.stringify(r[2]) ? Q_SOURCES[q.id] : null;
 }
 function banqueDefaut(){
-  return Q_RAW.map((_,k)=>questionDefaut(k)).filter(q=>!questionLectureRetiree(q));
+  return Q_RAW.map((_,k)=>questionDefaut(k)).filter(q=>!questionHorsProgramme(q));
+}
+function archiveCours(cible,cle,items){
+  if(!items.length)return;
+  const avant=cible[cle],copies=Array.isArray(avant)?avant.slice():avant?[avant]:[];
+  const deja=new Set(copies.map(x=>JSON.stringify(x)));
+  for(const item of items){const json=JSON.stringify(item);if(!deja.has(json)){copies.push(JSON.parse(json));deja.add(json);}}
+  cible[cle]=copies;
 }
 const idVoyage = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function etatDefaut(){
@@ -7533,20 +7553,35 @@ function charge(obj){
   const ancienne = (q,r)=>q.q===r[0] && q.ok===r[2] && JSON.stringify(q.c)===JSON.stringify(r[1]) && !q.truc;
   o.questions = o.questions.map(q=>{ const r=typeof QREVUES!=="undefined" && QREVUES[q.id]; if(r && (Array.isArray(r[0])?r:[r]).some(v=>ancienne(q,v))){ delete o.stats.q[q.id]; return {...questionDefaut(+q.id.slice(1)),active:questionActive(q,o)}; } return q; });
   const ont = new Set(o.questions.map(q=>q.id));
-  for (let k=(obj.banque||128); k<Q_RAW.length; k++) if(!ont.has("d"+k)) o.questions.push(questionDefaut(k)); // 128 : la banque avant le 28/09 ; une question supprimée ne revient pas
-  // Retire les lectures étudiées sans effacer les statistiques ni les anciens bilans.
-  o.questions = o.questions.filter(q=>!questionLectureRetiree(q));
-  o.notions = o.notions.filter(n=>!NOTIONS_LECTURES_RETIREES[n.id]);
+  for (let k=(obj.banque||128); k<Q_RAW.length; k++) if(!ont.has("d"+k)){
+    const q=questionDefaut(k);if(!questionHorsProgramme(q))o.questions.push(q);
+  } // 128 : la banque avant le 28/09 ; une question supprimée ne revient pas
+  // Les questions du 3 novembre ont déjà pu être reçues et adaptées. Garder
+  // leurs objets complets, sans écraser une ancienne variante du même ID.
+  archiveCours(o,"questionsReportees",o.questions.filter(questionReportee));
+  archiveCours(o,"notionsReportees",o.notions.filter(n=>!!NOTIONS_REPORTEES[n.id]));
+  // Retirer des prochaines révisions seulement : résultats et bilans restent intacts.
+  o.questions = o.questions.filter(q=>!questionHorsProgramme(q));
+  o.notions = o.notions.filter(n=>!notionHorsProgramme(n.id));
   o.banque = Math.max(obj.banque||128, Q_RAW.length);
   // Enrichit les questions d'origine sans toucher aux dates et aux choix de l'enseignante.
   o.questions.forEach(q=>{ if(!q.le && sourceQuestion(q)) q.le=Q_RAW[+q.id.slice(1)][4]; });
   if(o.seance && (!Array.isArray(o.seance.qs) || !o.seance.qs.length || !Array.isArray(o.seance.res) || !Number.isInteger(o.seance.index) || o.seance.index<0 || o.seance.index>o.seance.qs.length)) o.seance=null;
-  if(o.seance && o.seance.qs.slice(o.seance.index).some(questionLectureRetiree)){
+  if(o.seance && o.seance.qs.slice(o.seance.index).some(questionHorsProgramme)){
     const s=o.seance, index=s.index, res=s.res;
+    const avant=JSON.parse(JSON.stringify(s));
+    const reportees=s.qs.map((q,i)=>({index:i,q})).filter(({q,index:i})=>i>=index&&!res[i]&&questionReportee(q));
+    if(reportees.length){
+      // La réserve doit survivre à la fin de la séance, qui efface S.seance.
+      archiveCours(o,"seancesReportees",[avant]);
+      s.reportees={...(s.reportees||{})};
+      archiveCours(s.reportees,"questions",reportees);
+      if(questionReportee(s.qs[index])&&!res[index]&&s.question)archiveCours(s.reportees,"ouvertes",[s.question]);
+    }
     // Les réponses déjà validées gardent leur place dans le bilan et l'historique.
     // Une question retirée, ouverte mais pas encore répondue, est simplement sautée.
-    const gardes=s.qs.map((q,i)=>({q,i})).filter(({q,i})=>i<index || !!s.res[i] || !questionLectureRetiree(q));
-    const couranteRetiree=questionLectureRetiree(s.qs[index]);
+    const gardes=s.qs.map((q,i)=>({q,i})).filter(({q,i})=>i<index || !!s.res[i] || !questionHorsProgramme(q));
+    const couranteRetiree=questionHorsProgramme(s.qs[index]);
     s.qs=gardes.map(({q})=>q);
     s.res=gardes.filter(({i})=>i<res.length).map(({i})=>res[i]);
     s.index=gardes.filter(({i})=>i<index || i===index && couranteRetiree && !!res[i]).length;
@@ -7603,6 +7638,9 @@ async function brancheDB(){
 function chargeAvecAcquis(distant){
   const nouveau=charge(JSON.parse(JSON.stringify(distant)));
   if(S.voyage&&S.voyage===nouveau.voyage){
+    for(const cle of ["questionsReportees","notionsReportees","seancesReportees"]){
+      archiveCours(nouveau,cle,Array.isArray(S[cle])?S[cle]:S[cle]?[S[cle]]:[]);
+    }
     // Un ancien téléphone ne doit pas réinventer des promotions à partir des escales.
     if(!distant.expeditions)nouveau.expeditions=JSON.parse(JSON.stringify(S.expeditions));
     const niveauRecu=distant.expeditions?nouveau.expeditions.niveau:0;
@@ -9019,7 +9057,7 @@ function rendQuestions(c){
         return `<li data-q-ligne="${esc(q.id)}"><label class="q-selection"><input type="checkbox" data-question="${esc(q.id)}" ${questionActive(q)?"checked":""}><span class="q">${texteMath(q.q)}<br><span class="rep">${texteMath(q.c[q.ok])}</span> <span class="note">· ${q.c.filter((_,k)=>k!==q.ok).map(texteMath).join(" · ")}</span>${cours?`<small class="q-source" title="${esc(cours.fichier)}">${esc(cours.date.split("-").reverse().join("/"))} · diapo ${esc(source.diapos.join(", "))}</small>`:""}</span></label><span class="q-actions"><button class="ed" data-ed="${esc(q.id)}">Modifier</button><button data-dup="${esc(q.id)}">Dupliquer</button><button data-del="${esc(q.id)}">Supprimer</button></span></li>`; }).join("")}</ul>
       <button class="btn mer" data-add="${esc(n.id)}">Ajouter une question</button><div data-form="${esc(n.id)}"></div></details>`;
   };
-  const dateBanque = new Date(Object.values(COURS).map(c=>c.date).sort().pop()+"T12:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"});
+  const dateBanque = new Date(Object.values(COURS).filter(c=>c.disponible!==false).map(c=>c.date).sort().pop()+"T12:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"});
   c.innerHTML = `<div class="banque-questions"><p class="note">Banque vérifiée avec les diaporamas de classe jusqu’au ${esc(dateBanque)}. Ouvre un chapitre, puis coche les questions à utiliser dans les rituels.</p>
     <div class="banque-filtres"><label>Rechercher<input type="search" id="banque-recherche" value="${esc(filtreBanque.texte)}" placeholder="Question, réponse ou chapitre…"></label><label>Afficher<select id="banque-filtre">${[["toutes","Toutes les questions"],["selectionnees","Sélectionnées"],["personnalisees","Personnalisées"],["ratees","À reprendre : moins de 65 % la dernière fois"]].map(([v,t])=>`<option value="${v}" ${filtreBanque.type===v?"selected":""}>${t}</option>`).join("")}</select></label><label>Leçon du<input type="date" id="banque-date" value="${esc(filtreBanque.date)}"></label><button class="btn" id="banque-effacer">Effacer les filtres</button></div>
     <p id="banque-resultats" role="status"></p><p class="banque-total" aria-live="polite"></p>
@@ -9925,27 +9963,41 @@ const Preparation = (()=>{
   let doc={maj:0,seance:null}, choixChapitres={maj:0}, db=null, pret=null;
   try { doc=JSON.parse(lsGet(CLE))||doc; } catch(e){}
   function valide(s){ return s && typeof s.id==="string" && typeof s.date==="string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date) && (!s.groupe || Array.isArray(s.groupe) && s.groupe.every(n=>Number.isInteger(n)&&n>=1&&n<=NB_CARTES)) && Array.isArray(s.questions) && s.questions.length>0 && s.questions.length<=15 && s.questions.every(q=>q && typeof q.q==="string" && Array.isArray(q.c) && q.c.length>=2 && q.c.length<=4 && Number.isInteger(q.ok) && q.ok>=0 && q.ok<q.c.length); }
-  function sansLectures(s){
+  function sansHorsProgramme(s){
     if(!s || !Array.isArray(s.questions))return s;
     const propre=copieJeu(s);
-    propre.questions=propre.questions.filter(q=>!questionLectureRetiree(q));
+    propre.questions=propre.questions.filter(q=>!questionHorsProgramme(q));
     if(!propre.questions.length)return null;
-    if(Array.isArray(propre.notions))propre.notions=propre.notions.filter(n=>!NOTIONS_LECTURES_RETIREES[n]);
-    if(NOTIONS_LECTURES_RETIREES[propre.filtres?.chapitre])propre.filtres.chapitre="";
+    if(Array.isArray(propre.notions))propre.notions=propre.notions.filter(n=>!notionHorsProgramme(n));
+    if(notionHorsProgramme(propre.filtres?.chapitre))propre.filtres.chapitre="";
     return propre;
   }
   // Une préparation indépendante par activité ; « seance » reste lisible par les anciennes sauvegardes.
-  function normalise(o){
-    const seances={};
+  function normalise(o,archives){
+    const seances={},reportees={};
+    // Indexer par ID, plutôt que par mode : plusieurs brouillons du même mode
+    // restent récupérables, ainsi que plusieurs versions d'un même brouillon.
+    const archive=(id,source)=>{
+      const versions=Object.hasOwn(reportees,id)?reportees[id]:[],json=JSON.stringify(source);
+      if(!versions.some(x=>JSON.stringify(x)===json)){
+        Object.defineProperty(reportees,id,{value:[...versions,copieJeu(source)],enumerable:true,writable:true,configurable:true});
+      }
+    };
+    for(const reserve of [archives,o.reportees])for(const [id,versions] of Object.entries(reserve||{})){
+      for(const source of Array.isArray(versions)?versions:[versions])archive(id,source);
+    }
     for(const source of Object.values(o.seances || (o.seance ? {ancienne:o.seance} : {}))){
-      const s=sansLectures(source);
+      if(Array.isArray(source?.questions)&&source.questions.some(questionReportee)||Array.isArray(source?.notions)&&source.notions.some(n=>!!NOTIONS_REPORTEES[n])||NOTIONS_REPORTEES[source?.filtres?.chapitre]){
+        archive(source.id||source.mode||"ancienne",source);
+      }
+      const s=sansHorsProgramme(source);
       if(valide(s)){const mode=Object.hasOwn(MODES,s.mode)?s.mode:"matin";seances[mode]={notions:[],groupe:[],...s,mode};}
     }
     const seance=Object.values(seances).find(s=>s.id===o.seance?.id)||Object.values(seances)[0]||null;
-    return {...o,seances,seance};
+    return {...o,seances,seance,...(Object.keys(reportees).length?{reportees}:{})};
   }
-  function nettoie(){
-    const propre=normalise(doc);
+  function nettoie(archives){
+    const propre=normalise(doc,archives);
     if(JSON.stringify(propre)===JSON.stringify(doc))return false;
     // La migration ne rend pas une copie locale ancienne plus récente que celle du téléphone.
     doc={...propre,maj:doc.maj||0};return !!doc.maj;
@@ -9963,12 +10015,13 @@ const Preparation = (()=>{
   async function init(){
     if(pret) return pret;
     pret=(async()=>{ db=await useCap("db"); if(!db){if(nettoie())annonce();return;}
-      const s=await db.doc(DOC).get(); if(s.exists && (s.data().maj||0)>doc.maj) doc=s.data();
+      const s=await db.doc(DOC).get(),archives=doc.reportees;
+      if(s.exists && (s.data().maj||0)>doc.maj) doc=s.data();
       // Choisir d'abord la version la plus récente, puis migrer sa préparation.
-      const modifie=nettoie();
+      const modifie=nettoie(archives);
       if(modifie || doc.maj && (!s.exists || doc.maj>(s.data().maj||0))) await db.doc(DOC).set(doc);
       db.doc(DOC).onSnapshot(s=>{ if(s.exists && (s.data().maj||0)>doc.maj){
-        doc=s.data();const modifie=nettoie();annonce();
+        const archives=doc.reportees;doc=s.data();const modifie=nettoie(archives);annonce();
         if(modifie)db.doc(DOC).set(doc).catch(e=>console.warn("préparation",e));
       } });
       const ch=await db.doc(CHAPITRES).get();if(ch.exists)choixChapitres=ch.data();
@@ -9986,7 +10039,7 @@ const Preparation = (()=>{
     return nb ? `${nb} mode${nb>1?"s":""} préparé${nb>1?"s":""} · modifier les questions` : "Rituel, tempête ou île au trésor";
   }
   async function ecrit(suivant){
-    suivant={...normalise(suivant),maj:Math.max(Date.now(),(doc.maj||0)+1)};
+    suivant={...normalise(suivant,doc.reportees),maj:Math.max(Date.now(),(doc.maj||0)+1)};
     if(db) await db.doc(DOC).set(suivant); doc=suivant; annonce();
   }
   async function enregistre(seance, mode){
@@ -13471,7 +13524,7 @@ const Historique = (() => {
     let ok = 0, t = 0, la = false; (s.q||[]).forEach(q=>{ if (!(q.p||[]).includes(n)) return; la = true; const r = (q.r||{})[n]; if (!r) return; t++; if (r===q.ok) ok++; });
     return la && t ? {ok, n:t} : la ? {ok:0, n:0} : null;
   }
-  const nomNotion = id => { const x = (typeof S!=="undefined" && S.notions || []).find(n=>n.id===id) || (typeof NOTIONS!=="undefined" ? NOTIONS.find(n=>n.id===id) : null) || (typeof NOTIONS_LECTURES_RETIREES!=="undefined" ? NOTIONS_LECTURES_RETIREES[id] : null); return x ? x.t : id; };
+  const nomNotion = id => { const x = (typeof S!=="undefined" && S.notions || []).find(n=>n.id===id) || (typeof NOTIONS!=="undefined" ? NOTIONS.find(n=>n.id===id) : null) || (typeof NOTIONS_LECTURES_RETIREES!=="undefined" ? NOTIONS_LECTURES_RETIREES[id] : null) || (typeof NOTIONS_REPORTEES!=="undefined" ? NOTIONS_REPORTEES[id] : null); return x ? x.t : id; };
   function titre(s){
     if (s.a==="pavillons") return "Hissez les pavillons";
     return s.mode==="tempete" ? "La tempête" : s.mode==="tresor" ? "L'île au trésor" : "Rituel du matin";
