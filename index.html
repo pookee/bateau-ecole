@@ -3873,17 +3873,21 @@ const NOTIONS_LECTURES_RETIREES = {
 };
 const questionLectureRetiree = q => !!NOTIONS_LECTURES_RETIREES[q?.n];
 
-// Limite confirmée par l’enseignante : cours du lundi 2 novembre inclus.
-// Garder les IDs publiés pour les sauvegardes ; ces entrées attendent leur étude.
-const NOTIONS_REPORTEES = {
+// Limite confirmée par l’enseignante : jeudi 5 novembre inclus.
+// Le mardi est étudié ; le jeudi de grève reprend seulement les acquis de P1.
+// La géographie du mardi a été reportée : elle attend toujours son étude.
+const NOTIONS_REINTEGREES = {
  "multiplication":{"id":"multiplication","m":"ma","s":"Calcul","t":"CALC 5 · Les mots de la multiplication"},
  "heure":{"id":"heure","m":"ma","s":"Grandeurs et mesures","t":"MES 3 · Lire l’heure"},
  "homophones":{"id":"homophones","m":"fr","s":"Orthographe","t":"O4 · a/à, et/est, son/sont"},
  "imparfaitER":{"id":"imparfaitER","m":"fr","s":"Conjugaison","t":"CONJ 6 · L’imparfait des verbes du 1er groupe"},
- "histoireimages":{"id":"histoireimages","m":"ar","s":"Arts plastiques","t":"Un événement en trois images"},
+ "histoireimages":{"id":"histoireimages","m":"ar","s":"Arts plastiques","t":"Un événement en trois images"}
+};
+const QUESTIONS_REINTEGREES = new Set(["d624","d628","d629",...Array.from({length:36},(_,i)=>"d"+(638+i))]);
+const NOTIONS_REPORTEES = {
  "alimentsbase":{"id":"alimentsbase","m":"ge","s":"Se nourrir","t":"G1 · Les aliments de base dans le monde"}
 };
-const QUESTIONS_REPORTEES = new Set(["d624","d628","d629",...Array.from({length:44},(_,i)=>"d"+(638+i))]);
+const QUESTIONS_REPORTEES = new Set(Array.from({length:8},(_,i)=>"d"+(674+i)));
 const questionReportee = q => !!NOTIONS_REPORTEES[q?.n] || QUESTIONS_REPORTEES.has(q?.id) ||
  (!/^d\d+$/.test(q?.id||"") && [...QUESTIONS_REPORTEES].some(id=>{
    const r=Q_RAW[+id.slice(1)];
@@ -3940,7 +3944,8 @@ const NOTIONS = [
  {"id":"presIR","m":"fr","s":"Conjugaison","t":"CONJ 3 · Le présent des verbes du 2e groupe","vue":true},
  {"id":"determinants","m":"fr","s":"Grammaire","t":"GRAM 4 · Les déterminants","vue":true},
  {"id":"dictee6","m":"fr","s":"Orthographe","t":"Dictée 6 · Les Jeux olympiques et paralympiques","vue":true},
- {"id":"probabilites","m":"ma","s":"Probabilités","t":"PROBA 1 · Le vocabulaire du hasard","vue":true}
+ {"id":"probabilites","m":"ma","s":"Probabilités","t":"PROBA 1 · Le vocabulaire du hasard","vue":true},
+ ...Object.values(NOTIONS_REINTEGREES).map(n=>({...n,vue:true}))
 ];
 const NOTIONS_TITRES_PRECEDENTS = {"egalites":"Les additions à trous","types":"Les types de phrases","invar":"Les mots invariables","verbe":"Le verbe et son infinitif","formes":"Phrase affirmative ou négative","presER":"Le présent des verbes en -er","alpha":"L'ordre alphabétique","kayabu":"Lecture : Kayabu","dictee1":"Dictée 1 : la rentrée des classes","nombres":"Lire et écrire les nombres","decomp":"Décomposer les nombres","addition":"L'addition","tables":"Les tables de 1 à 5","probleme":"Problèmes : le tout et les parties","soustr":"La soustraction","fractions":"Les fractions","classer":"Classer les êtres vivants","moyenage":"Le Moyen Âge","chauvet":"La grotte Chauvet","anglais":"Describing myself"};
 
@@ -5362,7 +5367,7 @@ const TRUCS = [
 // Sources vérifiées dans les diaporamas de classe, y compris les leçons intégrées en images.
 // Dossier principal : Ressources Trans / 00 - Organisation de la classe / Cahiers journaux.
 // geoNov03 : Ressources Trans / 06 - Géographie / Se nourrir en mode enquête.
-// Les cours du 3 novembre restent référencés pour les anciennes sauvegardes, hors programme actuel.
+// La géographie du 3 novembre reste référencée pour les sauvegardes, hors programme actuel.
 const COURS = {
   "sept21": {
     "date": "2026-09-21",
@@ -5399,7 +5404,7 @@ const COURS = {
  "oct15":{"date":"2026-10-15","fichier":"Diaporama - jeudi 15 octobre 2026  -  Réparation.pptx"},
  "oct16":{"date":"2026-10-16","fichier":"Diaporama - vendredi 16 octobre 2026  -  Réparation.pptx"},
  "nov02":{"date":"2026-11-02","fichier":"Diaporama - lundi 2 novembre 2026.pptx"},
- "nov03":{"date":"2026-11-03","fichier":"Diaporama - mardi 3 novembre 2026.pptx","disponible":false},
+ "nov03":{"date":"2026-11-03","fichier":"Diaporama - mardi 3 novembre 2026.pptx"},
  "geoNov03":{"date":"2026-11-03","fichier":"Géographie - mardi 3 novembre 2026 - Que mange-t-on dans le monde.pptx","disponible":false}
 };
 const Q_SOURCES = {
@@ -6073,10 +6078,10 @@ const Q_SOURCES = {
  "d667":{"cours":"nov03","diapos":[40,41]},
  "d668":{"cours":"nov03","diapos":[40,41]},
  "d669":{"cours":"nov03","diapos":[40,41]},
- "d670":{"cours":"nov03","diapos":[49,52]},
- "d671":{"cours":"nov03","diapos":[51,53]},
- "d672":{"cours":"nov03","diapos":[51,52]},
- "d673":{"cours":"nov03","diapos":[52]},
+ "d670":{"cours":"nov03","diapos":[50,53]},
+ "d671":{"cours":"nov03","diapos":[52,54]},
+ "d672":{"cours":"nov03","diapos":[52,53]},
+ "d673":{"cours":"nov03","diapos":[53]},
  "d674":{"cours":"geoNov03","diapos":[19,20]},
  "d675":{"cours":"geoNov03","diapos":[7]},
  "d676":{"cours":"geoNov03","diapos":[9,20]},
@@ -7511,13 +7516,63 @@ function archiveCours(cible,cle,items){
   for(const item of items){const json=JSON.stringify(item);if(!deja.has(json)){copies.push(JSON.parse(json));deja.add(json);}}
   cible[cle]=copies;
 }
+function questionReintegree(q){
+  return !!NOTIONS_REINTEGREES[q?.n] || QUESTIONS_REINTEGREES.has(q?.id) ||
+    (!/^d\d+$/.test(q?.id||"") && [...QUESTIONS_REINTEGREES].some(id=>{
+      const r=Q_RAW[+id.slice(1)];
+      return q && q.n===r[0] && q.q===r[1] && q.ok===r[3] && JSON.stringify(q.c)===JSON.stringify(r[2]);
+    }));
+}
+function memoriseCoursNovembre(etat){
+  // Une ancienne appli garde les champs inconnus, mais filtre encore ces cours.
+  // Cette petite copie permet leur reprise après un arrêt, avec les suppressions.
+  etat.coursReintegresNov03Copie=JSON.parse(JSON.stringify({
+    questions:etat.questions.filter(questionReintegree),
+    notions:etat.notions.filter(n=>!!NOTIONS_REINTEGREES[n.id])
+  }));
+}
+function reintegreCoursNovembre(etat,ancien){
+  if(ancien.coursReintegresNov03){
+    const copie=ancien.coursReintegresNov03Copie;
+    if(ancien.banque>=682 && copie && Array.isArray(copie.questions) && Array.isArray(copie.notions) && Object.keys(NOTIONS_REINTEGREES).some(id=>!etat.notions.some(n=>n.id===id))){
+      for(const [cle,archives,accepte] of [["questions","questionsReportees",questionReintegree],["notions","notionsReportees",n=>!!NOTIONS_REINTEGREES[n.id]]]){
+        archiveCours(etat,archives,etat[cle].filter(accepte));
+        etat[cle]=[...etat[cle].filter(x=>!accepte(x)),...JSON.parse(JSON.stringify(copie[cle].filter(accepte)))];
+      }
+    }
+    return;
+  }
+  const reserve=cle=>Array.isArray(ancien[cle])?ancien[cle]:ancien[cle]?[ancien[cle]]:[];
+  // La première publication avait ajouté les six chapitres. Leur présence,
+  // même archivée, distingue une suppression d'une question jamais proposée.
+  const dejaPublie=[...etat.notions,...reserve("notionsReportees")].some(n=>NOTIONS_REINTEGREES[n.id]||NOTIONS_REPORTEES[n.id]) ||
+    [...etat.questions,...reserve("questionsReportees")].some(q=>/^d\d+$/.test(q.id||"")&&(QUESTIONS_REINTEGREES.has(q.id)||QUESTIONS_REPORTEES.has(q.id)));
+  // Les objets vivants priment ; parmi les archives, reprendre la dernière
+  // variante sans supprimer les précédentes ni leurs éventuels champs privés.
+  for(const [cle,archives,accepte] of [
+    ["notions","notionsReportees",n=>!!NOTIONS_REINTEGREES[n.id]],
+    ["questions","questionsReportees",q=>questionReintegree(q)&&!questionHorsProgramme(q)]
+  ]){
+    const presentes=new Set(etat[cle].map(x=>x.id));
+    const dernieres=new Map(reserve(archives).filter(accepte).map(x=>[x.id,x]));
+    for(const [id,item] of dernieres)if(!presentes.has(id))etat[cle].push(JSON.parse(JSON.stringify(item)));
+  }
+  // banque vaut déjà 682 dans la version limitée au 2 novembre. Seules ces
+  // questions connues mais jamais proposées échappent à l'ajout habituel.
+  if(!dejaPublie){
+    const presentes=new Set(etat.questions.map(q=>q.id));
+    for(const id of QUESTIONS_REINTEGREES)if(+id.slice(1)<(ancien.banque||128)&&!presentes.has(id))etat.questions.push(questionDefaut(+id.slice(1)));
+  }
+  etat.coursReintegresNov03=true;
+}
 const idVoyage = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function etatDefaut(){
   const etat = {v:1,rv:RESET_V,migPilote:1,maj:0,voyage:idVoyage(),nom:"La Vaillante",nomChoisi:false,nomsProposes:["La Vaillante","L'Étoile des Mers","Le Grand Plouf","La Perle Bleue"],milles:0,
     eleves:Array.from({length:NB_CARTES},(_,i)=>({n:i+1,prenom:CLASSE[i]||"",actif:i<(CLASSE.length||25),...(i<(CLASSE.length||25)?{avatar:Matelots.identifiant({n:i+1})}:{})})),
     reglages:{nbQ:6,piloteTous:0,vitesse:1,son:true,stormQ:6,recompense:"podium",kraken:true,krakenSeuil:70},
-    notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),banque:Q_RAW.length,
+    notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),banque:Q_RAW.length,coursReintegresNov03:true,
     stats:{q:{},el:{}},journal:[],pilotes:[],escalesVues:[0]};
+  memoriseCoursNovembre(etat);
   Coffre.normalise(etat);
   Expeditions.normalise(etat);
   return etat;
@@ -7531,6 +7586,7 @@ function charge(obj){
   o.reglages = Object.assign(etatDefaut().reglages,obj.reglages||{});
   if (!Array.isArray(o.eleves)||o.eleves.length!==NB_CARTES||(CLASSE.length&&o.eleves.every(e=>!String(e.prenom||"").trim()))||o.eleves.slice(0,22).map(e=>e.prenom).join("|")===CLASSE_V1) o.eleves = d.eleves;
   o.eleves=o.eleves.map(e=>e.actif?{...e,avatar:Matelots.identifiant(e)}:e);
+  reintegreCoursNovembre(o,obj);
   // ajoute les nouvelles notions par défaut éventuelles
   NOTIONS.forEach(n=>{ const ancien=o.notions.find(x=>x.id===n.id); if(!ancien) o.notions.push({...n}); else {
     if(!ancien.s) ancien.s=n.s;
@@ -7601,6 +7657,7 @@ function charge(obj){
   }
   // Anciens bilans laissés ouverts le vendredi : l'arrivée reste acquise après le week-end.
   if(escaleSeanceTerminee(o))o.maj=Math.max(Date.now(),(o.maj||0)+1);
+  memoriseCoursNovembre(o);
   return o;
 }
 const localBrut = lsGet("bateau-ecole-etat");
@@ -7611,6 +7668,7 @@ let DB = null, dbEcriture = Promise.resolve(), saveTimer = null;
 let DEMO = false, avantDemo = null;
 function sauve(){
   if (DEMO) return;
+  memoriseCoursNovembre(S);
   S.maj = Date.now();
   lsSet("bateau-ecole-etat", JSON.stringify(S));
   clearTimeout(saveTimer);
@@ -7636,11 +7694,27 @@ async function brancheDB(){
   } catch(e) { console.warn("lecture", e && e.code); }
 }
 function chargeAvecAcquis(distant){
-  const nouveau=charge(JSON.parse(JSON.stringify(distant)));
-  if(S.voyage&&S.voyage===nouveau.voyage){
+  const recu=JSON.parse(JSON.stringify(distant));
+  const memeVoyage=S.voyage&&S.voyage===recu.voyage;
+  if(memeVoyage){
     for(const cle of ["questionsReportees","notionsReportees","seancesReportees"]){
-      archiveCours(nouveau,cle,Array.isArray(S[cle])?S[cle]:S[cle]?[S[cle]]:[]);
+      const versions=recu[cle];delete recu[cle];
+      archiveCours(recu,cle,Array.isArray(S[cle])?S[cle]:S[cle]?[S[cle]]:[]);
+      archiveCours(recu,cle,Array.isArray(versions)?versions:versions?[versions]:[]);
     }
+    // Une ancienne appli peut retirer à nouveau ces cours. La sélection locale
+    // déjà rétablie prime alors sur les archives, y compris ses suppressions.
+    const ancienneBanque=!recu.coursReintegresNov03 || Object.keys(NOTIONS_REINTEGREES).some(id=>!recu.notions?.some(n=>n.id===id));
+    if(S.coursReintegresNov03&&ancienneBanque){
+      for(const [cle,archives,accepte] of [["questions","questionsReportees",questionReintegree],["notions","notionsReportees",n=>!!NOTIONS_REINTEGREES[n.id]]]){
+        archiveCours(recu,archives,(recu[cle]||[]).filter(accepte));
+        recu[cle]=[...(recu[cle]||[]).filter(x=>!accepte(x)),...JSON.parse(JSON.stringify(S[cle].filter(accepte)))];
+      }
+      recu.coursReintegresNov03=true;
+    }
+  }
+  const nouveau=charge(recu);
+  if(memeVoyage){
     // Un ancien téléphone ne doit pas réinventer des promotions à partir des escales.
     if(!distant.expeditions)nouveau.expeditions=JSON.parse(JSON.stringify(S.expeditions));
     const niveauRecu=distant.expeditions?nouveau.expeditions.niveau:0;
@@ -10067,6 +10141,7 @@ const Preparation = (()=>{
       n.vue=ch.active;etat.questions.filter(q=>q.n===id).forEach(q=>q.active=ch.active);
       (etat.chapitresAppliques ||= {})[id]=ch.maj;change=true;
     }
+    if(change)memoriseCoursNovembre(etat);
     return change;
   }
   async function activeChapitre(id, active, voyage){
