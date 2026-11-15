@@ -3862,7 +3862,7 @@ const GEOGRAPHIE = {
  "Ajaccio":{continent:"Europe",langues:"Français et corse",repere:"Une ville de Corse, une île française de la mer Méditerranée.",decouverte:"les montagnes de la Corse"}
 };
 
-const MATIERES = {fr:{nom:"Français",c:"#C2415D"},ma:{nom:"Maths",c:"#2466B3"},sc:{nom:"Sciences",c:"#2F7A57"},hi:{nom:"Histoire",c:"#8A5A2B"},ar:{nom:"Arts",c:"#7A4DB3"},an:{nom:"Anglais",c:"#B86E0A"},ge:{nom:"Géographie",c:"#157A82"}};
+const MATIERES = {fr:{nom:"Français",c:"#C2415D"},ma:{nom:"Maths",c:"#2466B3"},sc:{nom:"Sciences",c:"#2F7A57"},hi:{nom:"Histoire",c:"#8A5A2B"},ar:{nom:"Arts",c:"#7A4DB3"},an:{nom:"Anglais",c:"#B86E0A"},ge:{nom:"Géographie",c:"#157A82"},emc:{nom:"EMC",c:"#72458C"}};
 
 // Chapitres retirés des prochaines révisions. Les intitulés et les lignes de
 // Q_RAW restent disponibles pour lire les anciens résultats sans déplacer les IDs.
@@ -3873,9 +3873,7 @@ const NOTIONS_LECTURES_RETIREES = {
 };
 const questionLectureRetiree = q => !!NOTIONS_LECTURES_RETIREES[q?.n];
 
-// Limite confirmée par l’enseignante : jeudi 5 novembre inclus.
-// Le mardi est étudié ; le jeudi de grève reprend seulement les acquis de P1.
-// La géographie du mardi a été reportée : elle attend toujours son étude.
+// Deux étapes de reprise des questions publiées avant que les séances aient eu lieu.
 const NOTIONS_REINTEGREES = {
  "multiplication":{"id":"multiplication","m":"ma","s":"Calcul","t":"CALC 5 · Les mots de la multiplication"},
  "heure":{"id":"heure","m":"ma","s":"Grandeurs et mesures","t":"MES 3 · Lire l’heure"},
@@ -3884,17 +3882,12 @@ const NOTIONS_REINTEGREES = {
  "histoireimages":{"id":"histoireimages","m":"ar","s":"Arts plastiques","t":"Un événement en trois images"}
 };
 const QUESTIONS_REINTEGREES = new Set(["d624","d628","d629",...Array.from({length:36},(_,i)=>"d"+(638+i))]);
-const NOTIONS_REPORTEES = {
+const NOTIONS_GEO_NOV10 = {
  "alimentsbase":{"id":"alimentsbase","m":"ge","s":"Se nourrir","t":"G1 · Les aliments de base dans le monde"}
 };
-const QUESTIONS_REPORTEES = new Set(Array.from({length:8},(_,i)=>"d"+(674+i)));
-const questionReportee = q => !!NOTIONS_REPORTEES[q?.n] || QUESTIONS_REPORTEES.has(q?.id) ||
- (!/^d\d+$/.test(q?.id||"") && [...QUESTIONS_REPORTEES].some(id=>{
-   const r=Q_RAW[+id.slice(1)];
-   return q && q.n===r[0] && q.q===r[1] && q.ok===r[3] && JSON.stringify(q.c)===JSON.stringify(r[2]);
- }));
-const questionHorsProgramme = q => questionLectureRetiree(q) || questionReportee(q);
-const notionHorsProgramme = id => !!(NOTIONS_LECTURES_RETIREES[id] || NOTIONS_REPORTEES[id]);
+const QUESTIONS_GEO_NOV10 = new Set(Array.from({length:8},(_,i)=>"d"+(674+i)));
+const questionHorsProgramme = questionLectureRetiree;
+const notionHorsProgramme = id => !!NOTIONS_LECTURES_RETIREES[id];
 
 const NOTIONS = [
  {"id":"types","m":"fr","s":"Grammaire","t":"GRAM 1 · Les types de phrases","vue":true},
@@ -3945,7 +3938,22 @@ const NOTIONS = [
  {"id":"determinants","m":"fr","s":"Grammaire","t":"GRAM 4 · Les déterminants","vue":true},
  {"id":"dictee6","m":"fr","s":"Orthographe","t":"Dictée 6 · Les Jeux olympiques et paralympiques","vue":true},
  {"id":"probabilites","m":"ma","s":"Probabilités","t":"PROBA 1 · Le vocabulaire du hasard","vue":true},
- ...Object.values(NOTIONS_REINTEGREES).map(n=>({...n,vue:true}))
+ ...Object.values({...NOTIONS_REINTEGREES,...NOTIONS_GEO_NOV10}).map(n=>({...n,vue:true})),
+ {"id":"mental4","m":"ma","s":"Calcul mental","t":"MENTAL 4 · Multiplier par 10, 100 ou 1 000","vue":true},
+ {"id":"anneePaysans","m":"hi","s":"Le Moyen Âge","t":"H1-3 · L’année des paysans","vue":true},
+ {"id":"egliseVillage","m":"hi","s":"Le Moyen Âge","t":"H1-4 · L’église au cœur du village","vue":true},
+ {"id":"mental5","m":"ma","s":"Calcul mental","t":"MENTAL 5 · Multiplier par 20, 300 ou 4 000","vue":true},
+ {"id":"sujetVerbe","m":"fr","s":"Grammaire","t":"GRAM 3 · Le sujet du verbe","vue":true},
+ {"id":"equiprobabilite","m":"ma","s":"Probabilités","t":"PROBA 2 · L’équiprobabilité","vue":true},
+ {"id":"armistice","m":"hi","s":"La Première Guerre mondiale","t":"L’armistice du 11 novembre 1918","vue":true},
+ {"id":"calculDecompose","m":"ma","s":"Calcul","t":"CALC 5 · Décomposer une multiplication","vue":true},
+ {"id":"groupeNominal","m":"fr","s":"Grammaire","t":"GRAM 6 · Le groupe nominal","vue":true},
+ {"id":"cercle","m":"ma","s":"Géométrie","t":"GEOM 4 · Le cercle","vue":true},
+ {"id":"resume","m":"fr","s":"Lecture","t":"LECT 4 · Faire un résumé","vue":true},
+ {"id":"fraternite","m":"emc","s":"Les valeurs de la République","t":"La fraternité","vue":true},
+ {"id":"fractionsEntiers","m":"ma","s":"Numération","t":"NUM 8 · Placer et encadrer des fractions sur une demi-droite graduée","vue":true},
+ {"id":"prefixes","m":"fr","s":"Vocabulaire","t":"VOC 3 · Les préfixes","vue":true},
+ {"id":"motsMysteres","m":"fr","s":"Vocabulaire","t":"Les mots mystères · Comprendre un mot en contexte","vue":true}
 ];
 const NOTIONS_TITRES_PRECEDENTS = {"egalites":"Les additions à trous","types":"Les types de phrases","invar":"Les mots invariables","verbe":"Le verbe et son infinitif","formes":"Phrase affirmative ou négative","presER":"Le présent des verbes en -er","alpha":"L'ordre alphabétique","kayabu":"Lecture : Kayabu","dictee1":"Dictée 1 : la rentrée des classes","nombres":"Lire et écrire les nombres","decomp":"Décomposer les nombres","addition":"L'addition","tables":"Les tables de 1 à 5","probleme":"Problèmes : le tout et les parties","soustr":"La soustraction","fractions":"Les fractions","classer":"Classer les êtres vivants","moyenage":"Le Moyen Âge","chauvet":"La grotte Chauvet","anglais":"Describing myself"};
 
@@ -4629,14 +4637,139 @@ const Q_RAW = [
 ["histoireimages","Pour reconnaître le même personnage dans plusieurs dessins, on peut…",["changer tous ses vêtements à chaque image","garder un signe distinctif, comme son chapeau","dessiner un personnage sans aucun détail"],1,"2026-11-03"],
 ["histoireimages","Un personnage garde le même chapeau dans trois images. Ses gestes peuvent-ils changer ?",["Non, il faut recopier exactement la même pose.","Non, sinon ce sera forcément un autre personnage.","Oui, ses gestes peuvent montrer les différentes actions."],2,"2026-11-03"],
 ["histoireimages","Avant de dessiner l’histoire en trois cases, la consigne propose de…",["raconter son histoire à un voisin","mélanger les trois moments de l’histoire","dessiner trois personnages sans rapport"],0,"2026-11-03"],
-["alimentsbase","Un aliment de base est un aliment que l’on mange…",["presque tous les jours","uniquement les jours de fête","une seule fois dans sa vie"],0,"2026-11-03"],
-["alimentsbase","Dans le petit-déjeuner japonais présenté en classe, quel est l’aliment de base ?",["le maïs","le riz","le manioc"],1,"2026-11-03"],
-["alimentsbase","Dans l’exemple du Mexique, avec quelle farine prépare-t-on les tortillas ?",["la farine de riz","la farine de manioc","la farine de maïs"],2,"2026-11-03"],
-["alimentsbase","Quel aliment de base sert à fabriquer le pain et les pâtes présentés dans la leçon ?",["le blé","le riz","le mil"],0,"2026-11-03"],
-["alimentsbase","Dans le thiéboudienne présenté pour le Sénégal, quel aliment accompagne le poisson et les légumes ?",["le pain","le riz","les pâtes"],1,"2026-11-03"],
-["alimentsbase","La leçon cite plusieurs aliments de base en Afrique. De quoi leur choix dépend-il notamment ?",["uniquement de la couleur de l’assiette","du nombre de lettres du pays","de la région"],2,"2026-11-03"],
-["alimentsbase","Le riz, le blé, le maïs et le mil sont d’abord…",["cultivés dans les champs","fabriqués à partir de plastique","pêchés dans la mer"],0,"2026-11-03"],
-["alimentsbase","Que montre le voyage parmi les repas de cinq pays ?",["Tous les habitants du monde mangent exactement le même repas.","Les aliments et les façons de manger peuvent varier.","Un pays ne peut avoir qu’un seul plat."],1,"2026-11-03"]
+["alimentsbase","Un aliment de base est un aliment que l’on mange…",["presque tous les jours","uniquement les jours de fête","une seule fois dans sa vie"],0,"2026-11-10"],
+["alimentsbase","Dans le petit-déjeuner japonais présenté en classe, quel est l’aliment de base ?",["le maïs","le riz","le manioc"],1,"2026-11-10"],
+["alimentsbase","Dans l’exemple du Mexique, avec quelle farine prépare-t-on les tortillas ?",["la farine de riz","la farine de manioc","la farine de maïs"],2,"2026-11-10"],
+["alimentsbase","Quel aliment de base sert à fabriquer le pain et les pâtes présentés dans la leçon ?",["le blé","le riz","le mil"],0,"2026-11-10"],
+["alimentsbase","Dans le thiéboudienne présenté pour le Sénégal, quel aliment accompagne le poisson et les légumes ?",["le pain","le riz","les pâtes"],1,"2026-11-10"],
+["alimentsbase","La leçon cite plusieurs aliments de base en Afrique. De quoi leur choix dépend-il notamment ?",["uniquement de la couleur de l’assiette","du nombre de lettres du pays","de la région"],2,"2026-11-10"],
+["alimentsbase","Le riz, le blé, le maïs et le mil sont d’abord…",["cultivés dans les champs","fabriqués à partir de plastique","pêchés dans la mer"],0,"2026-11-10"],
+["alimentsbase","Que montre le voyage parmi les repas de cinq pays ?",["Tous les habitants du monde mangent exactement le même repas.","Les aliments et les façons de manger peuvent varier.","Un pays ne peut avoir qu’un seul plat."],1,"2026-11-10"],
+["mental4","On multiplie 34 par 10. Que deviennent les 4 unités ?",["4 dizaines","4 centaines","4 milliers"],0,"2026-11-06"],
+["mental4","Dans le tableau de numération, de combien de rangs chaque chiffre avance-t-il vers la gauche quand on multiplie par 100 ?",["1 rang","2 rangs","3 rangs"],1,"2026-11-06"],
+["mental4","Combien font 72 × 100 ?",["720","72 000","7 200"],2,"2026-11-06"],
+["mental4","26 × 1 000 donne…",["26 000","2 600","260"],0,"2026-11-06"],
+["mental4","Par quel nombre faut-il multiplier 56 pour obtenir 5 600 ?",["10","100","1 000"],1,"2026-11-06"],
+["nombres","À quel rang trouve-t-on la première différence entre 2 470 et 2 407 quand on lit les chiffres de gauche à droite ?",["au rang des centaines","au rang des milliers","au rang des dizaines"],2,"2026-11-06"],
+["nombres","Quel est le nombre du milieu si l’on range 3 405, 3 054 et 3 450 dans l’ordre croissant ?",["3 405","3 450","3 054"],0,"2026-11-06"],
+["nombres","Entre quelles dizaines consécutives se trouve 6 798 ?",["6 700 et 6 800","6 790 et 6 800","6 797 et 6 799"],1,"2026-11-06"],
+["nombres","Entre quelles centaines consécutives se trouve 7 263 ?",["7 260 et 7 270","7 000 et 8 000","7 200 et 7 300"],2,"2026-11-06"],
+["anneePaysans","Quand les travaux des champs ralentissent en hiver, quel travail montre le calendrier des paysans ?",["couper du bois","cueillir le raisin","moissonner le blé"],0,"2026-11-06"],
+["anneePaysans","À quoi sert la charrue dans la scène du mois de mars ?",["à couper le blé mûr","à retourner la terre","à transporter les grappes"],1,"2026-11-06"],
+["anneePaysans","Pourquoi fait-on sécher l’herbe après l’avoir fauchée ?",["pour la moudre en farine","pour la semer en automne","pour nourrir les bêtes en hiver"],2,"2026-11-06"],
+["anneePaysans","Comment s’appelle le travail qui consiste à couper le blé mûr ?",["la moisson","la vendange","le labour"],0,"2026-11-06"],
+["anneePaysans","Quel travail des champs consiste à cueillir les grappes de raisin ?",["semer","vendanger","faucher"],1,"2026-11-06"],
+["anneePaysans","Quel document a permis à la classe d’observer les travaux des paysans mois après mois ?",["un album de photographies","un plan des rues du village","un livre médiéval peint à la main"],2,"2026-11-06"],
+["egliseVillage","Au Moyen Âge, qu’est-ce qui aide les paysans à se repérer dans la journée, même loin de l’église ?",["le son des cloches","la couleur des vitraux","la forme du toit"],0,"2026-11-06"],
+["egliseVillage","Comment appelle-t-on la communauté des habitants qui se rassemblent dans la même église ?",["une seigneurie","une paroisse","une abbaye"],1,"2026-11-06"],
+["egliseVillage","Quel est le nom du prêtre chargé d’une paroisse ?",["le seigneur","le meunier","le curé"],2,"2026-11-06"],
+["egliseVillage","Dans le tableau étudié, le prêtre verse de l’eau sur la tête d’un bébé. Quelle cérémonie est représentée ?",["un baptême","un mariage","une dernière prière"],0,"2026-11-06"],
+["egliseVillage","Quel exemple montre que l’église accompagnait plusieurs moments de la vie au Moyen Âge ?",["On y labourait et on y semait le blé.","On y célébrait les baptêmes et les mariages.","On y vendangeait et on y pressait le raisin."],1,"2026-11-06"],
+["egliseVillage","À quel groupe de la société médiévale le curé appartient-il ?",["à la noblesse","aux marchands","au clergé"],2,"2026-11-06"],
+["famille","Quelle paire de mots anglais désigne les grands-parents ?",["grandmother et grandfather","mother et father","sister et brother"],0,"2026-11-06"],
+["famille","Tu entends « sister » puis « brother ». Quels portraits montres-tu dans cet ordre ?",["le frère, puis la sœur","la sœur, puis le frère","la mère, puis le père"],1,"2026-11-06"],
+["armistice","Que commémore-t-on en France le 11 novembre ?",["la fête nationale du 14 Juillet","le début de la Première Guerre mondiale","l’armistice de 1918"],2,"2026-11-09"],
+["armistice","Qu’est-ce qu’un armistice ?",["un accord pour arrêter les combats","une déclaration de guerre","une cérémonie pour récompenser des soldats"],0,"2026-11-09"],
+["mental5","Quel calcul donne le même résultat que 8 × 300 ?",["8 × 3 × 10","8 × 3 × 100","8 × 30 × 100"],1,"2026-11-09"],
+["mental5","Combien font 7 × 20 ?",["14","1 400","140"],2,"2026-11-09"],
+["mental5","Combien font 5 × 50 ?",["250","25","2 500"],0,"2026-11-09"],
+["mental5","Combien font 8 × 4 000 ?",["3 200","32 000","320"],1,"2026-11-09"],
+["egalites","Quel nombre manque dans 820 + … = 1 000 ?",["280","120","180"],2,"2026-11-09"],
+["egalites","3 × 65 × 8 = 65 × … Quel nombre manque ?",["24","11","16"],0,"2026-11-09"],
+["egalites","130 + 5 = 120 + … Quel nombre garde l’égalité vraie ?",["5","15","25"],1,"2026-11-09"],
+["dictee6","Complète la phrase de la dictée. « Ces cinq anneaux … représentent les continents. »",["coloré","colorées","colorés"],2,"2026-11-09"],
+["dictee6","Quelle forme complète « Nous … à regarder les athlètes » ?",["commençons","commencons","commençon"],0,"2026-11-09"],
+["textes","Comment appelle-t-on une page entière de bande dessinée ?",["une case","une planche","une bulle"],1,"2026-11-09"],
+["textes","Dans une BD, où lit-on généralement les paroles d’un personnage ?",["dans le numéro de page","dans le titre de l’album","dans une bulle"],2,"2026-11-09"],
+["textes","Dans une bande dessinée, « BOUM ! » imite une explosion. Comment appelle-t-on ce bruit écrit ?",["une onomatopée","une planche","un dialogue"],0,"2026-11-09"],
+["sujetVerbe","Dans « Tous les matins, nous prenons le bus », quel est le sujet de « prenons » ?",["Tous les matins","nous","le bus"],1,"2026-11-09"],
+["sujetVerbe","Dans « Mes frères arriveront demain soir », quelle est la nature du sujet ?",["un pronom personnel","un nom propre","un groupe nominal"],2,"2026-11-09"],
+["sujetVerbe","Dans « Je plie puis range mes affaires », quel est le sujet de « range » ?",["Je","mes affaires","puis"],0,"2026-11-09"],
+["sujetVerbe","Dans « La grenouille parle », quelle question aide à trouver le sujet ?",["Où parle-t-on ?","Qui est-ce qui parle ?","Quand parle-t-on ?"],1,"2026-11-09"],
+["equiprobabilite","Quand dit-on que des issues sont équiprobables ?",["quand on connaît déjà le résultat","quand il y a forcément deux issues","quand chacune a la même chance de se produire"],2,"2026-11-09"],
+["equiprobabilite","On tire une bille au hasard dans un sac de 4 rouges et 2 bleues, toutes identiques au toucher. Quelle couleur a le plus de chances de sortir ?",["rouge","bleue","les deux ont autant de chances"],0,"2026-11-09"],
+["equiprobabilite","Quelle boîte donne autant de chances de tirer une bille rouge qu’une bleue au hasard ? Les billes sont identiques au toucher.",["2 rouges et 4 bleues","3 rouges et 3 bleues","4 rouges et 2 bleues"],1,"2026-11-09"],
+["equiprobabilite","Une roue tourne librement. Elle a quatre secteurs de même taille, chacun d’une couleur différente. Quelle couleur a le plus de chances de sortir ?",["la couleur située en haut au départ","la couleur située en bas au départ","aucune, elles ont toutes la même chance"],2,"2026-11-09"],
+["calculDecompose","Pour calculer 365 × 8, on écrit 365 = 300 + 60 + 5. Quel calcul faut-il faire ensuite ?",["(300 × 8) + (60 × 8) + (5 × 8)","(300 × 8) + 60 + 5","300 + 60 + (5 × 8)"],0,"2026-11-10"],
+["calculDecompose","Pour trouver 24 × 3, on a déjà calculé 20 × 3 = 60. Combien faut-il ajouter à 60 ?",["4","12","7"],1,"2026-11-10"],
+["calculDecompose","132 × 4 = 400 + 120 + 8. Quel est le produit ?",["428","1 328","528"],2,"2026-11-10"],
+["calculDecompose","En arrondissant 365 à la centaine la plus proche, quelle estimation obtient-on pour 365 × 8 ?",["3 200","320","32 000"],0,"2026-11-10"],
+["calculDecompose","Pour calculer 648 × 3, on écrit 1 800 + … + 24. Quel produit manque ?",["4 × 3 = 12","40 × 3 = 120","400 × 3 = 1 200"],1,"2026-11-10"],
+["calculDecompose","Quel résultat trouves-tu en décomposant 912 × 5 ?",["4 506","4 560","4 650"],1,"2026-11-10"],
+["heure","À 3 h 28, où faut-il dessiner la grande aiguille ?",["sur le 3","deux petites graduations après le 6","deux petites graduations avant le 6"],2,"2026-11-10"],
+["heure","À 15 h 28, où se trouve la petite aiguille ?",["entre le 3 et le 4","exactement sur le 3","entre le 2 et le 3"],0,"2026-11-10"],
+["heure","À 10 h 55, sur quel nombre du cadran pointe la grande aiguille ?",["le 5","le 11","le 10"],1,"2026-11-10"],
+["heure","Il est 16 h 52. Où se trouve la petite aiguille ?",["juste après le 4","entre le 5 et le 6","entre le 4 et le 5, tout près du 5"],2,"2026-11-10"],
+["heure","Il est 17 h 08. Où doit pointer la grande aiguille ?",["sur le 8","entre le 1 et le 2","sur le 5"],1,"2026-11-10"],
+["groupeNominal","Dans « ce petit chat joueur », quel est le nom noyau ?",["petit","joueur","chat"],2,"2026-11-10"],
+["groupeNominal","Quel groupe est formé seulement d’un déterminant et d’un nom ?",["un livre","un beau livre","un livre bleu"],0,"2026-11-10"],
+["groupeNominal","Quels sont les deux adjectifs dans « le grand arbre ensoleillé » ?",["le et grand","grand et ensoleillé","arbre et ensoleillé"],1,"2026-11-10"],
+["groupeNominal","Quel mot joue le rôle de déterminant dans « quelle belle matinée » ?",["belle","matinée","quelle"],2,"2026-11-10"],
+["groupeNominal","Quel groupe garde le même nom noyau que « sa grande sœur » ?",["sa sœur débrouillarde","sa grande amie","son grand frère"],0,"2026-11-10"],
+["groupeNominal","On enlève les deux adjectifs de « un beau livre bleu ». Que reste-t-il ?",["un bleu","un livre","beau livre"],1,"2026-11-10"],
+["imparfaitER","Dans quelle phrase le verbe « regarder » est-il à l’imparfait ?",["Il regardera la mer.","Il regarde la mer.","Il regardait la mer."],2,"2026-11-10"],
+["imparfaitER","On transforme « Nous fermerons la porte » à l’imparfait. Quelle phrase obtient-on ?",["Nous fermions la porte.","Nous fermons la porte.","Nous fermerions la porte."],0,"2026-11-10"],
+["imparfaitER","Dans « tu marchais », quelle partie du verbe est la terminaison de l’imparfait ?",["march-","-ais","-er"],1,"2026-11-10"],
+["imparfaitER","« Vous avez regardé un film. » Quelle phrase est à l’imparfait ?",["Vous regarderez un film.","Vous regardez un film.","Vous regardiez un film."],2,"2026-11-10"],
+["dictee6","Dans « nous … dans le stade », comment écrit-on le verbe « avancer » au présent ?",["avançons","avancons","avançont"],0,"2026-11-10"],
+["dictee6","Complète au présent. « Les sportifs … dans le stade. »",["arrive","arrivent","arrives"],1,"2026-11-10"],
+["dictee6","Complète au présent. « Le public, très enthousiaste, … »",["applaudissent","applaudis","applaudit"],2,"2026-11-10"],
+["perpendiculaires","Le segment [AB] mesure 6 cm. À quelle distance de A places-tu son milieu I ?",["3 cm","6 cm","12 cm"],0,"2026-11-10"],
+["perpendiculaires","I est le milieu de [AB]. On trace la perpendiculaire en I et on place K sur cette droite, à 3 cm de I. Quel angle est droit ?",["l’angle IAK, au point A","l’angle AIK, au point I","l’angle AKI, au point K"],1,"2026-11-10"],
+["alimentsbase","Quels pays des repas étudiés sont tous deux en Asie ?",["le Japon et le Mexique","l’Inde et le Sénégal","le Japon et l’Inde"],2,"2026-11-10"],
+["alimentsbase","Sur le plateau indien étudié en classe, que trouve-t-on avec les lentilles et les légumes en sauce ?",["du riz et des galettes de blé","des tortillas de maïs et des frites","du manioc et des pâtes"],0,"2026-11-10"],
+["mental5","Pour calculer 7 × 4 000, quel calcul peux-tu faire ?",["7 × 4 × 100","7 × 4 × 1 000","7 × 4 + 1 000"],1,"2026-11-12"],
+["mental5","Combien font 3 × 900 ?",["270","902","2 700"],2,"2026-11-12"],
+["cercle","Le point O est le centre du cercle et le point A est sur le cercle. Comment appelle-t-on le segment [OA] ?",["un rayon","un diamètre","un côté"],0,"2026-11-12"],
+["cercle","Le segment [BC] relie deux points du cercle et passe par son centre. Quel est son nom le plus précis ?",["un rayon","un diamètre","un disque"],1,"2026-11-12"],
+["cercle","Un segment joint deux points du cercle sans passer par le centre. Comment le nomme-t-on ?",["un diamètre","un rayon","une corde"],2,"2026-11-12"],
+["cercle","Le rayon mesure 8 cm. Combien mesure le diamètre ?",["4 cm","8 cm","16 cm"],2,"2026-11-12"],
+["cercle","Le diamètre mesure 24 cm. Combien mesure le rayon ?",["12 cm","24 cm","48 cm"],0,"2026-11-12"],
+["cercle","Deux points sont sur le même cercle. Que sais-tu de leurs distances au centre ?",["Elles sont toujours différentes.","Elles sont égales.","Leur somme vaut un rayon."],1,"2026-11-12"],
+["cercle","Tu colories toute la surface à l’intérieur d’un cercle. Que colories-tu ?",["le disque","le rayon","le diamètre"],0,"2026-11-12"],
+["resume","Tu veux résumer un récit en trois phrases. Que gardes-tu en priorité ?",["Tous les dialogues.","Ton avis sur les personnages.","Les événements indispensables pour comprendre l’histoire."],2,"2026-11-12"],
+["resume","Dans quel ordre racontes-tu les événements dans ton résumé ?",["Du plus amusant au moins amusant.","Dans l’ordre du récit.","Du plus long au plus court."],1,"2026-11-12"],
+["resume","Pour résumer une BD, comment racontes-tu ce que montrent les dessins et les bulles ?",["Avec mes propres phrases.","En recopiant toutes les bulles.","En donnant seulement le titre de la BD."],0,"2026-11-12"],
+["resume","Quelle phrase donne un avis personnel à enlever du résumé ?",["Le bateau quitte le port.","Enfin, le bateau rejoint la côte.","J’ai adoré cette traversée !"],2,"2026-11-12"],
+["classer","Quelle observation peux-tu utiliser comme attribut pour classer un phasme ?",["Il vit dans un arbre.","Il a six pattes.","Il marche lentement."],1,"2026-11-12"],
+["probabilites","On tire une carte parmi des cartes rouges, bleues, vertes et jaunes. Combien de couleurs différentes peut-on obtenir ?",["2","3","4"],2,"2026-11-12"],
+["probabilites","Dans quelle situation le hasard décide-t-il du résultat ?",["Compter cinq crayons posés devant soi.","Tirer une bille sans regarder parmi des billes de plusieurs couleurs.","Écrire les trois premières lettres de l’alphabet."],1,"2026-11-12"],
+["fraternite","Quel mot complète la devise « Liberté, Égalité, … » ?",["Fraternité","Amitié","Sincérité"],0,"2026-11-12"],
+["fraternite","Quel geste est un exemple de fraternité ?",["Prêter son crayon uniquement contre un cadeau.","Se moquer de quelqu’un qui demande de l’aide.","Prêter son crayon à un élève qu’on connaît peu."],2,"2026-11-12"],
+["fraternite","Les sauveteurs en mer présentés en classe sont bénévoles. Que signifie « bénévole » ?",["Une personne qui aide seulement ses proches.","Une personne qui donne de son temps sans être payée.","Une personne qui apprend à nager."],1,"2026-11-12"],
+["fraternite","Un nouvel élève reste seul dans la cour. Quel geste lui fait une place dans le groupe ?",["L’inviter à rejoindre la partie.","Choisir les équipes en le laissant de côté.","Lui demander de regarder sans jouer."],0,"2026-11-12"],
+["fraternite","À quoi sert l’argent recueilli lors de la vente des bleuets ?",["À acheter des uniformes pour la classe.","À organiser un concours de fleurs.","À soutenir les anciens soldats et les victimes de guerre."],2,"2026-11-12"],
+["armistice","Pourquoi certains jeunes soldats de la Première Guerre mondiale étaient-ils surnommés « les bleuets » ?",["Ils venaient tous du même village.","Ils portaient un uniforme bleu.","Ils cultivaient tous des bleuets."],1,"2026-11-12"],
+["fractionsEntiers","On coupe chaque cake en 4 parts égales. Entre quels nombres de cakes entiers se trouvent 9 parts ?",["Entre 1 et 2.","Entre 2 et 3.","Entre 3 et 4."],1,"2026-11-13"],
+["fractionsEntiers","Quel encadrement de 5/3 est juste ?",["0 < 5/3 < 1","2 < 5/3 < 3","1 < 5/3 < 2"],2,"2026-11-13"],
+["fractionsEntiers","Quel dessin représente 11/4 si chaque disque est partagé en quatre parts égales ?",["2 disques entiers et 3 quarts d’un disque","3 disques entiers et 1 quart d’un disque","2 disques entiers et 1 quart d’un disque"],0,"2026-11-13"],
+["fractionsEntiers","Laquelle de ces fractions est située entre 0 et 1 ?",["9/5","4/5","13/5"],1,"2026-11-13"],
+["fractionsEntiers","Quel entier vient juste avant 10/3 sur la demi-droite graduée ?",["1","2","3"],2,"2026-11-13"],
+["fractionsEntiers","Quelle décomposition permet de voir que 10/4 se trouve entre 2 et 3 ?",["2 + 2/4","1 + 2/4","3 + 2/4"],0,"2026-11-13"],
+["prefixes","Où place-t-on un préfixe pour former un nouveau mot ?",["Après le radical.","Devant le radical.","Entre les deux dernières lettres."],1,"2026-11-13"],
+["prefixes","Que signifie « redémarrer » ?",["Arrêter de démarrer.","Démarrer plus vite.","Démarrer de nouveau."],2,"2026-11-13"],
+["prefixes","Dans « impossible », quel morceau donne au mot le sens contraire de « possible » ?",["im-","pos-","-ible"],0,"2026-11-13"],
+["prefixes","Quel mot obtient-on si l’on ajoute un préfixe à « connu » pour dire le contraire ?",["reconnu","inconnu","connus"],1,"2026-11-13"],
+["prefixes","Après avoir fait un nœud, je veux l’enlever. Quel verbe exprime cette action ?",["refaire","faire","défaire"],2,"2026-11-13"],
+["prefixes","Je dois écrire une phrase une deuxième fois. Quel verbe puis-je employer ?",["réécrire","décrire","inscrire"],0,"2026-11-13"],
+["dictee6","« Les applaudissements du public … dans le stade. » Comment écrit-on le verbe au présent ?",["résonne","résonnent","résonnes"],1,"2026-11-13"],
+["dictee6","Quelle phrase accorde correctement l’adjectif avec « public » ?",["Le public enthousiastes applaudit.","Le public enthousiasme applaudit.","Le public enthousiaste applaudit."],2,"2026-11-13"],
+["dictee6","Complète la phrase de la dictée. « Nous encourageons chaque … »",["participant.","participants.","participent."],0,"2026-11-13"],
+["dictee6","Dans « Les spectateurs observent ces épreuves et admirent les performances », qui fait les deux actions ?",["Les performances.","Les spectateurs.","Les épreuves."],1,"2026-11-13"],
+["armistice","Pourquoi se réunit-on pour la commémoration du 11 Novembre ?",["Pour marquer le début des vacances.","Pour célébrer le début de la Première Guerre mondiale.","Pour se souvenir de ceux qui ont vécu la Première Guerre mondiale."],2,"2026-11-13"],
+["attributs","L’hirondelle et l’abeille volent toutes les deux. Quel attribut permet de reconnaître l’abeille ?",["Six pattes.","Des plumes.","Un squelette interne."],0,"2026-11-13"],
+["attributs","Quel attribut l’hirondelle et le lion ont-ils en commun ?",["Des plumes.","Un squelette interne.","Deux antennes."],1,"2026-11-13"],
+["attributs","Un animal vit dans l’eau et a des pattes palmées. Quel renseignement décrit un attribut de son corps ?",["Il vit dans l’eau.","Il sait nager.","Il a des pattes palmées."],2,"2026-11-13"],
+["classer","Dans le tableau du canari, du poisson, du phasme, du chat et du lapin, quels animaux ont des poils ?",["Le chat et le lapin.","Le canari et le lapin.","Le phasme et le chat."],0,"2026-11-13"],
+["classer","Sur le schéma des groupes emboîtés, le groupe « crocs » est dans le groupe « poils ». Où écrit-on le nom du chat ?",["Dans chacun des deux groupes.","Une fois, dans le groupe « crocs ».","Seulement à côté du schéma."],1,"2026-11-13"],
+["classer","Dans les groupes emboîtés de l’exercice, quel animal a un squelette interne et des nageoires ?",["Le canari.","Le phasme.","Le poisson."],2,"2026-11-13"],
+["motsMysteres","« Une bestiole rampe sous une feuille. » Que veut dire « bestiole » ?",["une plante sauvage","une petite bête","un caillou"],1,"2026-11-13"],
+["motsMysteres","« Le renard se cache dans les fourrés. » Où se cache-t-il ?",["Dans une végétation dense.","Dans une grotte.","Dans un champ sans buissons."],0,"2026-11-13"],
+["motsMysteres","On plie une feuille de papier pour former une grue. Quel art pratique-t-on ?",["la poterie","la broderie","l’origami"],2,"2026-11-13"],
+["motsMysteres","« Elle a hérité de la montre de son grand-père. » Que signifie « hériter » dans cette phrase ?",["Acheter un objet ancien.","Recevoir un bien après le décès de quelqu’un.","Prêter un objet de valeur."],1,"2026-11-13"],
+["famille","Tu présentes ton père en anglais. Dans quel ordre dois-tu dire les mots ?",["My father is this.","This is my father.","This my father is."],1,"2026-11-13"],
+["famille","Tu entends « This is my sister ». Qui dois-tu montrer sur la photo de la personne qui parle ?",["Sa mère.","Son frère.","Sa sœur."],2,"2026-11-13"],
+["famille","Tu dis « This is … grandmother » pour présenter ta grand-mère. Quel mot manque ?",["my","is","this"],0,"2026-11-13"]
 ];
 
 // questions réécrites : [ancienne question, anciennes réponses, ancienne bonne réponse] ; remplacées dans les voyages en cours si la maîtresse ne les a pas modifiées
@@ -5361,13 +5494,138 @@ const TRUCS = [
 "Le thiéboudienne présenté dans la leçon est un plat de riz, de poisson et de légumes.",
 "Selon les régions, la leçon cite le riz, le mil, le maïs ou le manioc : l’alimentation est variée.",
 "Ces aliments de base viennent de cultures agricoles. Ils peuvent ensuite être préparés ou transformés.",
-"Les repas observés montrent de la diversité. Ce sont des exemples, pas les seuls repas possibles dans chaque pays."
+"Les repas observés montrent de la diversité. Ce sont des exemples, pas les seuls repas possibles dans chaque pays.",
+"Chaque chiffre se décale d’un rang vers la gauche dans le tableau. Les 4 unités de 34 valent donc 40 dans 340.",
+"Multiplier par 100 revient à multiplier deux fois par 10. Les unités deviennent des centaines.",
+"72 centaines valent 7 200. Le 7 occupe maintenant la colonne des milliers.",
+"26 milliers valent 26 000. Les chiffres de 26 se décalent de trois rangs vers la gauche.",
+"56 × 10 donne 560. En multipliant encore par 10, on obtient 5 600.",
+"Les deux nombres ont 2 milliers et 4 centaines. Aux dizaines, 7 est plus grand que 0.",
+"3 054 vient en premier. Entre 3 405 et 3 450, les dizaines départagent les deux nombres.",
+"En comptant de 10 en 10, on passe directement de 6 790 à 6 800.",
+"En comptant de 100 en 100, on passe de 7 200 à 7 300. Le nombre 7 263 se trouve entre les deux.",
+"Le bois sert à se chauffer. En hiver, on profite aussi de cette période pour réparer les outils.",
+"Labourer prépare la terre avant les semailles. Sur la peinture, des bœufs tirent la charrue.",
+"L’herbe sèche devient du foin. On peut le garder pour les mois où les animaux restent à l’abri.",
+"Lors de la moisson, on récolte le blé. Ses grains pourront être moulus pour faire de la farine.",
+"Les vendanges ont lieu quand le raisin est mûr. Dans le calendrier étudié, c’est la scène de septembre.",
+"Les Très Riches Heures du duc de Berry contiennent un calendrier illustré. Ses peintures montrent les travaux au fil des mois.",
+"Les cloches s’entendent depuis les champs et marquent différents moments de la journée.",
+"La paroisse réunit les fidèles autour de leur église, où un prêtre les accueille.",
+"Le curé est le prêtre de la paroisse. Il y célèbre notamment la messe.",
+"Pour les chrétiens, le baptême marque l’entrée dans leur communauté.",
+"Baptêmes et mariages rassemblaient les familles. Le prêtre accompagnait aussi les personnes à la fin de leur vie.",
+"Le clergé regroupe les personnes qui se consacrent au service de l’Église, dont les prêtres.",
+"Grandmother désigne la grand-mère et grandfather le grand-père. Le début grand- permet de reconnaître les deux mots.",
+"Sister désigne la sœur et brother le frère.",
+"Le 11 novembre 1918, un armistice met fin aux combats entre les Alliés et l’Allemagne.",
+"Les adversaires s’accordent pour cesser de combattre. C’est le sens du mot armistice.",
+"300 vaut 3 × 100. On trouve 24, puis on multiplie 24 par 100.",
+"7 × 2 donne 14. Comme 20 vaut 2 × 10, il faut encore multiplier 14 par 10.",
+"50 vaut 5 × 10. On calcule 5 × 5, puis 25 × 10.",
+"8 × 4 donne 32. On a donc 32 milliers, soit 32 000.",
+"De 820 à 900, il manque 80. De 900 à 1 000, il manque encore 100, soit 180 en tout.",
+"Le facteur 65 figure déjà à droite. Il reste à regrouper les facteurs 3 et 8, dont le produit vaut 24.",
+"Le côté gauche vaut 135. Il faut ajouter 15 à 120 pour obtenir le même résultat.",
+"L’adjectif s’accorde avec anneaux, un nom masculin pluriel. On écrit colorés.",
+"Avec nous, la terminaison est -ons. La cédille devant o conserve le son [s] de commencer.",
+"Une planche peut réunir plusieurs cases. Chacune montre un moment de l’histoire.",
+"La bulle contient les paroles ou les pensées du personnage. Sa pointe aide à reconnaître celui qui parle.",
+"Une onomatopée fait entendre un bruit avec des lettres, comme BOUM ou CROÂ.",
+"Qui est-ce qui prend le bus ? C’est nous. Tous les matins indique le moment.",
+"Le sujet mes frères est formé d’un déterminant et d’un nom. C’est un groupe nominal.",
+"Le même sujet commande les deux verbes. C’est moi qui plie et qui range.",
+"La réponse est la grenouille. On peut vérifier en disant : « C’est la grenouille qui parle. »",
+"On compare les chances de toutes les issues. Un dé équilibré a six faces et chacune a la même chance de sortir.",
+"Il y a deux fois plus de billes rouges que de bleues. Chaque bille peut être tirée.",
+"Il faut le même nombre de billes de chaque couleur pour que les deux couleurs aient la même chance.",
+"Chaque couleur occupe un quart de la roue. Les quatre résultats sont équiprobables si on fait tourner la roue au hasard.",
+"On a huit fois 365, donc huit fois chacun des trois morceaux de 365.",
+"Il reste trois fois les 4 unités. On ajoute 4 × 3 = 12, ce qui donne 72.",
+"400 et 120 font 520. Avec 8 de plus, on obtient 528.",
+"365 est plus proche de 400 que de 300. Huit fois 400, c’est huit fois quatre centaines, soit 3 200.",
+"Le 4 de 648 représente quatre dizaines. On multiplie donc 40 par 3.",
+"900 × 5 = 4 500, 10 × 5 = 50 et 2 × 5 = 10. Leur somme est 4 560.",
+"Sur le 6, elle indiquerait 30 minutes. Pour montrer 28 minutes, on revient de deux graduations.",
+"À 15 h, elle était sur le 3. Pendant les 28 minutes suivantes, elle a avancé presque à mi-chemin du 4.",
+"Depuis le 12, compte 5 minutes d’un nombre du cadran au suivant. Onze fois 5 minutes font 55 minutes.",
+"16 h correspond à 4 h de l’après-midi. À 52 minutes, il ne reste que 8 minutes avant 5 h.",
+"Le 1 marque 5 minutes et le 2 en marque 10. La huitième minute est entre les deux.",
+"Le groupe désigne un chat. « Petit » et « joueur » donnent des renseignements sur ce chat.",
+"« Un » est le déterminant et « livre » est le nom. Les deux autres groupes contiennent aussi un adjectif.",
+"Les deux adjectifs décrivent l’arbre. L’un est placé avant le nom et l’autre après.",
+"« Quelle » accompagne le nom « matinée ». « Belle » est l’adjectif qui décrit cette matinée.",
+"Dans « sa sœur débrouillarde », on parle toujours d’une sœur. Le mot qui la décrit a changé.",
+"« Beau » et « bleu » décrivent le livre. Après les avoir retirés, on garde le déterminant « un » et le nom « livre ».",
+"« Regardait » se termine par -ait avec « il ». « Regarde » est au présent et « regardera » au futur.",
+"On garde le radical ferm- et on ajoute la terminaison -ions de l’imparfait avec « nous ».",
+"« Marcher » donne le radical march-. Avec « tu », on lui ajoute -ais.",
+"Avec « vous », le radical regard- reçoit la terminaison -iez.",
+"Avec « nous », le verbe finit par -ons. Devant le o, la cédille garde le son [s].",
+"« Les sportifs » est au pluriel. On peut dire « ils arrivent », avec la terminaison -ent.",
+"Le nom « public » est singulier même s’il désigne plusieurs personnes. On écrit « il applaudit ».",
+"Le milieu partage le segment en deux parties égales. La moitié de 6 cm est 3 cm.",
+"Les segments [IA] et [IK] se rencontrent en I. Ils suivent les deux directions perpendiculaires du tracé.",
+"Sur le planisphère, le Japon et l’Inde sont en Asie. Le Mexique est en Amérique du Nord, le Sénégal en Afrique.",
+"Le riz et le blé sont les deux aliments de base présentés avec ce repas indien.",
+"4 000 vaut 4 × 1 000. On calcule 7 × 4 = 28, puis 28 × 1 000 = 28 000.",
+"Neuf centaines prises trois fois font 27 centaines, soit 2 700.",
+"Un rayon relie le centre à un point du cercle.",
+"Un diamètre traverse le cercle en passant par son centre, qui est le milieu du segment.",
+"Une corde joint deux points du cercle. Ici, elle ne passe pas par le centre.",
+"Deux rayons mis bout à bout sur la même droite forment un diamètre. 8 + 8 = 16.",
+"Le centre partage le diamètre en deux parties égales. La moitié de 24 cm est 12 cm.",
+"La distance du centre à chacun des points du cercle est égale au rayon.",
+"Le cercle dessine le contour. Le disque comprend toute la surface délimitée par ce contour.",
+"Un résumé garde les idées principales. On peut enlever un détail si on comprend encore le récit sans lui.",
+"La grille aide à retrouver le début, les événements importants et la fin du récit.",
+"Après avoir compris ce qui arrive aux personnages, on le raconte brièvement avec ses mots.",
+"« J’ai adoré » dit ce que pense le lecteur. Les deux autres phrases racontent des événements.",
+"Le nombre de pattes décrit ce que possède l’animal. Le lieu de vie et le déplacement décrivent autre chose.",
+"Les quatre couleurs sont les quatre issues possibles si on s’intéresse à la couleur de la carte.",
+"Avant le tirage, on ignore de quelle couleur sera la bille. Les autres résultats sont connus à l’avance.",
+"La fraternité est l’une des trois valeurs de la devise de la République.",
+"Un geste fraternel aide une autre personne sans attendre quelque chose en échange.",
+"Ces sauveteurs donnent de leur temps pour aider des personnes en danger en mer, même des inconnus.",
+"L’invitation lui permet de participer et de faire connaissance avec les autres.",
+"Porter le bleuet est un geste de mémoire. Son achat permet aussi d’aider les personnes touchées par la guerre.",
+"Les nouveaux soldats arrivés en 1915 portaient un uniforme bleu qui rappelait la couleur de la fleur.",
+"Huit parts forment deux cakes. La neuvième part entame le troisième cake.",
+"Une unité vaut 3/3 et deux unités valent 6/3. Cinq tiers se trouvent entre les deux.",
+"Deux disques entiers font huit quarts. Il faut encore trois quarts pour arriver à onze quarts.",
+"L’unité vaut 5/5. Quatre cinquièmes se placent avant 1, tandis que neuf et treize cinquièmes dépassent 1.",
+"Neuf tiers font 3. Dix tiers se placent un tiers plus loin, entre 3 et 4.",
+"Deux paquets de quatre quarts font 2 unités. Sur les dix quarts, il en reste deux.",
+"Dans « refaire », on ajoute re- devant le radical « faire ». Le sens du verbe change.",
+"Le préfixe re- indique que l’action recommence.",
+"On ajoute le préfixe im- à « possible ». Une chose impossible est une chose qui ne peut pas se faire.",
+"Le préfixe in- donne le sens contraire. Une personne inconnue est une personne qu’on ne connaît pas.",
+"Le préfixe dé- permet ici d’exprimer l’action inverse. Pour enlever le nœud, on le défait.",
+"On ajoute ré- devant « écrire ». Réécrire veut dire écrire de nouveau.",
+"Ce sont les applaudissements qui résonnent. Le sujet est au pluriel, même si « du public » est juste devant le verbe.",
+"Dans « le public enthousiaste », le nom « public » est au singulier. L’adjectif « enthousiaste » reste au singulier.",
+"« Chaque » désigne les personnes une par une. Le nom « participant » s’écrit au singulier.",
+"Le même groupe, « les spectateurs », est sujet des verbes « observent » et « admirent ». Les deux verbes prennent -ent.",
+"La cérémonie permet de faire vivre ensemble la mémoire des soldats et des familles touchées par la guerre.",
+"L’abeille possède six pattes et deux antennes. L’hirondelle possède deux pattes, deux ailes et des plumes.",
+"Les os de l’hirondelle et ceux du lion sont à l’intérieur de leur corps.",
+"Un attribut décrit ce que l’animal possède. Les pattes palmées sont une partie du corps. L’eau est son milieu de vie.",
+"Le chat et le lapin ont un pelage. Ils entrent tous les deux dans le groupe « poils » de cet exercice.",
+"On écrit le nom de l’animal dans le plus petit groupe qui lui correspond. La boîte « crocs » est déjà à l’intérieur de la boîte « poils ».",
+"On suit les boîtes du schéma. Celle des nageoires se trouve à l’intérieur de celle du squelette interne, et elle contient le poisson.",
+"« Bestiole » désigne une petite bête, par exemple un insecte.",
+"Des fourrés sont un ensemble de buissons et de plantes qui poussent très serrés.",
+"L’origami est l’art japonais du pliage du papier.",
+"Un héritage est ce qui est transmis lorsqu’une personne meurt.",
+"Pour présenter un membre de ta famille, commence par « This is my », puis ajoute le mot qui le désigne.",
+"« This is my sister » signifie « Voici ma sœur ». Le mot « my » indique que la personne présente sa propre sœur.",
+"« This is my grandmother » signifie « Voici ma grand-mère ». « My » se place juste avant « grandmother »."
 ];
 
 // Sources vérifiées dans les diaporamas de classe, y compris les leçons intégrées en images.
 // Dossier principal : Ressources Trans / 00 - Organisation de la classe / Cahiers journaux.
 // geoNov03 : Ressources Trans / 06 - Géographie / Se nourrir en mode enquête.
-// La géographie du 3 novembre reste référencée pour les sauvegardes, hors programme actuel.
+// Le support de géographie préparé pour le 3 novembre a été utilisé le 10.
 const COURS = {
   "sept21": {
     "date": "2026-09-21",
@@ -5405,7 +5663,14 @@ const COURS = {
  "oct16":{"date":"2026-10-16","fichier":"Diaporama - vendredi 16 octobre 2026  -  Réparation.pptx"},
  "nov02":{"date":"2026-11-02","fichier":"Diaporama - lundi 2 novembre 2026.pptx"},
  "nov03":{"date":"2026-11-03","fichier":"Diaporama - mardi 3 novembre 2026.pptx"},
- "geoNov03":{"date":"2026-11-03","fichier":"Géographie - mardi 3 novembre 2026 - Que mange-t-on dans le monde.pptx","disponible":false}
+ "geoNov03":{"date":"2026-11-10","fichier":"Géographie - mardi 3 novembre 2026 - Que mange-t-on dans le monde.pptx"},
+ "nov06":{"date":"2026-11-06","fichier":"Diaporama - vendredi 6 novembre 2026.pptx"},
+ "histNov06":{"date":"2026-11-06","fichier":"Histoire - vendredi 6 novembre 2026 - Une année de paysans et l'église du village.pptx"},
+ "nov09":{"date":"2026-11-09","fichier":"Diaporama - lundi 9 novembre 2026.pptx"},
+ "nov10":{"date":"2026-11-10","fichier":"Diaporama - mardi 10 novembre 2026.pptx"},
+ "nov12":{"date":"2026-11-12","fichier":"Diaporama - jeudi 12 novembre 2026 - résumé du Grimoire d'Elfie.pptx"},
+ "emcNov12":{"date":"2026-11-12","fichier":"EMC - jeudi 12 novembre 2026 - La fraternité.pptx"},
+ "nov13":{"date":"2026-11-13","fichier":"Diaporama - vendredi 13 novembre 2026.pptx"}
 };
 const Q_SOURCES = {
  "d0":{"cours":"sept28","diapos":[34,35,36]},
@@ -6089,7 +6354,132 @@ const Q_SOURCES = {
  "d678":{"cours":"geoNov03","diapos":[10]},
  "d679":{"cours":"geoNov03","diapos":[20]},
  "d680":{"cours":"geoNov03","diapos":[12]},
- "d681":{"cours":"geoNov03","diapos":[5,7,8,9,10,11,20]}
+ "d681":{"cours":"geoNov03","diapos":[5,7,8,9,10,11,20]},
+ "d682":{"cours":"nov06","diapos":[12,13]},
+ "d683":{"cours":"nov06","diapos":[13,14]},
+ "d684":{"cours":"nov06","diapos":[14,16]},
+ "d685":{"cours":"nov06","diapos":[14,16]},
+ "d686":{"cours":"nov06","diapos":[12,14]},
+ "d687":{"cours":"nov06","diapos":[18,21,22]},
+ "d688":{"cours":"nov06","diapos":[19,21,22]},
+ "d689":{"cours":"nov06","diapos":[20,25,27]},
+ "d690":{"cours":"nov06","diapos":[20,21,22]},
+ "d691":{"cours":"histNov06","diapos":[9,15]},
+ "d692":{"cours":"histNov06","diapos":[10]},
+ "d693":{"cours":"histNov06","diapos":[11]},
+ "d694":{"cours":"histNov06","diapos":[12,15]},
+ "d695":{"cours":"histNov06","diapos":[13,14,15]},
+ "d696":{"cours":"histNov06","diapos":[8,23]},
+ "d697":{"cours":"histNov06","diapos":[26,28]},
+ "d698":{"cours":"histNov06","diapos":[28,35]},
+ "d699":{"cours":"histNov06","diapos":[28,35]},
+ "d700":{"cours":"histNov06","diapos":[29,30,35]},
+ "d701":{"cours":"histNov06","diapos":[29,30,31]},
+ "d702":{"cours":"histNov06","diapos":[33]},
+ "d703":{"cours":"nov06","diapos":[35,36]},
+ "d704":{"cours":"nov06","diapos":[35,36]},
+ "d705":{"cours":"nov09","diapos":[4,5]},
+ "d706":{"cours":"nov09","diapos":[5]},
+ "d707":{"cours":"nov09","diapos":[9,10,11]},
+ "d708":{"cours":"nov09","diapos":[11,12,13]},
+ "d709":{"cours":"nov09","diapos":[12,13]},
+ "d710":{"cours":"nov09","diapos":[9,10,13]},
+ "d711":{"cours":"nov09","diapos":[15]},
+ "d712":{"cours":"nov09","diapos":[15]},
+ "d713":{"cours":"nov09","diapos":[16]},
+ "d714":{"cours":"nov09","diapos":[18]},
+ "d715":{"cours":"nov09","diapos":[18]},
+ "d716":{"cours":"nov09","diapos":[35]},
+ "d717":{"cours":"nov09","diapos":[23,35]},
+ "d718":{"cours":"nov09","diapos":[35]},
+ "d719":{"cours":"nov09","diapos":[41,42,43]},
+ "d720":{"cours":"nov09","diapos":[43,44]},
+ "d721":{"cours":"nov09","diapos":[43,44]},
+ "d722":{"cours":"nov09","diapos":[41,42,43]},
+ "d723":{"cours":"nov09","diapos":[48,49]},
+ "d724":{"cours":"nov09","diapos":[47,48]},
+ "d725":{"cours":"nov09","diapos":[48,50]},
+ "d726":{"cours":"nov09","diapos":[50]},
+ "d727":{"cours":"nov10","diapos":[12,15]},
+ "d728":{"cours":"nov10","diapos":[13,14]},
+ "d729":{"cours":"nov10","diapos":[13,14]},
+ "d730":{"cours":"nov10","diapos":[12,15]},
+ "d731":{"cours":"nov10","diapos":[16,17]},
+ "d732":{"cours":"nov10","diapos":[16,17]},
+ "d733":{"cours":"nov10","diapos":[19,20]},
+ "d734":{"cours":"nov10","diapos":[19,20]},
+ "d735":{"cours":"nov10","diapos":[19,22]},
+ "d736":{"cours":"nov10","diapos":[19,22]},
+ "d737":{"cours":"nov10","diapos":[19,22]},
+ "d738":{"cours":"nov10","diapos":[29,30,32]},
+ "d739":{"cours":"nov10","diapos":[29,31,32]},
+ "d740":{"cours":"nov10","diapos":[29,31,32]},
+ "d741":{"cours":"nov10","diapos":[29,31,32]},
+ "d742":{"cours":"nov10","diapos":[29,30,31]},
+ "d743":{"cours":"nov10","diapos":[31,32]},
+ "d744":{"cours":"nov10","diapos":[34,35]},
+ "d745":{"cours":"nov10","diapos":[36,37,38]},
+ "d746":{"cours":"nov10","diapos":[36,37,38]},
+ "d747":{"cours":"nov10","diapos":[36,37,38]},
+ "d748":{"cours":"nov10","diapos":[25,26]},
+ "d749":{"cours":"nov10","diapos":[25,26]},
+ "d750":{"cours":"nov10","diapos":[25,26]},
+ "d751":{"cours":"nov10","diapos":[40,41,42]},
+ "d752":{"cours":"nov10","diapos":[41,42]},
+ "d753":{"cours":"geoNov03","diapos":[7,8,9,10]},
+ "d754":{"cours":"geoNov03","diapos":[8]},
+ "d755":{"cours":"nov12","diapos":[9,10]},
+ "d756":{"cours":"nov12","diapos":[9,10]},
+ "d757":{"cours":"nov12","diapos":[12,13]},
+ "d758":{"cours":"nov12","diapos":[12,13]},
+ "d759":{"cours":"nov12","diapos":[12,13]},
+ "d760":{"cours":"nov12","diapos":[13,15]},
+ "d761":{"cours":"nov12","diapos":[13,15]},
+ "d762":{"cours":"nov12","diapos":[12,13]},
+ "d763":{"cours":"nov12","diapos":[13]},
+ "d764":{"cours":"nov12","diapos":[18,20]},
+ "d765":{"cours":"nov12","diapos":[18,19,20]},
+ "d766":{"cours":"nov12","diapos":[17,18,20]},
+ "d767":{"cours":"nov12","diapos":[18,20]},
+ "d768":{"cours":"nov12","diapos":[42,43]},
+ "d769":{"cours":"nov12","diapos":[46,47]},
+ "d770":{"cours":"nov12","diapos":[46,47]},
+ "d771":{"cours":"emcNov12","diapos":[5,18]},
+ "d772":{"cours":"emcNov12","diapos":[7,12,18]},
+ "d773":{"cours":"emcNov12","diapos":[7]},
+ "d774":{"cours":"emcNov12","diapos":[9,12]},
+ "d775":{"cours":"emcNov12","diapos":[3]},
+ "d776":{"cours":"nov12","diapos":[51]},
+ "d777":{"cours":"nov13","diapos":[8,9]},
+ "d778":{"cours":"nov13","diapos":[10]},
+ "d779":{"cours":"nov13","diapos":[11]},
+ "d780":{"cours":"nov13","diapos":[15]},
+ "d781":{"cours":"nov13","diapos":[15]},
+ "d782":{"cours":"nov13","diapos":[11,15]},
+ "d783":{"cours":"nov13","diapos":[18,19]},
+ "d784":{"cours":"nov13","diapos":[18,19]},
+ "d785":{"cours":"nov13","diapos":[18,19]},
+ "d786":{"cours":"nov13","diapos":[19]},
+ "d787":{"cours":"nov13","diapos":[18,19]},
+ "d788":{"cours":"nov13","diapos":[18,19]},
+ "d789":{"cours":"nov13","diapos":[27]},
+ "d790":{"cours":"nov13","diapos":[27]},
+ "d791":{"cours":"nov13","diapos":[25,27]},
+ "d792":{"cours":"nov13","diapos":[27]},
+ "d793":{"cours":"nov13","diapos":[28,29]},
+ "d794":{"cours":"nov13","diapos":[32]},
+ "d795":{"cours":"nov13","diapos":[32]},
+ "d796":{"cours":"nov13","diapos":[33]},
+ "d797":{"cours":"nov13","diapos":[34,35]},
+ "d798":{"cours":"nov13","diapos":[34,35]},
+ "d799":{"cours":"nov13","diapos":[34,35]},
+ "d800":{"cours":"nov13","diapos":[17]},
+ "d801":{"cours":"nov13","diapos":[17]},
+ "d802":{"cours":"nov13","diapos":[17]},
+ "d803":{"cours":"nov13","diapos":[17]},
+ "d804":{"cours":"nov13","diapos":[39,40]},
+ "d805":{"cours":"nov13","diapos":[39,40]},
+ "d806":{"cours":"nov13","diapos":[39,40]}
 };
 
 // Routes du bateau par la mer pour la carte du voyage (une par étape, [longitude, latitude]) : généré par outils/routes_mer.mjs, ne pas modifier à la main.
@@ -7516,61 +7906,81 @@ function archiveCours(cible,cle,items){
   for(const item of items){const json=JSON.stringify(item);if(!deja.has(json)){copies.push(JSON.parse(json));deja.add(json);}}
   cible[cle]=copies;
 }
-function questionReintegree(q){
-  return !!NOTIONS_REINTEGREES[q?.n] || QUESTIONS_REINTEGREES.has(q?.id) ||
-    (!/^d\d+$/.test(q?.id||"") && [...QUESTIONS_REINTEGREES].some(id=>{
-      const r=Q_RAW[+id.slice(1)];
-      return q && q.n===r[0] && q.q===r[1] && q.ok===r[3] && JSON.stringify(q.c)===JSON.stringify(r[2]);
-    }));
+// Chaque étape garde son propre marqueur : les appareils du 8 novembre ont
+// déjà repris les cours du 3, mais n'ont pas encore la géographie du 10.
+const REPRISES_NOVEMBRE = [
+  {marque:"coursReintegresNov03",notions:NOTIONS_REINTEGREES,ids:QUESTIONS_REINTEGREES},
+  {marque:"coursGeoNov10",notions:NOTIONS_GEO_NOV10,ids:QUESTIONS_GEO_NOV10}
+];
+function questionDuCours(q,cours){
+  if(cours.notions[q.n])return true;
+  if(/^d\d+$/.test(q.id))return cours.ids.has(q.id);
+  return [...cours.ids].some(id=>{
+    const r=Q_RAW[+id.slice(1)];
+    return q.n===r[0] && q.q===r[1] && q.ok===r[3] && JSON.stringify(q.c)===JSON.stringify(r[2]);
+  });
 }
-function memoriseCoursNovembre(etat){
-  // Une ancienne appli garde les champs inconnus, mais filtre encore ces cours.
-  // Cette petite copie permet leur reprise après un arrêt, avec les suppressions.
-  etat.coursReintegresNov03Copie=JSON.parse(JSON.stringify({
-    questions:etat.questions.filter(questionReintegree),
-    notions:etat.notions.filter(n=>!!NOTIONS_REINTEGREES[n.id])
+function copieCours(etat,cours){
+  return JSON.parse(JSON.stringify({
+    questions:etat.questions.filter(q=>questionDuCours(q,cours)),
+    notions:etat.notions.filter(n=>cours.notions[n.id])
   }));
 }
-function reintegreCoursNovembre(etat,ancien){
-  if(ancien.coursReintegresNov03){
-    const copie=ancien.coursReintegresNov03Copie;
-    if(ancien.banque>=682 && copie && Array.isArray(copie.questions) && Array.isArray(copie.notions) && Object.keys(NOTIONS_REINTEGREES).some(id=>!etat.notions.some(n=>n.id===id))){
-      for(const [cle,archives,accepte] of [["questions","questionsReportees",questionReintegree],["notions","notionsReportees",n=>!!NOTIONS_REINTEGREES[n.id]]]){
-        archiveCours(etat,archives,etat[cle].filter(accepte));
-        etat[cle]=[...etat[cle].filter(x=>!accepte(x)),...JSON.parse(JSON.stringify(copie[cle].filter(accepte)))];
-      }
-    }
-    return;
-  }
-  const reserve=cle=>Array.isArray(ancien[cle])?ancien[cle]:ancien[cle]?[ancien[cle]]:[];
-  // La première publication avait ajouté les six chapitres. Leur présence,
-  // même archivée, distingue une suppression d'une question jamais proposée.
-  const dejaPublie=[...etat.notions,...reserve("notionsReportees")].some(n=>NOTIONS_REINTEGREES[n.id]||NOTIONS_REPORTEES[n.id]) ||
-    [...etat.questions,...reserve("questionsReportees")].some(q=>/^d\d+$/.test(q.id||"")&&(QUESTIONS_REINTEGREES.has(q.id)||QUESTIONS_REPORTEES.has(q.id)));
-  // Les objets vivants priment ; parmi les archives, reprendre la dernière
-  // variante sans supprimer les précédentes ni leurs éventuels champs privés.
-  for(const [cle,archives,accepte] of [
-    ["notions","notionsReportees",n=>!!NOTIONS_REINTEGREES[n.id]],
-    ["questions","questionsReportees",q=>questionReintegree(q)&&!questionHorsProgramme(q)]
+function memoriseCoursNovembre(etat){
+  for(const cours of REPRISES_NOVEMBRE)etat[cours.marque+"Copie"]=copieCours(etat,cours);
+}
+function manqueChapitre(etat,cours){
+  return Object.keys(cours.notions).some(id=>!etat.notions?.some(n=>n.id===id));
+}
+function appliqueCopieCours(etat,copie,cours){
+  // Une ancienne appli peut avoir retiré ces questions une seconde fois.
+  // La copie du même voyage garde les éditions, les sélections et les suppressions.
+  for(const [cle,archive,accepte] of [
+    ["questions","questionsReportees",q=>questionDuCours(q,cours)],
+    ["notions","notionsReportees",n=>!!cours.notions[n.id]]
   ]){
-    const presentes=new Set(etat[cle].map(x=>x.id));
-    const dernieres=new Map(reserve(archives).filter(accepte).map(x=>[x.id,x]));
-    for(const [id,item] of dernieres)if(!presentes.has(id))etat[cle].push(JSON.parse(JSON.stringify(item)));
+    const vivants=etat[cle]||[];
+    archiveCours(etat,archive,vivants.filter(accepte));
+    etat[cle]=[...vivants.filter(x=>!accepte(x)),...JSON.parse(JSON.stringify(copie[cle].filter(accepte)))];
   }
-  // banque vaut déjà 682 dans la version limitée au 2 novembre. Seules ces
-  // questions connues mais jamais proposées échappent à l'ajout habituel.
-  if(!dejaPublie){
-    const presentes=new Set(etat.questions.map(q=>q.id));
-    for(const id of QUESTIONS_REINTEGREES)if(+id.slice(1)<(ancien.banque||128)&&!presentes.has(id))etat.questions.push(questionDefaut(+id.slice(1)));
+  etat[cours.marque]=true;
+}
+function reintegreCoursNovembre(etat,ancien){
+  const reserve=cle=>Array.isArray(ancien[cle])?ancien[cle]:ancien[cle]?[ancien[cle]]:[];
+  for(const cours of REPRISES_NOVEMBRE){
+    if(ancien[cours.marque]){
+      const copie=ancien[cours.marque+"Copie"];
+      if(ancien.banque>=682 && copie && Array.isArray(copie.questions) && Array.isArray(copie.notions) && manqueChapitre(etat,cours)){
+        appliqueCopieCours(etat,copie,cours);
+      }
+      continue;
+    }
+    // Reprendre la dernière variante archivée, en donnant priorité aux objets
+    // encore présents. Un chapitre même vide témoigne de suppressions possibles.
+    let dejaPublie=false;
+    for(const [cle,archive,accepte] of [
+      ["notions","notionsReportees",n=>!!cours.notions[n.id]],
+      ["questions","questionsReportees",q=>questionDuCours(q,cours)]
+    ]){
+      const vivants=new Set(etat[cle].map(x=>x.id));
+      const archives=new Map(reserve(archive).filter(accepte).map(x=>[x.id,x]));
+      if(archives.size || etat[cle].some(accepte))dejaPublie=true;
+      for(const [id,item] of archives)if(!vivants.has(id))etat[cle].push(JSON.parse(JSON.stringify(item)));
+    }
+    // Ces identifiants sont tous antérieurs au compteur 682 ; l'ajout
+    // ordinaire par indice ne peut pas les retrouver s'ils n'ont jamais été vus.
+    if(!dejaPublie){
+      for(const id of cours.ids)if(+id.slice(1)<(ancien.banque||128))etat.questions.push(questionDefaut(+id.slice(1)));
+    }
+    etat[cours.marque]=true;
   }
-  etat.coursReintegresNov03=true;
 }
 const idVoyage = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function etatDefaut(){
   const etat = {v:1,rv:RESET_V,migPilote:1,maj:0,voyage:idVoyage(),nom:"La Vaillante",nomChoisi:false,nomsProposes:["La Vaillante","L'Étoile des Mers","Le Grand Plouf","La Perle Bleue"],milles:0,
     eleves:Array.from({length:NB_CARTES},(_,i)=>({n:i+1,prenom:CLASSE[i]||"",actif:i<(CLASSE.length||25),...(i<(CLASSE.length||25)?{avatar:Matelots.identifiant({n:i+1})}:{})})),
     reglages:{nbQ:6,piloteTous:0,vitesse:1,son:true,stormQ:6,recompense:"podium",kraken:true,krakenSeuil:70},
-    notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),banque:Q_RAW.length,coursReintegresNov03:true,
+    notions:NOTIONS.map(n=>({...n})),questions:banqueDefaut(),banque:Q_RAW.length,coursReintegresNov03:true,coursGeoNov10:true,
     stats:{q:{},el:{}},journal:[],pilotes:[],escalesVues:[0]};
   memoriseCoursNovembre(etat);
   Coffre.normalise(etat);
@@ -7612,28 +8022,15 @@ function charge(obj){
   for (let k=(obj.banque||128); k<Q_RAW.length; k++) if(!ont.has("d"+k)){
     const q=questionDefaut(k);if(!questionHorsProgramme(q))o.questions.push(q);
   } // 128 : la banque avant le 28/09 ; une question supprimée ne revient pas
-  // Les questions du 3 novembre ont déjà pu être reçues et adaptées. Garder
-  // leurs objets complets, sans écraser une ancienne variante du même ID.
-  archiveCours(o,"questionsReportees",o.questions.filter(questionReportee));
-  archiveCours(o,"notionsReportees",o.notions.filter(n=>!!NOTIONS_REPORTEES[n.id]));
   // Retirer des prochaines révisions seulement : résultats et bilans restent intacts.
   o.questions = o.questions.filter(q=>!questionHorsProgramme(q));
   o.notions = o.notions.filter(n=>!notionHorsProgramme(n.id));
   o.banque = Math.max(obj.banque||128, Q_RAW.length);
   // Enrichit les questions d'origine sans toucher aux dates et aux choix de l'enseignante.
-  o.questions.forEach(q=>{ if(!q.le && sourceQuestion(q)) q.le=Q_RAW[+q.id.slice(1)][4]; });
+  o.questions.forEach(q=>{ if((!q.le || (QUESTIONS_GEO_NOV10.has(q.id) && q.le==="2026-11-03")) && sourceQuestion(q)) q.le=Q_RAW[+q.id.slice(1)][4]; });
   if(o.seance && (!Array.isArray(o.seance.qs) || !o.seance.qs.length || !Array.isArray(o.seance.res) || !Number.isInteger(o.seance.index) || o.seance.index<0 || o.seance.index>o.seance.qs.length)) o.seance=null;
   if(o.seance && o.seance.qs.slice(o.seance.index).some(questionHorsProgramme)){
     const s=o.seance, index=s.index, res=s.res;
-    const avant=JSON.parse(JSON.stringify(s));
-    const reportees=s.qs.map((q,i)=>({index:i,q})).filter(({q,index:i})=>i>=index&&!res[i]&&questionReportee(q));
-    if(reportees.length){
-      // La réserve doit survivre à la fin de la séance, qui efface S.seance.
-      archiveCours(o,"seancesReportees",[avant]);
-      s.reportees={...(s.reportees||{})};
-      archiveCours(s.reportees,"questions",reportees);
-      if(questionReportee(s.qs[index])&&!res[index]&&s.question)archiveCours(s.reportees,"ouvertes",[s.question]);
-    }
     // Les réponses déjà validées gardent leur place dans le bilan et l'historique.
     // Une question retirée, ouverte mais pas encore répondue, est simplement sautée.
     const gardes=s.qs.map((q,i)=>({q,i})).filter(({q,i})=>i<index || !!s.res[i] || !questionHorsProgramme(q));
@@ -7704,13 +8101,23 @@ function chargeAvecAcquis(distant){
     }
     // Une ancienne appli peut retirer à nouveau ces cours. La sélection locale
     // déjà rétablie prime alors sur les archives, y compris ses suppressions.
-    const ancienneBanque=!recu.coursReintegresNov03 || Object.keys(NOTIONS_REINTEGREES).some(id=>!recu.notions?.some(n=>n.id===id));
-    if(S.coursReintegresNov03&&ancienneBanque){
-      for(const [cle,archives,accepte] of [["questions","questionsReportees",questionReintegree],["notions","notionsReportees",n=>!!NOTIONS_REINTEGREES[n.id]]]){
-        archiveCours(recu,archives,(recu[cle]||[]).filter(accepte));
-        recu[cle]=[...(recu[cle]||[]).filter(x=>!accepte(x)),...JSON.parse(JSON.stringify(S[cle].filter(accepte)))];
+    for(const cours of REPRISES_NOVEMBRE){
+      if(S[cours.marque] && (!recu[cours.marque] || manqueChapitre(recu,cours))){
+        appliqueCopieCours(recu,copieCours(S,cours),cours);
       }
-      recu.coursReintegresNov03=true;
+    }
+    // Les questions au-delà du compteur de l'ancien appareil n'y ont jamais
+    // été proposées. Leur absence locale peut être une suppression volontaire.
+    const debut=recu.banque||128,fin=Math.min(S.banque,Q_RAW.length);
+    if(debut<fin){
+      const anciensChapitres=new Set(Q_RAW.slice(0,debut).map(q=>q[0]));
+      const chapitres=new Set(Q_RAW.slice(debut,fin).map(q=>q[0]).filter(id=>!anciensChapitres.has(id)));
+      const nouveauxIds=new Set(Array.from({length:fin-debut},(_,i)=>"d"+(debut+i)));
+      const locales=S.questions.filter(q=>nouveauxIds.has(q.id) || (chapitres.has(q.n) && !/^d\d+$/.test(q.id)));
+      const idsLocaux=new Set(locales.map(q=>q.id));
+      recu.questions=[...(recu.questions||[]).filter(q=>!nouveauxIds.has(q.id) && !idsLocaux.has(q.id)),...copieJeu(locales)];
+      recu.notions=[...(recu.notions||[]).filter(n=>!chapitres.has(n.id)),...copieJeu(S.notions.filter(n=>chapitres.has(n.id)))];
+      recu.banque=fin;
     }
   }
   const nouveau=charge(recu);
@@ -10061,9 +10468,6 @@ const Preparation = (()=>{
       for(const source of Array.isArray(versions)?versions:[versions])archive(id,source);
     }
     for(const source of Object.values(o.seances || (o.seance ? {ancienne:o.seance} : {}))){
-      if(Array.isArray(source?.questions)&&source.questions.some(questionReportee)||Array.isArray(source?.notions)&&source.notions.some(n=>!!NOTIONS_REPORTEES[n])||NOTIONS_REPORTEES[source?.filtres?.chapitre]){
-        archive(source.id||source.mode||"ancienne",source);
-      }
       const s=sansHorsProgramme(source);
       if(valide(s)){const mode=Object.hasOwn(MODES,s.mode)?s.mode:"matin";seances[mode]={notions:[],groupe:[],...s,mode};}
     }
@@ -13599,7 +14003,7 @@ const Historique = (() => {
     let ok = 0, t = 0, la = false; (s.q||[]).forEach(q=>{ if (!(q.p||[]).includes(n)) return; la = true; const r = (q.r||{})[n]; if (!r) return; t++; if (r===q.ok) ok++; });
     return la && t ? {ok, n:t} : la ? {ok:0, n:0} : null;
   }
-  const nomNotion = id => { const x = (typeof S!=="undefined" && S.notions || []).find(n=>n.id===id) || (typeof NOTIONS!=="undefined" ? NOTIONS.find(n=>n.id===id) : null) || (typeof NOTIONS_LECTURES_RETIREES!=="undefined" ? NOTIONS_LECTURES_RETIREES[id] : null) || (typeof NOTIONS_REPORTEES!=="undefined" ? NOTIONS_REPORTEES[id] : null); return x ? x.t : id; };
+  const nomNotion = id => { const x = (typeof S!=="undefined" && S.notions || []).find(n=>n.id===id) || (typeof NOTIONS!=="undefined" ? NOTIONS.find(n=>n.id===id) : null) || (typeof NOTIONS_LECTURES_RETIREES!=="undefined" ? NOTIONS_LECTURES_RETIREES[id] : null); return x ? x.t : id; };
   function titre(s){
     if (s.a==="pavillons") return "Hissez les pavillons";
     return s.mode==="tempete" ? "La tempête" : s.mode==="tresor" ? "L'île au trésor" : "Rituel du matin";
