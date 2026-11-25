@@ -226,6 +226,8 @@ const Autonome = (() => {
     }
     const REGLES = {
       "jeu/etat": {resume:voyage, prefere:prefereVoyage, delai:6000},
+      "jeu/noel": {resume:d=>d?.v===1 && d.campagnes && typeof d.campagnes==="object" ? {contenu:JSON.stringify(d)} : null,
+        prefere:(a,b)=>!!b && (!a || a.contenu!==b.contenu), delai:150},
       "jeu/coffre": {resume:d=>d && typeof d.voyage==="string" && Number.isSafeInteger(d.maj) && d.maj>=0 ? {voyage:d.voyage,maj:d.maj,contenu:JSON.stringify(d)} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj || b.maj===a.maj && b.contenu>a.contenu), delai:150},
       "jeu/preparation": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
       "jeu/chapitres": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
@@ -253,6 +255,14 @@ const Autonome = (() => {
       const R = m.k==="db" && REGLES[m.path];
       if (R && m.data && typeof m.data==="object"){
         const v = await DB._lit(m.path);
+        // Les portes déjà ouvertes sur chaque appareil sont des acquis : une
+        // copie plus récente ne doit pas effacer une découverte faite hors ligne.
+        if(m.path==="jeu/noel" && window.Noel && R.resume(m.data)){
+          const fusion=Noel.fusion(v?.data,m.data);
+          if(JSON.stringify(fusion)!==JSON.stringify(v?.data))await DB._ecritDistant(m.path,fusion);
+          if(JSON.stringify(fusion)!==JSON.stringify(m.data))change(m.path);
+          return;
+        }
         if (!R.prefere(R.resume(v && v.data), R.resume(m.data))) return;
         if (m.path==="jeu/etat" && mode()==="tbi"){ if (typeof window.recupereEtat==="function") window.recupereEtat(m.data); return; } // le jeu décide, puis enregistre
         await DB._ecritDistant(m.path, m.data); // copie gardée, et la classe mise à jour de ce côté

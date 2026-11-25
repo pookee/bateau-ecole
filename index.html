@@ -868,6 +868,198 @@ img{max-width:100%}
 @media(max-width:700px){.decouverte-escale{padding:17px 15px}.decouverte-entete{gap:10px}.decouverte-entete h2{font-size:1.6rem}.decouverte-azulejo{width:39px;height:39px;font-size:27px}.decouverte-vue{grid-template-columns:1fr;gap:16px}.decouverte-illustration{height:200px}.decouverte-reperes{grid-template-columns:repeat(2,minmax(0,1fr))}.decouverte-mon-regard{display:block}.decouverte-mon-regard p{margin-top:4px}.decouverte-actions{align-items:stretch;flex-direction:column}.decouverte-actions .btn{width:100%}.decouverte-escale .decouverte-sources{gap:9px;flex-direction:column}}
 @media(prefers-reduced-motion:no-preference){.decouverte-escale{animation:decouverte-apparait .35s ease-out both}@keyframes decouverte-apparait{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}}
 
+/* Le calendrier reste autonome : aucun sélecteur ne modifie les questions. */
+.noel-ui{--noel-vert:#245a49;--noel-rouge:#a9363e;--noel-or:#cda45c;color:#263d35;font-family:var(--texte);min-width:0;overflow-wrap:break-word}
+.noel-ui *{box-sizing:border-box}
+.noel-ui h2,.noel-ui h3{font-family:var(--display);color:var(--noel-vert);line-height:1.1;text-wrap:balance}
+.noel-ui h2{padding-right:0;font-size:1.8rem;margin:10px 0 14px}
+.noel-ui h3{font-size:1.45rem;margin:8px 0 12px}
+.noel-ui p{line-height:1.55;margin:8px 0 14px}
+.noel-ui .btn{white-space:normal;max-width:100%;min-height:44px}
+.noel-ui .btn.prim{background:var(--noel-rouge);color:#fff}
+.noel-ui .btn.mer{background:var(--noel-vert);color:#fff}
+.noel-ui :focus-visible{outline:3px solid #b97913;outline-offset:4px}
+.noel-ui h2:focus,.noel-ui h3:focus{outline:none}
+.noel-panneau{background:#fffcf3!important;max-width:1100px!important}
+.noel-rituel{background:#fffcf3!important;width:100%;max-width:1100px!important;padding:20px!important;flex:none}
+.noel-entete{text-align:center;margin-bottom:18px}
+.noel-entete p{max-width:630px;margin:0 auto;color:#52685d}
+.noel-surtitre{font-weight:700;font-size:.83rem;letter-spacing:.12em;text-transform:uppercase;color:#8c662c}
+.noel-lecteurs{text-align:center;background:#eaf3ec;border:1px solid #cbded0;border-radius:16px;padding:13px 16px;margin:12px auto 20px}
+.noel-lecteurs>span,.noel-lecteurs>small{display:block;color:#506b5c}
+.noel-lecteurs>strong{display:block;font:800 1.7rem/1.2 var(--display);margin:5px 0;color:var(--noel-vert)}
+.noel-lecteurs>small{font-size:.85rem;margin-top:5px}
+.noel-et{font-size:.7em;color:#a9363e;padding:0 .2em}
+.noel-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 4px}
+.noel-case>h2{text-align:center}
+.noel-repere{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr);gap:14px;align-items:center;max-width:620px;margin:16px auto 22px;background:#e5f1f0;border-radius:14px;padding:10px}
+.noel-repere svg{width:100%;height:auto;display:block}
+.noel-repere figcaption>span{display:block;font-size:.8rem;color:#4e7263}
+.noel-repere figcaption>strong{display:block;font:800 1.15rem/1.15 var(--display);margin-top:4px}
+.noel-case-lecture{display:grid;gap:18px;align-items:start}
+.noel-illustration{margin:0;min-width:0;display:grid;place-items:center;min-height:150px;max-height:270px;background:#f3eee2;border-radius:16px;overflow:hidden}
+.noel-illustration>img{display:block;width:100%;height:auto;max-height:270px;object-fit:contain}
+.noel-illustration>.noel-image-manquante{width:100%;min-height:170px}
+.noel-consigne{display:block;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:700;color:#8b642d;margin:0 0 12px}
+.noel-texte p{font-size:1.15rem;line-height:1.65;margin:0}
+.noel-indice-decouvert{background:#fff0cb;border:2px solid #d6b56b;border-radius:14px;padding:18px;margin-top:24px}
+.noel-indice-decouvert>span{font-size:.8rem;font-weight:700;color:#7d5a25;text-transform:uppercase;letter-spacing:.08em}
+.noel-indice-decouvert p{font:700 1.25rem/1.45 var(--texte);margin:8px 0 12px;color:#493b24}
+.noel-indice-decouvert small{color:#67583b;font-size:.85rem}
+.noel-prologue{text-align:center;padding:12px 0}
+.noel-bouteille{display:grid;place-items:center;gap:10px;max-width:320px;width:100%;margin:20px auto 24px;padding:18px;border-radius:24px;border:2px solid #aecbba;background:#eaf3ec;cursor:pointer;color:#245a49;font:700 1.1rem var(--texte);animation:none}
+.noel-bouteille>img,.noel-bouteille>.noel-image-manquante{width:100%;height:190px;object-fit:contain;min-height:0}
+.noel-lettre>h2{text-align:center}
+.noel-parchemin{max-width:780px;margin:20px auto;background:#fbefcf;border:1px solid #d8c394;border-radius:10px;padding:22px;box-shadow:0 5px 18px #55411910}
+.noel-parchemin p{font-size:1.13rem;line-height:1.65}
+.noel-parchemin p:first-child,.noel-parchemin p:nth-last-child(2){font-weight:700;color:#6e4829}
+.noel-binomes ol,.noel-indices ol{list-style:none;padding:0;display:grid;gap:8px;margin:18px 0}
+.noel-binomes li{display:grid;grid-template-columns:80px minmax(0,1fr);gap:12px;padding:12px;background:#edf3ec;border-radius:10px;align-items:center}
+.noel-binomes li>span{font-size:.88rem;color:#627260}
+.noel-binomes li>strong{font:700 1.05rem/1.25 var(--display)}
+.noel-indices li{display:flex;align-items:flex-start;gap:12px;border:1px solid #ded8c6;background:#fbf6e9;padding:14px;border-radius:12px}
+.noel-indices li.revele{border-color:#c5d6c6;background:#edf4eb}
+.noel-indice-numero{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#fff;color:#58725c;font:800 1.15rem var(--display)}
+.noel-indices li small{color:#607761;font-size:.8rem}
+.noel-indices li p{margin:5px 0 0}
+.noel-indices .vide p{color:#8b8b7d;font-style:italic}
+.noel-reglages fieldset{border:1px solid #cbd8ca;border-radius:12px;padding:14px;margin:18px 0}
+.noel-reglages legend{font-weight:700;color:var(--noel-vert);padding:0 6px}
+.noel-choix{display:flex;gap:16px;flex-wrap:wrap}
+.noel-choix label{display:flex;align-items:center;gap:6px;font-weight:700;cursor:pointer;min-height:32px}
+.noel-choix input{width:18px;height:18px;accent-color:var(--noel-vert)}
+.noel-date-demo{background:#fff3d8;border-radius:12px;padding:14px;margin:16px 0}
+.noel-date-demo>label{display:block;font-weight:700;margin-bottom:8px}
+.noel-date-demo input,.noel-echange select{font:inherit;display:block;max-width:100%;min-width:0;min-height:44px;border:1px solid #9caf9e;border-radius:8px;padding:8px;background:#fff;color:#263d35}
+.noel-echange{display:grid;gap:12px}
+.noel-echange label{display:grid;gap:5px;min-width:0}
+.noel-echange select{width:100%}
+.noel-echange .btn{justify-self:start}
+.noel-erreur{color:#9a303a;font-weight:700;line-height:1.45}
+.noel-erreur:empty{display:none}
+@keyframes noel-bouteille-flotte{50%{transform:translateY(-5px) rotate(2deg)}}
+@media(min-width:600px){.noel-case-lecture{grid-template-columns:minmax(0,.85fr) minmax(0,1.2fr)}.noel-binomes ol{grid-template-columns:1fr 1fr}.noel-echange{grid-template-columns:1fr 1fr}.noel-echange .btn{grid-column:1/-1}.noel-indices ol{grid-template-columns:1fr 1fr}}
+/* L'agrandissement du tableau commence uniquement à 900 px. */
+@media(min-width:900px){.noel-rituel{padding:28px 34px!important}.noel-ui h2{font-size:2.3rem}.noel-ui h3{font-size:1.8rem}.noel-lecteurs>strong{font-size:2.5rem}.noel-texte p{font-size:1.4rem;line-height:1.6}.noel-parchemin p{font-size:1.3rem}.noel-indice-decouvert p{font-size:1.5rem}.noel-repere figcaption>strong{font-size:1.4rem}.noel-indices li p{font-size:1.1rem}.noel-binomes li>strong{font-size:1.25rem}}
+@media(max-width:420px){.noel-panneau{padding:14px!important}.noel-rituel{padding:15px!important}.noel-repere{grid-template-columns:minmax(0,130px) minmax(0,1fr);gap:10px}.noel-parchemin{padding:17px}.noel-actions{gap:8px}.noel-actions>.btn{width:100%}}
+@media(prefers-reduced-motion:reduce){.noel-bouteille{animation:none}.noel-porte:not(:disabled):hover{transform:none}}
+
+.noel-lecteurs{padding:10px 16px;margin:10px auto 16px;border:0;background:#edf4e8}
+.noel-lecteurs>strong{margin:4px 0}
+.noel-case-lecture.sans-illustration{display:block;max-width:820px;margin:0 auto}
+.noel-illustration-discrete{display:flex;align-items:center;justify-content:center;gap:12px;height:36px;margin:0 0 12px;color:#c2a164}
+.noel-illustration-discrete::before,.noel-illustration-discrete::after{content:"";height:1px;max-width:100px;flex:1;background:#decda5}
+.noel-illustration-discrete>span{font-size:1.1rem}
+.noel-bouteille{background:radial-gradient(ellipse at 50% 65%,#b8ded6 0,transparent 65%),#eaf4ed;border:0;box-shadow:inset 0 0 0 1px #c5dfce;padding:18px 22px 22px;max-width:330px}
+.noel-bouteille>img{height:220px;max-width:190px;filter:drop-shadow(0 12px 8px #2d584926)}
+.noel-bouteille>span{background:#fffaf0;padding:9px 16px;border-radius:50px;color:#245a49;box-shadow:0 3px 0 #d0ddc8}
+
+
+.noel-essayer-reglages{padding:18px;border-radius:16px;background:#eaf3e8;border:1px solid #d0dfc9;margin:18px 0}
+.noel-essayer-reglages p{margin:0 0 12px}
+.noel-essayer-reglages .btn{width:100%}
+.noel-essai-barre{position:sticky;top:0;z-index:4;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:#edf3fb;color:#33475b;border:1px solid #c9d8e6;border-radius:12px;padding:10px 12px;margin:0 0 20px;font-size:.85rem;box-shadow:0 4px 10px #fff8}
+.noel-essai-barre>span{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.noel-essai-barre b{background:#315474;color:#fff;border-radius:5px;padding:4px 7px;font-size:.72rem;letter-spacing:.08em}
+.noel-essai-barre>div{display:flex;gap:7px;flex-wrap:wrap}
+.noel-essai-barre .btn{font-size:.84rem;padding:8px 12px;min-height:38px;background:#fff;border:1px solid #bfd0df;box-shadow:0 2px 0 #c9d8e6}
+.noel-essais-titre{display:flex;align-items:center;gap:20px;max-width:800px;margin:12px auto 24px}
+.noel-essais-titre>img{width:100px;height:125px;object-fit:contain;flex:none}
+.noel-essais-titre h2{margin:7px 0 10px}
+.noel-essais-titre p{margin:0;max-width:540px;color:#52685d}
+.noel-scenarios{display:grid;gap:13px;max-width:850px;margin:0 auto 20px}
+.noel-scenario{width:100%;border:1px solid #c6d7c4;border-bottom:4px solid #b5cbb2;border-radius:16px;min-width:0;background:#edf4e9;color:#214d38;display:flex;align-items:center;gap:18px;padding:20px;text-align:left;cursor:pointer;transition:background .15s,transform .15s}
+.noel-scenario:nth-child(2){border-color:#e2b9ae;border-bottom-color:#d7a99b;background:#fff0e9;color:#873d3b}
+.noel-scenario:nth-child(3){border-color:#d5c28e;border-bottom-color:#ccb57d;background:#fff6da;color:#76602b}
+.noel-scenario:hover{transform:translateY(-2px);filter:brightness(.98)}
+.noel-scenario-icone{display:grid;place-items:center;flex:none;width:48px;height:48px;background:#ffffffa6;border-radius:14px;font:700 1.8rem var(--display)}
+.noel-scenario-texte{display:grid;gap:5px;min-width:0}
+.noel-scenario-texte>strong{font:800 1.3rem/1.2 var(--display)}
+.noel-scenario-texte>small{font:400 .98rem/1.4 var(--texte);color:#58645b}
+.noel-scenario-fleche{font:700 1.5rem var(--texte);margin-left:auto;flex:none}
+.noel-essai-avance{max-width:850px;margin:20px auto 0;border-top:1px solid #ddd7c5;padding-top:15px;color:#667364}
+.noel-essai-avance summary{cursor:pointer;font-weight:700;font-size:.9rem;padding:6px 0}
+.noel-essai-avance label{display:block;font-size:.9rem;margin:14px 0 7px}
+.noel-essai-avance input{display:block;max-width:100%;min-width:0;background:#fff;border:1px solid #b8c9b3;border-radius:9px;padding:9px 12px;font:inherit;color:#304d40;margin-bottom:12px}
+.noel-essai-repere{padding:12px 16px;border-left:4px solid #c4a054;background:#fff6df;border-radius:0 10px 10px 0;color:#725829}
+.noel-essai-fini{text-align:center;padding:22px 10px 28px;max-width:700px;margin:auto}
+.noel-essai-fini p{max-width:570px;margin:12px auto;color:#52685d}
+.noel-essai-succes{display:grid;place-items:center;width:70px;height:70px;border-radius:50%;background:#e3efd9;color:#2e6544;font:800 2.5rem var(--display);margin:0 auto 18px}
+@media(min-width:900px){.noel-calendrier .noel-entete h2{font-size:2rem}.noel-calendrier .noel-lecteurs>strong{font-size:2.15rem}.noel-scenario-texte>strong{font-size:1.5rem}.noel-scenario{padding:21px 24px}.noel-essais-titre>img{width:125px;height:145px}.noel-case-lecture.sans-illustration .noel-texte p{font-size:1.45rem;line-height:1.65}}
+@media(max-width:599px){.noel-essais-titre{gap:12px;align-items:flex-start}.noel-essais-titre>img{width:64px;height:85px}.noel-essais-titre h2{font-size:1.55rem}.noel-essais-titre p{font-size:.95rem}.noel-essais-titre .noel-surtitre{font-size:.65rem}.noel-scenario{gap:12px;padding:15px 12px;border-radius:13px}.noel-scenario-icone{width:35px;height:42px;font-size:1.4rem}.noel-scenario-texte>strong{font-size:1.15rem}.noel-scenario-texte>small{font-size:.86rem}.noel-scenario-fleche{display:none}.noel-essai-barre{gap:8px;padding:9px;margin-bottom:17px}.noel-essai-barre>span{font-size:.79rem}.noel-essai-barre>div{width:100%}.noel-essai-barre .btn{flex:1;font-size:.79rem}.noel-parchemin{padding:36px 26px}.noel-parchemin p{font-size:1.02rem}.noel-bouteille{max-width:280px}.noel-bouteille>img{height:190px}}
+@media(prefers-reduced-motion:reduce){.noel-scenario{transition:none}.noel-scenario:hover{transform:none}}
+
+.noel-binomes-prets{display:inline-block;background:#e6f0df;border-radius:30px;color:#346144!important;padding:6px 12px;margin-top:12px!important;font-size:.85rem;font-weight:700}
+
+/* Un calendrier illustré à bord : le texte et les commandes restent en HTML. */
+.noel-calendrier{position:relative;isolation:isolate;padding:20px 22px 24px;border:2px solid #d8af63;border-radius:22px;overflow:hidden;background:linear-gradient(#073552,#075571);box-shadow:inset 0 0 30px #00273866,0 5px 0 #87602c22;color:#fff5d9}
+.noel-calendrier::before,.noel-calendrier::after{content:"";position:absolute;left:0;right:0;z-index:-1;pointer-events:none;background-image:var(--noel-calendrier-image,url('img/theme-noel-ciel.webp'));background-size:100% auto;background-repeat:no-repeat}
+.noel-calendrier::before{top:0;height:clamp(150px,40vw,400px);background-position:center top;mask-image:linear-gradient(#000 55%,transparent)}
+.noel-calendrier::after{bottom:0;height:90px;background-position:center bottom;mask-image:linear-gradient(transparent,#000 55%)}
+.noel-calendrier .noel-calendrier-entete{display:flex;align-items:center;justify-content:center;gap:16px;max-width:850px;margin:0 auto 20px;padding:60px 10px 0;text-align:center}
+.noel-calendrier-entete>div{flex:1;min-width:0}
+.noel-calendrier .noel-entete h2{font-size:clamp(1.8rem,3.4vw,3rem);color:#fff4cc;text-shadow:0 3px 0 #063243,0 6px 18px #001f3666;padding:0;margin:8px 0 10px}
+.noel-calendrier .noel-entete p{color:#fff6de;font-size:1.05rem;line-height:1.4;text-shadow:0 2px 4px #032333}
+.noel-calendrier .noel-surtitre{color:#ffdb8b;font-size:.75rem;letter-spacing:.17em;text-shadow:0 2px 4px #032333}
+.noel-calendrier-kiko{width:116px;height:150px;object-fit:contain;flex:none;filter:drop-shadow(0 7px 5px #012b4670)}
+.noel-progression{display:inline-block;margin-top:14px;padding:5px 15px;border:1px solid #e7c58166;border-radius:30px;background:#063b53bb;color:#ffe7ad;font-size:.82rem;font-weight:700}
+.noel-calendrier .noel-lecteurs{max-width:620px;margin:0 auto 20px;padding:11px 20px;background:#fff7e7;border:1px solid #e8bf72;border-radius:14px;box-shadow:0 4px 0 #02334866}
+.noel-calendrier .noel-lecteurs>span{color:#715a37;font-size:.84rem}
+.noel-calendrier .noel-lecteurs>strong{color:#195c4d;font-size:1.8rem;margin:4px 0 0}
+.noel-avant-depart{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto 16px;max-width:760px;padding:12px 16px;border:1px solid #e3bd6b80;border-radius:14px;background:#073e56db;color:#fff3cf}
+.noel-avant-depart p{font-size:.9rem;line-height:1.4;margin:0;max-width:430px}
+.noel-calendrier .noel-avant-depart .btn{flex:none;min-height:42px;font-size:.95rem;padding:9px 16px;background:#a52632;border:1px solid #f3c276;box-shadow:0 3px 0 #562831}
+.noel-etape{padding:14px 18px;margin:0 auto 20px;max-width:760px;text-align:center;border:1px solid #e8c777;background:#fff6df;border-radius:14px;color:#284c43;box-shadow:0 4px 0 #02334866}
+.noel-etape p{margin:0 0 10px}
+.noel-portes{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 10px;margin:0 auto;max-width:1020px}
+.noel-porte{position:relative;flex:0 0 calc((100% - 20px)/3);min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:5px 0 7px;border:0;border-radius:16px;background:transparent;color:#fff1cf;font-family:var(--texte);cursor:pointer;transition:transform .18s,background .18s;box-shadow:none}
+.noel-porte:disabled{opacity:1;cursor:default;filter:none}
+.noel-porte:not(:disabled):hover{transform:translateY(-4px);background:#ffe3a51c;box-shadow:none}
+.noel-porte:focus-visible{outline:3px solid #ffe5a0;outline-offset:3px}
+.noel-porte.aujourdhui{background:radial-gradient(ellipse,#ffd7734d,transparent 72%);box-shadow:0 0 0 1px #eec77988}
+.noel-porte-jour{position:relative;z-index:1;padding:3px 12px;border:1px solid #e7be70;border-radius:7px;background:#fff0cb;color:#623c20;font:800 .9rem/1.25 var(--display);box-shadow:0 2px 0 #08374480}
+.noel-porte-visuel{position:relative;display:block;width:100%;height:128px;overflow:visible}
+.noel-porte-visuel>img,.noel-porte-visuel>.noel-image-manquante{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 5px 3px #00223980)}
+.noel-porte-visuel>b{position:absolute;z-index:1;left:50%;top:57%;transform:translate(-50%,-50%);color:#fff5d1;font:800 2.4rem/1 var(--display);text-shadow:0 3px 0 #7d171f,1px 0 #7d171f,-1px 0 #7d171f;padding:0;background:transparent}
+.noel-porte.ouverte .noel-porte-visuel>b{left:52%;color:#6b321a;text-shadow:0 1px 0 #fff4c6}
+.noel-cadenas,.noel-porte-acquise{position:absolute;z-index:2;right:7%;bottom:5%;display:grid;place-items:center;width:25px;height:25px;border:1px solid #d2a653;border-radius:50%;background:#fff3d3;color:#775023;box-shadow:0 2px 3px #052b4680}
+.noel-cadenas svg{width:12px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.noel-porte-acquise{background:#e7f1d0;color:#286248;font-weight:800;border-color:#a5c979}
+.noel-porte-etat{display:block;min-height:1.4em;max-width:100%;font:700 .73rem/1.2 var(--texte);text-align:center;color:#fff0ce;text-shadow:0 2px 3px #042b42;padding:2px 3px}
+.noel-porte.aujourdhui .noel-porte-etat{color:#ffe294}
+.noel-porte.ouverte .noel-porte-etat{color:#e9ffd2}
+.noel-porte-dessin{position:absolute;inset:8% 13% 3%;border:4px solid #daa34f;border-radius:45% 45% 5px 5px;background:linear-gradient(90deg,#a12b32,#d74240 50%,#a12b32);box-shadow:inset 0 0 0 2px #83262c,0 4px 5px #062f4480}
+.noel-porte-panneau{position:absolute;inset:5% 10%;border:1px solid #ffab6480;border-radius:45% 45% 3px 3px}
+.noel-porte-poignee{position:absolute;right:8%;top:65%;width:10px;height:10px;border-radius:50%;background:#ffd979;border:1px solid #986122}
+.noel-calendrier .noel-actions{padding-top:18px;margin:20px 0 0;border-top:1px solid #eaca7e66}
+.noel-calendrier .noel-actions .btn{background:#fff3d8;border:1px solid #e2b46c;color:#63442b;box-shadow:0 3px 0 #6a461a99;font-size:.95rem;padding:11px 18px}
+.noel-calendrier .noel-actions .btn:disabled{opacity:.8;color:#685d4f}
+.noel-calendrier .noel-actions .btn:not(:disabled):hover{background:#ffe4a5}
+.noel-rituel:has(.noel-calendrier){padding:10px!important}
+
+/* Le courrier et les traditions se lisent comme les pages d'un album. */
+.noel-courrier-entete{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.2fr);align-items:center;text-align:center;max-width:850px;margin:0 auto;background:#f8eccd;border:1px solid #d6ac61;border-radius:18px 18px 0 0;overflow:hidden}
+.noel-courrier-entete>div{padding:24px 18px}
+.noel-courrier-entete h2{padding:0;margin:12px 0 0;font-size:clamp(1.7rem,2.6vw,2.4rem)}
+.noel-courrier-image{display:block;width:100%;height:auto;aspect-ratio:1.5;object-fit:contain;border-left:1px solid #d6ac61}
+.noel-lettre .noel-parchemin{position:relative;max-width:850px;margin:0 auto;padding:32px 42px;background:linear-gradient(90deg,#efddb3 0,#fff7e1 3%,#fffaf0 50%,#fff6dd 97%,#efddb3);border:1px solid #d4b36f;border-top:5px solid #a8353c;border-radius:0 0 14px 14px;box-shadow:0 8px 18px #70542c20}
+.noel-lettre .noel-parchemin p{font-size:1.16rem;line-height:1.65;margin:0 0 15px;color:#493c2b;background:none;text-shadow:none}
+.noel-lettre .noel-parchemin p:first-child{font:800 1.5rem/1.3 var(--display);color:#98402e;margin-bottom:20px}
+.noel-lettre .noel-parchemin p:nth-last-child(2){font:800 1.65rem/1.3 var(--display);color:#a42e35;text-align:right;margin-bottom:18px}
+.noel-lettre .noel-parchemin p:last-child{font-size:.98rem;font-style:italic;color:#716047;border-top:1px solid #d8c291;padding-top:15px;margin-bottom:0}
+.noel-case .noel-illustration{display:block;min-height:0;max-height:none;aspect-ratio:3/2;background:#fff2d5;padding:5px;border:1px solid #dfbd7b;border-radius:16px;box-shadow:0 5px 0 #b69a6026}
+.noel-case .noel-illustration>img{display:block;width:100%;height:100%;max-height:none;object-fit:cover;border-radius:11px}
+.noel-case .noel-case-lecture{gap:24px;align-items:center}
+.noel-case .noel-repere{margin-bottom:20px}
+@media(min-width:600px){.noel-porte{flex-basis:calc((100% - 42px)/4)}.noel-portes{gap:18px 14px}.noel-porte-visuel{height:165px}.noel-porte-visuel>b{font-size:2.8rem}.noel-porte-jour{font-size:1rem}.noel-porte-etat{font-size:.82rem}}
+@media(min-width:900px){.noel-porte{flex-basis:calc((100% - 50px)/6)}.noel-portes{gap:20px 10px}.noel-porte-visuel{height:150px}.noel-porte-visuel>b{font-size:2.6rem}.noel-calendrier .noel-lecteurs>strong{font-size:2rem}.noel-lettre .noel-parchemin p{font-size:1.3rem}.noel-lettre .noel-parchemin p:last-child{font-size:1.1rem}}
+@media(max-width:599px){.noel-calendrier{padding:14px 9px 18px;border-radius:15px}.noel-calendrier .noel-calendrier-entete{padding:34px 2px 0;gap:5px;margin-bottom:16px}.noel-calendrier-kiko{width:66px;height:104px}.noel-calendrier .noel-surtitre{font-size:.6rem;letter-spacing:.08em}.noel-calendrier .noel-entete h2{font-size:1.7rem}.noel-calendrier .noel-entete p{font-size:.88rem}.noel-progression{font-size:.7rem;padding:5px 10px;margin-top:9px}.noel-calendrier .noel-lecteurs{padding:9px 7px;margin-bottom:16px}.noel-calendrier .noel-lecteurs>strong{font-size:1.35rem}.noel-avant-depart{display:block;text-align:center;padding:12px}.noel-avant-depart p{font-size:.8rem;margin-bottom:9px}.noel-porte-visuel{height:112px}.noel-porte-visuel>b{font-size:2rem}.noel-porte-jour{font-size:.8rem;padding:3px 8px}.noel-porte-etat{font-size:.66rem}.noel-cadenas,.noel-porte-acquise{width:21px;height:21px;right:0;bottom:4%}.noel-cadenas svg{width:10px;height:13px}.noel-calendrier .noel-actions{margin-top:18px;padding-top:14px;gap:8px}.noel-calendrier .noel-actions .btn{font-size:.86rem;padding:10px}.noel-courrier-entete{display:block}.noel-courrier-entete>div{padding:20px 12px}.noel-courrier-entete h2{font-size:1.7rem}.noel-courrier-image{border-left:0;border-top:1px solid #d6ac61}.noel-lettre .noel-parchemin{padding:25px 19px}.noel-lettre .noel-parchemin p{font-size:1.03rem}.noel-lettre .noel-parchemin p:first-child{font-size:1.3rem}.noel-lettre .noel-parchemin p:nth-last-child(2){font-size:1.45rem}.noel-lettre .noel-parchemin p:last-child{font-size:.92rem}.noel-case .noel-case-lecture{gap:20px}}
+@media(prefers-reduced-motion:reduce){.noel-porte{transition:none}.noel-porte:not(:disabled):hover{transform:none}}
+
+/* Les emplacements restent calmes et neutres tant que leurs illustrations manquent. */
+.noel-image-manquante{display:grid;place-items:center;min-width:0;min-height:64px;aspect-ratio:4/3;border:1px solid color-mix(in srgb,var(--encre) 16%,transparent);border-radius:14px;background:color-mix(in srgb,var(--papier) 82%,var(--ecume));box-sizing:border-box}
+.noel-image-manquante>span{display:block;width:28%;height:28%;max-width:50px;max-height:50px;border:2px solid color-mix(in srgb,var(--encre) 15%,transparent);border-radius:50%;opacity:.6}
+
 </style>
 <script src="vendor/nostr-lite.js"></script>
 <script src="vendor/mqtt.min.js"></script>
@@ -1102,6 +1294,8 @@ const Autonome = (() => {
     }
     const REGLES = {
       "jeu/etat": {resume:voyage, prefere:prefereVoyage, delai:6000},
+      "jeu/noel": {resume:d=>d?.v===1 && d.campagnes && typeof d.campagnes==="object" ? {contenu:JSON.stringify(d)} : null,
+        prefere:(a,b)=>!!b && (!a || a.contenu!==b.contenu), delai:150},
       "jeu/coffre": {resume:d=>d && typeof d.voyage==="string" && Number.isSafeInteger(d.maj) && d.maj>=0 ? {voyage:d.voyage,maj:d.maj,contenu:JSON.stringify(d)} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj || b.maj===a.maj && b.contenu>a.contenu), delai:150},
       "jeu/preparation": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
       "jeu/chapitres": {resume:d=>d ? {maj:d.maj||0} : null, prefere:(a,b)=>!!b && (!a || b.maj>a.maj), delai:700},
@@ -1129,6 +1323,14 @@ const Autonome = (() => {
       const R = m.k==="db" && REGLES[m.path];
       if (R && m.data && typeof m.data==="object"){
         const v = await DB._lit(m.path);
+        // Les portes déjà ouvertes sur chaque appareil sont des acquis : une
+        // copie plus récente ne doit pas effacer une découverte faite hors ligne.
+        if(m.path==="jeu/noel" && window.Noel && R.resume(m.data)){
+          const fusion=Noel.fusion(v?.data,m.data);
+          if(JSON.stringify(fusion)!==JSON.stringify(v?.data))await DB._ecritDistant(m.path,fusion);
+          if(JSON.stringify(fusion)!==JSON.stringify(m.data))change(m.path);
+          return;
+        }
         if (!R.prefere(R.resume(v && v.data), R.resume(m.data))) return;
         if (m.path==="jeu/etat" && mode()==="tbi"){ if (typeof window.recupereEtat==="function") window.recupereEtat(m.data); return; } // le jeu décide, puis enregistre
         await DB._ecritDistant(m.path, m.data); // copie gardée, et la classe mise à jour de ce côté
@@ -7710,6 +7912,48 @@ window.Navires = (() => {
   return {liste,niveau,image,imageDessus:(n,id)=>image(n,id,true),apercu:image,accessoires,actualise,verifie};
 })();
 
+window.NOEL_IMAGES=["noel-case-01.webp", "noel-case-02.webp", "noel-case-03.webp", "noel-case-04.webp", "noel-case-05.webp", "noel-case-06.webp", "noel-case-07.webp", "noel-case-08.webp", "noel-case-09.webp", "noel-case-10.webp", "noel-case-11.webp", "noel-courrier.webp", "noel-fond-calendrier.webp", "noel-porte-fermee.webp", "noel-porte-ouverte.webp"];
+/* Les images de Noël sont facultatives : le build annonce uniquement les fichiers présents. */
+window.NoelImages = (() => {
+  const objets = ["bateau","perroquet-salut","perroquet-bravo","perroquet-tempete","bouteille","courrier","porte-fermee","porte-ouverte","fond-calendrier","islande","laponie","pole-nord","timbre","tampon","coffre-ferme","coffre-ouvert"];
+  const noms = new Set([...objets.map(n=>"noel-"+n),...Array.from({length:11},(_,i)=>"noel-case-"+String(i+1).padStart(2,"0"))]);
+  const disponibles = new Set((window.NOEL_IMAGES||[]).filter(n=>typeof n==="string"));
+  const echecs = new Set();
+  const echappe = valeur => String(valeur??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  function normalise(nom){
+    const n=String(nom||"").replace(/^img\//,"").replace(/\.(?:webp|png)$/i,"");
+    const cle=n.startsWith("noel-")?n:"noel-"+n;
+    return noms.has(cle)?cle:null;
+  }
+  function src(nom){
+    const n=normalise(nom);if(!n||echecs.has(n))return null;
+    const chemin="img/"+n+".webp";
+    return disponibles.has(chemin)||disponibles.has(n+".webp")||disponibles.has(n)?chemin:null;
+  }
+  function neutre(alt,classes){
+    return `<span class="noel-image-manquante ${echappe(classes)}" ${alt?`role="img" aria-label="${echappe(alt)}"`:'aria-hidden="true"'}><span aria-hidden="true"></span></span>`;
+  }
+  function html(nom,alt="",classes=""){
+    const chemin=src(nom);
+    return chemin?`<img class="${echappe(classes)}" data-noel-image="${echappe(normalise(nom))}" src="${chemin}" alt="${echappe(alt)}" decoding="async">`:neutre(alt,classes);
+  }
+  function indisponible(nom){
+    const n=normalise(nom);if(!n||echecs.has(n))return;
+    echecs.add(n);
+    window.dispatchEvent(new CustomEvent("noel-images-change"));
+  }
+  // Une copie hors ligne incomplète garde elle aussi un emplacement neutre.
+  document.addEventListener("error",e=>{
+    const im=e.target;if(!(im instanceof HTMLImageElement))return;
+    const chemin=im.getAttribute("src")||"";
+    const nom=im.dataset.noelImage||(/^img\/noel-/.test(chemin)?normalise(chemin):null);
+    if(!nom)return;
+    indisponible(nom);
+    if(im.dataset.noelImage)im.outerHTML=neutre(im.alt,im.className);
+  },true);
+  return {src,html,indisponible};
+})();
+
 /* ---------- habillage saisonnier, indépendant du voyage et des élèves ---------- */
 window.Themes = (() => {
   const CLE = "bateau-ecole-theme", DOC = "jeu/theme";
@@ -7755,10 +7999,16 @@ window.Themes = (() => {
     }
   } catch(e){}
   const get = id => parId.get(id===undefined ? etat.id : id);
-  function image(nom,id=etat.id){
+  function image(nom,id){
+    const affiche=id===undefined;
     if(!valide(id))id=etat.id;
-    // Le grade choisit le navire ; la saison habille cette même silhouette,
-    // y compris dans les neuf aperçus du sélecteur de thématique.
+    // L'aventure de Noël habille temporairement la vue, jamais le choix enregistré.
+    // Le bateau fourni remplace l'image, sans changer le navire ou le grade acquis.
+    if(affiche&&window.Noel?.actif?.()&&(nom==="bateau"||/^perroquet-(salut|bravo|tempete)$/.test(nom))){
+      const noel=window.NoelImages?.src(nom);if(noel)return noel;
+    }
+    // Sans illustration de Noël, le grade et la saison choisissent l'image habituelle.
+    // Les neuf aperçus du sélecteur gardent toujours leur propre silhouette.
     if(window.Navires?.niveau()>0 && (nom==="bateau" || nom==="bateau-dessus"))return nom==="bateau-dessus"?Navires.imageDessus(Navires.niveau(),id):Navires.image(Navires.niveau(),id);
     if(id==="noel" && nom==="bateau")return "img/theme-noel-bateau-equipage.png";
     if(id==="noel" && /^perroquet-(salut|bravo|tempete)$/.test(nom))return `img/theme-noel-${nom}.png`;
@@ -7887,6 +8137,8 @@ window.Themes = (() => {
   // Deux vues du même navigateur se mettent aussi à jour, même sans liaison active.
   window.addEventListener("storage",e=>{if(e.key===CLE){try{recoit(JSON.parse(e.newValue));}catch(err){}}});
   window.addEventListener("ambiancechange",selectionMusique);
+  window.addEventListener("noel-change",applique);
+  window.addEventListener("noel-images-change",applique);
   return {liste,actuel:()=>etat.id,choix:()=>({id:etat.id,explicite:etat.maj>1}),get,image,valide,choisir,rendSelecteur,ouvre,pret};
 })();
 
@@ -8657,7 +8909,7 @@ const IMG = {};
 ["ciel-orage","soleil","nuage1","nuage2","nuage3","bateau-calme","orage1","orage2","vague-claire","vague-foncee",
  "port","ile","rocher1","rocher2","rocher3","bouteille"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.src=`img/${n}.webp`; IMG[n]=i; });
 function imagesTheme(){
-  ["ciel","bateau","bateau-dessus"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.src=Themes.image(n); IMG[n]=i; });
+  ["ciel","bateau","bateau-dessus"].forEach(n=>{ const i=new Image(); i.decoding="async"; i.onerror=()=>{if(i.getAttribute("src")===window.NoelImages?.src(n))NoelImages.indisponible(n);}; i.src=Themes.image(n); IMG[n]=i; });
 }
 imagesTheme();
 window.addEventListener("themechange", imagesTheme);
@@ -8672,6 +8924,9 @@ const Mer = (() => {
   const nuages = [0,1,2,3,4].map(i=>({x:i/5+Math.random()*.1,y:.02+Math.random()*.16,s:.8+Math.random()*.5,v:.004+Math.random()*.005,k:(i%3)+1}));
   const noirs = [0,1,2].map(i=>({x:i/3+Math.random()*.1,y:.02+Math.random()*.1,s:1+Math.random()*.4,v:.01+Math.random()*.01,k:(i%2)+1}));
   const gouttes = Array.from({length:180},()=>({x:Math.random(),y:Math.random(),v:.8+Math.random()*.6}));
+  const flocons = Array.from({length:70},(_,i)=>({x:((i*47)%73)/73,y:((i*31)%71)/71,r:1+(i%3)*.7,v:.7+(i%5)*.15}));
+  const mouvementReduit=window.matchMedia?.("(prefers-reduced-motion: reduce)");
+  let derniereNeige=0;
   function taille(){ const r=cv.getBoundingClientRect(); if(!r.width||!r.height)return; if(W!==r.width||H!==r.height)st.combatPlace=false; dpr=Math.min(2,window.devicePixelRatio||1); W=r.width; H=r.height; cv.width=Math.max(1,W*dpr); cv.height=Math.max(1,H*dpr); g.setTransform(dpr,0,0,dpr,0,0); }
   window.addEventListener("resize", taille);
   if(typeof ResizeObserver!=="undefined")new ResizeObserver(()=>{taille();if(typeof ajusteMer==="function")ajusteMer();}).observe(cv);
@@ -8729,6 +8984,7 @@ const Mer = (() => {
     const mer=st.merA, s=st.sA;
     // Chaque thème conserve son ciel ; le thème de base retrouve soleil et nuages animés.
     const theme=Themes.get(), original=theme.id==="base";
+    const noel=!!window.Noel?.actif?.();
     g.fillStyle=theme.scene.sky; g.fillRect(0,0,W,H);
     couvre(IMG.ciel,1,true); couvre(IMG["ciel-orage"],o);
     const sol=Math.max(70,Math.min(W,H)*.16);
@@ -8738,6 +8994,19 @@ const Mer = (() => {
     }
     if(o>.02) noirs.forEach(n=>{ n.x+=n.v/60; if(n.x>1.25) n.x=-.25; sprite(IMG["orage"+n.k],n.x*W,n.y*H+sol*.5,Math.min(W,1600)*.16*n.s,"centre",o); });
     if (st.eclair>0){ g.fillStyle=`rgba(255,255,240,${st.eclair})`; g.fillRect(0,0,W,H); st.eclair-=.06; }
+    // La neige est derrière le bateau et l'interface : aucun flocon sur les textes.
+    // La tempête ne change que d'aspect ; son intensité reste celle de la séance.
+    const dt=derniereNeige?Math.min(.05,(now-derniereNeige)/1000):0;derniereNeige=now;
+    if(noel){
+      const anime=!mouvementReduit?.matches, nombre=anime?Math.round(28+o*42):16;
+      g.fillStyle=`rgba(255,255,255,${.58+o*.2})`;
+      g.beginPath();
+      flocons.slice(0,nombre).forEach(f=>{
+        if(anime){f.y=(f.y+dt*f.v*(.025+o*.08))%1;f.x=(f.x+dt*(.004-o*.055)+1)%1;}
+        const x=f.x*W+Math.sin(t*.5+f.y*8)*(anime?5:0),y=f.y*Math.max(1,mer);
+        g.moveTo(x+f.r,y);g.arc(x,y,f.r,0,Math.PI*2);
+      });g.fill();
+    }
     // vagues du fond
     const vh = 72*s*(1+o*.4);
     bande(IMG["vague-claire"], mer-vh*.5, vh, t*(26+o*80), o>.5?"#10294F":theme.scene.seaBack);
@@ -8759,8 +9028,9 @@ const Mer = (() => {
     const bx=k?k.x:xB,by=k?k.y:yB,rotation=k?k.rotation:roul,alpha=k?k.alpha:1;
     const texture=im=>k?kraken.texture(im,k.coque):im;
     const premierNavire=!window.Navires?.niveau();
-    if(original&&premierNavire)sprite(texture(IMG["bateau-calme"]),bx,by,wB,"bas",alpha,rotation);
-    sprite(texture(IMG.bateau),bx,by,wB,"bas",alpha*(original&&premierNavire?Math.max(0,Math.min(1,(st.vent-.1)/.4)):1),rotation);
+    const bateauCalme=original&&premierNavire&&!(noel&&window.NoelImages?.src("bateau"));
+    if(bateauCalme)sprite(texture(IMG["bateau-calme"]),bx,by,wB,"bas",alpha,rotation);
+    sprite(texture(IMG.bateau),bx,by,wB,"bas",alpha*(bateauCalme?Math.max(0,Math.min(1,(st.vent-.1)/.4)):1),rotation);
     if(alpha>.01&&window.CoffreUI?.dessineBateau){
       g.save();g.translate(bx,by);g.rotate(rotation);g.globalAlpha=alpha;
       CoffreUI.dessineBateau(g,{w:wB,h:hauteur,t});g.restore();
@@ -8775,8 +9045,8 @@ const Mer = (() => {
     bande(IMG["vague-foncee"], mer+20*s, vh2, t*(44+o*120), o>.5?"#06162F":theme.scene.seaFront);
     if(k)kraken.dessineSurface(g,k);
     if (o>.05){ g.fillStyle=`rgba(40,30,80,${.2*o})`; g.fillRect(0,0,W,H);
-      g.strokeStyle=`rgba(220,230,255,${.55*o})`; g.lineWidth=1.6; g.beginPath();
-      gouttes.forEach(d=>{ d.y+=d.v*.02; d.x-=.004; if(d.y>1){d.y=0;d.x=Math.random()*1.2;} const x=d.x*W,y=d.y*H; g.moveTo(x,y); g.lineTo(x-6,y+18); }); g.stroke(); }
+      if(!noel){g.strokeStyle=`rgba(220,230,255,${.55*o})`; g.lineWidth=1.6; g.beginPath();
+        gouttes.forEach(d=>{ d.y+=d.v*.02; d.x-=.004; if(d.y>1){d.y=0;d.x=Math.random()*1.2;} const x=d.x*W,y=d.y*H; g.moveTo(x,y); g.lineTo(x-6,y+18); }); g.stroke();} }
     requestAnimationFrame(frame);
   }
   return {
@@ -8883,7 +9153,7 @@ function attendre(extra){
   return new Promise(res=>{
     const stop = ()=>{ layer.removeEventListener("click",h); document.removeEventListener("keydown",k); enAttente.delete(stop); };
     const h = e=>{ const b=e.target.closest("[data-go]"); if(!b||b.disabled) return; Son.init(); stop(); res(b.dataset.go); };
-    const k = e=>{ if((e.key===" "||e.key==="Enter") && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)){ const b=layer.querySelector("[data-go].prim:not([disabled])")||layer.querySelector("[data-go]:not([disabled])"); if(b){ e.preventDefault(); b.click(); } } };
+    const k = e=>{ if(document.querySelector(".panneau"))return; if((e.key===" "||e.key==="Enter") && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)){ const b=layer.querySelector("[data-go].prim:not([disabled])")||layer.querySelector("[data-go]:not([disabled])"); if(b){ e.preventDefault(); b.click(); } } };
     layer.addEventListener("click",h); document.addEventListener("keydown",k); enAttente.add(stop);
     if (extra) extra(res, stop);
   });
@@ -8912,6 +9182,7 @@ function accueil(){
     ${enseigne("Mode démo","On s'entraîne !","Rien n'est enregistré : en quittant, tout revient comme avant.")}
     <p class="sous" style="text-align:center">Le vendredi complet : affrontez la tempête et échappez au Kraken pour arriver à l’escale, tamponner le passeport et écrire la carte postale.</p>
     <div class="home-cta">
+      <button class="btn prim big" data-go="noel">Essayer Noël</button>
       ${S.seance?.mode==="tresor"?`<button class="btn prim big" data-go="reprendre-tresor">Reprendre l’expédition de démo</button>`:""}
       <button class="btn prim big" data-go="tresor">Île au trésor · démo express</button>
       <button class="btn mer big" data-go="tresor-complet">Île au trésor · les 12 questions</button>
@@ -8931,6 +9202,7 @@ function accueil(){
       if(go==="kraken-demo"){KrakenMer.reset();S.seance=null;if(Math.max(...S.escalesVues)>=ESCALES.length-1){S.escalesVues=[0];S.milles=0;}delete S.kraken;Kraken.debut(S);S.reglages.kraken=true;S.reglages.nbQ=3;S.krakenEssai=true;rituel("matin");}
       else if(go==="reprendre-kraken")rituel(S.seance.mode,true);
       else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete");
+      else if(go==="noel"){accueil();NoelUI.essais();}
       else if(go==="reprendre-vendredi"){ if(S.rythme?.arrivee) verifArrivee(); else rituel(S.seance?.mode||"tempete",true); }
       else if(go==="tresor"||go==="tresor-complet"){
         S.seance=null;S.expeditions={v:1,niveau:0,acquis:{},noms:{0:S.nom}};S.ileDemoCourte=go==="tresor";
@@ -8961,6 +9233,7 @@ function accueil(){
     <div class="home-cta">${S.kraken?.phase==="naufrage"?`<button class="btn prim big" data-go="revanche">Préparer notre revanche</button><button class="btn mer big" data-go="tresor">L’île au trésor · grande expédition</button>`:boutons()}</div>
     ${sansPrenoms||nbVues===0?`<div class="carte" style="max-width:640px;padding:12px 18px"><p class="note" style="margin:0">${nbVues===0?"Aucune notion n'est cochée comme « déjà vue » : ouvre Réglages › Questions.":"Astuce : entre les prénoms des élèves dans Réglages › Élèves (numéro de carte = élève)."}</p></div>`:""}`;
   layer.insertAdjacentHTML("beforeend",CoffreUI.compact());
+  layer.insertAdjacentHTML("beforeend",'<div class="home-preparation"><button class="btn mer" data-go="noel">Calendrier de Noël</button></div>');
   const arrivee=rythmeVoyage(S).arrivee;
   if(arrivee || S.carteAEcrire){
     const k=arrivee?.k||S.carteAEcrire;
@@ -8970,7 +9243,7 @@ function accueil(){
   if(window.Competition&&Competition.plan()){
     layer.insertAdjacentHTML("beforeend",'<button class="btn mer" data-go="equipages">La cérémonie des équipages</button>');
   }
-  attendre().then(async go=>{ if(go==="revanche"){if(S.seance?.krakenActif){rituel(S.seance.mode,true);}else{Kraken.revanche(S);sauve();rituel("matin");}}else if(go==="equipages"){await Competition.presentation();accueil();}else if(go==="escale-semaine") verifArrivee(); else if(go==="reprendre") rituel(S.seance.mode,true); else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete"); else if(go==="carte") ouvreCarte(); else if(go==="bapteme") bapteme(); else if(go==="tresor") rituel("tresor"); else if(go==="carte-postale") ecrireCarte(S.carteAEcrire); });
+  attendre().then(async go=>{ if(go==="noel"){accueil();NoelUI.calendrier();}else if(go==="revanche"){if(S.seance?.krakenActif){rituel(S.seance.mode,true);}else{Kraken.revanche(S);sauve();rituel("matin");}}else if(go==="equipages"){await Competition.presentation();accueil();}else if(go==="escale-semaine") verifArrivee(); else if(go==="reprendre") rituel(S.seance.mode,true); else if(go==="matin") rituel("matin"); else if(go==="tempete") rituel("tempete"); else if(go==="carte") ouvreCarte(); else if(go==="bapteme") bapteme(); else if(go==="tresor") rituel("tresor"); else if(go==="carte-postale") ecrireCarte(S.carteAEcrire); });
 }
 function modeDemo(on){
   KrakenMer.reset();
@@ -8979,6 +9252,7 @@ function modeDemo(on){
     S.seance=null; S.carteAEcrire=null; S.rythme={...rythmeVoyage(S),arrivee:null};
   }
   else { if (avantDemo) S = charge(JSON.parse(avantDemo)); avantDemo = null; DEMO = false; Mer.snap(); }
+  window.Noel?.demo(on);
   majBarre(); majMer(); Mer.snap(); retourMenu();
 }
 
@@ -9267,6 +9541,13 @@ async function rituel(mode, reprise=false){
   }
   enJeu=true;
   const generation=GEN;
+  await Noel.branche();
+  if(generation!==GEN)return;
+  // Le prologue et les cases précèdent les questions : aucune préparation consommée ici.
+  if(!reprise && mode!=="tresor" && !await NoelUI.avantRituel()){
+    if(generation===GEN){enJeu=false;accueil();}return;
+  }
+  if(generation!==GEN)return;
   // Un clic rapide après chargement doit aussi retrouver la préparation enregistrée.
   await Preparation.init();
   if(!reprise && !DEMO)await Preparation.assureAutomatique();
@@ -9824,10 +10105,10 @@ function ouvreCarte(){
     </svg>`,"carte-monde");
   d.querySelector("svg").addEventListener("click",e=>{ const g=e.target.closest("[data-esc]"); if(!g) return; const k=+g.dataset.esc; if(!vues.has(k)||enJeu) return; d.remove(); cartePostale(k,false).then(accueil); });
 }
-const J_TYPES = {matin:["Rituel","#2B7A9E"],tempete:["Tempête","#5B4B8A"],tresor:["Trésor","#B8860B"],escale:["Escale","#2F9E5B"],carte:["Carte postale","#C0612B"],bapteme:["Baptême","#E0654A"]};
+const J_TYPES = {matin:["Rituel","#2B7A9E"],tempete:["Tempête","#5B4B8A"],tresor:["Trésor","#B8860B"],escale:["Escale","#2F9E5B"],carte:["Carte postale","#C0612B"],bapteme:["Baptême","#E0654A"],noel:["Noël","#9C3246"]};
 function ouvreJournal(){
   const jours = []; let cle = null;
-  (S.journal||[]).forEach(j=>{ const d=new Date(j.d); const k=d.toDateString(); if(k!==cle){ cle=k; jours.push({d, l:[]}); } jours[jours.length-1].l.push(j); });
+  [...(S.journal||[]),...(window.Noel?.journal()||[])].sort((a,b)=>new Date(b.d)-new Date(a.d)).forEach(j=>{ const d=new Date(j.d); const k=d.toDateString(); if(k!==cle){ cle=k; jours.push({d, l:[]}); } jours[jours.length-1].l.push(j); });
   const ligne = j => { const [lab,col] = J_TYPES[j.type]||["Note","#6B7C88"];
     return `<li><div class="j-tete"><span class="chip" style="background:${col}">${lab}</span><b>${esc(j.titre||j.esc||"")}</b>${j.m?`<span class="j-m num">${j.m>0?"+":""}${j.m} milles</span>`:""}</div>
       ${j.resume?`<div class="j-res">${esc(j.resume)}</div>`:""}
@@ -9841,13 +10122,14 @@ function ouvreJournal(){
 let ongletR = "eleves";
 function ouvreReglages(){
   const d = panneau(`<h2>Réglages</h2><div class="tabs" id="r-tabs">
-    ${[["eleves","Élèves"],["questions","Questions"],["preparation","Préparer une séance"],["rituel","Rituel"],["bilan","Bilan des élèves"],["sons","Sons et musiques"],["theme","Thématique"],["sauve","Sauvegarde"]].concat(window.BATEAU_AUTONOME?[["tel","Téléphone"]]:[]).map(([k,t])=>`<button data-tab="${k}" class="${k===ongletR?"act":""}">${t}</button>`).join("")}
+    ${[["eleves","Élèves"],["questions","Questions"],["preparation","Préparer une séance"],["rituel","Rituel"],["bilan","Bilan des élèves"],["sons","Sons et musiques"],["theme","Thématique"],["noel","Mode Noël"],["sauve","Sauvegarde"]].concat(window.BATEAU_AUTONOME?[["tel","Téléphone"]]:[]).map(([k,t])=>`<button data-tab="${k}" class="${k===ongletR?"act":""}">${t}</button>`).join("")}
     </div><div id="r-corps"></div>`);
   d.querySelector("#r-tabs").addEventListener("click",e=>{ const b=e.target.closest("[data-tab]"); if(!b) return; ongletR=b.dataset.tab; d.querySelectorAll("#r-tabs button").forEach(x=>x.classList.toggle("act",x===b)); rendR(); });
   rendR();
 }
 function rendR(){
   const c = $("#r-corps"); if(!c) return;
+  c._noelNettoie?.();
   if (ongletR!=="sons"){ try{ stopTest(); }catch(e){} sonsOuvert=null; }
   if (ongletR==="eleves" && window.Accueil){ c.oninput=c.onchange=c.onclick=null; Accueil.editeur(c); }
   else if (ongletR==="eleves"){
@@ -9860,6 +10142,7 @@ function rendR(){
   else if (ongletR==="questions") rendQuestions(c);
   else if (ongletR==="sons") rendSons(c);
   else if (ongletR==="theme") Themes.rendSelecteur(c);
+  else if (ongletR==="noel"){c.oninput=c.onchange=c.onclick=null;NoelUI.reglages(c);}
   else if (ongletR==="tel" && typeof rendTel==="function") rendTel(c);
   else if (ongletR==="preparation"){
     c.oninput=c.onchange=c.onclick=null;
@@ -10107,9 +10390,9 @@ function ouvreCarnet(){
   const d = panneau(`<h2>Carnet de voyage</h2>
     <p class="note" style="margin:0 0 10px">Équipage : <b>${GRADES[g][1]}</b> ${etoiles(g)} · ${n} escale${n>1?"s":""} sur ${ESCALES.length-1}</p>
     <p class="note">${g<5?"Les grandes expéditions de l’Île au trésor font grandir notre équipage et lui offrent un nouveau navire avant les vacances.":"Légendes des mers : les cinq grandes promotions sont acquises !"}</p>
-    <div class="tabs" id="c-tabs">${[["passeport","Passeport"],["album","Album des animaux"]].map(([k,t])=>`<button data-tab="${k}" class="${k===ongletC?"act":""}">${t}</button>`).join("")}</div>
+    <div class="tabs" id="c-tabs">${[["passeport","Passeport"],["album","Album des animaux"],["noel","Les indices du code"]].map(([k,t])=>`<button data-tab="${k}" class="${k===ongletC?"act":""}">${t}</button>`).join("")}</div>
     <div id="c-corps"></div>`,"carte-monde");
-  const rend=()=>{ const c=$("#c-corps"); c.innerHTML = ongletC==="passeport" ? htmlPasseport(null) : htmlAlbum(); };
+  const rend=()=>{ const c=$("#c-corps"); c.innerHTML = ongletC==="noel" ? NoelUI.htmlIndices() : ongletC==="passeport" ? htmlPasseport(null) : htmlAlbum(); if(ongletC==="noel")NoelUI.brancheIndices(c); };
   d.querySelector("#c-tabs").addEventListener("click",e=>{ const b=e.target.closest("[data-tab]"); if(!b) return; ongletC=b.dataset.tab; d.querySelectorAll("#c-tabs button").forEach(x=>x.classList.toggle("act",x===b)); rend(); });
   d.addEventListener("click",e=>{ const v=e.target.closest(".vignette.ok"); if(v && !enJeu){ const k=+v.dataset.esc; d.remove(); cartePostale(k,false).then(accueil); } });
   rend();
@@ -10490,6 +10773,787 @@ function editeSon(k, box){
     stopTest(); const id = o.id; AudioPerso.del(k); if (id && window.__assetsCap) window.__assetsCap.delete(id).catch(()=>{}); toast("Son d'origine remis."); sonsOuvert=null; rendR(); };
 }
 (async()=>{ window.__assetsCap = await useCap("assets"); if (typeof ongletR!=="undefined" && ongletR==="sons" && $("#r-corps")) rendR(); })();
+
+/* Les textes et dates du calendrier de Noël se modifient uniquement ici.
+   Le code et le mot de la cachette servent à valider les réponses : ne jamais
+   les insérer dans une page, un attribut HTML ou un message avant découverte. */
+window.NoelDonnees = {
+  "id": "noel-2026",
+  "debut": "2026-11-30",
+  "fin": "2026-12-18",
+  "prologue": {
+    "date": "2026-11-30",
+    "lettre": "Chers matelots du bateau-école,\nOn m'a dit que votre équipage avait traversé l'océan Atlantique et qu'il connaissait ses leçons sur le bout des doigts. J'ai besoin de vous !\nMes lutins ont rangé tous les cadeaux dans mon grand coffre… et plus personne ne se souvient du code à 4 chiffres. Heureusement, j'avais caché des indices dans les traditions de Noël du monde entier.\nChaque matin, ouvrez une case de votre calendrier : vous y trouverez une tradition et un indice. Gardez-les bien !\nRendez-vous au pôle Nord le vendredi 18 décembre. Pour que vous arriviez à temps, je vous envoie un vent magique : il soufflera dans vos voiles jusqu'au Grand Nord.\nÀ très vite !\nLe Père Noël\nP.-S. : En janvier, le vent vous ramènera à Buenos Aires pour continuer votre voyage."
+  },
+  "portes": [
+    {
+      "id": "01",
+      "numero": 1,
+      "date": "2026-12-01",
+      "pays": "Argentine",
+      "titre": "Noël en plein été",
+      "texte": "En Argentine, Noël tombe en plein été ! Ce pays est de l'autre côté de l'équateur : quand c'est l'hiver chez nous, c'est l'été là-bas. Le soir du 24 décembre, il peut faire 30 degrés. Les familles dînent tard, souvent dehors. À minuit pile, on ouvre les cadeaux et on tire des feux d'artifice. Au dessert, on mange le pan dulce, une brioche aux fruits confits.",
+      "indice": "Le code est un nombre compris entre 3 000 et 5 000.",
+      "coord": {
+        "lon": -58.3816,
+        "lat": -34.6037
+      },
+      "image": "case-01"
+    },
+    {
+      "id": "02",
+      "numero": 2,
+      "date": "2026-12-03",
+      "pays": "Islande",
+      "titre": "Les 13 lutins d'Islande",
+      "texte": "En Islande, ce n'est pas un Père Noël qui passe, mais 13 lutins farceurs ! À partir du 12 décembre, il en arrive un chaque nuit. Les enfants posent une chaussure sur le rebord de leur fenêtre. Les enfants sages y trouvent un petit cadeau… et les autres, une pomme de terre !",
+      "indice": "Additionne les quatre chiffres du code : tu trouves le nombre de lutins d'Islande.",
+      "coord": {
+        "lon": -21.9426,
+        "lat": 64.1466
+      },
+      "image": "case-02"
+    },
+    {
+      "id": "03",
+      "numero": 3,
+      "date": "2026-12-04",
+      "pays": "Pays-Bas",
+      "titre": "Saint-Nicolas arrive en bateau",
+      "texte": "Aux Pays-Bas, Saint-Nicolas arrive à la mi-novembre… en bateau ! On raconte qu'il vient d'Espagne avec son cheval blanc. Le soir, les enfants posent une chaussure près de la cheminée, avec une carotte pour le cheval. Le grand soir des cadeaux, c'est le 5 décembre : demain !",
+      "indice": "Saint-Nicolas passe le 5 décembre… mais dans le code, il n'y a aucun chiffre 5.",
+      "coord": {
+        "lon": 4.9041,
+        "lat": 52.3676
+      },
+      "image": "case-03"
+    },
+    {
+      "id": "04",
+      "numero": 4,
+      "date": "2026-12-07",
+      "pays": "Sénégal",
+      "titre": "Les fanals de Saint-Louis",
+      "texte": "Vous vous souvenez de notre escale au Sénégal ? Dans la ville de Saint-Louis, à Noël et pour la fin de l'année, on fabrique des fanals. Ce sont d'immenses lanternes en bois et en papier, hautes de plusieurs mètres, en forme de maisons, de monuments ou d'animaux. Le soir, éclairées de l'intérieur, elles défilent dans les rues au son des chants.",
+      "indice": "Le chiffre des dizaines est pair.",
+      "coord": {
+        "lon": -16.4896,
+        "lat": 16.0326
+      },
+      "image": "case-04"
+    },
+    {
+      "id": "05",
+      "numero": 5,
+      "date": "2026-12-08",
+      "pays": "Allemagne",
+      "titre": "La couronne et le calendrier de l'Avent",
+      "texte": "Notre calendrier de l'Avent vient d'Allemagne ! Il y a plus de 150 ans, des familles allemandes comptaient déjà les jours avant Noël. La couronne de l'Avent a aussi été inventée en Allemagne, en 1839. Aujourd'hui, elle porte une bougie pour chacun des quatre dimanches avant Noël : on en allume une de plus chaque dimanche.",
+      "indice": "Le chiffre des milliers est égal au nombre de bougies d'une couronne de l'Avent.",
+      "coord": {
+        "lon": 13.405,
+        "lat": 52.52
+      },
+      "image": "case-05"
+    },
+    {
+      "id": "06",
+      "numero": 6,
+      "date": "2026-12-10",
+      "pays": "Antilles (Guadeloupe et Martinique)",
+      "titre": "Les chanté Nwèl",
+      "texte": "En Guadeloupe et en Martinique, des îles françaises de la mer des Caraïbes, Noël se fête en chantant ! Pendant l'Avent, familles, voisins et amis se retrouvent le soir pour les chanté Nwèl. On chante des chants de Noël en français et en créole, avec des tambours et des chachas, des sortes de maracas.",
+      "indice": "Le code est un nombre impair.",
+      "coord": {
+        "lon": -61.55,
+        "lat": 15.4
+      },
+      "image": "case-06"
+    },
+    {
+      "id": "07",
+      "numero": 7,
+      "date": "2026-12-11",
+      "pays": "Laponie, Finlande",
+      "titre": "La poste du Père Noël",
+      "texte": "Bienvenue en Laponie, sur le cercle polaire ! Près de la ville de Rovaniemi se trouve le bureau de poste du Père Noël. Des lettres y arrivent de près de 200 pays : juste avant Noël, jusqu'à 30 000 par jour ! Ici, en décembre, le soleil ne reste levé que deux ou trois heures.",
+      "indice": "Le chiffre des unités est plus petit que le chiffre des milliers.",
+      "coord": {
+        "lon": 25.7294,
+        "lat": 66.5039
+      },
+      "image": "case-07"
+    },
+    {
+      "id": "08",
+      "numero": 8,
+      "date": "2026-12-14",
+      "pays": "Suède",
+      "titre": "La Sainte-Lucie",
+      "texte": "Hier, le 13 décembre, la Suède fêtait la Sainte-Lucie, la fête de la lumière, en plein cœur de l'hiver, quand les nuits sont très longues. Une jeune fille habillée de blanc porte une couronne de bougies sur la tête et avance en chantant, suivie d'un cortège. On mange des brioches au safran, toutes jaunes, en forme de S.",
+      "indice": "Les quatre chiffres du code sont tous différents.",
+      "coord": {
+        "lon": 18.0686,
+        "lat": 59.3293
+      },
+      "image": "case-08"
+    },
+    {
+      "id": "09",
+      "numero": 9,
+      "date": "2026-12-15",
+      "pays": "Philippines",
+      "titre": "Le Noël le plus long du monde",
+      "texte": "Aux Philippines, en Asie, Noël commence… dès septembre ! C'est le Noël le plus long du monde. Aux fenêtres et dans les rues, on accroche des parols. Ce sont des lanternes en forme d'étoile, en bambou et en papier ou en coquillages, qui brillent de toutes les couleurs.",
+      "indice": "Le chiffre des dizaines est plus grand que le chiffre des milliers.",
+      "coord": {
+        "lon": 120.9842,
+        "lat": 14.5995
+      },
+      "image": "case-09"
+    },
+    {
+      "id": "10",
+      "numero": 10,
+      "date": "2026-12-17",
+      "pays": "France (Provence)",
+      "titre": "Et chez nous, en Provence ?",
+      "texte": "Le 4 décembre, jour de la Sainte-Barbe, beaucoup de familles provençales sèment du blé dans trois coupelles. S'il pousse bien, l'année sera bonne ! Le soir du 24, il décore la table du gros souper, qui se termine par les 13 desserts. Et dans la crèche, on installe les santons, de petits personnages en argile.",
+      "indice": "Le chiffre des dizaines est le double du nombre de coupelles de blé de la Sainte-Barbe.",
+      "coord": {
+        "lon": 5.3698,
+        "lat": 43.2965
+      },
+      "image": "case-10"
+    },
+    {
+      "id": "11",
+      "numero": 11,
+      "date": "2026-12-18",
+      "pays": "Pôle Nord",
+      "titre": "Au pôle Nord !",
+      "texte": "Vous voilà au pôle Nord ! Ici, il n'y a pas de terre : seulement de la glace qui flotte sur l'océan Arctique, la banquise. En décembre, c'est la nuit polaire : le soleil ne se lève pas du tout. Et au Canada, pour écrire au Père Noël, on met cette adresse : Pôle Nord, H0H 0H0. Ho ho ho !",
+      "indice": "Comme dans l'adresse du Père Noël au Canada, il y a un 0 dans le code.",
+      "coord": {
+        "lon": 0,
+        "lat": 90
+      },
+      "image": "case-11"
+    }
+  ],
+  "escales": [
+    {
+      "id": "islande",
+      "date": "2026-12-03",
+      "nom": "Islande",
+      "ville": "Reykjavik",
+      "coord": {
+        "lon": -21.9426,
+        "lat": 64.1466
+      },
+      "image": "noel-islande",
+      "texte": "Escale à Reykjavik, la capitale de l'Islande, une île tout près du cercle polaire. Volcans, glaciers et sources d'eau chaude : c'est le pays du feu et de la glace. Les nuits d'hiver, on peut y voir des aurores boréales danser dans le ciel.",
+      "bonjour": "Góðan daginn (se dit « gôzann daïnn »)",
+      "animal": "le renard polaire, le seul mammifère terrestre qui vivait en Islande avant l'arrivée des hommes.",
+      "hymne": "Lofsöngur",
+      "audio": {
+        "bonjour": null,
+        "hymne": null
+      }
+    },
+    {
+      "id": "laponie",
+      "date": "2026-12-11",
+      "nom": "Laponie",
+      "ville": "Kemi, puis Rovaniemi",
+      "coord": {
+        "lon": 24.5637,
+        "lat": 65.7364
+      },
+      "image": "noel-laponie",
+      "texte": "Le bateau accoste à Kemi, en Finlande, tout au nord de la mer Baltique. L'équipage file ensuite en traîneau à rennes jusqu'à Rovaniemi, sur le cercle polaire : c'est la Laponie !",
+      "bonjour": "Hyvää päivää (se dit « hu-vaa païvaa »)",
+      "animal": "le renne",
+      "hymne": "Maamme (hymne de la Finlande)",
+      "audio": {
+        "bonjour": null,
+        "hymne": null
+      }
+    },
+    {
+      "id": "pole-nord",
+      "date": "2026-12-18",
+      "nom": "Pôle Nord",
+      "ville": "Pôle Nord",
+      "coord": {
+        "lon": 0,
+        "lat": 90
+      },
+      "image": "noel-pole-nord",
+      "texte": "Terre en vue… ou plutôt glace en vue ! Le bateau s'arrête au bord de la banquise. Au loin, on aperçoit les lumières de l'atelier du Père Noël.",
+      "bonjour": "Joyeux Noël !",
+      "animal": "l'ours polaire",
+      "hymne": "un chant de Noël instrumental (je fournirai le fichier)",
+      "audio": {
+        "bonjour": null,
+        "hymne": null
+      }
+    }
+  ],
+  "code": "4063",
+  "final": {
+    "lettre": "Bravo, l'équipage !\nGrâce à vous, mon coffre est ouvert : les cadeaux pourront partir à temps. Vous avez rassemblé des indices venus des quatre coins du monde, et vous les avez croisés comme de vrais détectives des mers.\nDans le coffre, il y avait aussi une surprise pour vous… mais les 13 lutins farceurs d'Islande sont passés par là ! Ils l'ont cachée dans votre classe et n'ont laissé qu'un message codé.\nLe vent magique vous ramènera à Buenos Aires pour la rentrée.\nJoyeux Noël et bonnes vacances !\nLe Père Noël"
+  },
+  "cachette": {
+    "titre": "Le message codé des lutins",
+    "consigne": "Avec la clé, retrouvez le mot caché.",
+    "mot": "PLACARD",
+    "cle": "⭐ = A · ❄️ = C · 🎁 = D · 🔔 = L · 🦌 = P · 🎄 = R · ⛄ = E · 🕯️ = I · 🧦 = N · 🍪 = O · 🛷 = S · 🎅 = T",
+    "message": "🦌 🔔 ⭐ ❄️ ⭐ 🎄 🎁",
+    "indice": "Un placard, oui… mais lequel ? Celui qui se trouve juste derrière le bureau de la maîtresse. Chut… tout le monde reste à sa place : ce sont [prénom 1] et [prénom 2] qui vont l'ouvrir pour toute la classe.",
+    "reponse": "La surprise est dans le placard derrière le bureau de la maîtresse."
+  },
+  "retour": {
+    "aPartirDu": "2027-01-01",
+    "texte": "Le vent magique a soufflé toute la nuit… Bonne année, l'équipage ! Vous voilà de retour à Buenos Aires. Cap au sud : prochaine escale, Ushuaïa, la ville du bout du monde !"
+  }
+};
+
+/* Calendrier de Noël : document distinct du voyage, sans données nominatives.
+   Les séances, les questions, les résultats et le Kraken restent dans leur état
+   habituel. Le calendrier ne modifie jamais S ni classe/actuelle. */
+window.Noel = (() => {
+  const D = window.NoelDonnees, DOC = "jeu/noel", CLE = "bateau-ecole-noel";
+  const copie = o => JSON.parse(JSON.stringify(o));
+  const ids = new Set(D.portes.map(p => p.id));
+  const idPorte = id => String(id).padStart(2, "0");
+  const stamp = n => Number.isSafeInteger(n) && n >= 0 ? n : 0;
+  const voyageValide = v => typeof v === "string" && v.length > 0 && v.length <= 128 && !/[\u0000-\u001f]/.test(v);
+  const cleCampagne = voyage => D.id + ":" + voyage;
+  const vide = voyage => ({campagne:D.id, voyage, choix:"auto", choixMaj:0, portes:{}, binomes:{}, binomesMaj:0, prologue:{luLe:null}, maj:0});
+  const dateValide = v => {
+    if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+    const [a,m,j] = v.split("-").map(Number), d = new Date(a,m-1,j,12);
+    return d.getFullYear() === a && d.getMonth() === m-1 && d.getDate() === j;
+  };
+  const dateAcquis = v => typeof v === "string" && dateValide(v.slice(0,10)) && Number.isFinite(Date.parse(v)) ? v : null;
+  const premiere = (a,b) => !a ? b || null : !b ? a : a < b ? a : b;
+  function propresBinomes(o){
+    if (!o || typeof o !== "object" || Array.isArray(o)) return {};
+    const resultat = {}, vus = new Set();
+    for (const p of D.portes){
+      const paire = o[p.id];
+      if (!Array.isArray(paire) || paire.length !== 2 || paire.some(n => !Number.isInteger(n) || n < 1 || n > 32 || vus.has(n)) || paire[0] === paire[1]) return {};
+      resultat[p.id] = paire.slice(); paire.forEach(n => vus.add(n));
+    }
+    return resultat;
+  }
+  function propreCampagne(o){
+    // Ce document v1 reste celui du calendrier. La route et le final utiliseront
+    // des documents distincts, ignorés sans perte par cette première version.
+    if (!o || o.campagne !== D.id || !voyageValide(o.voyage)) return null;
+    const r = vide(o.voyage);
+    r.choix = ["auto","on","off"].includes(o.choix) ? o.choix : "auto";
+    r.choixMaj = stamp(o.choixMaj); r.binomesMaj = stamp(o.binomesMaj);
+    r.binomes = propresBinomes(o.binomes);
+    r.prologue.luLe = dateAcquis(o.prologue?.luLe);
+    for (const p of D.portes){
+      const porte = o.portes?.[p.id], ouverteLe = dateAcquis(porte?.ouverteLe);
+      if (ouverteLe) r.portes[p.id] = {ouverteLe, indiceLe:dateAcquis(porte.indiceLe)};
+    }
+    r.maj = Math.max(stamp(o.maj), r.choixMaj, r.binomesMaj);
+    return r;
+  }
+  function propreDocument(o){
+    const r = {v:1, maj:0, campagnes:{}};
+    if (!o || o.v !== 1 || !o.campagnes || typeof o.campagnes !== "object") return r;
+    for (const [cle,brut] of Object.entries(o.campagnes)){
+      const c = propreCampagne(brut);
+      if (!c || cle !== cleCampagne(c.voyage)) continue;
+      r.campagnes[cle] = c; r.maj = Math.max(r.maj,c.maj);
+    }
+    return r;
+  }
+  function fusion(a,b){
+    const r = propreDocument(a), autre = propreDocument(b);
+    for (const [cle,cb] of Object.entries(autre.campagnes)){
+      const ca = r.campagnes[cle];
+      if (!ca){ r.campagnes[cle] = cb; continue; }
+      if (cb.choixMaj > ca.choixMaj || cb.choixMaj === ca.choixMaj && cb.choix > ca.choix){ca.choix = cb.choix; ca.choixMaj = cb.choixMaj;}
+      if (cb.binomesMaj > ca.binomesMaj || cb.binomesMaj === ca.binomesMaj && JSON.stringify(cb.binomes) > JSON.stringify(ca.binomes)){
+        ca.binomes = cb.binomes; ca.binomesMaj = cb.binomesMaj;
+      }
+      ca.prologue.luLe = premiere(ca.prologue.luLe,cb.prologue.luLe);
+      for (const [id,p] of Object.entries(cb.portes)){
+        const avant = ca.portes[id];
+        ca.portes[id] = {ouverteLe:premiere(avant?.ouverteLe,p.ouverteLe), indiceLe:premiere(avant?.indiceLe,p.indiceLe)};
+      }
+      ca.maj = Math.max(ca.maj,cb.maj);
+    }
+    // Un ordre stable évite les renvois entre appareils pour le même contenu.
+    r.campagnes = Object.fromEntries(Object.keys(r.campagnes).sort().map(cle => {
+      const c = r.campagnes[cle];
+      c.portes = Object.fromEntries(D.portes.filter(p => c.portes[p.id]).map(p => [p.id,c.portes[p.id]]));
+      return [cle,c];
+    }));
+    r.maj = Math.max(0,...Object.values(r.campagnes).map(c => c.maj));
+    return r;
+  }
+  let documentReel = propreDocument(null), documentDemo = null, dateDemo = null, voyageDemo = null;
+  let db = null, pret = null, file = Promise.resolve(), ecritureDifferee = false, voyageTelephone = null;
+  try { documentReel = fusion(null,JSON.parse(localStorage.getItem(CLE))); } catch(e){}
+  const enDemo = () => documentDemo !== null;
+  const voyageJeu = () => typeof S !== "undefined" && voyageValide(S.voyage) ? S.voyage : null;
+  function voyage(){
+    if (enDemo()) return voyageDemo;
+    if (window.Accueil && !window.Accueil.estEcran()) return voyageTelephone || voyageJeu() || "sans-voyage";
+    return voyageJeu() || voyageTelephone || "sans-voyage";
+  }
+  const courant = () => enDemo() ? documentDemo : documentReel;
+  const get = () => copie(courant().campagnes[cleCampagne(voyage())] || vide(voyage()));
+  function date(){
+    if (enDemo() && dateDemo) return dateDemo;
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  }
+  // Consulté à chaque image de la mer : aucune copie de la sauvegarde ici.
+  function actif(){const c = courant().campagnes[cleCampagne(voyage())]?.choix || "auto", j = date();return c === "on" || c === "auto" && j >= D.debut && j <= D.fin;}
+  function annonce(){window.dispatchEvent(new CustomEvent("noel-change"));}
+  function memorise(){
+    if (enDemo()){ecritureDifferee = true; return;}
+    try {localStorage.setItem(CLE,JSON.stringify(documentReel));} catch(e){}
+  }
+  function persiste(){
+    if (enDemo()){ecritureDifferee = true;return Promise.resolve();}
+    memorise();
+    file = file.then(async () => {
+      await branche();
+      if (enDemo()){ecritureDifferee = true;return;}
+      if (db) await db.doc(DOC).set(copie(documentReel));
+    }).catch(e => console.warn("sauvegarde du calendrier de Noël",e && e.message));
+    return file;
+  }
+  function modifie(fn){
+    const c = get(), change = fn(c);
+    if (change === false) return false;
+    c.maj = Math.max(Date.now(),c.maj+1,c.choixMaj,c.binomesMaj);
+    const doc = courant(); doc.campagnes[cleCampagne(c.voyage)] = c; doc.maj = Math.max(doc.maj,c.maj);
+    if (!enDemo()) persiste();
+    annonce(); return true;
+  }
+  function choisir(choix){
+    if (!["auto","on","off"].includes(choix)) throw new Error("Choisis Auto, Activé ou Désactivé.");
+    return modifie(c => {if (c.choix === choix) return false;c.choix = choix;c.choixMaj = Math.max(Date.now(),c.choixMaj+1,c.maj+1);});
+  }
+  function simuleDate(j){
+    if (!enDemo()) throw new Error("La date simulée est réservée au mode démo.");
+    if (j !== null && j !== "" && !dateValide(j)) throw new Error("Choisis une date valide.");
+    dateDemo = j || null; annonce();return date();
+  }
+  function demo(on){
+    if (on && !enDemo()){voyageDemo = voyage();documentDemo = copie(documentReel);dateDemo = null;}
+    else if (!on && enDemo()){
+      documentDemo = null; dateDemo = null; voyageDemo = null;
+      if (ecritureDifferee){ecritureDifferee = false;persiste();}
+    }
+    annonce();
+  }
+  function prepareEssai(type){
+    if (!enDemo()) throw new Error("Les essais de Noël sont réservés au mode démo.");
+    if (type === "premiere-case") type = "premiere";
+    const dates = {bouteille:D.prologue.date,premiere:D.portes[0].date,rattrapage:D.portes[2].date};
+    if (!Object.hasOwn(dates,type)) throw new Error("Choisis l’un des trois essais de Noël.");
+    dateDemo = dates[type];
+    modifie(c => {
+      // Un essai reste rejouable lorsque la vraie classe a déjà tout découvert.
+      // On conserve les binômes de la copie ; aucun acquis réel n'est modifié.
+      c.choix = "auto";
+      c.prologue = {luLe:type === "bouteille" ? null : D.prologue.date+"T12:00:00"};
+      c.portes = {};
+      if (type === "rattrapage"){
+        const p = D.portes[0], le = p.date+"T12:00:00";
+        c.portes[p.id] = {ouverteLe:le,indiceLe:le};
+      }
+    });
+    return get();
+  }
+  const quand = () => date() + "T12:00:00";
+  function ouvre(id){
+    id = idPorte(id);const p = D.portes.find(p => p.id === id);
+    if (!p) return false;
+    if (get().portes[id]?.ouverteLe) return true;
+    if (!actif() || p.date > date()) return false;
+    return modifie(c => {c.portes[id] = {ouverteLe:quand(),indiceLe:null};});
+  }
+  function revele(id){
+    id = idPorte(id);
+    if (!ids.has(id) || !get().portes[id]?.ouverteLe) return false;
+    if (get().portes[id].indiceLe) return true;
+    return modifie(c => {c.portes[id].indiceLe = quand();});
+  }
+  function litLettre(){
+    if (get().prologue.luLe) return true;
+    if (!actif() || date() < D.prologue.date) return false;
+    return modifie(c => {c.prologue.luLe = quand();});
+  }
+  function aOuvrir(){
+    if (!actif()) return [];
+    const c = get(), j = date();
+    return D.portes.filter(p => p.date <= j && !c.portes[p.id]?.ouverteLe).slice().sort((a,b) => a.date.localeCompare(b.date));
+  }
+  const binome = id => (get().binomes[idPorte(id)] || []).slice();
+  const elevesClasse = () => window.Classe?.get()?.eleves || (typeof S !== "undefined" ? S.eleves : []);
+  function repartit(numeros, alea){
+    numeros = numeros.slice();
+    for (let i = numeros.length-1; i > 0; i--){const j = Math.floor(alea()*(i+1));[numeros[i],numeros[j]] = [numeros[j],numeros[i]];}
+    return Object.fromEntries(D.portes.map((p,i) => [p.id,numeros.slice(i*2,i*2+2)]));
+  }
+  function hasardInitial(numeros){
+    // L'identifiant aléatoire du voyage donne la graine. Les deux appareils
+    // retrouvent ainsi le même premier tirage même sans avoir encore échangé.
+    const graine = `${D.id}:${voyage()}:${numeros.join(",")}`;
+    let etat = 2166136261;
+    for (let i=0;i<graine.length;i++){etat ^= graine.charCodeAt(i);etat = Math.imul(etat,16777619);}
+    return () => {
+      etat = (etat + 0x6D2B79F5) | 0;
+      let x = Math.imul(etat ^ etat >>> 15,1 | etat);
+      x ^= x + Math.imul(x ^ x >>> 7,61 | x);
+      return ((x ^ x >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function tireBinomes(){
+    const numeros = (elevesClasse() || []).filter(e => e.actif).map(e => e.n);
+    if (numeros.length !== 22 || new Set(numeros).size !== 22 || numeros.some(n => !Number.isInteger(n) || n < 1 || n > 32)){
+      throw new Error("Le calendrier a besoin de 22 élèves actifs pour former 11 binômes. Vérifie la liste de la classe.");
+    }
+    modifie(c => {c.binomes = repartit(numeros,Math.random);c.binomesMaj = Math.max(Date.now(),c.binomesMaj+1,c.maj+1);});
+    return get().binomes;
+  }
+  function assureBinomes(){
+    if (D.portes.every(p => get().binomes[p.id]?.length === 2)) return false;
+    const v = voyage(), telephone = window.Accueil && !window.Accueil.estEcran();
+    const stable = telephone ? voyageTelephone === v : voyageTelephone === v || typeof S !== "undefined" && S.maj > 0;
+    if (v === "sans-voyage" || !stable) return false;
+    const eleves = (elevesClasse() || []).filter(e => e.actif);
+    if (eleves.length !== 22 || eleves.some(e => !String(e.prenom || "").trim() || !Number.isInteger(e.n) || e.n < 1 || e.n > 32) || new Set(eleves.map(e=>e.n)).size !== 22) return false;
+    const numeros = eleves.map(e=>e.n).sort((a,b)=>a-b);
+    // Une restauration ou une décision de l'enseignante doit toujours primer
+    // sur ce tirage de secours, quel que soit l'ordre des messages réseau.
+    modifie(c => {c.binomes = repartit(numeros,hasardInitial(numeros));c.binomesMaj = 1;});
+    return true;
+  }
+  function echange(a,b){
+    a = Number(a); b = Number(b);
+    if (a === b) return false;
+    const c = get(), liste = Object.values(c.binomes).flat();
+    if (!liste.includes(a) || !liste.includes(b)) throw new Error("Tire d’abord les binômes, puis choisis deux élèves du tableau.");
+    return modifie(c => {for (const paire of Object.values(c.binomes)) for (let i=0;i<paire.length;i++) paire[i] = paire[i] === a ? b : paire[i] === b ? a : paire[i];c.binomesMaj = Math.max(Date.now(),c.binomesMaj+1,c.maj+1);});
+  }
+  const exporte = () => copie(documentReel);
+  async function importe(doc, options = {}){
+    if (!doc) return false; // Une ancienne sauvegarde ne contient pas Noël.
+    let recu = propreDocument(doc);
+    if (voyageValide(options.deVoyage) && voyageValide(options.versVoyage)){
+      const c = recu.campagnes[cleCampagne(options.deVoyage)];
+      if (c){
+        delete recu.campagnes[cleCampagne(options.deVoyage)];
+        c.voyage = options.versVoyage;
+        if (D.portes.every(p => c.binomes[p.id]?.length === 2)){
+          c.binomesMaj = Math.max(Date.now(),c.binomesMaj+1,c.maj+1);
+          c.maj = Math.max(c.maj,c.binomesMaj);
+        }
+        recu.campagnes[cleCampagne(c.voyage)] = c;
+      }
+    }
+    if (enDemo()) documentDemo = fusion(documentDemo,recu);
+    else {documentReel = fusion(documentReel,recu);await persiste();}
+    annonce();return true;
+  }
+  function recoit(brut){
+    const recu = propreDocument(brut), fusionne = fusion(documentReel,recu);
+    const change = JSON.stringify(fusionne) !== JSON.stringify(documentReel);
+    const aCompleter = JSON.stringify(fusionne) !== JSON.stringify(recu);
+    documentReel = fusionne;
+    if (enDemo()){if (change || aCompleter) ecritureDifferee = true;return;}
+    if (change) memorise();
+    if (aCompleter) persiste();
+    if (change) annonce();
+  }
+  function branche(){
+    if (pret) return pret;
+    pret = Promise.resolve().then(async () => {
+      try {
+        db = typeof useCap === "function" ? await useCap("db") : await window.claude?.use?.("db");
+        if (!db) return;
+        const doc = db.doc(DOC), voyageDoc = db.doc("jeu/etat");
+        const [n,v] = await Promise.all([doc.get(),voyageDoc.get()]);
+        if (v.exists && voyageValide(v.data()?.voyage)) voyageTelephone = v.data().voyage;
+        if (n.exists) recoit(n.data());
+        doc.onSnapshot(s => {if (s.exists) recoit(s.data());});
+        voyageDoc.onSnapshot(s => {if (s.exists && voyageValide(s.data()?.voyage) && s.data().voyage !== voyageTelephone){voyageTelephone = s.data().voyage;if (window.Classe) assureBinomes();annonce();}});
+        annonce();
+      } catch(e){console.warn("lecture du calendrier de Noël",e && e.message);}
+    });
+    return pret;
+  }
+  function journal(){
+    const c = get();
+    return D.portes.filter(p => c.portes[p.id]?.ouverteLe).map(p => ({
+      id:D.id + ":" + p.id, d:c.portes[p.id].ouverteLe, type:"noel", titre:p.titre,
+      resume:`Calendrier de Noël · case ${p.numero} · ${p.pays}`
+    }));
+  }
+  return {get,actif,date,choisir,choix:()=>get().choix,simuleDate,demo,prepareEssai,ouvre,revele,litLettre,aOuvrir,binome,tireBinomes,assureBinomes,echange,exporte,importe,branche,fusion,journal};
+})();
+
+/* Le calendrier se lit avant le rituel. Aucun écran ne touche aux questions,
+   aux préparations ou au voyage : toutes les écritures passent par Noel. */
+window.NoelUI = (() => {
+  const ech = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const donnees = () => window.NoelDonnees;
+  const portes = () => donnees().portes;
+  const etat = () => Noel.get();
+  const generation = () => typeof GEN === "undefined" ? 0 : GEN;
+  const demo = () => typeof DEMO !== "undefined" && DEMO;
+  const telephone = () => !!window.Accueil && !Accueil.estEcran();
+  const eleves = () => window.Classe?.get?.()?.eleves || (typeof S !== "undefined" ? S.eleves : []);
+  const nom = n => eleves().find(e => e.n === Number(n))?.prenom?.trim() || "Élève à attribuer";
+  const dateTexte = (date, court=false) => new Date(`${date}T12:00:00`).toLocaleDateString("fr-FR", court ? {day:"numeric",month:"short"} : {weekday:"long",day:"numeric",month:"long"});
+  const duJour = () => portes().find(p => p.date === Noel.date());
+  const restantes = () => portes().filter(p => p.date <= Noel.date() && !etat().portes[p.id]?.indiceLe);
+  const image = (id, alt, cls="") => {
+    if(id==="noel-bouteille"&&!window.NoelImages?.src(id))return `<img class="${ech(cls)}" src="img/bouteille.webp" alt="${ech(alt)}">`;
+    return window.NoelImages?.html(id,alt,cls) || `<span class="noel-image-manquante ${ech(cls)}" role="img" aria-label="${ech(alt)}"></span>`;
+  };
+  const dessinPorte = ouverte => window.NoelImages?.src(ouverte?"noel-porte-ouverte":"noel-porte-fermee") ? image(ouverte?"noel-porte-ouverte":"noel-porte-fermee","") : '<span class="noel-porte-dessin"><span class="noel-porte-panneau"></span><span class="noel-porte-poignee"></span></span>';
+  const paragraphs = text => String(text || "").split(/\n+/).map(p => `<p>${ech(p)}</p>`).join("");
+  const bouton = (action, texte, {id="",classe="",disabled=false}={}) => `<button class="btn ${classe}" data-go="noel-${ech(action)}${id?"-"+ech(id):""}" data-noel-action="${ech(action)}"${id?` data-noel-id="${ech(id)}"`:""}${disabled?" disabled":""}>${ech(texte)}</button>`;
+
+  function binomeHTML(p, titre="Les lecteurs du jour") {
+    const duo = p && etat().binomes[p.id];
+    return `<div class="noel-lecteurs"><span>${ech(titre)}</span><strong>${duo?.length ? duo.map(nom).map(ech).join(' <span class="noel-et">&amp;</span> ') : "Deux matelots pour lire ensemble"}</strong>${!duo?.length?'<small>Les binômes se préparent dans les réglages du mode Noël.</small>':""}</div>`;
+  }
+  function carteHTML(p) {
+    let x = ((Number(p.coord?.lon) + 170) % 360 + 360) % 360;
+    let y = 85 - Number(p.coord?.lat);
+    if(!Number.isFinite(x) || !Number.isFinite(y))return "";
+    return `<figure class="noel-repere"><svg viewBox="0 -10 360 165" role="img" aria-label="${ech(p.pays)} sur la carte du monde"><rect x="0" y="-10" width="360" height="165" rx="10" fill="#e5f1f0"/><path d="${typeof LAND!=="undefined" ? LAND : ""}" fill="#aac9bc" stroke="#fff" stroke-width=".4"/><path d="M0 85H360" stroke="#6e9990" stroke-dasharray="3 3" stroke-width=".7"/><circle cx="${x}" cy="${y}" r="7" fill="#fff"/><circle cx="${x}" cy="${y}" r="4.5" fill="#b83b42" stroke="#803139" stroke-width="1"/></svg><figcaption><span>Notre destination</span><strong>${ech(p.pays)}</strong></figcaption></figure>`;
+  }
+  function calendrierHTML(rituel=false) {
+    const e = etat(), date = Noel.date(), attente = restantes(), prochaine = attente[0], jour = duJour();
+    const lecteurs = rituel&&prochaine ? prochaine : jour || prochaine || portes().find(p=>p.date>=date) || portes().at(-1);
+    const fond = window.NoelImages?.src("noel-fond-calendrier");
+    return `<section class="noel-calendrier"${fond?` style="--noel-calendrier-image:url('${ech(fond)}')"`:""}>
+      <header class="noel-entete noel-calendrier-entete"><div><span class="noel-surtitre">Le vent magique de Noël</span><h2>Le calendrier de Noël</h2><p>Onze portes pour un voyage autour du monde.</p><span class="noel-progression">${portes().filter(p=>e.portes[p.id]?.indiceLe).length} / ${portes().length} indices découverts</span></div><img class="noel-calendrier-kiko" data-theme-preview src="img/theme-noel-perroquet-salut.png" alt="Kiko nous accompagne pour Noël"></header>
+      ${date<donnees().prologue.date&&!rituel?`<div class="noel-avant-depart"><p>Le calendrier commencera le 30 novembre. Tu peux déjà découvrir ce qui attend la classe.</p>${bouton("essais","Essayer Noël",{classe:"prim big"})}</div>`:""}
+      ${binomeHTML(lecteurs, lecteurs.date===date ? "Les lecteurs du jour" : `Les lecteurs du ${dateTexte(lecteurs.date,true)}`)}
+      ${rituel ? `<div class="noel-etape"><p>${prochaine ? (prochaine.date<date ? `Une case nous attend : reprenons celle du ${ech(dateTexte(prochaine.date))}.` : "La porte du jour est prête à s’ouvrir !") : "Nos indices sont bien rangés dans le Carnet. Place au rituel !"}</p>${prochaine ? bouton("porte",`Ouvrir la case du ${dateTexte(prochaine.date,true)}`,{id:prochaine.id,classe:"prim big"}) : bouton("commencer","Commencer le rituel",{classe:"prim big"})}</div>` : ""}
+      <div class="noel-portes">${portes().map(p => {
+        const ouverte = !!e.portes[p.id]?.ouverteLe, indice = !!e.portes[p.id]?.indiceLe, future = p.date>date;
+        const ensuite = rituel && prochaine && p.date>prochaine.date && !indice;
+        return `<button class="noel-porte ${ouverte?"ouverte":""} ${p.date===date?"aujourdhui":""}" data-go="noel-porte-${p.id}" data-noel-action="porte" data-noel-id="${p.id}"${future||ensuite?" disabled":""} aria-label="${ech(dateTexte(p.date))}${future?", verrouillée":ouverte?", déjà ouverte":", ouvrir la porte"}">
+          <span class="noel-porte-jour">${ech(dateTexte(p.date,true))}</span><span class="noel-porte-visuel" aria-hidden="true">${dessinPorte(ouverte)}<b>${p.numero}</b>${future?'<span class="noel-cadenas"><svg viewBox="0 0 20 22"><path d="M5 9V6a5 5 0 0 1 10 0v3"/><rect x="2" y="9" width="16" height="11" rx="3"/><path d="M10 13v3"/></svg></span>':indice?'<span class="noel-porte-acquise">✓</span>':""}</span><span class="noel-porte-etat">${future?"Bientôt…":ensuite?"À lire ensuite":indice?"Indice conservé":ouverte?"Relire la case":p.date===date?"À ouvrir aujourd’hui":"Ouvrir la porte"}</span>
+        </button>`;
+      }).join("")}</div>
+      <footer class="noel-actions">${bouton("lettre","La lettre du Père Noël",{disabled:date<donnees().prologue.date})}${bouton("binomes","Les binômes")}${rituel?bouton("annuler","Retour à l’accueil"):""}</footer>
+    </section>`;
+  }
+  function caseHTML(p, rituel, essai=null) {
+    const illustration=!!window.NoelImages?.src(p.image || `case-${p.id}`);
+    const trouve = !!etat().portes[p.id]?.indiceLe;
+    const label = p.date===Noel.date()?"Les lecteurs du jour":`Les lecteurs du ${dateTexte(p.date,true)}`;
+    return `<article class="noel-case" data-noel-porte="${p.id}"><div class="noel-surtitre">Case ${p.numero} · ${ech(dateTexte(p.date))}</div>${binomeHTML(p,label)}
+      <h2>${ech(p.titre)}</h2>${carteHTML(p)}
+      <div class="noel-case-lecture ${illustration?"":"sans-illustration"}">${illustration?`<figure class="noel-illustration">${image(p.image || `case-${p.id}`,`Illustration de la case : ${p.titre}`)}</figure>`:`<div class="noel-illustration-discrete" role="img" aria-label="Illustration à venir pour cette tradition"><span aria-hidden="true">✦</span></div>`}<div class="noel-texte"><span class="noel-consigne">À lire ensemble, à voix haute</span>${paragraphs(p.texte)}</div></div>
+      ${trouve?`<aside class="noel-indice-decouvert" aria-live="polite"><span>Notre indice n° ${p.numero}</span><p>${ech(p.indice)}</p><small>Il est conservé dans le Carnet, à la page « Les indices du code ».</small></aside>`:""}
+      <footer class="noel-actions">${!trouve?bouton("indice","Découvrir l’indice",{id:p.id,classe:"prim big"}):bouton("calendrier",essai?.suite || (rituel?"Continuer":"Retour au calendrier"),{classe:"prim big"})}${!trouve&&!essai?bouton("calendrier","Retour au calendrier"):""}${rituel?bouton("annuler","Retour à l’accueil"):""}</footer></article>`;
+  }
+  function lettreHTML(bouteille=false, rituel=false, essai=false) {
+    if(bouteille)return `<section class="noel-prologue"><span class="noel-surtitre">Un message vient d’arriver…</span><h2>Une bouteille à la mer !</h2><p>Elle a voyagé jusqu’à notre bateau. Qui nous écrit ?</p><button class="noel-bouteille" data-go="noel-lire" data-noel-action="lire" aria-label="Ouvrir la bouteille et lire la lettre">${image("noel-bouteille","La bouteille du Père Noël")}<span>Toucher la bouteille</span></button>${essai?"":bouton("annuler",rituel?"Retour à l’accueil":"Retour au calendrier")}</section>`;
+    const courrier=window.NoelImages?.src("noel-courrier");
+    return `<article class="noel-lettre"><header class="noel-courrier-entete"><div><span class="noel-surtitre">Le courrier de l’équipage</span><h2>Une lettre du Père Noël</h2></div>${courrier?`<img class="noel-courrier-image" src="${ech(courrier)}" alt="Le Père Noël écrit à l’équipage depuis son bureau donnant sur la mer enneigée">`:""}</header><div class="noel-parchemin">${paragraphs(donnees().prologue.lettre)}</div><footer class="noel-actions">${bouton("lettre-lue",essai?"Terminer cet essai":rituel?"Nous sommes prêts !":"Retour au calendrier",{classe:"prim big"})}${rituel?bouton("annuler","Retour à l’accueil"):""}</footer></article>`;
+  }
+  function binomesHTML(avecRetour=true) {
+    const e = etat(), attribues = Object.keys(e.binomes||{}).length>0;
+    return `<section class="noel-binomes"><h3>Les matelots du calendrier</h3><p>Deux lecteurs pour chacune des onze journées.</p>${attribues?"":bouton("tirer","Tirer au sort les binômes",{classe:"prim"})}<ol>${portes().map(p=>`<li><span>${ech(dateTexte(p.date,true))}</span><strong>${e.binomes[p.id]?.length?e.binomes[p.id].map(nom).map(ech).join(" &amp; "):"À tirer au sort"}</strong></li>`).join("")}</ol>${avecRetour?`<p class="note">Pour échanger deux élèves, ouvre Réglages → Mode Noël.</p>${bouton("calendrier","Retour au calendrier",{classe:"prim"})}`:""}<p class="noel-erreur" role="status"></p></section>`;
+  }
+
+  /* Une attente annulable, y compris quand Accueil enlève le panneau ou que
+     retourMenu() invalide GEN. Elle ne laisse jamais de rituel suspendu. */
+  function interaction(cible, html, {rituel=false,panneauNoel=null}={}) {
+    cible.innerHTML = rituel?`<div class="carte noel-ui noel-rituel">${html}</div>`:html;
+    cible.scrollTop=0;
+    if(panneauNoel)panneauNoel.scrollTop=0;
+    const premier = cible.querySelector("h2,h3");
+    if(premier){premier.tabIndex=-1;premier.focus({preventScroll:true});}
+    return new Promise(resolve=>{
+      let fini=false;
+      const termine = valeur => {
+        if(fini)return;fini=true;
+        cible.removeEventListener("click",clic);document.removeEventListener("keydown",clavier);
+        panneauNoel?.removeEventListener("click",ferme);observateur.disconnect();
+        if(typeof enAttente!=="undefined")enAttente.delete(annule);
+        resolve(valeur);
+      };
+      const annule = () => termine({action:"annuler"});
+      const clic = ev => {const b=ev.target.closest("[data-noel-action]");if(!b||b.disabled||!cible.contains(b))return;ev.preventDefault();if(typeof Son!=="undefined")Son.init();termine({action:b.dataset.noelAction,id:b.dataset.noelId});};
+      const ferme = ev => {if(ev.target===panneauNoel || ev.target.closest("[data-x]"))annule();};
+      const clavier = ev => {if(ev.key==="Escape"){ev.preventDefault();annule();}else if((ev.key==="Enter"||ev.key===" ")&&!/INPUT|TEXTAREA|SELECT|BUTTON|A/.test(document.activeElement?.tagName||"")){const b=cible.querySelector(".prim[data-noel-action]:not([disabled])");if(b){ev.preventDefault();b.click();}}};
+      const observateur=new MutationObserver(()=>{if(!cible.isConnected)annule();});
+      observateur.observe(document.body,{childList:true,subtree:true});
+      cible.addEventListener("click",clic);document.addEventListener("keydown",clavier);panneauNoel?.addEventListener("click",ferme);
+      if(typeof enAttente!=="undefined")enAttente.add(annule);
+    });
+  }
+  async function parcours(cible, {rituel=false,panneauNoel=null,prologue=false}={}) {
+    const gen=generation();let vue=prologue?"bouteille":"calendrier", porte=null, erreur="";
+    while(gen===generation()){
+      let html=vue==="case"?caseHTML(porte,rituel):vue==="lettre"?lettreHTML(false,rituel):vue==="bouteille"?lettreHTML(true,rituel):vue==="binomes"?binomesHTML():calendrierHTML(rituel);
+      if(erreur)html+=`<p class="noel-erreur" role="alert">${ech(erreur)}</p>`;
+      const {action,id}=await interaction(cible,html,{rituel,panneauNoel});
+      if(gen!==generation()||action==="annuler")return false;
+      erreur="";
+      try {
+        if(action==="commencer") {if(!restantes().length)return true;continue;}
+        if(action==="essais"){panneauNoel?.remove();await essais();return false;}
+        if(action==="porte") {
+          const p=portes().find(x=>x.id===id);if(!p||p.date>Noel.date())continue;
+          if(rituel&&restantes()[0]&&p.date>restantes()[0].date&&!etat().portes[id]?.indiceLe)continue;
+          if(Noel.ouvre(id)!==false){porte=p;vue="case";}else erreur="Le mode Noël est désactivé. Active-le dans les réglages pour ouvrir une nouvelle porte.";
+        }
+        else if(action==="indice") {Noel.revele(id);vue="case";}
+        else if(action==="lire"||action==="lettre")vue="lettre";
+        else if(action==="lettre-lue") {Noel.litLettre();if(rituel&&!restantes().length)return true;vue="calendrier";}
+        else if(action==="binomes")vue="binomes";
+        else if(action==="tirer") {Noel.tireBinomes();vue="binomes";}
+        else if(action==="calendrier")vue="calendrier";
+      } catch(e) {erreur=e.message||"Cette action n’a pas pu être enregistrée.";}
+    }
+    return false;
+  }
+  const scenarios = [
+    {id:"bouteille",numero:"01",titre:"La bouteille du 30 novembre",detail:"Toucher la bouteille et lire la lettre du Père Noël.",icone:"✉"},
+    {id:"premiere-case",numero:"02",titre:"La première case · 1er décembre",detail:"Lire la tradition avec le binôme, puis découvrir l’indice.",icone:"★"},
+    {id:"rattrapage",numero:"03",titre:"Rattraper une case oubliée · 4 décembre",detail:"Lire la case du 3 décembre avant celle du jour.",icone:"↶"}
+  ];
+  function menuEssaisHTML() {
+    const nbBinomes=Object.values(etat().binomes||{}).filter(p=>p.length===2).length;
+    return `<section class="noel-menu-essais" data-noel-essais><div class="noel-essais-titre"><img data-theme-preview src="img/theme-noel-perroquet-salut.png" alt="Kiko en tenue de Noël"><div><span class="noel-surtitre">Aperçu pour l’enseignante</span><h2>Que veux-tu essayer ?</h2><p>Choisis une scène. Tout est prêt : la date, la lettre et les cases.</p>${nbBinomes===11?'<p class="noel-binomes-prets">✓ 22 élèves · 11 binômes prêts</p>':""}</div></div><div class="noel-scenarios">${scenarios.map(s=>`<button class="noel-scenario" data-go="noel-essai-${s.id}" data-noel-action="essai" data-noel-id="${s.id}"><span class="noel-scenario-icone" aria-hidden="true">${s.icone}</span><span class="noel-scenario-texte"><strong>${s.titre}</strong><small>${s.detail}</small></span><span class="noel-scenario-fleche" aria-hidden="true">→</span></button>`).join("")}</div><details class="noel-essai-avance"><summary>Essayer une autre date</summary><label for="noel-date-essai">Date de l’essai</label><input id="noel-date-essai" type="date" value="${ech(Noel.date())}">${bouton("essai-date","Voir le calendrier à cette date",{classe:"mer"})}</details></section>`;
+  }
+  function barreEssaisHTML(menu=false) {
+    return `<div class="noel-essai-barre"><span><b>ESSAI</b> Rien n’est enregistré dans la classe.</span>${menu?"":`<div>${bouton("menu-essais","Revenir aux essais")}${bouton("quitter-essais","Quitter l’essai")}</div>`}</div>`;
+  }
+  function finEssaiHTML(scenario) {
+    const resume=scenario==="bouteille"?"Tu as vu la bouteille et la lettre du 30 novembre.":scenario==="rattrapage"?"La case oubliée a été lue avant la case du jour. Les deux indices sont conservés pendant cet essai.":"Tu as lu la première tradition et découvert son indice.";
+    return `<section class="noel-essai-fini" data-noel-essai-fini><span class="noel-essai-succes" aria-hidden="true">✓</span><h2>Essai terminé</h2><p>${resume}</p><p>Le voyage et les binômes de la classe restent inchangés.</p><div class="noel-actions">${bouton("menu-essais","Revenir aux essais",{classe:"prim big"})}${bouton("quitter-essais","Quitter l’essai",{classe:"mer"})}</div></section>`;
+  }
+  async function essais() {
+    if(!window.Noel || (enJeu&&!demo()))return false;
+    // modeDemo(true) copie S : ne jamais le rappeler si une démo est déjà active.
+    if(!demo())modeDemo(true);
+    const gen=generation(), p=panneau('<h2>Essayer Noël</h2><div class="noel-ui" data-noel-contenu></div>',"noel-panneau noel-panneau-essais");
+    p.querySelector('[data-x]').textContent="Quitter l’essai";
+    const cible=p.querySelector('[data-noel-contenu]');
+    let vue="menu",scenario=null,porte=null,erreur="";
+    try {
+      while(gen===generation()&&demo()){
+        const finPorte=scenario==="rattrapage"&&porte?.id==="02"?"Lire la case du 4 décembre":"Terminer cet essai";
+        const html=vue==="menu"?menuEssaisHTML():vue==="fin"?finEssaiHTML(scenario):vue==="bouteille"?lettreHTML(true,false,true):vue==="lettre"?lettreHTML(false,false,scenario!=="libre"):vue==="case"?caseHTML(porte,false,scenario==="libre"?null:{suite:finPorte}):vue==="binomes"?binomesHTML():calendrierHTML(false);
+        const retard=scenario==="rattrapage"&&vue==="case"?`<p class="noel-essai-repere">Nous sommes le 4 décembre. ${porte.id==="02"?"On lit d’abord la case oubliée du 3 décembre.":"Puis on retrouve les lecteurs et la case du jour."}</p>`:"";
+        const attente=interaction(cible,barreEssaisHTML(vue==="menu")+retard+html+(erreur?`<p class="noel-erreur" role="alert">${ech(erreur)}</p>`:""),{panneauNoel:p});
+        // L’option avancée reste facultative ; les trois scénarios n’en dépendent pas.
+        const {action,id}=await attente;
+        if(gen!==generation()||action==="annuler"||action==="quitter-essais")break;
+        erreur="";
+        try {
+          if(action==="menu-essais"||action==="essais"){vue="menu";continue;}
+          if(action==="essai"){
+            Noel.prepareEssai(id);scenario=id;
+            if(id==="bouteille")vue="bouteille";
+            else {porte=portes().find(x=>x.id===(id==="rattrapage"?"02":"01"));Noel.ouvre(porte.id);vue="case";}
+          }
+          else if(action==="essai-date"){Noel.simuleDate(cible.querySelector('#noel-date-essai').value);Noel.choisir("on");scenario="libre";vue="calendrier";}
+          else if(action==="lire"||action==="lettre")vue="lettre";
+          else if(action==="lettre-lue"){Noel.litLettre();vue=scenario==="libre"?"calendrier":"fin";}
+          else if(action==="indice"){Noel.revele(id);vue="case";}
+          else if(action==="calendrier"){
+            if(scenario==="libre")vue="calendrier";
+            else if(scenario==="rattrapage"&&porte.id==="02"){porte=portes().find(x=>x.id==="03");Noel.ouvre(porte.id);vue="case";}
+            else vue="fin";
+          }
+          else if(action==="porte"){const choix=portes().find(x=>x.id===id);if(choix&&Noel.ouvre(id)){porte=choix;vue="case";}}
+          else if(action==="binomes")vue="binomes";
+          else if(action==="tirer"){Noel.tireBinomes();vue="binomes";}
+        } catch(e){erreur=e.message||"L’essai n’a pas pu démarrer.";}
+      }
+    } finally {
+      p.remove();
+      if(demo())modeDemo(false);
+    }
+    return true;
+  }
+  async function calendrier() {
+    if(!donnees()||!window.Noel)return false;
+    Noel.assureBinomes?.();
+    const p=panneau('<h2>Le calendrier de l’Avent</h2><div class="noel-ui" data-noel-contenu></div>',"noel-panneau");
+    const result=await parcours(p.querySelector("[data-noel-contenu]"),{panneauNoel:p});
+    p.remove();return result;
+  }
+  async function avantRituel() {
+    if(!window.Noel?.actif()||Noel.date()<donnees().prologue.date)return true;
+    Noel.assureBinomes?.();
+    const prologue=!etat().prologue?.luLe;
+    if(!prologue&&!restantes().length)return true;
+    const gen=generation(), ancienEnJeu=enJeu, precedent=document.createDocumentFragment(), scroll=layer.scrollTop;
+    while(layer.firstChild)precedent.append(layer.firstChild);
+    enJeu=true;
+    try{return await parcours(layer,{rituel:true,prologue});}
+    finally {if(generation()===gen){layer.replaceChildren(precedent);layer.scrollTop=scroll;enJeu=ancienEnJeu;}}
+  }
+  function htmlIndices() {
+    const e=etat();return `<section class="noel-ui noel-indices"><div class="noel-entete"><span class="noel-surtitre">Le secret du grand coffre</span><h3>Les indices du code</h3><p>Onze indices à réunir pour raisonner ensemble.</p></div><ol>${portes().map(p=>`<li class="${e.portes[p.id]?.indiceLe?"revele":"vide"}"><span class="noel-indice-numero">${p.numero}</span><div><small>${ech(dateTexte(p.date,true))} · ${ech(p.pays)}</small>${e.portes[p.id]?.indiceLe?`<p>${ech(p.indice)}</p>`:'<p>Un indice à découvrir…</p>'}</div></li>`).join("")}</ol>${bouton("voir-calendrier","Ouvrir le calendrier",{classe:"mer"})}</section>`;
+  }
+  function brancheIndices(cible) {
+    const b=cible.querySelector('[data-noel-action="voir-calendrier"]');if(b)b.onclick=()=>calendrier();
+  }
+  function reglages(cible) {
+    Noel.assureBinomes?.();
+    cible._noelNettoie?.();let selectionA="",selectionB="",message="";
+    const rend=()=>{
+      const e=etat(), tous=eleves().filter(x=>x.actif), attribues=Object.values(e.binomes||{}).flat();
+      const options=attribues.map(n=>`<option value="${n}">${ech(nom(n))}</option>`).join("");
+      cible.innerHTML=`<section class="noel-ui noel-reglages"><h3>Mode Noël</h3><p>Le calendrier et le vent magique, du 30 novembre au 18 décembre 2026.</p><div class="noel-essayer-reglages"><p>Pour voir ce qui se passera en classe, lance un essai.</p>${demo() || !enJeu ? bouton("demo","Essayer Noël",{classe:"prim big"}) : ""}</div><fieldset class="noel-choix"><legend>Activation</legend>${[["auto","Auto"],["on","Activé"],["off","Désactivé"]].map(([v,t])=>`<label><input type="radio" name="noel-mode" value="${v}"${e.choix===v?" checked":""}>${t}</label>`).join("")}</fieldset><p class="note">En mode Auto, la date de l’appareil décide. Le mode Noël est actuellement ${Noel.actif()?"activé":"désactivé"}.</p>
+        ${demo()?`<div class="noel-date-demo"><label for="noel-date-simulee">Date simulée · démo seulement</label><input id="noel-date-simulee" type="date" value="${ech(Noel.date())}"><p class="note">Ces essais n’enregistrent rien dans le voyage de la classe.${telephone()?" Fermer ce panneau termine l’essai.":""}</p></div>`:""}
+        <div class="noel-actions">${bouton("voir-calendrier","Ouvrir le calendrier",{classe:"mer"})}${demo()?bouton("quitter-demo","Quitter la démo"):""}</div>
+        ${binomesHTML(false)}${!attribues.length&&tous.length!==22?`<p class="note">Il faut 22 élèves actifs pour former les onze binômes. La classe en compte ${tous.length}.</p>`:""}
+        ${attribues.length?`<fieldset class="noel-echange"><legend>Échanger deux élèves</legend><label>Premier élève<select id="noel-eleve-a"><option value="">Choisir un élève</option>${options}</select></label><label>Deuxième élève<select id="noel-eleve-b"><option value="">Choisir un élève</option>${options}</select></label>${bouton("echanger","Échanger les deux élèves",{classe:"mer"})}</fieldset>`:""}<p class="noel-erreur" data-noel-message role="status">${ech(message)}</p></section>`;
+      const a=cible.querySelector("#noel-eleve-a"),b=cible.querySelector("#noel-eleve-b");if(a)a.value=selectionA;if(b)b.value=selectionB;
+    };
+    const change=ev=>{
+      try {message="";
+        if(ev.target.name==="noel-mode")Noel.choisir(ev.target.value);
+        else if(ev.target.id==="noel-date-simulee")Noel.simuleDate(ev.target.value);
+        else if(ev.target.id==="noel-eleve-a")selectionA=ev.target.value;
+        else if(ev.target.id==="noel-eleve-b")selectionB=ev.target.value;
+      }catch(e){message=e.message;}
+      rend();
+    };
+    const click=ev=>{
+      const b=ev.target.closest("[data-noel-action]");if(!b||b.disabled)return;
+      if(b.dataset.noelAction==="voir-calendrier"){nettoie();calendrier();return;}
+      if(b.dataset.noelAction==="demo"&&(demo()||!enJeu)){nettoie();essais();return;}
+      if(b.dataset.noelAction==="quitter-demo"&&demo()){nettoie();modeDemo(false);ongletR="noel";ouvreReglages();return;}
+      try {message="";if(b.dataset.noelAction==="tirer")Noel.tireBinomes();else if(b.dataset.noelAction==="echanger"){Noel.echange(Number(selectionA),Number(selectionB));message="Les deux élèves ont échangé leur journée.";}}
+      catch(e){message=e.message;}
+      rend();
+    };
+    const actualise=()=>{if(cible.isConnected)rend();else nettoie();};
+    const observe=new MutationObserver(()=>{if(!cible.isConnected)nettoie();});
+    const nettoie=()=>{cible.removeEventListener("change",change);cible.removeEventListener("click",click);window.removeEventListener("noel-change",actualise);observe.disconnect();};
+    cible._noelNettoie=nettoie;cible.addEventListener("change",change);cible.addEventListener("click",click);window.addEventListener("noel-change",actualise);observe.observe(document.body,{childList:true,subtree:true});rend();
+  }
+  return {calendrier,avantRituel,htmlIndices,brancheIndices,reglages,essais};
+})();
 
 /* Musiques originales synthétisées, sans fichier ni réseau. Réglages séparés du voyage.
    demarre() se fait dans un geste ; actualise() suit les écrans. Les ponctuels ne sont
@@ -10940,7 +12004,7 @@ const Preparation = (()=>{
     const b=document.getElementById("aa-preparation-detail");
     if(b) b.textContent=resume();
     if(window.AutoSauve) AutoSauve.bientot();
-    if((window.Accueil ? Accueil.estEcran() && Accueil.courant()==="scr-tbi" : !document.getElementById("scr-tbi").hidden) && !enJeu) { GEN++; enAttente.forEach(f=>f()); enAttente.clear(); accueil(); }
+    if((window.Accueil ? Accueil.estEcran() && Accueil.courant()==="scr-tbi" : !document.getElementById("scr-tbi").hidden) && !enJeu && !document.querySelector('.panneau .noel-ui')) { GEN++; enAttente.forEach(f=>f()); enAttente.clear(); accueil(); }
   }
   async function init(){
     if(pret) return pret;
@@ -11769,7 +12833,7 @@ window.CoffreUI = (() => {
   };
   function brocheEquipee(){return equipes().map(connu).find(o=>cible(o)==="kiko")?.id||null;}
   function kikoPorte(id,pose="salut"){
-    const o=connu(id),theme=Themes.actuel(),source=Themes.image("perroquet-"+pose),cle=`${theme}|${pose}|${id}`;
+    const o=connu(id),theme=Themes.actuel(),source=Themes.image("perroquet-"+pose),cle=`${theme}|${pose}|${id}|${source}`;
     if(!o||cible(o)!=="kiko")return Promise.resolve(source);
     if(compositesKiko.has(cle))return compositesKiko.get(cle);
     const promise=Promise.all([chargeImage(source).pret,chargeImage(imageObjet(o)).pret]).then(([base,broche])=>{
@@ -11786,10 +12850,12 @@ window.CoffreUI = (() => {
   function actualiseKiko(racine=document){
     const candidats=[...(racine.matches?.("img")?[racine]:[]),...racine.querySelectorAll?.('img[data-theme-image^="perroquet-"],img[data-coffre-kiko-pose],img[src*="perroquet-"]')||[]];
     for(const im of candidats){
+      // Une illustration de thème explicite (par exemple l'essai Noël) garde son décor.
+      if(im.hasAttribute("data-theme-preview")&&!im.dataset.coffreKikoPose)continue;
       const pose=im.dataset.coffreKikoPose||/^perroquet-(salut|bravo|tempete)$/.exec(im.dataset.themeImage||"")?.[1]||/perroquet-(salut|bravo|tempete)\./.exec(im.getAttribute("src")||"")?.[1];if(!pose)continue;
       // Le gestionnaire de thèmes laisse ce composite conserver exactement les dimensions de Kiko.
       im.dataset.coffreKikoPose=pose;im.setAttribute("data-theme-preview","");
-      const id=im.dataset.coffreKikoApercu||brocheEquipee(),cle=`${Themes.actuel()}|${pose}|${id||""}`;
+      const id=im.dataset.coffreKikoApercu||brocheEquipee(),cle=`${Themes.actuel()}|${pose}|${id||""}|${Themes.image("perroquet-"+pose)}`;
       if(im.dataset.coffreKikoRendu===cle)continue;im.dataset.coffreKikoRendu=cle;
       kikoPorte(id,pose).then(src=>{if(im.isConnected&&im.dataset.coffreKikoRendu===cle&&im.getAttribute("src")!==src)im.src=src;});
     }
@@ -12865,11 +13931,12 @@ const Classe = (() => {
   /* ---------- sauvegarde de la classe (et du voyage) ---------- */
   /* tout ce qu'il faut garder : la classe, le voyage du Bateau-école et l'historique des séances */
   async function contenu(){
+    await window.Noel?.branche();
     const v = await (await useCap("db")).doc("jeu/etat").get();
     const bateau = window.Accueil && Accueil.estEcran() && typeof S!=="undefined" && S.maj ? JSON.parse(DEMO && avantDemo ? avantDemo : JSON.stringify(S)) : (v.exists ? await Preparation.banque() : null);
     if(bateau && window.Coffre){const cs=await (await useCap("db")).doc("jeu/coffre").get();if(cs.exists&&cs.data().voyage===bateau.voyage)bateau.coffre=Coffre.fusion(bateau.coffre,cs.data());}
     if (window.Historique) await Historique.init();
-    return {format:"bateau-ecole/sauvegarde", version:3, preparation:Preparation.exporte(), date:new Date().toISOString(), classe:c, bateau, historique:window.Historique ? Historique.tout() : []};
+    return {format:"bateau-ecole/sauvegarde", version:3, preparation:Preparation.exporte(), noel:window.Noel?.exporte(), date:new Date().toISOString(), classe:c, bateau, historique:window.Historique ? Historique.tout() : []};
   }
   async function exporte(){
     const o = await contenu();
@@ -12880,7 +13947,7 @@ const Classe = (() => {
   function lit(texte){
     let o = null; try { o = JSON.parse(texte); } catch(e){}
     if (o && o.format==="bateau-ecole/sauvegarde") return {type:"sauvegarde", classe:o.classe ? propre(o.classe) : null, bateau:o.bateau && typeof o.bateau==="object" ? o.bateau : null,
-      preparation:o.preparation, historique:Array.isArray(o.historique) ? o.historique : []};
+      preparation:o.preparation, noel:o.noel, historique:Array.isArray(o.historique) ? o.historique : []};
     if (o && Array.isArray(o.eleves) && ("milles" in o || "questions" in o)) return {type:"bateau", classe:depuisEtat(o, Date.now()), bateau:o};
     if (o) return {type:"inconnu"};
     const l = lisListe(texte); return l.length ? {type:"liste", prenoms:l} : {type:"inconnu"};
@@ -12894,9 +13961,13 @@ const Classe = (() => {
     if (r.bateau){
       const b = JSON.parse(JSON.stringify(r.bateau)), dbx = await useCap("db"), v = await dbx.doc("jeu/etat").get();
       b.voyage = idVoyage(); b.remplace = (v.exists && v.data().voyage) || (typeof S!=="undefined" && S.voyage) || null; b.maj = Date.now();
+      // Restaurer d'abord les binômes : le nouveau voyage peut déclencher le
+      // premier tirage dès sa réception sur le téléphone ou l'écran.
+      await window.Noel?.importe(r.noel || Noel.exporte(),{deVoyage:r.bateau.voyage,versVoyage:b.voyage});
       if (window.Accueil && Accueil.estEcran() && typeof recupereEtat==="function"){ recupereEtat(b); }
       else await dbx.doc("jeu/etat").set(b);
     }
+    if(!r.bateau && r.noel)await window.Noel?.importe(r.noel);
   }
   function choisitFichier(){
     return new Promise(ok=>{ const i = document.createElement("input"); i.type = "file"; i.accept = ".json,.txt,.csv,application/json,text/plain,text/csv";
@@ -13164,14 +14235,17 @@ const Accueil = (() => {
   function telecommandeEcran(){
     const layer = document.getElementById("layer"); let dernier = "", t = null;
     useCap("room").then(room=>{ if (!room || !layer) return;
-      const lis = () => courant!=="scr-tbi" ? [] : [...layer.querySelectorAll("[data-go]")].filter(b=>b.offsetParent && !b.disabled && b.textContent.trim())
+      const zone = () => document.querySelector('.panneau:has(.noel-ui)') || layer;
+      const lis = () => courant!=="scr-tbi" ? [] : [...zone().querySelectorAll("[data-go]")].filter(b=>b.offsetParent && !b.disabled && b.textContent.trim())
         .map(b=>({go:b.dataset.go, t:b.textContent.trim().replace(/\s+/g," ").slice(0,48), p:b.classList.contains("prim")?1:0}))
-        .filter((x,i,l)=>l.findIndex(y=>y.go===x.go)===i).slice(0,10);
+        .filter((x,i,l)=>l.findIndex(y=>y.go===x.go)===i).slice(0,zone()===layer?10:20)
+        .concat(zone()===layer?[]:[{go:"noel-fermer-panneau",t:"Fermer le calendrier",p:0}]);
       const envoie = force => { const l = lis(), j = JSON.stringify(l); if (!force && j===dernier) return; dernier = j; room.emit("ecran", {boutons:l}).catch(()=>{}); };
-      new MutationObserver(()=>{ clearTimeout(t); t = setTimeout(()=>envoie(false), 250); }).observe(layer, {childList:true, subtree:true, attributes:true, attributeFilter:["disabled","hidden","class"]});
+      new MutationObserver(()=>{ clearTimeout(t); t = setTimeout(()=>envoie(false), 250); }).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:["disabled","hidden","class"]});
       setInterval(()=>envoie(true), 6000); envoie(true);
       room.on("cmd", m=>{ const d = m.data||{}; if (d.a!=="clic" || typeof d.go!=="string") return;
-        const b = [...layer.querySelectorAll("[data-go]")].find(x=>x.dataset.go===d.go && !x.disabled && x.offsetParent); if (b) b.click(); });
+        if(d.go==="noel-fermer-panneau" && zone()!==layer){zone().querySelector('[data-x]')?.click();return;}
+        const b = [...zone().querySelectorAll("[data-go]")].find(x=>x.dataset.go===d.go && !x.disabled && x.offsetParent); if (b) b.click(); });
     });
   }
   function telecommandeTel(){
@@ -13183,7 +14257,7 @@ const Accueil = (() => {
     z.onclick = e=>{ const b = e.target.closest("[data-go]"); if (!b) return; b.disabled = true; setTimeout(()=>{ b.disabled = false; }, 900);
       useCap("room").then(r=>r && r.emit("cmd", {a:"clic", go:b.dataset.go}).catch(()=>{})); };
     useCap("room").then(r=>{ if (!r) return;
-      r.on("ecran", m=>{ const d = m.data||{}; boutons = Array.isArray(d.boutons) ? d.boutons.filter(b=>b && typeof b.go==="string").slice(0,10) : []; dessine(); });
+      r.on("ecran", m=>{ const d = m.data||{}; boutons = Array.isArray(d.boutons) ? d.boutons.filter(b=>b && typeof b.go==="string").slice(0,21) : []; dessine(); });
       r.on("q", m=>{ const d = m.data||{}; ouverte = !!(d.qid && d.open); dessine(); }); });
   }
   /* jeu lancé depuis le téléphone : le navigateur attend un premier geste sur l'écran pour jouer les sons */
@@ -13229,7 +14303,7 @@ const Accueil = (() => {
         <div class="aa-liste"><button id="aa-preparer">${IC.cartes}<span>Voir ou modifier les prochaines questions<small id="aa-preparation-detail">${Preparation.resume()}</small></span>${IC.suite}</button>
           <button id="aa-chapitres">${IC.cartes}<span>Chapitres à réviser<small>Activer ou désactiver les chapitres du Bateau-école</small></span>${IC.suite}</button></div>
         <h2 class="aa-h2">Réglages</h2>
-        <div class="aa-liste"><button data-coffre-ouvrir data-coffre-reglages="true">${IC.sauve}<span>Le coffre de la classe<small>Nos trésors et l’objectif en perles</small></span>${IC.suite}</button><button data-v="theme">${IC.theme}<span>Thématique<small>Choisir le décor du bateau et des activités</small></span>${IC.suite}</button></div>
+        <div class="aa-liste"><button data-coffre-ouvrir data-coffre-reglages="true">${IC.sauve}<span>Le coffre de la classe<small>Nos trésors et l’objectif en perles</small></span>${IC.suite}</button><button data-v="theme">${IC.theme}<span>Thématique<small>Choisir le décor du bateau et des activités</small></span>${IC.suite}</button><button data-v="noel">${IC.theme}<span>Mode Noël<small>Calendrier, binômes et activation</small></span>${IC.suite}</button></div>
         <h2 class="aa-h2">Ma classe</h2>
         <div class="aa-liste">
           <button data-v="equipages">${IC.eleves}<span>Les équipages<small>Composition, missions et cérémonie de présentation</small></span>${IC.suite}</button>
@@ -13245,6 +14319,7 @@ const Accueil = (() => {
       const a = e.target.closest("[data-act]"); if (a){ ouvreActivite(a.dataset.act); return; }
       const v = e.target.closest("[data-v]"); if (!v) return;
       if (v.dataset.v==="theme") Themes.ouvre();
+      if (v.dataset.v==="noel"){ongletR="noel";ouvreReglages();}
       if (v.dataset.v==="appel") appel(); if (v.dataset.v==="eleves") classe(); if (v.dataset.v==="sauve") sauvegardes();
       if (v.dataset.v==="suivi" && window.Historique) Historique.suivi();
       if (v.dataset.v==="equipages") Competition.ouvre();
@@ -13468,6 +14543,8 @@ const Accueil = (() => {
     roleCourant = mode;
     intro();
     await Classe.init();
+    await window.Noel?.branche();
+    window.Noel?.assureBinomes();
     await Preparation.init();
     if (window.Historique) Historique.init().then(()=>{
       const equipagesMisAJour=mode!=="tbi"&&Competition.assure();
@@ -13475,10 +14552,12 @@ const Accueil = (() => {
       const majSuivi = ()=>{ const x = document.getElementById("aa-suivi"); if (x) x.textContent = Historique.resumeCourt(); };
       Historique.surChange(majSuivi); majSuivi();
       if (mode!=="tbi" && window.AutoSauve && AutoSauve.possible()){ // téléphone : une sauvegarde par jour, et après chaque changement
-        const a = AutoSauve.derniere(); if (equipagesMisAJour || matelotsMisAJour || !a || new Date(a).toDateString()!==new Date().toDateString()) AutoSauve.bientot();
+        const a = AutoSauve.derniere(); if (equipagesMisAJour || matelotsMisAJour || (window.Noel?.exporte().maj||0)>(a||0) || !a || new Date(a).toDateString()!==new Date().toDateString()) AutoSauve.bientot();
         Classe.surChange(()=>AutoSauve.bientot());
+        window.addEventListener("noel-change",()=>{if(!DEMO)AutoSauve.bientot();});
         useCap("db").then(db=>db.doc("jeu/etat").onSnapshot(sn=>{ if (sn.distant) AutoSauve.bientot(); })); } });
     Classe.surChange((k, origine)=>{
+      window.Noel?.assureBinomes();
       if (estEcran() && Classe.versJeu()){ if (typeof majBarre==="function") majBarre(); }
       if (courant==="aa-app" && origine==="distant") accueilTel();
       if (courant==="aa-ecran") { const c = document.querySelector(".ec-classe"); if (c) c.textContent = nomClasse(); }
@@ -14944,6 +16023,7 @@ function lanceTBI(){
 }
 function lanceTel(){ $("#scr-choix").hidden=true; $("#scr-tel").hidden=false; window.AmbianceSonore?.actualise(); Tel.init(); Preparation.init(); }
 (function(){
+  window.Noel?.branche();
   const ouvreAudio=()=>window.AmbianceSonore?.demarre();
   document.addEventListener("pointerdown",ouvreAudio,{passive:true});
   document.addEventListener("keydown",ouvreAudio);
