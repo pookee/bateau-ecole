@@ -1088,6 +1088,19 @@ img{max-width:100%}
 @media(max-width:599px){.noel-feuille{padding:24px 14px}.noel-feuille::before,.noel-feuille::after{left:-5px;right:-5px;height:14px}.noel-feuille::before{top:-7px}.noel-feuille::after{bottom:-7px}.noel-feuille>.noel-surtitre{font-size:.62rem}.noel-ui .noel-feuille>h2{font-size:1.65rem;margin-bottom:16px}.noel-case-voyage{grid-template-columns:minmax(0,1fr);gap:16px;margin-bottom:20px}.noel-case .noel-repere{padding:14px 8px 10px}.noel-repere figcaption>strong{font-size:1.2rem}.noel-feuille .noel-texte p{font-size:1.08rem;line-height:1.6}.noel-case .noel-lecteurs{padding:8px 13px;gap:4px 9px;margin-bottom:22px}.noel-case .noel-lecteurs>strong{font-size:1.25rem}.noel-case .noel-lecteurs>span{font-size:.75rem}}
 @media(prefers-reduced-motion:reduce){.noel-feuille.se-deroule{animation:none}}
 
+/* L'indice prend toute l'attention, sans rallonger le parchemin de lecture. */
+.noel-indice-dialog{position:fixed;inset:0;margin:auto;box-sizing:border-box;width:min(740px,calc(100vw - 32px));max-width:none;max-height:calc(100dvh - 40px);overflow:auto;overscroll-behavior:contain;padding:32px 38px 28px;border:2px solid #c99d50;border-radius:24px;background:radial-gradient(ellipse at 50% 0,#fffdf2,#fff3d5 75%);color:#4f3e24;text-align:center;box-shadow:0 24px 80px #061d3659,inset 0 0 0 6px #fff8e7;font-family:var(--texte)}
+.noel-indice-dialog[open]{display:grid;justify-items:center;gap:24px;animation:noel-indice-apparait 220ms ease-out both}
+.noel-indice-dialog::backdrop{background:#072334b8;backdrop-filter:blur(4px)}
+.noel-indice-dialog .noel-indice-decouvert{width:100%;margin:0;padding:0;border:0;border-radius:0;background:none}
+.noel-indice-dialog .noel-indice-sceau{display:grid;place-items:center;width:48px;height:48px;margin:0 auto 15px;border:2px solid #dbb36d;border-radius:50%;background:#a73640;color:#ffe7ae;font-size:1.7rem;line-height:1;box-shadow:0 3px 0 #7b2832}
+.noel-ui .noel-indice-dialog h2{margin:0 0 18px;padding:0;color:#856029;font:800 1.45rem/1.2 var(--display)}
+.noel-ui .noel-indice-dialog p{margin:0;color:#4f3e24;font:700 clamp(1.35rem,2.6vw,2rem)/1.5 var(--texte);text-wrap:pretty}
+.noel-ui .noel-indice-dialog>.btn{min-height:48px;padding:12px 22px;border:1px solid #b87e44;border-radius:14px;box-shadow:0 4px 0 #78303a;font-size:1.05rem}
+@keyframes noel-indice-apparait{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+@media(max-width:599px){.noel-indice-dialog{padding:26px 21px 24px;border-radius:19px}.noel-indice-dialog[open]{gap:22px}.noel-ui .noel-indice-dialog h2{font-size:1.3rem}.noel-ui .noel-indice-dialog>.btn{font-size:1rem}}
+@media(prefers-reduced-motion:reduce){.noel-indice-dialog[open]{animation:none}}
+
 /* Les découpes suivent le battant du sprite carré : le cadre, le nœud et
    les guirlandes restent immobiles pendant l'ouverture. */
 .noel-ouverture{
@@ -11518,9 +11531,11 @@ window.NoelUI = (() => {
     return `<article class="noel-case" data-noel-porte="${p.id}">${binomeHTML(p,label)}<div class="noel-feuille ${deroule?"se-deroule":""}"><div class="noel-surtitre">Case ${p.numero} · ${ech(dateTexte(p.date))}</div>
       <h2>${ech(p.titre)}</h2>
       <div class="noel-case-voyage">${carteHTML(p)}${illustration?`<figure class="noel-illustration">${image(p.image || `case-${p.id}`,`Illustration de la case : ${p.titre}`)}</figure>`:""}</div>
-      <div class="noel-texte">${paragraphs(p.texte)}</div>
-      ${trouve?`<aside class="noel-indice-decouvert" aria-live="polite"><span>Indice n° ${p.numero}</span><p>${ech(p.indice)}</p><small>Conservé dans le Carnet.</small></aside>`:""}</div>
-      <footer class="noel-actions">${!trouve?bouton("indice","Découvrir l’indice",{id:p.id,classe:"prim big"}):bouton("calendrier",essai?.suite || (rituel?"Continuer":"Retour au calendrier"),{classe:"prim big"})}${demo()?bouton("rejouer-ouverture","Revoir l’ouverture",{id:p.id}):""}${!trouve&&!essai?bouton("calendrier","Retour au calendrier"):""}${rituel?bouton("annuler","Retour à l’accueil"):""}</footer></article>`;
+      <div class="noel-texte">${paragraphs(p.texte)}</div></div>
+      <footer class="noel-actions">${bouton("indice",trouve?"Revoir l’indice":"Découvrir l’indice",{id:p.id,classe:trouve?"":"prim big"})}${trouve?bouton("calendrier",essai?.suite || (rituel?"Continuer":"Retour au calendrier"),{classe:"prim big"}):""}${demo()?bouton("rejouer-ouverture","Revoir l’ouverture",{id:p.id}):""}${!trouve&&!essai?bouton("calendrier","Retour au calendrier"):""}${rituel?bouton("annuler","Retour à l’accueil"):""}</footer></article>`;
+  }
+  function indiceHTML(p) {
+    return `<dialog class="noel-indice-dialog" aria-labelledby="noel-indice-titre" aria-describedby="noel-indice-texte"><div class="noel-indice-decouvert"><span class="noel-indice-sceau" aria-hidden="true">✦</span><h2 id="noel-indice-titre">Indice n° ${p.numero}</h2><p id="noel-indice-texte">${ech(p.indice)}</p></div>${bouton("fermer-indice","Fermer l’indice",{classe:"prim"})}</dialog>`;
   }
   function lettreHTML(bouteille=false, rituel=false, essai=false) {
     if(bouteille)return `<section class="noel-prologue"><h2>Une bouteille à la mer !</h2><button class="noel-bouteille" data-go="noel-lire" data-noel-action="lire" aria-label="Ouvrir la bouteille et lire la lettre">${image("noel-bouteille","La bouteille du Père Noël")}<span>Toucher la bouteille</span></button>${essai?"":bouton("annuler",rituel?"Retour à l’accueil":"Retour au calendrier")}</section>`;
@@ -11534,35 +11549,45 @@ window.NoelUI = (() => {
 
   /* Une attente annulable, y compris quand Accueil enlève le panneau ou que
      retourMenu() invalide GEN. Elle ne laisse jamais de rituel suspendu. */
-  function interaction(cible, html, {rituel=false,panneauNoel=null,ouverture=false}={}) {
+  function interaction(cible, html, {rituel=false,panneauNoel=null,ouverture=false,retourIndice=false}={}) {
+    const scrolls=[...new Set([cible,panneauNoel].filter(Boolean))].map(e=>[e,e.scrollTop]);
     cible.innerHTML = rituel?`<div class="carte noel-ui noel-rituel">${html}</div>`:html;
-    cible.scrollTop=0;
-    if(panneauNoel)panneauNoel.scrollTop=0;
-    const premier = cible.querySelector("h2,h3");
-    if(premier){premier.tabIndex=-1;premier.focus({preventScroll:true});}
+    const popup=cible.querySelector('dialog.noel-indice-dialog');
+    for(const [e,y] of scrolls)e.scrollTop=popup||retourIndice?y:0;
+    if(popup)popup.showModal();
+    const premier = popup?.querySelector("h2") || (retourIndice&&cible.querySelector('.noel-case [data-noel-action="indice"]')) || cible.querySelector("h2,h3");
+    if(premier){if(!premier.matches('button'))premier.tabIndex=-1;premier.focus({preventScroll:true});}
     return new Promise(resolve=>{
       let fini=false,secours=null;
       const gen=generation(),scene=ouverture?cible.querySelector('[data-noel-ouverture]'):null;
       const termine = valeur => {
         if(fini)return;fini=true;
         clearTimeout(secours);scene?.removeEventListener("animationend",finAnimation);
+        popup?.removeEventListener("cancel",fermeIndice);popup?.removeEventListener("close",fermeIndice);
+        if(popup?.open)popup.close();
         cible.removeEventListener("click",clic);document.removeEventListener("keydown",clavier);
         panneauNoel?.removeEventListener("click",ferme);observateur.disconnect();
         if(typeof enAttente!=="undefined")enAttente.delete(annule);
         resolve(valeur);
       };
       const annule = () => termine({action:"annuler"});
+      const fermeIndice = ev => {ev?.preventDefault();termine({action:"fermer-indice"});};
       const acheve = () => {
         if(gen!==generation()||!cible.isConnected||!scene||!cible.contains(scene))return annule();
         termine({action:"fin-ouverture"});
       };
       const finAnimation = ev => {if(ev.target===scene&&ev.animationName==="noel-ouverture-fin")acheve();};
-      const clic = ev => {const b=ev.target.closest("[data-noel-action]");if(!b||b.disabled||!cible.contains(b))return;ev.preventDefault();if(typeof Son!=="undefined")Son.init();termine({action:b.dataset.noelAction,id:b.dataset.noelId});};
+      const clic = ev => {
+        if(popup&&ev.target===popup){const r=popup.getBoundingClientRect();if(ev.clientX<r.left||ev.clientX>r.right||ev.clientY<r.top||ev.clientY>r.bottom)fermeIndice(ev);return;}
+        const b=ev.target.closest("[data-noel-action]");if(!b||b.disabled||!cible.contains(b)||(popup&&!popup.contains(b)))return;
+        ev.preventDefault();if(typeof Son!=="undefined")Son.init();termine({action:b.dataset.noelAction,id:b.dataset.noelId});
+      };
       const ferme = ev => {if(ev.target===panneauNoel || ev.target.closest("[data-x]"))annule();};
-      const clavier = ev => {if(ev.key==="Escape"){ev.preventDefault();annule();}else if((ev.key==="Enter"||ev.key===" ")&&!/INPUT|TEXTAREA|SELECT|BUTTON|A/.test(document.activeElement?.tagName||"")){const b=cible.querySelector(".prim[data-noel-action]:not([disabled])")||cible.querySelector(".noel-porte.a-ouvrir:not([disabled])");if(b){ev.preventDefault();b.click();}}};
-      const observateur=new MutationObserver(()=>{if(gen!==generation()||!cible.isConnected||(scene&&!cible.contains(scene)))annule();});
+      const clavier = ev => {if(ev.key==="Escape"){ev.preventDefault();if(popup)fermeIndice(ev);else annule();}else if((ev.key==="Enter"||ev.key===" ")&&!/INPUT|TEXTAREA|SELECT|BUTTON|A/.test(document.activeElement?.tagName||"")){const b=(popup||cible).querySelector(".prim[data-noel-action]:not([disabled])")||cible.querySelector(".noel-porte.a-ouvrir:not([disabled])");if(b){ev.preventDefault();b.click();}}};
+      const observateur=new MutationObserver(()=>{if(gen!==generation()||!cible.isConnected||(scene&&!cible.contains(scene))||(popup&&!cible.contains(popup)))annule();});
       observateur.observe(document.body,{childList:true,subtree:true});
       cible.addEventListener("click",clic);document.addEventListener("keydown",clavier);panneauNoel?.addEventListener("click",ferme);
+      popup?.addEventListener("cancel",fermeIndice);popup?.addEventListener("close",fermeIndice);
       if(typeof enAttente!=="undefined")enAttente.add(annule);
       // La fin CSS et le secours partagent le même nettoyage, y compris après
       // fermeture depuis le téléphone ou remplacement du contenu du rituel.
@@ -11570,12 +11595,13 @@ window.NoelUI = (() => {
     });
   }
   async function parcours(cible, {rituel=false,panneauNoel=null,prologue=false}={}) {
-    const gen=generation();let vue=prologue?"bouteille":"calendrier", porte=null, erreur="", deroule=false;
+    const gen=generation();let vue=prologue?"bouteille":"calendrier", porte=null, erreur="", deroule=false,retourIndice=false;
     while(gen===generation()){
-      let html=vue==="ouverture"?NoelOuverture.html(porte):vue==="case"?caseHTML(porte,rituel,null,deroule):vue==="lettre"?lettreHTML(false,rituel):vue==="bouteille"?lettreHTML(true,rituel):vue==="binomes"?binomesHTML():calendrierHTML(rituel);
+      let html=vue==="ouverture"?NoelOuverture.html(porte):vue==="case"||vue==="indice"?caseHTML(porte,rituel,null,deroule)+(vue==="indice"?indiceHTML(porte):""):vue==="lettre"?lettreHTML(false,rituel):vue==="bouteille"?lettreHTML(true,rituel):vue==="binomes"?binomesHTML():calendrierHTML(rituel);
       deroule=false;
       if(erreur)html+=`<p class="noel-erreur" role="alert">${ech(erreur)}</p>`;
-      const {action,id}=await interaction(cible,html,{rituel,panneauNoel,ouverture:vue==="ouverture"});
+      const attente=interaction(cible,html,{rituel,panneauNoel,ouverture:vue==="ouverture",retourIndice});retourIndice=false;
+      const {action,id}=await attente;
       if(gen!==generation()||action==="annuler")return false;
       erreur="";
       try {
@@ -11593,7 +11619,8 @@ window.NoelUI = (() => {
           else {vue="calendrier";erreur="Cette porte n’est pas encore disponible.";}
         }
         else if(action==="rejouer-ouverture"&&demo()&&porte&&id===porte.id)vue="ouverture";
-        else if(action==="indice") {Noel.revele(id);vue="case";}
+        else if(action==="indice"&&vue==="case"&&porte?.id===id) {if(Noel.revele(id)!==false)vue="indice";}
+        else if(action==="fermer-indice"&&vue==="indice") {vue="case";retourIndice=true;}
         else if(action==="lire"||action==="lettre")vue="lettre";
         else if(action==="lettre-lue") {Noel.litLettre();if(rituel&&!restantes().length)return true;vue="calendrier";}
         else if(action==="binomes")vue="binomes";
@@ -11625,14 +11652,14 @@ window.NoelUI = (() => {
     const gen=generation(), p=panneau('<h2>Essayer Noël</h2><div class="noel-ui" data-noel-contenu></div>',"noel-panneau noel-panneau-essais");
     p.querySelector('[data-x]').textContent="Quitter l’essai";
     const cible=p.querySelector('[data-noel-contenu]');
-    let vue="menu",scenario=null,porte=null,erreur="",deroule=false;
+    let vue="menu",scenario=null,porte=null,erreur="",deroule=false,retourIndice=false;
     try {
       while(gen===generation()&&demo()){
         const finPorte=scenario==="rattrapage"&&porte?.id==="02"?"Lire la case du 4 décembre":"Terminer cet essai";
-        const html=vue==="menu"?menuEssaisHTML():vue==="fin"?finEssaiHTML(scenario):vue==="bouteille"?lettreHTML(true,false,true):vue==="lettre"?lettreHTML(false,false,scenario==="bouteille"):vue==="ouverture"?NoelOuverture.html(porte):vue==="case"?caseHTML(porte,false,scenario==="libre"?null:{suite:finPorte},deroule):vue==="binomes"?binomesHTML():calendrierHTML(scenario!=="libre");
+        const html=vue==="menu"?menuEssaisHTML():vue==="fin"?finEssaiHTML(scenario):vue==="bouteille"?lettreHTML(true,false,true):vue==="lettre"?lettreHTML(false,false,scenario==="bouteille"):vue==="ouverture"?NoelOuverture.html(porte):vue==="case"||vue==="indice"?caseHTML(porte,false,scenario==="libre"?null:{suite:finPorte},deroule)+(vue==="indice"?indiceHTML(porte):""):vue==="binomes"?binomesHTML():calendrierHTML(scenario!=="libre");
         deroule=false;
-        const retard=scenario==="rattrapage"&&vue==="case"?`<p class="noel-essai-repere">${porte.id==="02"?"À rattraper · 3 décembre":"Aujourd’hui · 4 décembre"}</p>`:"";
-        const attente=interaction(cible,barreEssaisHTML(vue==="menu")+retard+html+(erreur?`<p class="noel-erreur" role="alert">${ech(erreur)}</p>`:""),{panneauNoel:p,ouverture:vue==="ouverture"});
+        const retard=scenario==="rattrapage"&&(vue==="case"||vue==="indice")?`<p class="noel-essai-repere">${porte.id==="02"?"À rattraper · 3 décembre":"Aujourd’hui · 4 décembre"}</p>`:"";
+        const attente=interaction(cible,barreEssaisHTML(vue==="menu")+retard+html+(erreur?`<p class="noel-erreur" role="alert">${ech(erreur)}</p>`:""),{panneauNoel:p,ouverture:vue==="ouverture",retourIndice});retourIndice=false;
         // L’option avancée reste facultative ; les trois scénarios n’en dépendent pas.
         const {action,id}=await attente;
         if(gen!==generation()||action==="annuler"||action==="quitter-essais")break;
@@ -11647,7 +11674,8 @@ window.NoelUI = (() => {
           else if(action==="essai-date"){Noel.simuleDate(cible.querySelector('#noel-date-essai').value);Noel.choisir("on");scenario="libre";vue="calendrier";}
           else if(action==="lire"||action==="lettre")vue="lettre";
           else if(action==="lettre-lue"){Noel.litLettre();vue=scenario==="bouteille"?"fin":"calendrier";}
-          else if(action==="indice"){Noel.revele(id);vue="case";}
+          else if(action==="indice"&&vue==="case"&&porte?.id===id){if(Noel.revele(id)!==false)vue="indice";}
+          else if(action==="fermer-indice"&&vue==="indice"){vue="case";retourIndice=true;}
           else if(action==="calendrier"){
             if(vue!=="case"||scenario==="libre")vue="calendrier";
             else if(scenario==="rattrapage"&&porte?.id==="02"){porte=null;vue="calendrier";}
@@ -14414,17 +14442,30 @@ const Accueil = (() => {
   function telecommandeEcran(){
     const layer = document.getElementById("layer"); let dernier = "", t = null;
     useCap("room").then(room=>{ if (!room || !layer) return;
-      const zone = () => document.querySelector('.panneau:has(.noel-ui)') || layer;
-      const lis = () => courant!=="scr-tbi" ? [] : [...zone().querySelectorAll("[data-go]")].filter(b=>b.offsetParent && !b.disabled && b.textContent.trim())
-        .map(b=>({go:b.dataset.go, t:b.textContent.trim().replace(/\s+/g," ").slice(0,48), p:b.classList.contains("prim")?1:0}))
-        .filter((x,i,l)=>l.findIndex(y=>y.go===x.go)===i).slice(0,zone()===layer?10:20)
-        .concat(zone()===layer?[]:[{go:"noel-fermer-panneau",t:"Fermer le calendrier",p:0}]);
+      const estIndice = cible => cible.matches('dialog.noel-indice-dialog[open]');
+      const zone = () => document.querySelector('dialog.noel-indice-dialog[open]') || document.querySelector('.panneau:has(.noel-ui)') || layer;
+      // Un dialog natif rend son arrière-plan inerte, y compris à distance.
+      // Les rectangles couvrent aussi les boutons d'un dialog en top layer.
+      const commandes = cible => [...cible.querySelectorAll(estIndice(cible)?'[data-go="noel-fermer-indice"]':'[data-go]')]
+        .filter(b=>b.getClientRects().length && !b.disabled && b.textContent.trim());
+      const lis = () => {
+        if(courant!=="scr-tbi")return [];
+        const cible=zone(), indice=estIndice(cible);
+        return commandes(cible).map(b=>({go:b.dataset.go, t:b.textContent.trim().replace(/\s+/g," ").slice(0,48), p:b.classList.contains("prim")?1:0}))
+          .filter((x,i,l)=>l.findIndex(y=>y.go===x.go)===i).slice(0,cible===layer?10:20)
+          .concat(cible===layer||indice?[]:[{go:"noel-fermer-panneau",t:"Fermer le calendrier",p:0}]);
+      };
       const envoie = force => { const l = lis(), j = JSON.stringify(l); if (!force && j===dernier) return; dernier = j; room.emit("ecran", {boutons:l}).catch(()=>{}); };
-      new MutationObserver(()=>{ clearTimeout(t); t = setTimeout(()=>envoie(false), 250); }).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:["disabled","hidden","class"]});
+      new MutationObserver(()=>{ clearTimeout(t); t = setTimeout(()=>envoie(false), 250); }).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:["disabled","hidden","class","open"]});
       setInterval(()=>envoie(true), 6000); envoie(true);
       room.on("cmd", m=>{ const d = m.data||{}; if (d.a!=="clic" || typeof d.go!=="string") return;
-        if(d.go==="noel-fermer-panneau" && zone()!==layer){zone().querySelector('[data-x]')?.click();return;}
-        const b = [...zone().querySelectorAll("[data-go]")].find(x=>x.dataset.go===d.go && !x.disabled && x.offsetParent); if (b) b.click(); });
+        const cible=zone();
+        if(d.go==="noel-fermer-panneau"){
+          if(estIndice(cible))commandes(cible).find(b=>b.dataset.go==="noel-fermer-indice")?.click();
+          else if(cible!==layer)cible.querySelector('[data-x]')?.click();
+          return;
+        }
+        const b = commandes(cible).find(x=>x.dataset.go===d.go); if (b) b.click(); });
     });
   }
   function telecommandeTel(){
